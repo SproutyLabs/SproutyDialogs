@@ -1,3 +1,8 @@
+.tmp
+.dist
+.DS_Store
+/.vscode
+
 # Godot 4+ specific ignores
 .godot/
 
@@ -5,6 +10,12 @@
 .import/
 export.cfg
 export_presets.cfg
+project.godot
+
+/icon.svg
+/icon.png
+/icon.png.import
+/icon.svg.import
 
 # Imported translations (automatically generated from CSV files)
 *.translation
@@ -13,3 +24,6 @@ export_presets.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+# Project-specific ignores
+test-scenes/

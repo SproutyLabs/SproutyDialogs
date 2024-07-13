@@ -1,0 +1,71 @@
+[gd_scene load_steps=2 format=3 uid="uid://dpscdg0f7o6ft"]
+
+[ext_resource type="Texture2D" uid="uid://bwqotvkpjbndm" path="res://addons/graph_dialog_system/icons/Search.svg" id="1_1wtbh"]
+
+[node name="SideBar" type="VSplitContainer"]
+custom_minimum_size = Vector2(20, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="FilesDisplay" type="VBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Search" type="LineEdit" parent="Margin/VBox/FilesDisplay"]
+layout_mode = 2
+placeholder_text = "Filter Files"
+right_icon = ExtResource("1_1wtbh")
+caret_blink = true
+caret_blink_interval = 0.5
+
+[node name="FileList" type="ItemList" parent="Margin/VBox/FilesDisplay"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+same_column_width = true
+
+[node name="CharactersDisplay" type="VBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Margin/VBox/CharactersDisplay"]
+layout_mode = 2
+text = "Characters"
+
+[node name="Button" type="Button" parent="Margin/VBox/CharactersDisplay"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "+"
+
+[node name="VariablesDisplay" type="VBoxContainer" parent="Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Margin/VBox/VariablesDisplay"]
+layout_mode = 2
+text = "Variables"
+
+[node name="Button" type="Button" parent="Margin/VBox/VariablesDisplay"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "+"
+
+[node name="Version" type="Label" parent="Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.619608, 0.611765, 0.568627, 1)
+text = "v0.1
+"
+horizontal_alignment = 2
+vertical_alignment = 1
