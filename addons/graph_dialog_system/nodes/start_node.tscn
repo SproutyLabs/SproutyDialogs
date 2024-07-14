@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://cu41jslmdjohb"]
+
+[ext_resource type="StyleBox" uid="uid://dyetiylts5agp" path="res://addons/graph_dialog_system/styles/start_titlebar.tres" id="1_1ma7y"]
+
+[node name="StartNode" type="GraphNode"]
+offset_right = 150.0
+offset_bottom = 88.0
+theme_override_styles/titlebar = ExtResource("1_1ma7y")
+title = "Start Node"
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+
+[node name="IDContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="IDContainer"]
+layout_mode = 2
+text = "ID"
+
+[node name="Input" type="LineEdit" parent="IDContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Label..."

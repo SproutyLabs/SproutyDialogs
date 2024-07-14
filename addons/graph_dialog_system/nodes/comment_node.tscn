@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://hxn726na6i6v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i3m1c"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.443137, 0.447059, 0.541176, 1)
+
+[node name="CommentNode" type="GraphNode"]
+offset_right = 9.0
+offset_bottom = 55.0
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_i3m1c")
+resizable = true
+title = "Comment Node"
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+
+[node name="TextInput" type="TextEdit" parent="."]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_vertical = 3

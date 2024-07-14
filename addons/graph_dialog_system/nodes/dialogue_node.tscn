@@ -1,0 +1,166 @@
+[gd_scene load_steps=3 format=3 uid="uid://n6xtq0g0yp1m"]
+
+[ext_resource type="StyleBox" uid="uid://dkj2y6kg7tamy" path="res://addons/graph_dialog_system/styles/dialogue_titlebar.tres" id="1_8cfi7"]
+[ext_resource type="Texture2D" uid="uid://cpo7ysj24bwf6" path="res://addons/graph_dialog_system/icons/down-arrow.svg" id="2_on7kq"]
+
+[node name="DialogueNode" type="GraphNode"]
+offset_right = 300.0
+theme_override_constants/separation = 5
+theme_override_styles/titlebar = ExtResource("1_8cfi7")
+title = "Dialogue Node"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color(1, 1, 1, 1)
+slot/2/left_icon = null
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color(1, 1, 1, 1)
+slot/2/right_icon = null
+slot/2/draw_stylebox = true
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color(1, 1, 1, 1)
+slot/3/left_icon = null
+slot/3/right_enabled = true
+slot/3/right_type = 0
+slot/3/right_color = Color(1, 1, 1, 1)
+slot/3/right_icon = null
+slot/3/draw_stylebox = true
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color(1, 1, 1, 1)
+slot/4/left_icon = null
+slot/4/right_enabled = true
+slot/4/right_type = 0
+slot/4/right_color = Color(1, 1, 1, 1)
+slot/4/right_icon = null
+slot/4/draw_stylebox = true
+
+[node name="IDContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="IDLabel" type="Label" parent="IDContainer"]
+layout_mode = 2
+text = "ID"
+
+[node name="IDInput" type="LineEdit" parent="IDContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Label..."
+
+[node name="CharacterContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="CharacterLabel" type="Label" parent="CharacterContainer"]
+layout_mode = 2
+text = "Character"
+
+[node name="OptionButton" type="OptionButton" parent="CharacterContainer"]
+layout_mode = 2
+item_count = 1
+selected = 0
+popup/item_0/text = "(No one)"
+popup/item_0/id = 0
+
+[node name="DialogueContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="DialogueHeader" type="HBoxContainer" parent="DialogueContainer"]
+layout_mode = 2
+
+[node name="DialogueLabel" type="Label" parent="DialogueContainer/DialogueHeader"]
+layout_mode = 2
+text = "Dialogue"
+
+[node name="LanguageLabel" type="Label" parent="DialogueContainer/DialogueHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
+text = "(En)"
+horizontal_alignment = 2
+
+[node name="DialogueInput" type="TextEdit" parent="DialogueContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 100)
+layout_mode = 2
+placeholder_text = "Insert text..."
+
+[node name="TranslationsContainer" type="VBoxContainer" parent="DialogueContainer"]
+layout_mode = 2
+
+[node name="TranslationsHeader" type="HBoxContainer" parent="DialogueContainer/TranslationsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="DialogueContainer/TranslationsContainer/TranslationsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Translations"
+
+[node name="Margin" type="MarginContainer" parent="DialogueContainer/TranslationsContainer/TranslationsHeader"]
+layout_mode = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 3
+
+[node name="ExpandButton" type="TextureButton" parent="DialogueContainer/TranslationsContainer/TranslationsHeader/Margin"]
+custom_minimum_size = Vector2(20, 2.08165e-12)
+layout_mode = 2
+texture_normal = ExtResource("2_on7kq")
+ignore_texture_size = true
+stretch_mode = 5
+
+[node name="TranslationsTexts" type="VBoxContainer" parent="DialogueContainer/TranslationsContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 100)
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="DialogueContainer/TranslationsContainer/TranslationsTexts"]
+layout_mode = 2
+
+[node name="TranslatedDialog" type="VBoxContainer" parent="DialogueContainer/TranslationsContainer/TranslationsTexts"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TranslationHeader" type="HBoxContainer" parent="DialogueContainer/TranslationsContainer/TranslationsTexts/TranslatedDialog"]
+layout_mode = 2
+
+[node name="LanguageLabel2" type="Label" parent="DialogueContainer/TranslationsContainer/TranslationsTexts/TranslatedDialog/TranslationHeader"]
+layout_mode = 2
+text = "Español"
+
+[node name="CodeLabel" type="Label" parent="DialogueContainer/TranslationsContainer/TranslationsTexts/TranslatedDialog/TranslationHeader"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
+text = "(Es)"
+horizontal_alignment = 2
+
+[node name="TranslationInput" type="TextEdit" parent="DialogueContainer/TranslationsContainer/TranslationsTexts/TranslatedDialog"]
+custom_minimum_size = Vector2(2.08165e-12, 100)
+layout_mode = 2
+placeholder_text = "Insert text..."
+
+[node name="Choices" type="Label" parent="."]
+layout_mode = 2
+text = "Choices"
+horizontal_alignment = 2
+
+[node name="Next" type="Label" parent="."]
+layout_mode = 2
+text = "Next"
+horizontal_alignment = 2

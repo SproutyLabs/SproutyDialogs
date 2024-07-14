@@ -1,0 +1,52 @@
+[gd_scene load_steps=2 format=3 uid="uid://b80xoq50othk8"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jqlmf"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.592157, 0.701961, 0.172549, 1)
+
+[node name="SetVariableNode" type="GraphNode"]
+offset_right = 300.0
+offset_bottom = 95.0
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_jqlmf")
+title = "Set Variable Node"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+
+[node name="Container" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Variable" type="LineEdit" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Variable"
+
+[node name="Assign" type="OptionButton" parent="Container"]
+layout_mode = 2
+tooltip_text = "The type of the value to set."
+item_count = 5
+selected = 0
+popup/item_0/text = "="
+popup/item_0/id = 0
+popup/item_1/text = "+="
+popup/item_1/id = 1
+popup/item_2/text = "-="
+popup/item_2/id = 2
+popup/item_3/text = "*="
+popup/item_3/id = 3
+popup/item_4/text = "/="
+popup/item_4/id = 4
+
+[node name="Value" type="LineEdit" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Value"
