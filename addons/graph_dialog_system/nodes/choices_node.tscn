@@ -1,13 +1,19 @@
-[gd_scene load_steps=3 format=3 uid="uid://c0x6oarn1mwpl"]
+[gd_scene load_steps=6 format=3 uid="uid://c0x6oarn1mwpl"]
 
-[ext_resource type="Texture2D" uid="uid://cpo7ysj24bwf6" path="res://addons/graph_dialog_system/icons/down-arrow.svg" id="1_472av"]
+[ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_pc72j"]
 [ext_resource type="StyleBox" uid="uid://b3nwfeux53stj" path="res://addons/graph_dialog_system/styles/choices_titlebar.tres" id="1_w8dxq"]
+[ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_3bkl4"]
+[ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_section.tscn" id="2_e5pxq"]
+[ext_resource type="StyleBox" uid="uid://cq7c0heiv7fr3" path="res://addons/graph_dialog_system/styles/choices_selected_titlebar.tres" id="4_0q8li"]
 
 [node name="ChoicesNode" type="GraphNode"]
 offset_right = 250.0
 size_flags_vertical = 3
 theme_override_constants/separation = 5
+theme_override_styles/panel = ExtResource("1_pc72j")
+theme_override_styles/panel_selected = ExtResource("2_3bkl4")
 theme_override_styles/titlebar = ExtResource("1_w8dxq")
+theme_override_styles/titlebar_selected = ExtResource("4_0q8li")
 title = "Choices Node"
 slot/0/left_enabled = true
 slot/0/left_type = 0
@@ -70,59 +76,8 @@ custom_minimum_size = Vector2(2.08165e-12, 50)
 layout_mode = 2
 placeholder_text = "Insert text..."
 
-[node name="TranslationsContainer" type="VBoxContainer" parent="."]
+[node name="TranslationsContainer" parent="." instance=ExtResource("2_e5pxq")]
 layout_mode = 2
-
-[node name="TranslationsHeader" type="HBoxContainer" parent="TranslationsContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="TranslationsContainer/TranslationsHeader"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Translations"
-
-[node name="Margin" type="MarginContainer" parent="TranslationsContainer/TranslationsHeader"]
-layout_mode = 2
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 7
-theme_override_constants/margin_right = 3
-
-[node name="ExpandButton" type="TextureButton" parent="TranslationsContainer/TranslationsHeader/Margin"]
-custom_minimum_size = Vector2(20, 2.08165e-12)
-layout_mode = 2
-texture_normal = ExtResource("1_472av")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="TranslationsTexts" type="VBoxContainer" parent="TranslationsContainer"]
-visible = false
-custom_minimum_size = Vector2(2.08165e-12, 100)
-layout_mode = 2
-
-[node name="HSeparator" type="HSeparator" parent="TranslationsContainer/TranslationsTexts"]
-layout_mode = 2
-
-[node name="TranslatedDialog" type="VBoxContainer" parent="TranslationsContainer/TranslationsTexts"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="TranslationHeader" type="HBoxContainer" parent="TranslationsContainer/TranslationsTexts/TranslatedDialog"]
-layout_mode = 2
-
-[node name="LanguageLabel2" type="Label" parent="TranslationsContainer/TranslationsTexts/TranslatedDialog/TranslationHeader"]
-layout_mode = 2
-text = "Español"
-
-[node name="CodeLabel" type="Label" parent="TranslationsContainer/TranslationsTexts/TranslatedDialog/TranslationHeader"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
-text = "(Es)"
-horizontal_alignment = 2
-
-[node name="TranslationInput" type="TextEdit" parent="TranslationsContainer/TranslationsTexts/TranslatedDialog"]
-custom_minimum_size = Vector2(2.08165e-12, 50)
-layout_mode = 2
-placeholder_text = "Insert text..."
 
 [node name="OptionContainer2" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -148,56 +103,5 @@ custom_minimum_size = Vector2(2.08165e-12, 50)
 layout_mode = 2
 placeholder_text = "Insert text..."
 
-[node name="TranslationsContainer2" type="VBoxContainer" parent="."]
+[node name="TranslationsContainer2" parent="." instance=ExtResource("2_e5pxq")]
 layout_mode = 2
-
-[node name="TranslationsHeader" type="HBoxContainer" parent="TranslationsContainer2"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="TranslationsContainer2/TranslationsHeader"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Translations"
-
-[node name="Margin" type="MarginContainer" parent="TranslationsContainer2/TranslationsHeader"]
-layout_mode = 2
-theme_override_constants/margin_left = 3
-theme_override_constants/margin_top = 7
-theme_override_constants/margin_right = 3
-
-[node name="ExpandButton" type="TextureButton" parent="TranslationsContainer2/TranslationsHeader/Margin"]
-custom_minimum_size = Vector2(20, 2.08165e-12)
-layout_mode = 2
-texture_normal = ExtResource("1_472av")
-ignore_texture_size = true
-stretch_mode = 5
-
-[node name="TranslationsTexts" type="VBoxContainer" parent="TranslationsContainer2"]
-visible = false
-custom_minimum_size = Vector2(2.08165e-12, 100)
-layout_mode = 2
-
-[node name="HSeparator" type="HSeparator" parent="TranslationsContainer2/TranslationsTexts"]
-layout_mode = 2
-
-[node name="TranslatedDialog" type="VBoxContainer" parent="TranslationsContainer2/TranslationsTexts"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="TranslationHeader" type="HBoxContainer" parent="TranslationsContainer2/TranslationsTexts/TranslatedDialog"]
-layout_mode = 2
-
-[node name="LanguageLabel2" type="Label" parent="TranslationsContainer2/TranslationsTexts/TranslatedDialog/TranslationHeader"]
-layout_mode = 2
-text = "Español"
-
-[node name="CodeLabel" type="Label" parent="TranslationsContainer2/TranslationsTexts/TranslatedDialog/TranslationHeader"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
-text = "(Es)"
-horizontal_alignment = 2
-
-[node name="TranslationInput" type="TextEdit" parent="TranslationsContainer2/TranslationsTexts/TranslatedDialog"]
-custom_minimum_size = Vector2(2.08165e-12, 50)
-layout_mode = 2
-placeholder_text = "Insert text..."

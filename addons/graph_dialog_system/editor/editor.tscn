@@ -1,0 +1,116 @@
+[gd_scene load_steps=3 format=3 uid="uid://chmw64xy0cmck"]
+
+[ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/side_bar.tscn" id="1_qbi36"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/Scripts/Graph.gd" id="2_ubeh2"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="Content" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TopBar" type="MarginContainer" parent="Content"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="ToolBar" type="HBoxContainer" parent="Content/TopBar"]
+layout_mode = 2
+
+[node name="GeneralOptions" type="HBoxContainer" parent="Content/TopBar/ToolBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FileMenu" type="MenuButton" parent="Content/TopBar/ToolBar/GeneralOptions"]
+layout_mode = 2
+keep_pressed_outside = true
+text = "File"
+switch_on_hover = true
+item_count = 3
+popup/item_0/text = "New File"
+popup/item_0/id = 0
+popup/item_1/text = "Open..."
+popup/item_1/id = 1
+popup/item_2/text = ""
+popup/item_2/id = 2
+
+[node name="NewNodeMenu" type="MenuButton" parent="Content/TopBar/ToolBar/GeneralOptions"]
+layout_mode = 2
+keep_pressed_outside = true
+text = "Nodes"
+switch_on_hover = true
+item_count = 2
+popup/item_0/text = "Node 1"
+popup/item_0/id = 0
+popup/item_1/text = "Node 2"
+popup/item_1/id = 1
+
+[node name="MenuButton" type="MenuButton" parent="Content/TopBar/ToolBar/GeneralOptions"]
+layout_mode = 2
+keep_pressed_outside = true
+text = "More"
+switch_on_hover = true
+item_count = 1
+popup/item_0/text = "Placehoder"
+popup/item_0/id = 0
+
+[node name="MoreOptions" type="HBoxContainer" parent="Content/TopBar/ToolBar"]
+layout_mode = 2
+
+[node name="SaveButton" type="Button" parent="Content/TopBar/ToolBar/MoreOptions"]
+layout_mode = 2
+text = "Save"
+
+[node name="PlayButton" type="Button" parent="Content/TopBar/ToolBar/MoreOptions"]
+layout_mode = 2
+text = "Play"
+
+[node name="Workspace" type="HSplitContainer" parent="Content"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SideBar" parent="Content/Workspace" instance=ExtResource("1_qbi36")]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+
+[node name="GraphEditor" type="GraphEdit" parent="Content/Workspace"]
+layout_mode = 2
+script = ExtResource("2_ubeh2")
+
+[node name="AddNodeMenu" type="PopupMenu" parent="Content/Workspace/GraphEditor"]
+size = Vector2i(166, 251)
+item_count = 10
+item_0/text = "Start Node"
+item_0/id = 0
+item_1/text = "Comment Node"
+item_1/id = 1
+item_2/text = "Dialogue Node"
+item_2/id = 2
+item_3/text = "Choices Node"
+item_3/id = 3
+item_4/text = "Condition Node"
+item_4/id = 4
+item_5/text = "Set Variable Node"
+item_5/id = 5
+item_6/text = "Signal Node"
+item_6/id = 6
+item_7/text = "Jump Node"
+item_7/id = 7
+item_8/text = "Wait Node"
+item_8/id = 8
+item_9/text = "End Node"
+item_9/id = 9
+
+[connection signal="popup_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_right_click"]
+[connection signal="id_pressed" from="Content/Workspace/GraphEditor/AddNodeMenu" to="Content/Workspace/GraphEditor" method="_on_add_menu_node_selected"]

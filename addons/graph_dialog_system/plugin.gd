@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-const MainPanel = preload("res://addons/graph_dialog_system/editor.tscn")
+const MainPanel = preload("res://addons/graph_dialog_system/editor/editor.tscn")
 
 var main_panel_instance
 

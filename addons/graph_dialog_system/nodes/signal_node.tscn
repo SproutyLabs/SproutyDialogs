@@ -1,16 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://kw2vrwc8qd44"]
+[gd_scene load_steps=5 format=3 uid="uid://kw2vrwc8qd44"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0isyj"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.52549, 0.282353, 1, 1)
+[ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_22i3y"]
+[ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_atjfi"]
+[ext_resource type="StyleBox" uid="uid://bus5conouo7ah" path="res://addons/graph_dialog_system/styles/signal_titlebar.tres" id="3_vrqbd"]
+[ext_resource type="StyleBox" uid="uid://bvrld6sn8ciui" path="res://addons/graph_dialog_system/styles/signal_selected_titlebar.tres" id="4_bdixd"]
 
 [node name="SignalNode" type="GraphNode"]
 offset_right = 180.0
 offset_bottom = 111.0
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_0isyj")
+theme_override_styles/panel = ExtResource("1_22i3y")
+theme_override_styles/panel_selected = ExtResource("2_atjfi")
+theme_override_styles/titlebar = ExtResource("3_vrqbd")
+theme_override_styles/titlebar_selected = ExtResource("4_bdixd")
 title = "Signal Node"
 slot/0/left_enabled = true
 slot/0/left_type = 0

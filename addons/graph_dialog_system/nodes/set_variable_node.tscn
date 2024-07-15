@@ -1,16 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://b80xoq50othk8"]
+[gd_scene load_steps=5 format=3 uid="uid://b80xoq50othk8"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jqlmf"]
-content_margin_left = 5.0
-content_margin_top = 5.0
-content_margin_right = 5.0
-content_margin_bottom = 5.0
-bg_color = Color(0.592157, 0.701961, 0.172549, 1)
+[ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_8lodf"]
+[ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_wda82"]
+[ext_resource type="StyleBox" uid="uid://ddbshuc0p18ki" path="res://addons/graph_dialog_system/styles/set_variable_titlebar.tres" id="3_dwcxo"]
+[ext_resource type="StyleBox" uid="uid://dqs15gfyxotb0" path="res://addons/graph_dialog_system/styles/set_variable_selected_titlebar.tres" id="4_s4xo3"]
 
 [node name="SetVariableNode" type="GraphNode"]
 offset_right = 300.0
 offset_bottom = 95.0
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_jqlmf")
+theme_override_styles/panel = ExtResource("1_8lodf")
+theme_override_styles/panel_selected = ExtResource("2_wda82")
+theme_override_styles/titlebar = ExtResource("3_dwcxo")
+theme_override_styles/titlebar_selected = ExtResource("4_s4xo3")
 title = "Set Variable Node"
 slot/0/left_enabled = true
 slot/0/left_type = 0

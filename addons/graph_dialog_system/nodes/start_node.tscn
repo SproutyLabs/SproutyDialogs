@@ -1,11 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://cu41jslmdjohb"]
+[gd_scene load_steps=5 format=3 uid="uid://cu41jslmdjohb"]
 
 [ext_resource type="StyleBox" uid="uid://dyetiylts5agp" path="res://addons/graph_dialog_system/styles/start_titlebar.tres" id="1_1ma7y"]
+[ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_mw3ih"]
+[ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_2p5p2"]
+[ext_resource type="StyleBox" uid="uid://cru0q71adbrf1" path="res://addons/graph_dialog_system/styles/start_selected_titlebar.tres" id="2_pabwj"]
 
 [node name="StartNode" type="GraphNode"]
 offset_right = 150.0
 offset_bottom = 88.0
+theme_override_styles/panel = ExtResource("1_mw3ih")
+theme_override_styles/panel_selected = ExtResource("2_2p5p2")
 theme_override_styles/titlebar = ExtResource("1_1ma7y")
+theme_override_styles/titlebar_selected = ExtResource("2_pabwj")
 title = "Start Node"
 slot/0/left_enabled = false
 slot/0/left_type = 0
