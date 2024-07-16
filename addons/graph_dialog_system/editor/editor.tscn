@@ -112,5 +112,6 @@ item_8/id = 8
 item_9/text = "End Node"
 item_9/id = 9
 
+[connection signal="connection_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_nodes_connection_request"]
 [connection signal="popup_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_right_click"]
 [connection signal="id_pressed" from="Content/Workspace/GraphEditor/AddNodeMenu" to="Content/Workspace/GraphEditor" method="_on_add_menu_node_selected"]

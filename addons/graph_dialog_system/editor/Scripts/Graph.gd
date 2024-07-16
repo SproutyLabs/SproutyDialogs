@@ -39,9 +39,22 @@ func show_add_node_menu(pos : Vector2):
 func add_node(typeID : int):
 	# Create a new node
 	var new_node := nodes_scenes[typeID].instantiate()
-	new_node.name = "node_" + str(get_child_count())
+	new_node.name += "_" + str(get_child_count())
 	new_node.title += ' #' + new_node.name.split('_')[1]
 	new_node.position_offset = cursor_pos
 	new_node.selected = true
 	add_child(new_node, true)
+
+func _on_nodes_connection_request(from_node, from_port, to_node, to_port):
+	# Handle nodes connection
+	var from_node_type = from_node.split("_")[0]
+	var to_node_type = to_node.split("_")[0]
+	
+	print("from: " + from_node_type + " (slot " + str(from_port) + ") to: " + to_node_type +" (slot "+ str(to_port) +")")
+	
+	if from_node_type == "DialogueNode" and from_port == 0 and to_node_type != "ChoicesNode":
+		printerr("[DialogueSystem] Dialogue node choices only can be connect to a choices node!")
+		return
+	
+	connect_node(from_node, from_port, to_node, to_port)
 #endregion

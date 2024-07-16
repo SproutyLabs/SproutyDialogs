@@ -1,19 +1,23 @@
-[gd_scene load_steps=6 format=3 uid="uid://c0x6oarn1mwpl"]
+[gd_scene load_steps=8 format=3 uid="uid://c0x6oarn1mwpl"]
 
 [ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_pc72j"]
 [ext_resource type="StyleBox" uid="uid://b3nwfeux53stj" path="res://addons/graph_dialog_system/styles/choices_titlebar.tres" id="1_w8dxq"]
 [ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_3bkl4"]
-[ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_section.tscn" id="2_e5pxq"]
 [ext_resource type="StyleBox" uid="uid://cq7c0heiv7fr3" path="res://addons/graph_dialog_system/styles/choices_selected_titlebar.tres" id="4_0q8li"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/choices_node.gd" id="5_jgvn8"]
+[ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_container.tscn" id="5_rwsgt"]
+[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="7_2q2md"]
 
 [node name="ChoicesNode" type="GraphNode"]
-offset_right = 250.0
+offset_right = 220.0
+offset_bottom = 197.0
 size_flags_vertical = 3
 theme_override_constants/separation = 5
 theme_override_styles/panel = ExtResource("1_pc72j")
 theme_override_styles/panel_selected = ExtResource("2_3bkl4")
 theme_override_styles/titlebar = ExtResource("1_w8dxq")
 theme_override_styles/titlebar_selected = ExtResource("4_0q8li")
+resizable = true
 title = "Choices Node"
 slot/0/left_enabled = true
 slot/0/left_type = 0
@@ -28,7 +32,7 @@ slot/1/left_enabled = false
 slot/1/left_type = 0
 slot/1/left_color = Color(1, 1, 1, 1)
 slot/1/left_icon = null
-slot/1/right_enabled = false
+slot/1/right_enabled = true
 slot/1/right_type = 0
 slot/1/right_color = Color(1, 1, 1, 1)
 slot/1/right_icon = null
@@ -37,71 +41,43 @@ slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color(1, 1, 1, 1)
 slot/2/left_icon = null
-slot/2/right_enabled = true
+slot/2/right_enabled = false
 slot/2/right_type = 0
 slot/2/right_color = Color(1, 1, 1, 1)
 slot/2/right_icon = null
 slot/2/draw_stylebox = true
-slot/3/left_enabled = false
-slot/3/left_type = 0
-slot/3/left_color = Color(1, 1, 1, 1)
-slot/3/left_icon = null
-slot/3/right_enabled = false
-slot/3/right_type = 0
-slot/3/right_color = Color(1, 1, 1, 1)
-slot/3/right_icon = null
-slot/3/draw_stylebox = true
+script = ExtResource("5_jgvn8")
 
-[node name="OptionContainer" type="VBoxContainer" parent="."]
+[node name="FirstOptionContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="OptionContainer"]
+[node name="OptionHeader" type="HBoxContainer" parent="FirstOptionContainer"]
 layout_mode = 2
 
-[node name="OptionHeader" type="HBoxContainer" parent="OptionContainer"]
-layout_mode = 2
-
-[node name="OptionLabel" type="Label" parent="OptionContainer/OptionHeader"]
+[node name="OptionLabel" type="Label" parent="FirstOptionContainer/OptionHeader"]
 layout_mode = 2
 text = "Option #1"
 
-[node name="LanguageLabel" type="Label" parent="OptionContainer/OptionHeader"]
+[node name="LanguageLabel" type="Label" parent="FirstOptionContainer/OptionHeader"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
 text = "(En)"
 horizontal_alignment = 2
 
-[node name="DialogueInput" type="TextEdit" parent="OptionContainer"]
+[node name="DialogueInput" type="TextEdit" parent="FirstOptionContainer"]
 custom_minimum_size = Vector2(2.08165e-12, 50)
 layout_mode = 2
 placeholder_text = "Insert text..."
 
-[node name="TranslationsContainer" parent="." instance=ExtResource("2_e5pxq")]
+[node name="TranslationsContainer" parent="FirstOptionContainer" instance=ExtResource("5_rwsgt")]
 layout_mode = 2
 
-[node name="OptionContainer2" type="VBoxContainer" parent="."]
+[node name="HSeparator" type="HSeparator" parent="."]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="OptionContainer2"]
+[node name="AddOptionButton" type="Button" parent="."]
 layout_mode = 2
+text = "Add Option"
+icon = ExtResource("7_2q2md")
 
-[node name="OptionHeader" type="HBoxContainer" parent="OptionContainer2"]
-layout_mode = 2
-
-[node name="OptionLabel" type="Label" parent="OptionContainer2/OptionHeader"]
-layout_mode = 2
-text = "Option #2"
-
-[node name="LanguageLabel" type="Label" parent="OptionContainer2/OptionHeader"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
-text = "(En)"
-horizontal_alignment = 2
-
-[node name="DialogueInput" type="TextEdit" parent="OptionContainer2"]
-custom_minimum_size = Vector2(2.08165e-12, 50)
-layout_mode = 2
-placeholder_text = "Insert text..."
-
-[node name="TranslationsContainer2" parent="." instance=ExtResource("2_e5pxq")]
-layout_mode = 2
+[connection signal="pressed" from="AddOptionButton" to="." method="_on_add_option_button_pressed"]

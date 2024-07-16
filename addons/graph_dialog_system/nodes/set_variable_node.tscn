@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://b80xoq50othk8"]
+[gd_scene load_steps=9 format=3 uid="uid://b80xoq50othk8"]
 
 [ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_8lodf"]
 [ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_wda82"]
 [ext_resource type="StyleBox" uid="uid://ddbshuc0p18ki" path="res://addons/graph_dialog_system/styles/set_variable_titlebar.tres" id="3_dwcxo"]
 [ext_resource type="StyleBox" uid="uid://dqs15gfyxotb0" path="res://addons/graph_dialog_system/styles/set_variable_selected_titlebar.tres" id="4_s4xo3"]
+[ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialog_system/icons/String.svg" id="5_x6wg3"]
+[ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialog_system/icons/int.svg" id="6_s4wn6"]
+[ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="6_xgw2l"]
+[ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/float.svg" id="7_u13yd"]
 
 [node name="SetVariableNode" type="GraphNode"]
 offset_right = 300.0
@@ -12,6 +16,7 @@ theme_override_styles/panel = ExtResource("1_8lodf")
 theme_override_styles/panel_selected = ExtResource("2_wda82")
 theme_override_styles/titlebar = ExtResource("3_dwcxo")
 theme_override_styles/titlebar_selected = ExtResource("4_s4xo3")
+resizable = true
 title = "Set Variable Node"
 slot/0/left_enabled = true
 slot/0/left_type = 0
@@ -26,10 +31,29 @@ slot/0/draw_stylebox = true
 [node name="Container" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Variable" type="LineEdit" parent="Container"]
+[node name="Type" type="OptionButton" parent="Container"]
 layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Variable"
+item_count = 4
+selected = 0
+popup/item_0/text = ""
+popup/item_0/icon = ExtResource("5_x6wg3")
+popup/item_0/id = 0
+popup/item_1/text = ""
+popup/item_1/icon = ExtResource("6_s4wn6")
+popup/item_1/id = 1
+popup/item_2/text = ""
+popup/item_2/icon = ExtResource("7_u13yd")
+popup/item_2/id = 2
+popup/item_3/text = ""
+popup/item_3/icon = ExtResource("6_xgw2l")
+popup/item_3/id = 3
+
+[node name="Variable" type="OptionButton" parent="Container"]
+layout_mode = 2
+item_count = 1
+selected = 0
+popup/item_0/text = "(None)"
+popup/item_0/id = 0
 
 [node name="Assign" type="OptionButton" parent="Container"]
 layout_mode = 2
@@ -47,7 +71,30 @@ popup/item_3/id = 3
 popup/item_4/text = "/="
 popup/item_4/id = 4
 
-[node name="Value" type="LineEdit" parent="Container"]
+[node name="StringValue" type="LineEdit" parent="Container"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Value"
+
+[node name="IntValue" type="SpinBox" parent="Container"]
+visible = false
+layout_mode = 2
+max_value = 999999.0
+
+[node name="FloatValue" type="SpinBox" parent="Container"]
+visible = false
+layout_mode = 2
+max_value = 999999.0
+step = 0.1
+
+[node name="BoolValue" type="OptionButton" parent="Container"]
+visible = false
+layout_mode = 2
+item_count = 2
+selected = 0
+popup/item_0/text = "True"
+popup/item_0/icon = ExtResource("6_xgw2l")
+popup/item_0/id = 0
+popup/item_1/text = "False"
+popup/item_1/icon = ExtResource("6_xgw2l")
+popup/item_1/id = 1

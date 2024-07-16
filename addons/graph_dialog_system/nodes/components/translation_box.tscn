@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://cs6visnc0puc3"]
 
 [node name="TranslationBox" type="VBoxContainer"]
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(150, 0)
 offset_right = 92.0
 offset_bottom = 127.0
 size_flags_vertical = 3

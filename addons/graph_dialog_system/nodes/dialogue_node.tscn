@@ -1,18 +1,22 @@
-[gd_scene load_steps=6 format=3 uid="uid://n6xtq0g0yp1m"]
+[gd_scene load_steps=7 format=3 uid="uid://n6xtq0g0yp1m"]
 
 [ext_resource type="StyleBox" uid="uid://dkj2y6kg7tamy" path="res://addons/graph_dialog_system/styles/dialogue_titlebar.tres" id="1_8cfi7"]
 [ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_381ss"]
 [ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_ov1o0"]
-[ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_section.tscn" id="2_uj867"]
 [ext_resource type="StyleBox" uid="uid://cqw11hvjk5r6" path="res://addons/graph_dialog_system/styles/dialogue_selected_titlebar.tres" id="4_nkcoi"]
+[ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_container.tscn" id="5_kt63k"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/dialogue_node.gd" id="5_v7cqa"]
 
 [node name="DialogueNode" type="GraphNode"]
-offset_right = 300.0
+offset_right = 220.0
+offset_bottom = 373.0
+size_flags_vertical = 3
 theme_override_constants/separation = 5
 theme_override_styles/panel = ExtResource("1_381ss")
 theme_override_styles/panel_selected = ExtResource("2_ov1o0")
 theme_override_styles/titlebar = ExtResource("1_8cfi7")
 theme_override_styles/titlebar_selected = ExtResource("4_nkcoi")
+resizable = true
 title = "Dialogue Node"
 slot/0/left_enabled = true
 slot/0/left_type = 0
@@ -59,6 +63,7 @@ slot/4/right_type = 0
 slot/4/right_color = Color(1, 1, 1, 1)
 slot/4/right_icon = null
 slot/4/draw_stylebox = true
+script = ExtResource("5_v7cqa")
 
 [node name="IDContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -108,11 +113,24 @@ custom_minimum_size = Vector2(2.08165e-12, 100)
 layout_mode = 2
 placeholder_text = "Insert text..."
 
-[node name="Translations" parent="DialogueContainer" instance=ExtResource("2_uj867")]
+[node name="Translations" parent="DialogueContainer" instance=ExtResource("5_kt63k")]
 layout_mode = 2
 
-[node name="Choices" type="Label" parent="."]
+[node name="HSeparator" type="HSeparator" parent="DialogueContainer"]
 layout_mode = 2
+
+[node name="ChoicesContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ChoicesToggle" type="CheckButton" parent="ChoicesContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/h_separation = 10
+text = "Choices"
+
+[node name="ChoicesLabel" type="Label" parent="ChoicesContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Choices"
 horizontal_alignment = 2
 
@@ -120,3 +138,5 @@ horizontal_alignment = 2
 layout_mode = 2
 text = "Next"
 horizontal_alignment = 2
+
+[connection signal="toggled" from="ChoicesContainer/ChoicesToggle" to="." method="_show_choices_port"]

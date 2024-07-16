@@ -1,9 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://wex81cyrw24j"]
+[gd_scene load_steps=9 format=3 uid="uid://wex81cyrw24j"]
 
 [ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_rteh7"]
 [ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_vfhna"]
 [ext_resource type="StyleBox" uid="uid://ba1i37oiacpnn" path="res://addons/graph_dialog_system/styles/condition_titlebar.tres" id="3_1s13w"]
 [ext_resource type="StyleBox" uid="uid://polmsrmfat37" path="res://addons/graph_dialog_system/styles/condition_selected_titlebar.tres" id="4_ypfb6"]
+[ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialog_system/icons/String.svg" id="5_5hpwr"]
+[ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialog_system/icons/int.svg" id="6_ug6l5"]
+[ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/float.svg" id="7_gelaf"]
+[ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="8_tn2oy"]
 
 [node name="ConditionNode" type="GraphNode"]
 offset_right = 300.0
@@ -13,6 +17,7 @@ theme_override_styles/panel = ExtResource("1_rteh7")
 theme_override_styles/panel_selected = ExtResource("2_vfhna")
 theme_override_styles/titlebar = ExtResource("3_1s13w")
 theme_override_styles/titlebar_selected = ExtResource("4_ypfb6")
+resizable = true
 title = "Condition Node"
 slot/0/left_enabled = true
 slot/0/left_type = 0
@@ -45,10 +50,29 @@ slot/2/draw_stylebox = true
 [node name="ConditionContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Variable" type="LineEdit" parent="ConditionContainer"]
+[node name="Type" type="OptionButton" parent="ConditionContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Variable"
+item_count = 4
+selected = 0
+popup/item_0/text = ""
+popup/item_0/icon = ExtResource("5_5hpwr")
+popup/item_0/id = 0
+popup/item_1/text = ""
+popup/item_1/icon = ExtResource("6_ug6l5")
+popup/item_1/id = 1
+popup/item_2/text = ""
+popup/item_2/icon = ExtResource("7_gelaf")
+popup/item_2/id = 2
+popup/item_3/text = ""
+popup/item_3/icon = ExtResource("8_tn2oy")
+popup/item_3/id = 3
+
+[node name="Variable" type="OptionButton" parent="ConditionContainer"]
+layout_mode = 2
+item_count = 1
+selected = 0
+popup/item_0/text = "(None)"
+popup/item_0/id = 0
 
 [node name="Operator" type="OptionButton" parent="ConditionContainer"]
 custom_minimum_size = Vector2(48, 0)

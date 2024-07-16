@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://r820gcc1lism"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/translations_container.gd" id="1_188ol"]
+[ext_resource type="Texture2D" uid="uid://bpa7g13kkbvyg" path="res://addons/graph_dialog_system/icons/Collapse.svg" id="2_8u1nn"]
+[ext_resource type="PackedScene" uid="uid://cs6visnc0puc3" path="res://addons/graph_dialog_system/nodes/components/translation_box.tscn" id="3_sqsni"]
+
+[node name="TranslationsContainer" type="VBoxContainer"]
+script = ExtResource("1_188ol")
+
+[node name="Header" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Translations"
+
+[node name="ExpandButton" type="TextureButton" parent="Header"]
+custom_minimum_size = Vector2(20, 2.08165e-12)
+layout_mode = 2
+toggle_mode = true
+texture_normal = ExtResource("2_8u1nn")
+ignore_texture_size = true
+stretch_mode = 3
+
+[node name="TextBoxes" type="VBoxContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(2.08165e-12, 100)
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="TextBoxes"]
+layout_mode = 2
+
+[node name="DialogueEs" parent="TextBoxes" instance=ExtResource("3_sqsni")]
+layout_mode = 2
+
+[connection signal="toggled" from="Header/ExpandButton" to="." method="_on_expand_button_toggled"]
