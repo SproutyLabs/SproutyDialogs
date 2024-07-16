@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="7_2q2md"]
 
 [node name="ChoicesNode" type="GraphNode"]
-offset_right = 220.0
+offset_right = 250.0
 offset_bottom = 197.0
 size_flags_vertical = 3
 theme_override_constants/separation = 5

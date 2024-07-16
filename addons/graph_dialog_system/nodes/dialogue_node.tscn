@@ -8,7 +8,7 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/dialogue_node.gd" id="5_v7cqa"]
 
 [node name="DialogueNode" type="GraphNode"]
-offset_right = 220.0
+offset_right = 250.0
 offset_bottom = 373.0
 size_flags_vertical = 3
 theme_override_constants/separation = 5
@@ -49,7 +49,7 @@ slot/3/left_enabled = false
 slot/3/left_type = 0
 slot/3/left_color = Color(1, 1, 1, 1)
 slot/3/left_icon = null
-slot/3/right_enabled = true
+slot/3/right_enabled = false
 slot/3/right_type = 0
 slot/3/right_color = Color(1, 1, 1, 1)
 slot/3/right_icon = null
@@ -129,6 +129,7 @@ theme_override_constants/h_separation = 10
 text = "Choices"
 
 [node name="ChoicesLabel" type="Label" parent="ChoicesContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Choices"

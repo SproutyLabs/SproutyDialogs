@@ -16,12 +16,12 @@ func _ready():
 func _process(delta):
 	pass
 
-func update_option_number(number : int):
-	# Update the option position number
-	option_label.text = "Option #" + str(number + 1)
-	option_index = number
+func update_option_index(index : int):
+	# Update the option position index
+	option_label.text = "Option #" + str(index + 1)
+	name = name.split('_')[0] + "_" + str(index)
+	option_index = index
 
 func _on_remove_button_pressed():
 	# Delete the option
 	option_removed.emit(option_index)
-	queue_free()

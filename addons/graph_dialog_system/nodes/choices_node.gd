@@ -16,22 +16,25 @@ func _process(delta):
 func _on_add_option_button_pressed():
 	# Add a new option to the choices
 	var new_option = option_scene.instantiate()
+	var option_index = get_child_count() - 2
 	
 	add_child(new_option, true)
-	move_child(new_option, get_child_count() - 3)
-	new_option.update_option_number(get_child_count() - 3)
-	new_option.name += str(get_child_count() - 3)
+	move_child(new_option, option_index)
+	new_option.update_option_index(option_index)
 	
 	# Add slot to connect the option
-	set_slot(get_child_count() - 3, false, 0, Color.WHITE, true, 0, Color.WHITE)
+	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
 	new_option.option_removed.connect(_on_option_removed)
 
 func _on_option_removed(index : int):
 	# Handle options when one is removed
-	print("removed: "+ str(index))
-	set_slot(get_child_count() - 1, false, 0, Color.WHITE, false, 0, Color.WHITE)
+	get_child(index).queue_free() # Delete option
+	print("removed: option "+ str(index))
 	
 	# Update the options indexes
 	for child in get_children(false):
-		if child is VBoxContainer and child != get_child(0):
-			child.update_option_number(child.get_index())
+		if child is VBoxContainer and child.get_index() > index:
+			child.update_option_index(child.get_index() - 1)
+			print(child.name)
+	
+	set_slot(get_child_count() - 3, false, 0, Color.WHITE, false, 0, Color.WHITE)
