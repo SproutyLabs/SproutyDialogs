@@ -45,6 +45,23 @@ func add_node(typeID : int):
 	new_node.selected = true
 	add_child(new_node, true)
 
+func get_node_connections(node : String):
+	# Return the connections of a given node
+	var all_connections = get_connection_list()
+	var node_connections = []
+	for connection in all_connections:
+		if connection["from_node"] == node:
+			node_connections.append(connection)
+	return node_connections
+	
+func disconnect_node_connection(node: String, port : int):
+	# Disconnect a connection from a node on the given port
+	var node_connections = get_node_connections(node)
+	for connection in node_connections:
+		if connection["from_node"] == node and connection["from_port"] == port:
+			disconnect_node(connection["from_node"], connection["from_port"],
+				connection["to_node"], connection["to_port"])
+	
 func _on_nodes_connection_request(from_node, from_port, to_node, to_port):
 	# Handle nodes connection
 	var from_node_type = from_node.split("_")[0]

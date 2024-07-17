@@ -31,10 +31,17 @@ func _on_option_removed(index : int):
 	get_child(index).queue_free() # Delete option
 	print("removed: option "+ str(index))
 	
-	# Update the options indexes
+	# Update the options indexes and ports
 	for child in get_children(false):
-		if child is VBoxContainer and child.get_index() > index:
+		if child is VBoxContainer and child.get_index() >= index:
 			child.update_option_index(child.get_index() - 1)
-			print(child.name)
+			get_parent().disconnect_node_connection(name, child.get_index())
 	
 	set_slot(get_child_count() - 3, false, 0, Color.WHITE, false, 0, Color.WHITE)
+	
+	# Wait to delete the option node
+	await get_child(index).tree_exited
+	_on_resized() # Resize container vertically
+
+func _on_resized():
+	size.y = 0 # Keep vertical size on resize
