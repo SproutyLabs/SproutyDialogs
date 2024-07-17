@@ -53,14 +53,22 @@ func get_node_connections(node : String):
 		if connection["from_node"] == node:
 			node_connections.append(connection)
 	return node_connections
-	
-func disconnect_node_connection(node: String, port : int):
-	# Disconnect a connection from a node on the given port
+
+func get_node_connections_on_port(node: String, port : int):
+	# Return the connections from a node on the given port
 	var node_connections = get_node_connections(node)
+	var port_connections = []
 	for connection in node_connections:
 		if connection["from_node"] == node and connection["from_port"] == port:
-			disconnect_node(connection["from_node"], connection["from_port"],
-				connection["to_node"], connection["to_port"])
+			port_connections.append(connection)
+	return port_connections
+
+func disconnect_node_connections_on_port(node: String, port : int):
+	# Disconnect a connection from a node on the given port
+	var port_connections = get_node_connections_on_port(node, port)
+	for connection in port_connections:
+		disconnect_node(connection["from_node"], connection["from_port"],
+			connection["to_node"], connection["to_port"])
 	
 func _on_nodes_connection_request(from_node, from_port, to_node, to_port):
 	# Handle nodes connection

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://c0x6oarn1mwpl"]
+[gd_scene load_steps=9 format=3 uid="uid://c0x6oarn1mwpl"]
 
 [ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_pc72j"]
 [ext_resource type="StyleBox" uid="uid://b3nwfeux53stj" path="res://addons/graph_dialog_system/styles/choices_titlebar.tres" id="1_w8dxq"]
@@ -6,6 +6,7 @@
 [ext_resource type="StyleBox" uid="uid://cq7c0heiv7fr3" path="res://addons/graph_dialog_system/styles/choices_selected_titlebar.tres" id="4_0q8li"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/choices_node.gd" id="5_jgvn8"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_container.tscn" id="5_rwsgt"]
+[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/dialogue_text_box.tscn" id="6_35sd7"]
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="7_2q2md"]
 
 [node name="ChoicesNode" type="GraphNode"]
@@ -64,10 +65,8 @@ theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
 text = "(En)"
 horizontal_alignment = 2
 
-[node name="DialogueInput" type="TextEdit" parent="FirstOptionContainer"]
-custom_minimum_size = Vector2(2.08165e-12, 50)
+[node name="DialogueTextBox" parent="FirstOptionContainer" instance=ExtResource("6_35sd7")]
 layout_mode = 2
-placeholder_text = "Insert text..."
 
 [node name="TranslationsContainer" parent="FirstOptionContainer" instance=ExtResource("5_rwsgt")]
 layout_mode = 2

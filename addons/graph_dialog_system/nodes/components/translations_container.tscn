@@ -32,6 +32,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="DialogueEs" parent="TextBoxes" instance=ExtResource("3_sqsni")]
+custom_minimum_size = Vector2(150, 100)
 layout_mode = 2
 
 [connection signal="toggled" from="Header/ExpandButton" to="." method="_on_expand_button_toggled"]

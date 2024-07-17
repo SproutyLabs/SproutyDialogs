@@ -35,7 +35,7 @@ func _on_option_removed(index : int):
 	for child in get_children(false):
 		if child is VBoxContainer and child.get_index() >= index:
 			child.update_option_index(child.get_index() - 1)
-			get_parent().disconnect_node_connection(name, child.get_index())
+			get_parent().disconnect_node_connections_on_port(name, child.get_index())
 	
 	set_slot(get_child_count() - 3, false, 0, Color.WHITE, false, 0, Color.WHITE)
 	
