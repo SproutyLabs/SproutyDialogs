@@ -10,8 +10,8 @@
 
 [node name="DialogueNode" type="GraphNode"]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 250.0
-offset_bottom = 342.0
+offset_right = 200.0
+offset_bottom = 301.0
 size_flags_vertical = 3
 theme_override_constants/separation = 5
 theme_override_styles/panel = ExtResource("1_381ss")
@@ -42,20 +42,11 @@ slot/2/left_enabled = false
 slot/2/left_type = 0
 slot/2/left_color = Color(1, 1, 1, 1)
 slot/2/left_icon = null
-slot/2/right_enabled = false
+slot/2/right_enabled = true
 slot/2/right_type = 0
 slot/2/right_color = Color(1, 1, 1, 1)
 slot/2/right_icon = null
 slot/2/draw_stylebox = true
-slot/3/left_enabled = false
-slot/3/left_type = 0
-slot/3/left_color = Color(1, 1, 1, 1)
-slot/3/left_icon = null
-slot/3/right_enabled = true
-slot/3/right_type = 0
-slot/3/right_color = Color(1, 1, 1, 1)
-slot/3/right_icon = null
-slot/3/draw_stylebox = true
 script = ExtResource("5_v7cqa")
 
 [node name="CharacterContainer" type="VBoxContainer" parent="."]
@@ -98,22 +89,6 @@ layout_mode = 2
 [node name="HSeparator" type="HSeparator" parent="DialogueContainer"]
 layout_mode = 2
 
-[node name="ChoicesContainer" type="HBoxContainer" parent="."]
-layout_mode = 2
-
-[node name="ChoicesToggle" type="CheckButton" parent="ChoicesContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_constants/h_separation = 10
-text = "Choices"
-
-[node name="ChoicesLabel" type="Label" parent="ChoicesContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Choices"
-horizontal_alignment = 2
-
 [node name="Next" type="Label" parent="."]
 layout_mode = 2
 size_flags_vertical = 6
@@ -121,4 +96,3 @@ text = "Next"
 horizontal_alignment = 2
 
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="toggled" from="ChoicesContainer/ChoicesToggle" to="." method="_show_choices_port"]

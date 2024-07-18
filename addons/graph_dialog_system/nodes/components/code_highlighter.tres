@@ -2,9 +2,10 @@
 
 [resource]
 number_color = Color(1, 1, 1, 1)
-symbol_color = Color(0.996078, 0.443137, 0.639216, 1)
+symbol_color = Color(0.647059, 0.478431, 1, 1)
 function_color = Color(1, 1, 1, 1)
 member_variable_color = Color(1, 1, 1, 1)
 color_regions = {
-"[ ]": Color(1, 0.756863, 0.2, 1)
+"[ ]": Color(1, 0.756863, 0.2, 1),
+"{ }": Color(0.996078, 0.443137, 0.639216, 1)
 }

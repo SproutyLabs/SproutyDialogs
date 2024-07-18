@@ -13,7 +13,7 @@ func _process(delta):
 	pass
 
 
-func _on_add_option_button_pressed():
+func _on_add_option_button_pressed() -> void:
 	# Add a new option to the choices
 	var new_option = option_scene.instantiate()
 	var option_index = get_child_count() - 2
@@ -26,7 +26,7 @@ func _on_add_option_button_pressed():
 	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
 	new_option.option_removed.connect(_on_option_removed)
 
-func _on_option_removed(index : int):
+func _on_option_removed(index : int) -> void:
 	# Handle options when one is removed
 	get_child(index).queue_free() # Delete option
 	print("removed: option "+ str(index))
@@ -43,5 +43,5 @@ func _on_option_removed(index : int):
 	await get_child(index).tree_exited
 	_on_resized() # Resize container vertically
 
-func _on_resized():
+func _on_resized() -> void:
 	size.y = 0 # Keep vertical size on resize

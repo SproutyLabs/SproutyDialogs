@@ -5,12 +5,12 @@ extends HBoxContainer
 @onready var expanded_panel = $ExpandedTextPanel
 @onready var expanded_text_input = $ExpandedTextPanel/VBoxContainer/ExpandedInput
 
-func _on_expand_button_pressed():
+func _on_expand_button_pressed() -> void:
 	# Open the extended window to edit text
 	expanded_text_input.text = dialogue_input.text
 	expanded_panel.popup_centered()
 	expanded_text_input.grab_focus()
 
-func _on_expanded_close_button_pressed():
+func _on_expanded_close_button_pressed() -> void:
 	dialogue_input.text = expanded_text_input.text
 	expanded_panel.hide() # Close the extended window

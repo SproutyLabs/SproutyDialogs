@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://kw2vrwc8qd44"]
+[gd_scene load_steps=6 format=3 uid="uid://kw2vrwc8qd44"]
 
 [ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_22i3y"]
 [ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_atjfi"]
 [ext_resource type="StyleBox" uid="uid://bus5conouo7ah" path="res://addons/graph_dialog_system/styles/signal_titlebar.tres" id="3_vrqbd"]
 [ext_resource type="StyleBox" uid="uid://bvrld6sn8ciui" path="res://addons/graph_dialog_system/styles/signal_selected_titlebar.tres" id="4_bdixd"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/signal_node.gd" id="5_vbbrw"]
 
 [node name="SignalNode" type="GraphNode"]
 offset_right = 180.0
@@ -32,6 +33,7 @@ slot/1/right_type = 0
 slot/1/right_color = Color(1, 1, 1, 1)
 slot/1/right_icon = null
 slot/1/draw_stylebox = true
+script = ExtResource("5_vbbrw")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
@@ -40,3 +42,5 @@ text = "Signal value"
 [node name="Input" type="LineEdit" parent="."]
 layout_mode = 2
 placeholder_text = "Value..."
+
+[connection signal="resized" from="." to="." method="_on_resized"]

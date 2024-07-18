@@ -1,7 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://chmw64xy0cmck"]
+[gd_scene load_steps=11 format=3 uid="uid://chmw64xy0cmck"]
 
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/side_bar.tscn" id="1_qbi36"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/Scripts/Graph.gd" id="2_ubeh2"]
+[ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/Play.svg" id="3_fm8qe"]
+[ext_resource type="Texture2D" uid="uid://v2lbmduypj25" path="res://addons/graph_dialog_system/icons/Pin.svg" id="4_4mcdi"]
+[ext_resource type="Texture2D" uid="uid://dn1gpd7ov6qk5" path="res://addons/graph_dialog_system/icons/ClassList.svg" id="4_gxnk6"]
+[ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialog_system/icons/Signals.svg" id="5_41qv5"]
+[ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialog_system/icons/Script.svg" id="5_vbxil"]
+[ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/graph_dialog_system/icons/Timer.svg" id="6_uj30h"]
+[ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialog_system/icons/AnimationTrackGroup.svg" id="7_tbhxh"]
+[ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/graph_dialog_system/icons/EditAddRemove.svg" id="8_dmj0e"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -89,28 +97,33 @@ layout_mode = 2
 script = ExtResource("2_ubeh2")
 
 [node name="AddNodeMenu" type="PopupMenu" parent="Content/Workspace/GraphEditor"]
-size = Vector2i(166, 251)
-item_count = 10
+size = Vector2i(182, 224)
+visible = true
+item_count = 8
 item_0/text = "Start Node"
+item_0/icon = ExtResource("3_fm8qe")
 item_0/id = 0
 item_1/text = "Comment Node"
+item_1/icon = ExtResource("4_4mcdi")
 item_1/id = 1
 item_2/text = "Dialogue Node"
+item_2/icon = ExtResource("5_vbxil")
 item_2/id = 2
 item_3/text = "Choices Node"
+item_3/icon = ExtResource("4_gxnk6")
 item_3/id = 3
 item_4/text = "Condition Node"
+item_4/icon = ExtResource("7_tbhxh")
 item_4/id = 4
 item_5/text = "Set Variable Node"
+item_5/icon = ExtResource("8_dmj0e")
 item_5/id = 5
 item_6/text = "Signal Node"
+item_6/icon = ExtResource("5_41qv5")
 item_6/id = 6
-item_7/text = "Jump Node"
+item_7/text = "Wait Node"
+item_7/icon = ExtResource("6_uj30h")
 item_7/id = 7
-item_8/text = "Wait Node"
-item_8/id = 8
-item_9/text = "End Node"
-item_9/id = 9
 
 [connection signal="connection_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_nodes_connection_request"]
 [connection signal="popup_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_right_click"]

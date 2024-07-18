@@ -10,7 +10,8 @@
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="7_2q2md"]
 
 [node name="ChoicesNode" type="GraphNode"]
-offset_right = 250.0
+custom_minimum_size = Vector2(200, 0)
+offset_right = 200.0
 offset_bottom = 197.0
 size_flags_vertical = 3
 theme_override_constants/separation = 5
@@ -33,7 +34,7 @@ slot/1/left_enabled = false
 slot/1/left_type = 0
 slot/1/left_color = Color(1, 1, 1, 1)
 slot/1/left_icon = null
-slot/1/right_enabled = true
+slot/1/right_enabled = false
 slot/1/right_type = 0
 slot/1/right_color = Color(1, 1, 1, 1)
 slot/1/right_icon = null
