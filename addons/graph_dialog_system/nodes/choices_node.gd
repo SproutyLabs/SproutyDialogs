@@ -29,14 +29,21 @@ func _on_add_option_button_pressed() -> void:
 func _on_option_removed(index : int) -> void:
 	# Handle options when one is removed
 	get_child(index).queue_free() # Delete option
-	print("removed: option "+ str(index))
+	print("Removed option: "+ str(index))
 	
-	# Update the options indexes and ports
+	# Update the following options to the removed one, by moving them upwards
 	for child in get_children(false):
 		if child is VBoxContainer and child.get_index() >= index:
+			# Update the option index
 			child.update_option_index(child.get_index() - 1)
-			get_parent().disconnect_node_connections_on_port(name, child.get_index())
+			# Get the connections on next port and move them to current port
+			var next_connections = get_parent().get_node_output_connections(name, child.get_index() + 1)
+			get_parent().disconnect_node_on_port(name, child.get_index()) # Remove old connections
+			for connection in next_connections: # Update to new connections
+				get_parent().connect_node(name, child.get_index(),
+					connection["to_node"], connection["to_port"])
 	
+	# Remove the last remaining port
 	set_slot(get_child_count() - 3, false, 0, Color.WHITE, false, 0, Color.WHITE)
 	
 	# Wait to delete the option node

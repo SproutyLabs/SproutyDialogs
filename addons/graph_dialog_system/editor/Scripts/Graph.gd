@@ -79,7 +79,7 @@ func remove_node(node : GraphNode) -> void:
 	for connection in node_connections: # Disconnect all connections
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
-	print("Deleted node: "+ node.name)
+	print("Removed node: "+ node.name)
 	node.queue_free() # Remove node
 #endregion
 
@@ -104,7 +104,7 @@ func get_node_output_connections(node: String, port : int) -> Array:
 			port_connections.append(connection)
 	return port_connections
 
-func disconnect_node_connections_on_port(node: String, port : int) -> void:
+func disconnect_node_on_port(node: String, port : int) -> void:
 	# Disconnect a output connection from a node on the given port
 	var port_connections = get_node_output_connections(node, port)
 	for connection in port_connections:

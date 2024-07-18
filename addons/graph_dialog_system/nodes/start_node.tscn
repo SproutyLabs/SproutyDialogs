@@ -8,8 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/Play.svg" id="6_6olnj"]
 
 [node name="StartNode" type="GraphNode"]
-offset_right = 150.0
-offset_bottom = 88.0
+offset_right = 153.0
+offset_bottom = 86.0
 theme_override_styles/panel = ExtResource("1_mw3ih")
 theme_override_styles/panel_selected = ExtResource("2_2p5p2")
 theme_override_styles/titlebar = ExtResource("1_1ma7y")
@@ -32,7 +32,7 @@ layout_mode = 2
 theme_override_constants/separation = 10
 
 [node name="PlayButton" type="TextureButton" parent="Container"]
-custom_minimum_size = Vector2(25, 0)
+custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
 texture_normal = ExtResource("6_6olnj")
 stretch_mode = 5
