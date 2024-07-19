@@ -81,4 +81,5 @@ text = "Add Option"
 icon = ExtResource("7_2q2md")
 
 [connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="resized" from="FirstOptionContainer" to="." method="_on_resized"]
 [connection signal="pressed" from="AddOptionButton" to="." method="_on_add_option_button_pressed"]

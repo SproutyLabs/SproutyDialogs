@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://chmw64xy0cmck"]
+[gd_scene load_steps=12 format=3 uid="uid://chmw64xy0cmck"]
 
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/side_bar.tscn" id="1_qbi36"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/Scripts/Graph.gd" id="2_ubeh2"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/graph_dialog_system/icons/Timer.svg" id="6_uj30h"]
 [ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialog_system/icons/AnimationTrackGroup.svg" id="7_tbhxh"]
 [ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/graph_dialog_system/icons/EditAddRemove.svg" id="8_dmj0e"]
+[ext_resource type="Texture2D" uid="uid://cctr0cmrj70nc" path="res://addons/graph_dialog_system/icons/Remove.svg" id="11_5mur2"]
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -125,6 +126,18 @@ item_7/text = "Wait Node"
 item_7/icon = ExtResource("6_uj30h")
 item_7/id = 7
 
-[connection signal="connection_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_nodes_connection_request"]
+[node name="DeleteNodesMenu" type="PopupMenu" parent="Content/Workspace/GraphEditor"]
+size = Vector2i(214, 35)
+visible = true
+item_count = 1
+item_0/text = "Delete selected nodes"
+item_0/icon = ExtResource("11_5mur2")
+item_0/id = 0
+
+[connection signal="connection_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_connection_request"]
+[connection signal="connection_to_empty" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_connection_to_empty"]
+[connection signal="node_deselected" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_node_deselected"]
+[connection signal="node_selected" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_node_selected"]
 [connection signal="popup_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_right_click"]
-[connection signal="id_pressed" from="Content/Workspace/GraphEditor/AddNodeMenu" to="Content/Workspace/GraphEditor" method="_on_add_menu_node_selected"]
+[connection signal="id_pressed" from="Content/Workspace/GraphEditor/AddNodeMenu" to="Content/Workspace/GraphEditor" method="_on_add_node_menu_selected"]
+[connection signal="id_pressed" from="Content/Workspace/GraphEditor/DeleteNodesMenu" to="Content/Workspace/GraphEditor" method="_on_remove_nodes_menu_selected"]

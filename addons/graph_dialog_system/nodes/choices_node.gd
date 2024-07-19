@@ -25,6 +25,7 @@ func _on_add_option_button_pressed() -> void:
 	# Add slot to connect the option
 	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
 	new_option.option_removed.connect(_on_option_removed)
+	new_option.connect("resized", _on_resized)
 
 func _on_option_removed(index : int) -> void:
 	# Handle options when one is removed
