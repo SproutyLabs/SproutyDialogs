@@ -25,7 +25,6 @@ extends GraphEdit
 @onready var add_node_menu : PopupMenu = $AddNodeMenu
 @onready var delete_nodes_menu : PopupMenu = $DeleteNodesMenu
 @onready var nodes_count : Array[int]
-var selected_nodes : Array[GraphNode] = []
 var request_node : String = ""
 var request_port : int = -1
 
@@ -44,19 +43,18 @@ func _input(_event):
 
 func _on_right_click(pos : Vector2) -> void:
 	# Handle when do right click on graph canvas
-	if not selected_nodes.is_empty(): # Show pop-up to delete selected nodes
-		var pop_pos := pos + global_position + Vector2(get_window().position)
-		delete_nodes_menu.popup(Rect2(pop_pos.x, pop_pos.y, 
-			delete_nodes_menu.size.x, delete_nodes_menu.size.y))
-	else: # Show add node menu
-		show_add_node_menu(pos)
+	#if not selected_nodes.is_empty(): # Show pop-up to delete selected nodes
+	#	var pop_pos := pos + global_position + Vector2(get_window().position)
+	#	delete_nodes_menu.popup(Rect2(pop_pos.x, pop_pos.y, 
+	#		delete_nodes_menu.size.x, delete_nodes_menu.size.y))
+	#else: show_add_node_menu(pos) # Show add node menu
+	show_add_node_menu(pos)
 
 func _on_add_node_menu_selected(id : int) -> void:
 	add_node(id) # Add a node of the selected type
 
 func _on_remove_nodes_menu_selected(id : int) -> void:
-	for node in selected_nodes: # Remove selected nodes
-		remove_node(node)
+	pass
 #endregion
 
 #region --- Nodes --------------------------------------------------------------
@@ -74,7 +72,6 @@ func add_node(typeID : int) -> void:
 	new_node.title += ' #' + str(nodes_count[typeID])
 	new_node.position_offset = cursor_pos
 	set_node_titlebar(new_node, typeID)
-	selected_nodes.append(new_node)
 	new_node.selected = true
 	add_child(new_node, true)
 	
@@ -82,7 +79,8 @@ func add_node(typeID : int) -> void:
 	if request_port > -1 and new_node.is_slot_enabled_left(0):
 		var prev_connection := get_node_output_connections(request_node, request_port)
 		if prev_connection.size() > 0:
-			disconnect_node(request_node, request_port, prev_connection[0]['to_node'], prev_connection[0]['to_port'])
+			disconnect_node(request_node, request_port, 
+				prev_connection[0]['to_node'], prev_connection[0]['to_port'])
 		connect_node(request_node, request_port, new_node.name, 0)
 		request_node = ""
 		request_port = -1
@@ -99,29 +97,26 @@ func set_node_titlebar(node : GraphNode, typeID : int) -> void:
 	node_titlebar.move_child(node_icon, 0)
 	
 	# Add remove node button
-	#var remove_button = TextureButton.new()
-	#remove_button.texture_normal = titlebar_icons[0]
-	#remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	#remove_button.connect("pressed", remove_node.bind(node))
-	#node_titlebar.add_child(remove_button)
+	var remove_button = TextureButton.new()
+	remove_button.texture_normal = titlebar_icons[0]
+	remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	remove_button.connect("pressed", delete_node.bind(node))
+	node_titlebar.add_child(remove_button)
 
-func remove_node(node : GraphNode) -> void:
+func delete_node(node : GraphNode) -> void:
 	# Delete a node from graph
 	var node_connections = get_node_connections(node.name, true)
 	for connection in node_connections: # Disconnect all connections
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
 	print("Removed node: "+ node.name)
-	selected_nodes.erase(node)
 	node.queue_free() # Remove node
 
-func _on_node_selected(node : GraphNode):
-	if not selected_nodes.has(node):
-		selected_nodes.append(node)
-
-func _on_node_deselected(node : GraphNode):
-	if selected_nodes.has(node):
-		selected_nodes.erase(node)
+func _on_delete_nodes_request(nodes : Array[StringName]):
+	# Delete selected nodes
+	for child in get_children():
+		for node_name in nodes: # Remove selected nodes
+			if child.name == node_name: delete_node(child)
 #endregion
 
 #region --- Nodes Connection ---------------------------------------------------
