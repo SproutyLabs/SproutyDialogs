@@ -1,0 +1,13 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://kj0avd34kmld"]
+
+[ext_resource type="StyleBox" uid="uid://b271vxtvm2bt7" path="res://addons/graph_dialog_system/theme/node_panel.tres" id="1_vlbpi"]
+[ext_resource type="StyleBox" uid="uid://cw5fvbadmyuc2" path="res://addons/graph_dialog_system/theme/node_panel_selected.tres" id="2_rf08n"]
+[ext_resource type="StyleBox" uid="uid://ct8elkgorfiv8" path="res://addons/graph_dialog_system/theme/node_titlebar.tres" id="3_xua1e"]
+[ext_resource type="StyleBox" uid="uid://cl36o1w7undbp" path="res://addons/graph_dialog_system/theme/node_selected_titlebar.tres" id="4_o1jsq"]
+
+[resource]
+GraphNode/constants/separation = 5
+GraphNode/styles/panel = ExtResource("1_vlbpi")
+GraphNode/styles/panel_selected = ExtResource("2_rf08n")
+GraphNode/styles/titlebar = ExtResource("3_xua1e")
+GraphNode/styles/titlebar_selected = ExtResource("4_o1jsq")

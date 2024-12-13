@@ -1,24 +1,18 @@
-[gd_scene load_steps=9 format=3 uid="uid://c0x6oarn1mwpl"]
+[gd_scene load_steps=7 format=3 uid="uid://c0x6oarn1mwpl"]
 
-[ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_pc72j"]
-[ext_resource type="StyleBox" uid="uid://b3nwfeux53stj" path="res://addons/graph_dialog_system/styles/choices_titlebar.tres" id="1_w8dxq"]
-[ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_3bkl4"]
-[ext_resource type="StyleBox" uid="uid://cq7c0heiv7fr3" path="res://addons/graph_dialog_system/styles/choices_selected_titlebar.tres" id="4_0q8li"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/choices_node.gd" id="5_jgvn8"]
+[ext_resource type="Theme" uid="uid://kj0avd34kmld" path="res://addons/graph_dialog_system/theme/default_theme.tres" id="1_yq7pk"]
+[ext_resource type="Texture2D" uid="uid://dn1gpd7ov6qk5" path="res://addons/graph_dialog_system/icons/ClassList.svg" id="3_d57bv"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/choices_node.gd" id="5_jgvn8"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_container.tscn" id="5_rwsgt"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/dialogue_text_box.tscn" id="6_35sd7"]
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="7_2q2md"]
 
 [node name="ChoicesNode" type="GraphNode"]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 200.0
+offset_right = 214.0
 offset_bottom = 197.0
 size_flags_vertical = 3
-theme_override_constants/separation = 5
-theme_override_styles/panel = ExtResource("1_pc72j")
-theme_override_styles/panel_selected = ExtResource("2_3bkl4")
-theme_override_styles/titlebar = ExtResource("1_w8dxq")
-theme_override_styles/titlebar_selected = ExtResource("4_0q8li")
+theme = ExtResource("1_yq7pk")
 resizable = true
 title = "Choices Node"
 slot/0/left_enabled = true
@@ -49,6 +43,8 @@ slot/2/right_color = Color(1, 1, 1, 1)
 slot/2/right_icon = null
 slot/2/draw_stylebox = true
 script = ExtResource("5_jgvn8")
+node_color = Color(0.0296556, 0.653645, 0.501611, 1)
+node_icon = ExtResource("3_d57bv")
 
 [node name="FirstOptionContainer" type="VBoxContainer" parent="."]
 layout_mode = 2

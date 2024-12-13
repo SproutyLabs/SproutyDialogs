@@ -1,18 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://kw2vrwc8qd44"]
+[gd_scene load_steps=4 format=3 uid="uid://kw2vrwc8qd44"]
 
-[ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_22i3y"]
-[ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_atjfi"]
-[ext_resource type="StyleBox" uid="uid://bus5conouo7ah" path="res://addons/graph_dialog_system/styles/signal_titlebar.tres" id="3_vrqbd"]
-[ext_resource type="StyleBox" uid="uid://bvrld6sn8ciui" path="res://addons/graph_dialog_system/styles/signal_selected_titlebar.tres" id="4_bdixd"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/signal_node.gd" id="5_vbbrw"]
+[ext_resource type="Theme" uid="uid://kj0avd34kmld" path="res://addons/graph_dialog_system/theme/default_theme.tres" id="1_x6yfx"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/signal_node.gd" id="5_vbbrw"]
+[ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialog_system/icons/Signals.svg" id="6_b1lau"]
 
 [node name="SignalNode" type="GraphNode"]
 offset_right = 180.0
 offset_bottom = 111.0
-theme_override_styles/panel = ExtResource("1_22i3y")
-theme_override_styles/panel_selected = ExtResource("2_atjfi")
-theme_override_styles/titlebar = ExtResource("3_vrqbd")
-theme_override_styles/titlebar_selected = ExtResource("4_bdixd")
+theme = ExtResource("1_x6yfx")
 resizable = true
 title = "Signal Node"
 slot/0/left_enabled = true
@@ -34,6 +29,8 @@ slot/1/right_color = Color(1, 1, 1, 1)
 slot/1/right_icon = null
 slot/1/draw_stylebox = true
 script = ExtResource("5_vbbrw")
+node_color = Color(0.52549, 0.282353, 1, 1)
+node_icon = ExtResource("6_b1lau")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2

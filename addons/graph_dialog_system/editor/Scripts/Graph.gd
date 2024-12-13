@@ -1,6 +1,7 @@
 @tool
 extends GraphEdit
 
+@export_category("Nodes Settings")
 @export var nodes_scenes: Array[PackedScene] = [
 	preload("res://addons/graph_dialog_system/nodes/start_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/comment_node.tscn"),
@@ -10,17 +11,6 @@ extends GraphEdit
 	preload("res://addons/graph_dialog_system/nodes/set_variable_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/signal_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/wait_node.tscn"),
-]
-@export var titlebar_icons : Array[CompressedTexture2D] = [
-	preload("res://addons/graph_dialog_system/icons/Remove.svg"),
-	preload("res://addons/graph_dialog_system/icons/Play.svg"),
-	preload("res://addons/graph_dialog_system/icons/Pin.svg"),
-	preload("res://addons/graph_dialog_system/icons/Script.svg"),
-	preload("res://addons/graph_dialog_system/icons/ClassList.svg"),
-	preload("res://addons/graph_dialog_system/icons/AnimationTrackGroup.svg"),
-	preload("res://addons/graph_dialog_system/icons/EditAddRemove.svg"),
-	preload("res://addons/graph_dialog_system/icons/Signals.svg"),
-	preload("res://addons/graph_dialog_system/icons/Timer.svg")
 ]
 @onready var add_node_menu : PopupMenu = $AddNodeMenu
 @onready var delete_nodes_menu : PopupMenu = $DeleteNodesMenu
@@ -34,6 +24,8 @@ func _ready():
 	# Initialize nodes count array
 	nodes_count.resize(nodes_scenes.size())
 	nodes_count.fill(0)
+	
+	set_add_node_menu()
 
 #region --- Input --------------------------------------------------------------
 func _input(_event):
@@ -57,7 +49,14 @@ func _on_remove_nodes_menu_selected(id : int) -> void:
 	pass
 #endregion
 
-#region --- Nodes --------------------------------------------------------------
+#region --- Handle Nodes --------------------------------------------------------------
+func set_add_node_menu() -> void:
+	# Set nodes list on popup node menu
+	for node in nodes_scenes:
+		var node_aux = node.instantiate()
+		add_node_menu.add_icon_item(node_aux.node_icon, node_aux.name)
+		node_aux.queue_free()
+
 func show_add_node_menu(pos : Vector2) -> void:
 	# Show add node pop-up menu
 	var pop_pos := pos + global_position + Vector2(get_window().position)
@@ -71,7 +70,6 @@ func add_node(typeID : int) -> void:
 	new_node.name += "_" + str(nodes_count[typeID])
 	new_node.title += ' #' + str(nodes_count[typeID])
 	new_node.position_offset = cursor_pos
-	set_node_titlebar(new_node, typeID)
 	new_node.selected = true
 	add_child(new_node, true)
 	
@@ -84,24 +82,6 @@ func add_node(typeID : int) -> void:
 		connect_node(request_node, request_port, new_node.name, 0)
 		request_node = ""
 		request_port = -1
-
-func set_node_titlebar(node : GraphNode, typeID : int) -> void:
-	# Add buttons to node titlebar
-	var node_titlebar = node.get_titlebar_hbox()
-	
-	# Add node type icon
-	var node_icon = TextureButton.new()
-	node_icon.texture_normal = titlebar_icons[typeID + 1]
-	node_icon.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	node_titlebar.add_child(node_icon)
-	node_titlebar.move_child(node_icon, 0)
-	
-	# Add remove node button
-	var remove_button = TextureButton.new()
-	remove_button.texture_normal = titlebar_icons[0]
-	remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	remove_button.connect("pressed", delete_node.bind(node))
-	node_titlebar.add_child(remove_button)
 
 func delete_node(node : GraphNode) -> void:
 	# Delete a node from graph

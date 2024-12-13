@@ -1,15 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://chmw64xy0cmck"]
+[gd_scene load_steps=4 format=3 uid="uid://chmw64xy0cmck"]
 
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/side_bar.tscn" id="1_qbi36"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/Scripts/graph.gd" id="2_bpvqi"]
-[ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/Play.svg" id="3_fm8qe"]
-[ext_resource type="Texture2D" uid="uid://v2lbmduypj25" path="res://addons/graph_dialog_system/icons/Pin.svg" id="4_4mcdi"]
-[ext_resource type="Texture2D" uid="uid://dn1gpd7ov6qk5" path="res://addons/graph_dialog_system/icons/ClassList.svg" id="4_gxnk6"]
-[ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialog_system/icons/Signals.svg" id="5_41qv5"]
-[ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialog_system/icons/Script.svg" id="5_vbxil"]
-[ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/graph_dialog_system/icons/Timer.svg" id="6_uj30h"]
-[ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialog_system/icons/AnimationTrackGroup.svg" id="7_tbhxh"]
-[ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/graph_dialog_system/icons/EditAddRemove.svg" id="8_dmj0e"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/graph.gd" id="2_bpvqi"]
 [ext_resource type="Texture2D" uid="uid://cctr0cmrj70nc" path="res://addons/graph_dialog_system/icons/Remove.svg" id="11_5mur2"]
 
 [node name="Main" type="Control"]
@@ -48,10 +40,8 @@ text = "File"
 switch_on_hover = true
 item_count = 3
 popup/item_0/text = "New File"
-popup/item_0/id = 0
 popup/item_1/text = "Open..."
 popup/item_1/id = 1
-popup/item_2/text = ""
 popup/item_2/id = 2
 
 [node name="NewNodeMenu" type="MenuButton" parent="Content/TopBar/ToolBar/GeneralOptions"]
@@ -61,7 +51,6 @@ text = "Nodes"
 switch_on_hover = true
 item_count = 2
 popup/item_0/text = "Node 1"
-popup/item_0/id = 0
 popup/item_1/text = "Node 2"
 popup/item_1/id = 1
 
@@ -72,7 +61,6 @@ text = "More"
 switch_on_hover = true
 item_count = 1
 popup/item_0/text = "Placehoder"
-popup/item_0/id = 0
 
 [node name="MoreOptions" type="HBoxContainer" parent="Content/TopBar/ToolBar"]
 layout_mode = 2
@@ -93,50 +81,26 @@ size_flags_vertical = 3
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
-[node name="GraphEditor" type="GraphEdit" parent="Content/Workspace"]
+[node name="Graph" type="GraphEdit" parent="Content/Workspace"]
 layout_mode = 2
 script = ExtResource("2_bpvqi")
 
-[node name="AddNodeMenu" type="PopupMenu" parent="Content/Workspace/GraphEditor"]
+[node name="AddNodeMenu" type="PopupMenu" parent="Content/Workspace/Graph"]
 size = Vector2i(182, 224)
 visible = true
-item_count = 8
-item_0/text = "Start Node"
-item_0/icon = ExtResource("3_fm8qe")
-item_0/id = 0
-item_1/text = "Comment Node"
-item_1/icon = ExtResource("4_4mcdi")
-item_1/id = 1
-item_2/text = "Dialogue Node"
-item_2/icon = ExtResource("5_vbxil")
-item_2/id = 2
-item_3/text = "Choices Node"
-item_3/icon = ExtResource("4_gxnk6")
-item_3/id = 3
-item_4/text = "Condition Node"
-item_4/icon = ExtResource("7_tbhxh")
-item_4/id = 4
-item_5/text = "Set Variable Node"
-item_5/icon = ExtResource("8_dmj0e")
-item_5/id = 5
-item_6/text = "Signal Node"
-item_6/icon = ExtResource("5_41qv5")
-item_6/id = 6
-item_7/text = "Wait Node"
-item_7/icon = ExtResource("6_uj30h")
-item_7/id = 7
+unfocusable = true
 
-[node name="DeleteNodesMenu" type="PopupMenu" parent="Content/Workspace/GraphEditor"]
+[node name="DeleteNodesMenu" type="PopupMenu" parent="Content/Workspace/Graph"]
 size = Vector2i(214, 35)
 visible = true
+unfocusable = true
 item_count = 1
 item_0/text = "Delete selected nodes"
 item_0/icon = ExtResource("11_5mur2")
-item_0/id = 0
 
-[connection signal="connection_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_connection_request"]
-[connection signal="connection_to_empty" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_connection_to_empty"]
-[connection signal="delete_nodes_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_delete_nodes_request"]
-[connection signal="popup_request" from="Content/Workspace/GraphEditor" to="Content/Workspace/GraphEditor" method="_on_right_click"]
-[connection signal="id_pressed" from="Content/Workspace/GraphEditor/AddNodeMenu" to="Content/Workspace/GraphEditor" method="_on_add_node_menu_selected"]
-[connection signal="id_pressed" from="Content/Workspace/GraphEditor/DeleteNodesMenu" to="Content/Workspace/GraphEditor" method="_on_remove_nodes_menu_selected"]
+[connection signal="connection_request" from="Content/Workspace/Graph" to="Content/Workspace/Graph" method="_on_connection_request"]
+[connection signal="connection_to_empty" from="Content/Workspace/Graph" to="Content/Workspace/Graph" method="_on_connection_to_empty"]
+[connection signal="delete_nodes_request" from="Content/Workspace/Graph" to="Content/Workspace/Graph" method="_on_delete_nodes_request"]
+[connection signal="popup_request" from="Content/Workspace/Graph" to="Content/Workspace/Graph" method="_on_right_click"]
+[connection signal="id_pressed" from="Content/Workspace/Graph/AddNodeMenu" to="Content/Workspace/Graph" method="_on_add_node_menu_selected"]
+[connection signal="id_pressed" from="Content/Workspace/Graph/DeleteNodesMenu" to="Content/Workspace/Graph" method="_on_remove_nodes_menu_selected"]

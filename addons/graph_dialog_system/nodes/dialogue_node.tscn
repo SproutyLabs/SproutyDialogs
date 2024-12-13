@@ -1,23 +1,40 @@
 [gd_scene load_steps=8 format=3 uid="uid://n6xtq0g0yp1m"]
 
-[ext_resource type="StyleBox" uid="uid://dkj2y6kg7tamy" path="res://addons/graph_dialog_system/styles/dialogue_titlebar.tres" id="1_8cfi7"]
-[ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_381ss"]
-[ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_ov1o0"]
-[ext_resource type="StyleBox" uid="uid://cqw11hvjk5r6" path="res://addons/graph_dialog_system/styles/dialogue_selected_titlebar.tres" id="4_nkcoi"]
+[ext_resource type="Theme" uid="uid://kj0avd34kmld" path="res://addons/graph_dialog_system/theme/default_theme.tres" id="1_pbomp"]
+[ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialog_system/icons/Script.svg" id="4_hljjc"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_container.tscn" id="5_kt63k"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/dialogue_node.gd" id="5_v7cqa"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/dialogue_node.gd" id="5_v7cqa"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/dialogue_text_box.tscn" id="6_2llfw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3dbgn"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.827451, 0.27451, 0.262745, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wx6ka"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.827451, 0.27451, 0.262745, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+corner_radius_top_left = 5
+corner_radius_top_right = 5
 
 [node name="DialogueNode" type="GraphNode"]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 200.0
+offset_right = 214.0
 offset_bottom = 306.0
 size_flags_vertical = 3
-theme_override_constants/separation = 5
-theme_override_styles/panel = ExtResource("1_381ss")
-theme_override_styles/panel_selected = ExtResource("2_ov1o0")
-theme_override_styles/titlebar = ExtResource("1_8cfi7")
-theme_override_styles/titlebar_selected = ExtResource("4_nkcoi")
+theme = ExtResource("1_pbomp")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_3dbgn")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_wx6ka")
 resizable = true
 title = "Dialogue Node"
 slot/0/left_enabled = true
@@ -57,6 +74,8 @@ slot/3/right_color = Color(1, 1, 1, 1)
 slot/3/right_icon = null
 slot/3/draw_stylebox = true
 script = ExtResource("5_v7cqa")
+node_color = Color(0.827451, 0.27451, 0.262745, 1)
+node_icon = ExtResource("4_hljjc")
 
 [node name="CharacterContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -67,10 +86,9 @@ text = "Character"
 
 [node name="OptionButton" type="OptionButton" parent="CharacterContainer"]
 layout_mode = 2
-item_count = 1
 selected = 0
+item_count = 1
 popup/item_0/text = "(No one)"
-popup/item_0/id = 0
 
 [node name="DialogueContainer" type="VBoxContainer" parent="."]
 layout_mode = 2

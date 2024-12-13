@@ -1,23 +1,17 @@
-[gd_scene load_steps=10 format=3 uid="uid://wex81cyrw24j"]
+[gd_scene load_steps=8 format=3 uid="uid://wex81cyrw24j"]
 
-[ext_resource type="StyleBox" uid="uid://bl7cfbxusd7si" path="res://addons/graph_dialog_system/styles/node_panel.tres" id="1_rteh7"]
-[ext_resource type="StyleBox" uid="uid://bum6jagqe0yp2" path="res://addons/graph_dialog_system/styles/node_panel_selected.tres" id="2_vfhna"]
-[ext_resource type="StyleBox" uid="uid://ba1i37oiacpnn" path="res://addons/graph_dialog_system/styles/condition_titlebar.tres" id="3_1s13w"]
-[ext_resource type="StyleBox" uid="uid://polmsrmfat37" path="res://addons/graph_dialog_system/styles/condition_selected_titlebar.tres" id="4_ypfb6"]
+[ext_resource type="Theme" uid="uid://kj0avd34kmld" path="res://addons/graph_dialog_system/theme/default_theme.tres" id="1_bojvy"]
+[ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialog_system/icons/AnimationTrackGroup.svg" id="3_7frl5"]
 [ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialog_system/icons/String.svg" id="5_5hpwr"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/condition_node.gd" id="5_swe6e"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/condition_node.gd" id="5_swe6e"]
 [ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialog_system/icons/int.svg" id="6_ug6l5"]
 [ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/float.svg" id="7_gelaf"]
 [ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="8_tn2oy"]
 
 [node name="ConditionNode" type="GraphNode"]
 offset_right = 300.0
-offset_bottom = 86.0
-theme_override_constants/separation = 5
-theme_override_styles/panel = ExtResource("1_rteh7")
-theme_override_styles/panel_selected = ExtResource("2_vfhna")
-theme_override_styles/titlebar = ExtResource("3_1s13w")
-theme_override_styles/titlebar_selected = ExtResource("4_ypfb6")
+offset_bottom = 142.0
+theme = ExtResource("1_bojvy")
 resizable = true
 title = "Condition Node"
 slot/0/left_enabled = true
@@ -48,42 +42,37 @@ slot/2/right_color = Color(0.996078, 0.290196, 0.384314, 1)
 slot/2/right_icon = null
 slot/2/draw_stylebox = true
 script = ExtResource("5_swe6e")
+node_color = Color(1.66051e-06, 0.543819, 0.103967, 1)
+node_icon = ExtResource("3_7frl5")
 
 [node name="ConditionContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 
 [node name="Type" type="OptionButton" parent="ConditionContainer"]
 layout_mode = 2
-item_count = 4
 selected = 0
-popup/item_0/text = ""
+item_count = 4
 popup/item_0/icon = ExtResource("5_5hpwr")
-popup/item_0/id = 0
-popup/item_1/text = ""
 popup/item_1/icon = ExtResource("6_ug6l5")
 popup/item_1/id = 1
-popup/item_2/text = ""
 popup/item_2/icon = ExtResource("7_gelaf")
 popup/item_2/id = 2
-popup/item_3/text = ""
 popup/item_3/icon = ExtResource("8_tn2oy")
 popup/item_3/id = 3
 
 [node name="Variable" type="OptionButton" parent="ConditionContainer"]
 layout_mode = 2
-item_count = 1
 selected = 0
+item_count = 1
 popup/item_0/text = "(None)"
-popup/item_0/id = 0
 
 [node name="Operator" type="OptionButton" parent="ConditionContainer"]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 4
-item_count = 6
 selected = 0
+item_count = 6
 popup/item_0/text = "=="
-popup/item_0/id = 0
 popup/item_1/text = "!="
 popup/item_1/id = 1
 popup/item_2/text = ">"
