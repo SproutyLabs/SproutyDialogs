@@ -5,7 +5,7 @@ extends GraphEdit
 @export var nodes_scenes: Array[PackedScene] = [
 	preload("res://addons/graph_dialog_system/nodes/start_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/comment_node.tscn"),
-	preload("res://addons/graph_dialog_system/nodes/dialogue_node.tscn"),
+	preload("res://addons/graph_dialog_system/nodes/dialog_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/choices_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/condition_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/set_variable_node.tscn"),
@@ -52,6 +52,7 @@ func _on_remove_nodes_menu_selected(id : int) -> void:
 #region --- Handle Nodes --------------------------------------------------------------
 func set_add_node_menu() -> void:
 	# Set nodes list on popup node menu
+	add_node_menu.clear()
 	for node in nodes_scenes:
 		var node_aux = node.instantiate()
 		add_node_menu.add_icon_item(node_aux.node_icon, node_aux.name)

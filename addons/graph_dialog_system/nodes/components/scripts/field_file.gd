@@ -8,7 +8,7 @@ var file_dialog : FileDialog
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	file_dialog = find_parent("Main").get_node("FileDialog")
+	file_dialog = find_parent("Main").get_node("OpenFileDialog")
 	file_dialog.connect("file_selected", _on_file_dialog_selected)
 	
 	%OpenButton.button_down.connect(_on_open_pressed)

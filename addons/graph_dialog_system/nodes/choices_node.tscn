@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://c0x6oarn1mwpl"]
 
-[ext_resource type="Theme" uid="uid://kj0avd34kmld" path="res://addons/graph_dialog_system/theme/default_theme.tres" id="1_yq7pk"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_4odiy"]
 [ext_resource type="Texture2D" uid="uid://dn1gpd7ov6qk5" path="res://addons/graph_dialog_system/icons/ClassList.svg" id="3_d57bv"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/choices_node.gd" id="5_jgvn8"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_container.tscn" id="5_rwsgt"]
-[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/dialogue_text_box.tscn" id="6_35sd7"]
+[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/input_text_box.tscn" id="6_35sd7"]
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="7_2q2md"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1wm0e"]
@@ -33,7 +33,7 @@ custom_minimum_size = Vector2(250, 0)
 offset_right = 250.0
 offset_bottom = 197.0
 size_flags_vertical = 3
-theme = ExtResource("1_yq7pk")
+theme = ExtResource("1_4odiy")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_1wm0e")
 theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_5ij8e")
 resizable = true

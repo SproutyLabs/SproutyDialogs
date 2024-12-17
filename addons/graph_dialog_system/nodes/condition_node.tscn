@@ -1,6 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://wex81cyrw24j"]
+[gd_scene load_steps=10 format=3 uid="uid://wex81cyrw24j"]
 
-[ext_resource type="Theme" uid="uid://kj0avd34kmld" path="res://addons/graph_dialog_system/theme/default_theme.tres" id="1_bojvy"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_8k3p6"]
 [ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialog_system/icons/AnimationTrackGroup.svg" id="3_7frl5"]
 [ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialog_system/icons/String.svg" id="5_5hpwr"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/condition_node.gd" id="5_swe6e"]
@@ -8,10 +8,37 @@
 [ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/float.svg" id="7_gelaf"]
 [ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="8_tn2oy"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avnbs"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(1.66051e-06, 0.543819, 0.103967, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_que3n"]
+content_margin_left = 18.0
+content_margin_top = 12.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+bg_color = Color(1.66051e-06, 0.543819, 0.103967, 1)
+border_color = Color(0.325, 0.325, 0.325, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
 [node name="ConditionNode" type="GraphNode"]
 offset_right = 300.0
 offset_bottom = 142.0
-theme = ExtResource("1_bojvy")
+theme = ExtResource("1_8k3p6")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_avnbs")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_que3n")
 resizable = true
 title = "Condition Node"
 slot/0/left_enabled = true

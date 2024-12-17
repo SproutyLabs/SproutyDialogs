@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_h283m"]
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/side_bar.tscn" id="1_qbi36"]
 [ext_resource type="PackedScene" uid="uid://b3dunt76vknsq" path="res://addons/graph_dialog_system/editor/characters_panel.tscn" id="3_7mghu"]
-[ext_resource type="PackedScene" uid="uid://cr20rw0unyne0" path="res://addons/graph_dialog_system/editor/graph.tscn" id="5_e6f3x"]
+[ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/graph_dialog_system/editor/workspace.tscn" id="4_yuhh0"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/graph_dialog_system/editor/variables_panel.tscn" id="6_4jako"]
 
 [sub_resource type="GDScript" id="GDScript_hlq48"]
@@ -32,7 +32,7 @@ size_flags_vertical = 3
 theme = ExtResource("1_h283m")
 script = ExtResource("1_gu2d1")
 
-[node name="Workspace" type="HSplitContainer" parent="."]
+[node name="MainContainer" type="HSplitContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,49 +41,50 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 
-[node name="SideBar" parent="Workspace" instance=ExtResource("1_qbi36")]
+[node name="SideBar" parent="MainContainer" instance=ExtResource("1_qbi36")]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
-[node name="Content" type="VBoxContainer" parent="Workspace"]
+[node name="Content" type="VBoxContainer" parent="MainContainer"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Workspace/Content"]
+[node name="MarginContainer" type="MarginContainer" parent="MainContainer/Content"]
 layout_mode = 2
 theme_override_constants/margin_bottom = 0
 
-[node name="TabContainer" type="TabContainer" parent="Workspace/Content"]
+[node name="TabContainer" type="TabContainer" parent="MainContainer/Content"]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 1
+current_tab = 0
 
-[node name="Dialogue" type="TabBar" parent="Workspace/Content/TabContainer"]
-visible = false
+[node name="Dialogue" type="TabBar" parent="MainContainer/Content/TabContainer"]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Graph" parent="Workspace/Content/TabContainer/Dialogue" instance=ExtResource("5_e6f3x")]
+[node name="Workspace" parent="MainContainer/Content/TabContainer/Dialogue" instance=ExtResource("4_yuhh0")]
+unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Characters" type="TabBar" parent="Workspace/Content/TabContainer"]
+[node name="Characters" type="TabBar" parent="MainContainer/Content/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="CharactersPanel" parent="Workspace/Content/TabContainer/Characters" instance=ExtResource("3_7mghu")]
+[node name="CharactersPanel" parent="MainContainer/Content/TabContainer/Characters" instance=ExtResource("3_7mghu")]
 unique_name_in_owner = true
 layout_mode = 1
 script = SubResource("GDScript_hlq48")
 
-[node name="Variables" type="TabBar" parent="Workspace/Content/TabContainer"]
+[node name="Variables" type="TabBar" parent="MainContainer/Content/TabContainer"]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="VariablesPanel" parent="Workspace/Content/TabContainer/Variables" instance=ExtResource("6_4jako")]
+[node name="VariablesPanel" parent="MainContainer/Content/TabContainer/Variables" instance=ExtResource("6_4jako")]
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="FileDialog" type="FileDialog" parent="."]
+[node name="OpenFileDialog" type="FileDialog" parent="."]
 title = "Open a File"
 initial_position = 4
 size = Vector2i(500, 400)

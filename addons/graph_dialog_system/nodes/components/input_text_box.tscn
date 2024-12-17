@@ -1,0 +1,27 @@
+[gd_scene load_steps=4 format=3 uid="uid://cpvp6sfoxqigr"]
+
+[ext_resource type="Texture2D" uid="uid://cik6lp2p4pmen" path="res://addons/graph_dialog_system/icons/DistractionFree.svg" id="1_y1smc"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/input_text_box.gd" id="1_ytunx"]
+[ext_resource type="CodeHighlighter" uid="uid://dfy2njb4ljtel" path="res://addons/graph_dialog_system/nodes/components/code_highlighter.tres" id="2_p55sv"]
+
+[node name="InputTextBox" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_ytunx")
+
+[node name="TextEdit" type="TextEdit" parent="."]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Insert text..."
+wrap_mode = 1
+syntax_highlighter = ExtResource("2_p55sv")
+highlight_all_occurrences = true
+
+[node name="ExpandButton" type="Button" parent="."]
+layout_mode = 2
+icon = ExtResource("1_y1smc")
+
+[connection signal="pressed" from="ExpandButton" to="." method="_on_expand_button_pressed"]

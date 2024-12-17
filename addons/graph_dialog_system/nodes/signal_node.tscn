@@ -1,13 +1,40 @@
-[gd_scene load_steps=4 format=3 uid="uid://kw2vrwc8qd44"]
+[gd_scene load_steps=6 format=3 uid="uid://kw2vrwc8qd44"]
 
-[ext_resource type="Theme" uid="uid://kj0avd34kmld" path="res://addons/graph_dialog_system/theme/default_theme.tres" id="1_x6yfx"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_j2rs0"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/signal_node.gd" id="5_vbbrw"]
 [ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialog_system/icons/Signals.svg" id="6_b1lau"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ee2or"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.52549, 0.282353, 1, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4kliv"]
+content_margin_left = 18.0
+content_margin_top = 12.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+bg_color = Color(0.52549, 0.282353, 1, 1)
+border_color = Color(0.325, 0.325, 0.325, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
 
 [node name="SignalNode" type="GraphNode"]
 offset_right = 180.0
 offset_bottom = 111.0
-theme = ExtResource("1_x6yfx")
+theme = ExtResource("1_j2rs0")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_ee2or")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_4kliv")
 resizable = true
 title = "Signal Node"
 slot/0/left_enabled = true

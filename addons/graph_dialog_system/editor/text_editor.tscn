@@ -1,0 +1,59 @@
+[gd_scene load_steps=3 format=3 uid="uid://deethj56qlsml"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/text_editor.gd" id="1_v143h"]
+[ext_resource type="Texture2D" uid="uid://c5nss8jn0ix1p" path="res://addons/graph_dialog_system/icons/SideCollapse.svg" id="2_7qbxo"]
+
+[node name="TextEditor" type="Panel"]
+clip_contents = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_v143h")
+
+[node name="Container" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="ToolBar" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Container/ToolBar"]
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Close"
+icon = ExtResource("2_7qbxo")
+
+[node name="VSeparator" type="VSeparator" parent="Container/ToolBar"]
+layout_mode = 2
+
+[node name="Button2" type="Button" parent="Container/ToolBar"]
+layout_mode = 2
+text = "button"
+
+[node name="Button3" type="Button" parent="Container/ToolBar"]
+layout_mode = 2
+text = "button"
+
+[node name="Button4" type="Button" parent="Container/ToolBar"]
+layout_mode = 2
+text = "button"
+
+[node name="CodeEdit" type="CodeEdit" parent="Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+gutters_draw_line_numbers = true
+
+[connection signal="pressed" from="Container/ToolBar/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="text_changed" from="Container/CodeEdit" to="." method="_on_code_edit_text_changed"]

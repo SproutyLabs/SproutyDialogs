@@ -1,0 +1,80 @@
+[gd_scene load_steps=13 format=3 uid="uid://bo8iha2w2kgt5"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/graph.gd" id="1_64ndf"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_u7p51"]
+[ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/Play.svg" id="2_j0rqr"]
+[ext_resource type="Texture2D" uid="uid://v2lbmduypj25" path="res://addons/graph_dialog_system/icons/Pin.svg" id="3_4qxl7"]
+[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialog_system/editor/text_editor.tscn" id="4_4ukmm"]
+[ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialog_system/icons/Script.svg" id="4_ltnsu"]
+[ext_resource type="Texture2D" uid="uid://dn1gpd7ov6qk5" path="res://addons/graph_dialog_system/icons/ClassList.svg" id="5_g2r0q"]
+[ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialog_system/icons/AnimationTrackGroup.svg" id="6_kl3mf"]
+[ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/graph_dialog_system/icons/EditAddRemove.svg" id="7_xuses"]
+[ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialog_system/icons/Signals.svg" id="8_u4cpf"]
+[ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/graph_dialog_system/icons/Timer.svg" id="9_ybx52"]
+[ext_resource type="Texture2D" uid="uid://cctr0cmrj70nc" path="res://addons/graph_dialog_system/icons/Remove.svg" id="10_jx2cq"]
+
+[node name="Workspace" type="HSplitContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_u7p51")
+
+[node name="Graph" type="GraphEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+scroll_offset = Vector2(-570, 0)
+script = ExtResource("1_64ndf")
+
+[node name="AddNodeMenu" type="PopupMenu" parent="Graph"]
+auto_translate_mode = 1
+size = Vector2i(166, 224)
+visible = true
+unfocusable = true
+item_count = 8
+item_0/text = "StartNode"
+item_0/icon = ExtResource("2_j0rqr")
+item_1/text = "CommentNode"
+item_1/icon = ExtResource("3_4qxl7")
+item_1/id = 1
+item_2/text = "DialogNode"
+item_2/icon = ExtResource("4_ltnsu")
+item_2/id = 2
+item_3/text = "ChoicesNode"
+item_3/icon = ExtResource("5_g2r0q")
+item_3/id = 3
+item_4/text = "ConditionNode"
+item_4/icon = ExtResource("6_kl3mf")
+item_4/id = 4
+item_5/text = "SetVariableNode"
+item_5/icon = ExtResource("7_xuses")
+item_5/id = 5
+item_6/text = "SignalNode"
+item_6/icon = ExtResource("8_u4cpf")
+item_6/id = 6
+item_7/text = "WaitNode"
+item_7/icon = ExtResource("9_ybx52")
+item_7/id = 7
+
+[node name="DeleteNodesMenu" type="PopupMenu" parent="Graph"]
+auto_translate_mode = 1
+size = Vector2i(214, 35)
+visible = true
+unfocusable = true
+item_count = 1
+item_0/text = "Delete selected nodes"
+item_0/icon = ExtResource("10_jx2cq")
+
+[node name="TextEditor" parent="." instance=ExtResource("4_4ukmm")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[connection signal="connection_request" from="Graph" to="Graph" method="_on_connection_request"]
+[connection signal="connection_to_empty" from="Graph" to="Graph" method="_on_connection_to_empty"]
+[connection signal="delete_nodes_request" from="Graph" to="Graph" method="_on_delete_nodes_request"]
+[connection signal="popup_request" from="Graph" to="Graph" method="_on_right_click"]
+[connection signal="id_pressed" from="Graph/AddNodeMenu" to="Graph" method="_on_add_node_menu_selected"]
+[connection signal="id_pressed" from="Graph/DeleteNodesMenu" to="Graph" method="_on_remove_nodes_menu_selected"]
