@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/comment_node.gd" id="5_achcx"]
 
 [node name="CommentNode" type="GraphNode"]
+custom_minimum_size = Vector2(200, 0)
 offset_right = 9.0
 offset_bottom = 55.0
 theme = ExtResource("1_gqkp3")
@@ -20,7 +21,7 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("5_achcx")
-node_color = Color(0.443137, 0.447059, 0.541176, 1)
+node_color = Color(0.154876, 0.154876, 0.154876, 1)
 node_icon = ExtResource("3_g6856")
 
 [node name="TextInput" type="TextEdit" parent="."]

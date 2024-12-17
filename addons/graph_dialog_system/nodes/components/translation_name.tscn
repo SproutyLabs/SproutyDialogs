@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://csswxs6vp2557"]
+
+[node name="TranslationName" type="HBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+offset_right = 163.0
+offset_bottom = 58.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+
+[node name="LanguageLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Español"
+
+[node name="CodeLabel" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
+text = "(Es)"
+horizontal_alignment = 2
+
+[node name="LineEdit" type="LineEdit" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+placeholder_text = "Insert character name..."

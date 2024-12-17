@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=3 uid="uid://bxwvdcjc16ytf"]
+
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_2lkpj"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/field_file.gd" id="2_atfol"]
+[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="2_byw4l"]
+[ext_resource type="Texture2D" uid="uid://bnxg1gkoe3jvl" path="res://addons/graph_dialog_system/icons/Clear.svg" id="3_ve2o0"]
+
+[node name="FieldFile" type="MarginContainer"]
+offset_right = 314.0
+offset_bottom = 40.0
+theme = ExtResource("1_2lkpj")
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+script = ExtResource("2_atfol")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 2
+
+[node name="Field" type="LineEdit" parent="HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+placeholder_text = "Search a file path...."
+expand_to_text_length = true
+
+[node name="OpenButton" type="Button" parent="HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("2_byw4l")
+flat = true
+
+[node name="ClearButton" type="Button" parent="HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_ve2o0")
+flat = true
+
+[connection signal="text_submitted" from="HBox/Field" to="." method="_on_file_dialog_selected"]

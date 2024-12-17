@@ -1,0 +1,237 @@
+[gd_scene load_steps=7 format=3 uid="uid://b3dunt76vknsq"]
+
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_mqdqa"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/translations_container.gd" id="2_tpd02"]
+[ext_resource type="Texture2D" uid="uid://bpa7g13kkbvyg" path="res://addons/graph_dialog_system/icons/Collapse.svg" id="3_3q8bw"]
+[ext_resource type="PackedScene" uid="uid://63ehl3ko3bdf" path="res://addons/graph_dialog_system/editor/components/field_portrait.tscn" id="3_j6s01"]
+[ext_resource type="PackedScene" uid="uid://csswxs6vp2557" path="res://addons/graph_dialog_system/nodes/components/translation_name.tscn" id="4_as6xf"]
+[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="6_ugs6n"]
+
+[node name="CharactersPanel" type="HSplitContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource("1_mqdqa")
+
+[node name="Settings" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Container" type="VBoxContainer" parent="Settings"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/Container"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Character Settings"
+
+[node name="KeyName" type="HBoxContainer" parent="Settings/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/Container/KeyName"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Key Name"
+
+[node name="LineEdit" type="LineEdit" parent="Settings/Container/KeyName"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Insert a key name..."
+
+[node name="Description" type="HBoxContainer" parent="Settings/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/Container/Description"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Description"
+
+[node name="TextEdit" type="TextEdit" parent="Settings/Container/Description"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Character description (optional)..."
+
+[node name="HSeparator2" type="HSeparator" parent="Settings/Container"]
+layout_mode = 2
+
+[node name="DisplayName" type="HBoxContainer" parent="Settings/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/Container/DisplayName"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Display Name"
+
+[node name="Locale" type="Label" parent="Settings/Container/DisplayName"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
+text = "(En)"
+
+[node name="LineEdit" type="LineEdit" parent="Settings/Container/DisplayName"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Insert character name..."
+
+[node name="TranslationsContainer" type="VBoxContainer" parent="Settings/Container"]
+layout_mode = 2
+script = ExtResource("2_tpd02")
+
+[node name="Header" type="HBoxContainer" parent="Settings/Container/TranslationsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/Container/TranslationsContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "Translations"
+
+[node name="ExpandButton" type="TextureButton" parent="Settings/Container/TranslationsContainer/Header"]
+custom_minimum_size = Vector2(20, 2.08165e-12)
+layout_mode = 2
+toggle_mode = true
+texture_normal = ExtResource("3_3q8bw")
+ignore_texture_size = true
+stretch_mode = 3
+
+[node name="TextBoxes" type="VBoxContainer" parent="Settings/Container/TranslationsContainer"]
+visible = false
+custom_minimum_size = Vector2(2.08165e-12, 100)
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="Settings/Container/TranslationsContainer/TextBoxes"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/Container/TranslationsContainer/TextBoxes"]
+layout_mode = 2
+theme_type_variation = &"TooltipLabel"
+text = "Display Name Translations"
+
+[node name="TranslationName" parent="Settings/Container/TranslationsContainer/TextBoxes" instance=ExtResource("4_as6xf")]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="Settings/Container"]
+layout_mode = 2
+
+[node name="PortraitsSettings" type="VBoxContainer" parent="Settings/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TopBar" type="HBoxContainer" parent="Settings/Container/PortraitsSettings"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/Container/PortraitsSettings/TopBar"]
+layout_mode = 2
+text = "Portraits Settings"
+
+[node name="AddButton" type="Button" parent="Settings/Container/PortraitsSettings/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "New +"
+
+[node name="Panel" type="Panel" parent="Settings/Container/PortraitsSettings"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Container" type="VBoxContainer" parent="Settings/Container/PortraitsSettings/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="Settings/Container/PortraitsSettings/Panel/Container"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Settings/Container/PortraitsSettings/Panel/Container/Header"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Name"
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Settings/Container/PortraitsSettings/Panel/Container/Header"]
+layout_mode = 2
+
+[node name="ImageLabel" type="Label" parent="Settings/Container/PortraitsSettings/Panel/Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 0
+text = "Image"
+
+[node name="HSeparator" type="HSeparator" parent="Settings/Container/PortraitsSettings/Panel/Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Settings/Container/PortraitsSettings/Panel/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/Container/PortraitsSettings/Panel/Container/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PortraitField" parent="Settings/Container/PortraitsSettings/Panel/Container/ScrollContainer/VBoxContainer" instance=ExtResource("3_j6s01")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/Container/PortraitsSettings/Panel/Container/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Add some portraits!"
+
+[node name="PortraitPreview" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Container" type="VBoxContainer" parent="PortraitPreview"]
+layout_mode = 2
+
+[node name="TopBar" type="HBoxContainer" parent="PortraitPreview/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PortraitPreview/Container/TopBar"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Portrait Preview"
+
+[node name="PortraitSelect" type="OptionButton" parent="PortraitPreview/Container/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 10
+item_count = 1
+popup/item_0/text = "(No one)"
+
+[node name="Panel" type="Panel" parent="PortraitPreview/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="PortraitPreview/Container/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(20, 20)
+
+[node name="Sprite2D" type="Sprite2D" parent="PortraitPreview/Container/Panel/Control"]
+position = Vector2(20, 20)
+texture = ExtResource("6_ugs6n")
+
+[connection signal="toggled" from="Settings/Container/TranslationsContainer/Header/ExpandButton" to="Settings/Container/TranslationsContainer" method="_on_expand_button_toggled"]

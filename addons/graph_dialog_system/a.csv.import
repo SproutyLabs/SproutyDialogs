@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bkoencyjvqbuh"
+
+[deps]
+
+files=["res://addons/graph_dialog_system/a.b.translation", "res://addons/graph_dialog_system/a.x.translation"]
+
+source_file="res://addons/graph_dialog_system/a.csv"
+dest_files=["res://addons/graph_dialog_system/a.b.translation", "res://addons/graph_dialog_system/a.x.translation"]
+
+[params]
+
+compress=true
+delimiter=0

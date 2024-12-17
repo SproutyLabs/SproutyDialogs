@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c0x6oarn1mwpl"]
+[gd_scene load_steps=9 format=3 uid="uid://c0x6oarn1mwpl"]
 
 [ext_resource type="Theme" uid="uid://kj0avd34kmld" path="res://addons/graph_dialog_system/theme/default_theme.tres" id="1_yq7pk"]
 [ext_resource type="Texture2D" uid="uid://dn1gpd7ov6qk5" path="res://addons/graph_dialog_system/icons/ClassList.svg" id="3_d57bv"]
@@ -7,12 +7,35 @@
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/dialogue_text_box.tscn" id="6_35sd7"]
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="7_2q2md"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1wm0e"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.0296556, 0.653645, 0.501611, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5ij8e"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.0296556, 0.653645, 0.501611, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
 [node name="ChoicesNode" type="GraphNode"]
-custom_minimum_size = Vector2(200, 0)
-offset_right = 214.0
+custom_minimum_size = Vector2(250, 0)
+offset_right = 250.0
 offset_bottom = 197.0
 size_flags_vertical = 3
 theme = ExtResource("1_yq7pk")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_1wm0e")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_5ij8e")
 resizable = true
 title = "Choices Node"
 slot/0/left_enabled = true

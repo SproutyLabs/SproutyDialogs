@@ -1,0 +1,150 @@
+[gd_scene load_steps=4 format=3 uid="uid://dpmnyxltkkjsq"]
+
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_j5uel"]
+[ext_resource type="PackedScene" uid="uid://dols4gqjh3n6g" path="res://addons/graph_dialog_system/editor/components/field_variable.tscn" id="2_1ethk"]
+[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/field_file.tscn" id="3_b2r13"]
+
+[node name="VariablesPanel" type="HSplitContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_j5uel")
+
+[node name="Variables" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Container" type="VBoxContainer" parent="Variables"]
+layout_mode = 2
+
+[node name="TopBar" type="HBoxContainer" parent="Variables/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Variables/Container/TopBar"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Variables Manager"
+
+[node name="AddButton" type="Button" parent="Variables/Container/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "New +"
+
+[node name="Panel" type="Panel" parent="Variables/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Container" type="VBoxContainer" parent="Variables/Container/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="Variables/Container/Panel/Container"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Variables/Container/Panel/Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Variables/Container/Panel/Container/Header"]
+layout_mode = 2
+
+[node name="TypeLabel" type="Label" parent="Variables/Container/Panel/Container/Header"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Type"
+horizontal_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="Variables/Container/Panel/Container/Header"]
+layout_mode = 2
+
+[node name="ValueLabel" type="Label" parent="Variables/Container/Panel/Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Initial Value"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Variables/Container/Panel/Container/Header"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Variables/Container/Panel/Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Variables/Container/Panel/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Variables/Container/Panel/Container/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VariableField" parent="Variables/Container/Panel/Container/ScrollContainer/VBoxContainer" instance=ExtResource("2_1ethk")]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Variables/Container/Panel/Container/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Add some variables!"
+
+[node name="TranslationSettings" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Container" type="VBoxContainer" parent="TranslationSettings"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TranslationSettings/Container"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Translation Settings"
+
+[node name="CSVFile" type="HBoxContainer" parent="TranslationSettings/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TranslationSettings/Container/CSVFile"]
+layout_mode = 2
+text = "CSV File"
+
+[node name="FieldFile" parent="TranslationSettings/Container/CSVFile" instance=ExtResource("3_b2r13")]
+layout_mode = 2
+size_flags_horizontal = 3
+file_filters = PackedStringArray("*.csv")
+
+[node name="DefaultLocale" type="HBoxContainer" parent="TranslationSettings/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TranslationSettings/Container/DefaultLocale"]
+layout_mode = 2
+text = "Default Locale"
+
+[node name="OptionButton" type="OptionButton" parent="TranslationSettings/Container/DefaultLocale"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TestingLocale" type="HBoxContainer" parent="TranslationSettings/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TranslationSettings/Container/TestingLocale"]
+layout_mode = 2
+text = "Testing Locale"
+
+[node name="OptionButton" type="OptionButton" parent="TranslationSettings/Container/TestingLocale"]
+layout_mode = 2
+size_flags_horizontal = 3

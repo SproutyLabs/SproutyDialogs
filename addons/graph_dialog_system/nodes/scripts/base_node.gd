@@ -17,13 +17,15 @@ func set_node_titlebar():
 	# Set titlebar color and button icons
 	var node_titlebar = get_titlebar_hbox()
 	
-	var titlebar_stylebox = get_theme_stylebox("titlebar").duplicate()
-	titlebar_stylebox.bg_color = node_color
-	add_theme_stylebox_override("titlebar", titlebar_stylebox)
+	if not has_theme_stylebox_override("titlebar"):
+		var titlebar_stylebox = get_theme_stylebox("titlebar").duplicate()
+		titlebar_stylebox.bg_color = node_color
+		add_theme_stylebox_override("titlebar", titlebar_stylebox)
 	
-	var titlebar_selected_stylebox = get_theme_stylebox("titlebar_selected").duplicate()
-	titlebar_selected_stylebox.bg_color = node_color
-	add_theme_stylebox_override("titlebar_selected", titlebar_selected_stylebox)
+	if not has_theme_stylebox_override("titlebar_selected"):
+		var titlebar_selected_stylebox = get_theme_stylebox("titlebar_selected").duplicate()
+		titlebar_selected_stylebox.bg_color = node_color
+		add_theme_stylebox_override("titlebar_selected", titlebar_selected_stylebox)
 	
 	# Add node type icon
 	var icon_button = TextureButton.new()

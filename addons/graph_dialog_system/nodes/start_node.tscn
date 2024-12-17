@@ -1,13 +1,37 @@
-[gd_scene load_steps=4 format=3 uid="uid://cu41jslmdjohb"]
+[gd_scene load_steps=6 format=3 uid="uid://cu41jslmdjohb"]
 
 [ext_resource type="Theme" uid="uid://kj0avd34kmld" path="res://addons/graph_dialog_system/theme/default_theme.tres" id="1_eta3u"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/start_node.gd" id="5_3ppuo"]
 [ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/Play.svg" id="6_6olnj"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3wpa2"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.803922, 0.498039, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5e6e1"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.803922, 0.498039, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
 [node name="StartNode" type="GraphNode"]
-offset_right = 160.0
-offset_bottom = 86.0
+custom_minimum_size = Vector2(180, 0)
+offset_right = 180.0
+offset_bottom = 79.0
 theme = ExtResource("1_eta3u")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_3wpa2")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_5e6e1")
 resizable = true
 title = "Start Node"
 slot/0/left_enabled = false

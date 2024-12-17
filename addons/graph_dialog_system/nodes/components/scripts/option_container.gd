@@ -7,15 +7,6 @@ signal option_removed(index)
 
 var option_index : int = 0
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	super() # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
 func update_option_index(index : int) -> void:
 	# Update the option position index
 	option_label.text = "Option #" + str(index + 1)

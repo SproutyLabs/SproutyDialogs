@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://dpscdg0f7o6ft"]
+[gd_scene load_steps=4 format=3 uid="uid://dpscdg0f7o6ft"]
 
 [ext_resource type="Texture2D" uid="uid://bwqotvkpjbndm" path="res://addons/graph_dialog_system/icons/Search.svg" id="1_1wtbh"]
+[ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialog_system/icons/Script.svg" id="1_ym35f"]
+[ext_resource type="Texture2D" uid="uid://jkkjqtm5w3vk" path="res://addons/graph_dialog_system/icons/Edit.svg" id="2_mg22o"]
 
 [node name="SideBar" type="VSplitContainer"]
 custom_minimum_size = Vector2(20, 0)
@@ -19,6 +21,33 @@ theme_override_constants/margin_bottom = 5
 [node name="VBox" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
 
+[node name="Options" type="HBoxContainer" parent="Margin/VBox"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="NewMenu" type="MenuButton" parent="Margin/VBox/Options"]
+layout_mode = 2
+keep_pressed_outside = true
+text = "New"
+switch_on_hover = true
+item_count = 2
+popup/item_0/text = "New Dialogue"
+popup/item_0/icon = ExtResource("1_ym35f")
+popup/item_1/text = "New Character"
+popup/item_1/icon = ExtResource("2_mg22o")
+popup/item_1/id = 1
+
+[node name="OpenFile" type="Button" parent="Margin/VBox/Options"]
+layout_mode = 2
+text = "Open"
+flat = true
+
+[node name="SaveFile" type="Button" parent="Margin/VBox/Options"]
+layout_mode = 2
+text = "Save"
+flat = true
+
 [node name="FilesDisplay" type="VBoxContainer" parent="Margin/VBox"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -35,32 +64,6 @@ custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 same_column_width = true
-
-[node name="CharactersDisplay" type="VBoxContainer" parent="Margin/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="Margin/VBox/CharactersDisplay"]
-layout_mode = 2
-text = "Characters"
-
-[node name="Button" type="Button" parent="Margin/VBox/CharactersDisplay"]
-layout_mode = 2
-size_flags_vertical = 4
-text = "+"
-
-[node name="VariablesDisplay" type="VBoxContainer" parent="Margin/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Label" type="Label" parent="Margin/VBox/VariablesDisplay"]
-layout_mode = 2
-text = "Variables"
-
-[node name="Button" type="Button" parent="Margin/VBox/VariablesDisplay"]
-layout_mode = 2
-size_flags_vertical = 4
-text = "+"
 
 [node name="Version" type="Label" parent="Margin/VBox"]
 layout_mode = 2

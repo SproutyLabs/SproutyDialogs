@@ -1,0 +1,33 @@
+[gd_scene load_steps=3 format=3 uid="uid://cr20rw0unyne0"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/graph.gd" id="1_jqja1"]
+[ext_resource type="Texture2D" uid="uid://cctr0cmrj70nc" path="res://addons/graph_dialog_system/icons/Remove.svg" id="10_n1ig1"]
+
+[node name="Graph" type="GraphEdit"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_jqja1")
+
+[node name="AddNodeMenu" type="PopupMenu" parent="."]
+auto_translate_mode = 1
+visible = true
+
+[node name="DeleteNodesMenu" type="PopupMenu" parent="."]
+auto_translate_mode = 1
+size = Vector2i(214, 35)
+visible = true
+item_count = 1
+item_0/text = "Delete selected nodes"
+item_0/icon = ExtResource("10_n1ig1")
+
+[connection signal="connection_request" from="." to="." method="_on_connection_request"]
+[connection signal="connection_to_empty" from="." to="." method="_on_connection_to_empty"]
+[connection signal="delete_nodes_request" from="." to="." method="_on_delete_nodes_request"]
+[connection signal="popup_request" from="." to="." method="_on_right_click"]
+[connection signal="id_pressed" from="AddNodeMenu" to="." method="_on_add_node_menu_selected"]
+[connection signal="id_pressed" from="DeleteNodesMenu" to="." method="_on_remove_nodes_menu_selected"]

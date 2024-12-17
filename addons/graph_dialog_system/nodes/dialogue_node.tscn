@@ -6,7 +6,7 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/dialogue_node.gd" id="5_v7cqa"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/dialogue_text_box.tscn" id="6_2llfw"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3dbgn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lcatj"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -15,7 +15,7 @@ bg_color = Color(0.827451, 0.27451, 0.262745, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wx6ka"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tuw8u"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -28,13 +28,13 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 
 [node name="DialogueNode" type="GraphNode"]
-custom_minimum_size = Vector2(200, 0)
-offset_right = 214.0
+custom_minimum_size = Vector2(250, 0)
+offset_right = 250.0
 offset_bottom = 306.0
 size_flags_vertical = 3
 theme = ExtResource("1_pbomp")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_3dbgn")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_wx6ka")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_lcatj")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_tuw8u")
 resizable = true
 title = "Dialogue Node"
 slot/0/left_enabled = true

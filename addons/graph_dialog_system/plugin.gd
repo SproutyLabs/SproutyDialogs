@@ -7,10 +7,19 @@ var main_panel_instance
 
 func _enter_tree():
 	main_panel_instance = MainPanel.instantiate()
+
 	# Add the main panel to the editor's main viewport.
 	EditorInterface.get_editor_main_screen().add_child(main_panel_instance)
+	_set_editor_resources_picker(main_panel_instance)
 	_make_visible(false) # Hide the main panel. Very much required.
 
+func _set_editor_resources_picker(main_panel) -> void:
+	var objectField = EditorResourcePicker.new()
+	objectField.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	
+	# Resources fields
+	objectField.base_type = "Texture2D"
+	main_panel.get_node("%CharactersPanel/%PortraitField/Container").add_child(objectField)
 
 func _exit_tree():
 	if main_panel_instance:
