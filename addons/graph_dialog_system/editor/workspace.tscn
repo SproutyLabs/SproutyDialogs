@@ -26,7 +26,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-scroll_offset = Vector2(-570, 0)
 script = ExtResource("1_64ndf")
 
 [node name="AddNodeMenu" type="PopupMenu" parent="Graph"]
@@ -43,7 +42,7 @@ item_1/id = 1
 item_2/text = "DialogNode"
 item_2/icon = ExtResource("4_ltnsu")
 item_2/id = 2
-item_3/text = "ChoicesNode"
+item_3/text = "OptionsNode"
 item_3/icon = ExtResource("5_g2r0q")
 item_3/id = 3
 item_4/text = "ConditionNode"
@@ -70,6 +69,7 @@ item_0/icon = ExtResource("10_jx2cq")
 
 [node name="TextEditor" parent="." instance=ExtResource("4_4ukmm")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [connection signal="connection_request" from="Graph" to="Graph" method="_on_connection_request"]

@@ -30,7 +30,7 @@ corner_radius_top_right = 5
 [node name="DialogNode" type="GraphNode"]
 custom_minimum_size = Vector2(250, 0)
 offset_right = 250.0
-offset_bottom = 326.0
+offset_bottom = 316.0
 size_flags_vertical = 3
 theme = ExtResource("1_05qy5")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_lcatj")
@@ -84,36 +84,40 @@ layout_mode = 2
 layout_mode = 2
 text = "Character"
 
-[node name="OptionButton" type="OptionButton" parent="CharacterContainer"]
+[node name="CharacterSelect" type="OptionButton" parent="CharacterContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 selected = 0
 item_count = 1
 popup/item_0/text = "(No one)"
 
-[node name="DialogueContainer" type="VBoxContainer" parent="."]
+[node name="DialogContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="DialogueHeader" type="HBoxContainer" parent="DialogueContainer"]
+[node name="DialogHeader" type="HBoxContainer" parent="DialogContainer"]
 layout_mode = 2
 
-[node name="DialogueLabel" type="Label" parent="DialogueContainer/DialogueHeader"]
+[node name="DialogLabel" type="Label" parent="DialogContainer/DialogHeader"]
 layout_mode = 2
 text = "Dialogue"
 
-[node name="LanguageLabel" type="Label" parent="DialogueContainer/DialogueHeader"]
+[node name="DefaultLocaleLabel" type="Label" parent="DialogContainer/DialogHeader"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
 text = "(En)"
 horizontal_alignment = 2
 
-[node name="DialogueTextBox" parent="DialogueContainer" instance=ExtResource("6_2llfw")]
+[node name="DialogTextBox" parent="DialogContainer" instance=ExtResource("6_2llfw")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="Translations" parent="DialogueContainer" instance=ExtResource("5_kt63k")]
+[node name="Translations" parent="DialogContainer" instance=ExtResource("5_kt63k")]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="DialogueContainer"]
+[node name="HSeparator" type="HSeparator" parent="DialogContainer"]
 layout_mode = 2
 
 [node name="Next" type="Label" parent="."]
@@ -121,8 +125,9 @@ layout_mode = 2
 text = "Next"
 horizontal_alignment = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginBottom" type="MarginContainer" parent="."]
 layout_mode = 2
+theme_override_constants/margin_top = 0
 
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="resized" from="DialogueContainer" to="." method="_on_resized"]
+[connection signal="resized" from="DialogContainer" to="." method="_on_resized"]

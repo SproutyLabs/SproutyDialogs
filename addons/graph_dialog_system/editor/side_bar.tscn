@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://jkkjqtm5w3vk" path="res://addons/graph_dialog_system/icons/Edit.svg" id="2_mg22o"]
 
 [node name="SideBar" type="VSplitContainer"]
-custom_minimum_size = Vector2(20, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -16,56 +15,67 @@ grow_vertical = 2
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="VBox" type="VBoxContainer" parent="Margin"]
+[node name="Container" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
 
-[node name="Options" type="HBoxContainer" parent="Margin/VBox"]
+[node name="Options" type="HBoxContainer" parent="Margin/Container"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 6
 
-[node name="NewFile" type="MenuButton" parent="Margin/VBox/Options"]
+[node name="NewFile" type="MenuButton" parent="Margin/Container/Options"]
+unique_name_in_owner = true
 layout_mode = 2
 keep_pressed_outside = true
 text = "New"
 switch_on_hover = true
 item_count = 2
-popup/item_0/text = "New Dialogue"
+popup/item_0/text = "New Dialog..."
 popup/item_0/icon = ExtResource("1_ym35f")
-popup/item_1/text = "New Character"
+popup/item_1/text = "New Character..."
 popup/item_1/icon = ExtResource("2_mg22o")
 popup/item_1/id = 1
 
-[node name="OpenFile" type="Button" parent="Margin/VBox/Options"]
+[node name="VSeparator" type="VSeparator" parent="Margin/Container/Options"]
+layout_mode = 2
+
+[node name="OpenFile" type="Button" parent="Margin/Container/Options"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Open"
 flat = true
 
-[node name="SaveFile" type="Button" parent="Margin/VBox/Options"]
+[node name="VSeparator2" type="VSeparator" parent="Margin/Container/Options"]
+layout_mode = 2
+
+[node name="SaveFile" type="Button" parent="Margin/Container/Options"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Save"
 flat = true
 
-[node name="FilesDisplay" type="VBoxContainer" parent="Margin/VBox"]
+[node name="FilesDisplay" type="VBoxContainer" parent="Margin/Container"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Search" type="LineEdit" parent="Margin/VBox/FilesDisplay"]
+[node name="Search" type="LineEdit" parent="Margin/Container/FilesDisplay"]
 layout_mode = 2
 placeholder_text = "Filter Files"
 right_icon = ExtResource("1_1wtbh")
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="FileList" type="ItemList" parent="Margin/VBox/FilesDisplay"]
+[node name="FileList" type="ItemList" parent="Margin/Container/FilesDisplay"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 same_column_width = true
 
-[node name="Version" type="Label" parent="Margin/VBox"]
+[node name="Version" type="Label" parent="Margin/Container"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.619608, 0.611765, 0.568627, 1)
 text = "v0.1

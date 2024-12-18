@@ -6,7 +6,7 @@ extends GraphEdit
 	preload("res://addons/graph_dialog_system/nodes/start_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/comment_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/dialog_node.tscn"),
-	preload("res://addons/graph_dialog_system/nodes/choices_node.tscn"),
+	preload("res://addons/graph_dialog_system/nodes/options_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/condition_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/set_variable_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/signal_node.tscn"),
