@@ -1,16 +1,43 @@
 @tool
 extends BaseNode
 
+const NODE_TYPE_ID : int = 3
+
 @onready var option_scene : PackedScene = preload("res://addons/graph_dialog_system/nodes/components/option_container.tscn")
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
-	super() # Replace with function body.
+	super()
 
+func get_data() -> Dictionary:
+	# Get node data on dict
+	var dict := {}
+	var connections: Array = get_parent().get_connections(name)
+	
+	dict[name.to_snake_case()] = {
+		"node_type_id" : NODE_TYPE_ID,
+		"options" : {},
+		"to_node" : [] if connections.size() > 0 else ["END"],
+		"offset" : {
+			"x" : position_offset.x,
+			"y" : position_offset.y
+		}
+	}
+	for child in get_children():
+		if child is OptionContainer:
+			dict[name.to_snake_case()]["options"][child.name.to_snake_case()] = {
+				"id" : child.option_index,
+				"dialog_key" : child.dialog_key
+			}
+			if dict["to_node"][0] != "END" and connections.size() >= child.option_index:
+				dict[name.to_snake_case()]["to_node"].append(connections[child.option_index]["to_node"])
+	
+	return dict
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+func set_data(dict: Dictionary) -> void:
+	# Set node data from dict
+	to_node = [dict["to_node"]]
+	position_offset.x = dict["offset"]["x"]
+	position_offset.y = dict["offset"]["y"]
 
 
 func _on_add_option_button_pressed() -> void:
@@ -50,6 +77,3 @@ func _on_option_removed(index : int) -> void:
 	# Wait to delete the option node
 	await get_child(index).tree_exited
 	_on_resized() # Resize container vertically
-
-func _on_resized() -> void:
-	size.y = 0 # Keep vertical size on resize

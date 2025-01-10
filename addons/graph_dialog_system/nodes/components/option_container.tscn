@@ -16,7 +16,7 @@ layout_mode = 2
 
 [node name="OptionLabel" type="Label" parent="OptionHeader"]
 layout_mode = 2
-text = "Option #2"
+text = "Option #1"
 
 [node name="LanguageLabel" type="Label" parent="OptionHeader"]
 layout_mode = 2
@@ -32,7 +32,7 @@ stretch_mode = 3
 [node name="DialogueTextBox" parent="." instance=ExtResource("3_5qfnu")]
 layout_mode = 2
 
-[node name="TranslationsContainer2" parent="." instance=ExtResource("2_6k3ms")]
+[node name="TranslationsContainer" parent="." instance=ExtResource("2_6k3ms")]
 layout_mode = 2
 
 [connection signal="pressed" from="OptionHeader/RemoveButton" to="." method="_on_remove_button_pressed"]

@@ -1,6 +1,8 @@
 @tool
 extends GraphEdit
 
+signal nodes_loaded
+
 @export_category("Nodes Settings")
 @export var nodes_scenes: Array[PackedScene] = [
 	preload("res://addons/graph_dialog_system/nodes/start_node.tscn"),
@@ -27,7 +29,7 @@ func _ready():
 	
 	set_add_node_menu()
 
-#region --- Input --------------------------------------------------------------
+#region --- Input ---
 func _input(_event):
 	if (not add_node_menu.visible) and request_port > -1:
 		request_node = ''
@@ -43,13 +45,45 @@ func _on_right_click(pos : Vector2) -> void:
 	show_add_node_menu(pos)
 
 func _on_add_node_menu_selected(id : int) -> void:
-	add_node(id) # Add a node of the selected type
+	add_new_node(id) # Add a node of the selected type
 
 func _on_remove_nodes_menu_selected(id : int) -> void:
 	pass
 #endregion
 
-#region --- Handle Nodes --------------------------------------------------------------
+#region --- Save and Load nodes ---
+func get_nodes_data() -> Dictionary:
+	# Get nodes data in a dictionary
+	var dict := {}
+	
+	for child in get_children():
+		if child is BaseNode:
+			if child.NODE_TYPE_ID == 0: # Start nodes define dialogs trees
+				dict[child.node_dialog_id] = {}
+			elif child.node_dialog_id == "": 
+				# Nodes without connection do not have a dialog tree associated
+				dict.merge(child.get_data())
+			else: # Any other node belongs to a dialog tree
+				dict[child.node_dialog_id].merge(child.get_data())
+	return dict
+	
+func load_nodes_data(dict : Dictionary) -> void:
+	# Load nodes from dictonary data
+	for dialog in dict["dialogs_data"]:
+		for node in dict["dialogs_data"][dialog]:
+			# Create nodes and load the data
+			var node_data = dict["dialogs_data"][dialog][node]
+			nodes_count[node_data["node_type_id"]] += 1
+			var new_node := nodes_scenes[node_data["node_type_id"]].instantiate()
+			new_node.title += ' #' + node.split("_")[-1]
+			new_node.name = node
+			add_child(new_node, true)
+			new_node.set_data(node_data)
+	# When all the nodes are loaded, notify the nodes to connect them
+	nodes_loaded.emit()
+#endregion
+
+#region --- Add and Delete Nodes ---
 func set_add_node_menu() -> void:
 	# Set nodes list on popup node menu
 	add_node_menu.clear()
@@ -64,7 +98,7 @@ func show_add_node_menu(pos : Vector2) -> void:
 	add_node_menu.popup(Rect2(pop_pos.x, pop_pos.y, add_node_menu.size.x, add_node_menu.size.y))
 	cursor_pos = (pos + scroll_offset) / zoom
 
-func add_node(typeID : int) -> void:
+func add_new_node(typeID : int) -> void:
 	# Create a new node
 	nodes_count[typeID] += 1
 	var new_node := nodes_scenes[typeID].instantiate()
@@ -80,7 +114,10 @@ func add_node(typeID : int) -> void:
 		if prev_connection.size() > 0:
 			disconnect_node(request_node, request_port, 
 				prev_connection[0]['to_node'], prev_connection[0]['to_port'])
+			get_node(prev_connection[0]["to_node"]).node_dialog_id = ""
+		
 		connect_node(request_node, request_port, new_node.name, 0)
+		new_node.node_dialog_id = get_node(request_node).node_dialog_id
 		request_node = ""
 		request_port = -1
 
@@ -100,7 +137,7 @@ func _on_delete_nodes_request(nodes : Array[StringName]):
 			if child.name == node_name: delete_node(child)
 #endregion
 
-#region --- Nodes Connection ---------------------------------------------------
+#region --- Nodes Connection ---
 func get_node_connections(node : String, all : bool = false, out : bool = true) -> Array:
 	# Return the output or input connections of a given node
 	var all_connections = get_connection_list()
@@ -131,10 +168,14 @@ func disconnect_node_on_port(node: String, port : int) -> void:
 func _on_connection_request(from_node: String, from_port : int, to_node : String, to_port : int) -> void:
 	var prev_connection = get_node_output_connections(from_node, from_port)
 	
-	if prev_connection.size() > 0: # Limit the connections to one
+	if prev_connection.size() > 0: # Limit the connections to one, diconnecting the old one
 		disconnect_node(from_node, from_port, prev_connection[0]["to_node"], prev_connection[0]["to_port"])
-	connect_node(from_node, from_port, to_node, to_port) # Handle nodes connection
-
+		get_node(prev_connection[0]["to_node"]).node_dialog_id = ""
+	
+	# Handle nodes connection and assign the node to the connected dialog tree
+	connect_node(from_node, from_port, to_node, to_port)
+	get_node(to_node).node_dialog_id = get_node(from_node).node_dialog_id
+	
 func _on_connection_to_empty(from_node : String, from_port : int, release_position :Vector2):
 	request_node = from_node
 	request_port = from_port

@@ -70,3 +70,4 @@ size_flags_horizontal = 3
 placeholder_text = "Label..."
 
 [connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="text_changed" from="Container/IDInput" to="." method="_on_id_input_text_changed"]

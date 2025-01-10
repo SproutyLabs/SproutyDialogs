@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://wex81cyrw24j"]
+[gd_scene load_steps=11 format=3 uid="uid://wex81cyrw24j"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_8k3p6"]
 [ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialog_system/icons/AnimationTrackGroup.svg" id="3_7frl5"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/condition_node.gd" id="5_swe6e"]
 [ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialog_system/icons/int.svg" id="6_ug6l5"]
 [ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/float.svg" id="7_gelaf"]
+[ext_resource type="PackedScene" uid="uid://m1gd4uysgciu" path="res://addons/graph_dialog_system/nodes/components/variable_input_field.tscn" id="8_aiasw"]
 [ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="8_tn2oy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avnbs"]
@@ -72,10 +73,10 @@ script = ExtResource("5_swe6e")
 node_color = Color(1.66051e-06, 0.543819, 0.103967, 1)
 node_icon = ExtResource("3_7frl5")
 
-[node name="ConditionContainer" type="HBoxContainer" parent="."]
+[node name="Container" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Type" type="OptionButton" parent="ConditionContainer"]
+[node name="Type" type="OptionButton" parent="Container"]
 layout_mode = 2
 selected = 0
 item_count = 4
@@ -87,13 +88,13 @@ popup/item_2/id = 2
 popup/item_3/icon = ExtResource("8_tn2oy")
 popup/item_3/id = 3
 
-[node name="Variable" type="OptionButton" parent="ConditionContainer"]
+[node name="Variable" type="OptionButton" parent="Container"]
 layout_mode = 2
 selected = 0
 item_count = 1
 popup/item_0/text = "(None)"
 
-[node name="Operator" type="OptionButton" parent="ConditionContainer"]
+[node name="Operator" type="OptionButton" parent="Container"]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -111,10 +112,8 @@ popup/item_4/id = 4
 popup/item_5/text = "<="
 popup/item_5/id = 5
 
-[node name="Value" type="LineEdit" parent="ConditionContainer"]
+[node name="ValueInput" parent="Container" instance=ExtResource("8_aiasw")]
 layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Value"
 
 [node name="True" type="Label" parent="."]
 layout_mode = 2
@@ -127,3 +126,4 @@ text = "False"
 horizontal_alignment = 2
 
 [connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="item_selected" from="Container/Type" to="." method="_on_type_item_selected"]

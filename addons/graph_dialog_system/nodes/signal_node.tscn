@@ -63,7 +63,7 @@ node_icon = ExtResource("6_b1lau")
 layout_mode = 2
 text = "Signal value"
 
-[node name="Input" type="LineEdit" parent="."]
+[node name="NameInput" type="LineEdit" parent="."]
 layout_mode = 2
 placeholder_text = "Value..."
 

@@ -59,5 +59,6 @@ text = "Time"
 
 [node name="SpinBox" type="SpinBox" parent="Container"]
 layout_mode = 2
-max_value = 999.0
+max_value = 9999.0
+step = 0.1
 suffix = "(s)"
