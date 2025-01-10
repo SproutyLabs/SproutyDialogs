@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://bxwvdcjc16ytf"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_2lkpj"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/field_file.gd" id="2_atfol"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/scripts/field_file.gd" id="2_5xq0f"]
 [ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="2_byw4l"]
 [ext_resource type="Texture2D" uid="uid://bnxg1gkoe3jvl" path="res://addons/graph_dialog_system/icons/Clear.svg" id="3_ve2o0"]
 
@@ -13,7 +13,7 @@ theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
-script = ExtResource("2_atfol")
+script = ExtResource("2_5xq0f")
 
 [node name="HBox" type="HBoxContainer" parent="."]
 layout_mode = 2

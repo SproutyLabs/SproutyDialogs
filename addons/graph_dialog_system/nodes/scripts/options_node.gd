@@ -1,8 +1,6 @@
 @tool
 extends BaseNode
 
-const NODE_TYPE_ID : int = 3
-
 @onready var option_scene : PackedScene = preload("res://addons/graph_dialog_system/nodes/components/option_container.tscn")
 
 func _ready():
@@ -11,10 +9,10 @@ func _ready():
 func get_data() -> Dictionary:
 	# Get node data on dict
 	var dict := {}
-	var connections: Array = get_parent().get_connections(name)
+	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
-		"node_type_id" : NODE_TYPE_ID,
+		"node_type_id" : node_type_id,
 		"options" : {},
 		"to_node" : [] if connections.size() > 0 else ["END"],
 		"offset" : {
@@ -29,13 +27,15 @@ func get_data() -> Dictionary:
 				"dialog_key" : child.dialog_key
 			}
 			if dict["to_node"][0] != "END" and connections.size() >= child.option_index:
-				dict[name.to_snake_case()]["to_node"].append(connections[child.option_index]["to_node"])
+				dict[name.to_snake_case()]["to_node"].append(
+					connections[child.option_index]["to_node"].to_snake_case()
+				)
 	
 	return dict
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict
-	to_node = [dict["to_node"]]
+	to_node = dict["to_node"]
 	position_offset.x = dict["offset"]["x"]
 	position_offset.y = dict["offset"]["y"]
 

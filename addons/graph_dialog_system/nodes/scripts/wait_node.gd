@@ -1,9 +1,8 @@
 @tool
 extends BaseNode
 
-const NODE_TYPE_ID : int = 7
-
-@onready var time : float = SpinBox.value
+@onready var time_input : SpinBox = $Container/SpinBox
+@onready var time : float = time_input.value
 
 func _ready():
 	super()
@@ -11,12 +10,13 @@ func _ready():
 func get_data() -> Dictionary:
 	# Get node data on dict
 	var dict := {}
-	var connections: Array = get_parent().get_connections(name)
+	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
-		"node_type_id" : NODE_TYPE_ID,
-		"time" : time,
-		"to_node" : connections[0]["to_node"] if connections.size() > 0 else ["END"],
+		"node_type_id" : node_type_id,
+		"time" : time_input.value,
+		"to_node" : [connections[0]["to_node"].to_snake_case()]
+				if connections.size() > 0 else ["END"],
 		"offset" : {
 			"x" : position_offset.x,
 			"y" : position_offset.y
@@ -26,7 +26,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict
-	time = dict["time"]
-	to_node = [dict["to_node"]]
+	time_input.value = dict["time"]
+	to_node = dict["to_node"]
 	position_offset.x = dict["offset"]["x"]
 	position_offset.y = dict["offset"]["y"]

@@ -1,17 +1,21 @@
-[gd_scene load_steps=5 format=3 uid="uid://dpscdg0f7o6ft"]
+[gd_scene load_steps=8 format=3 uid="uid://dpscdg0f7o6ft"]
 
 [ext_resource type="Texture2D" uid="uid://bwqotvkpjbndm" path="res://addons/graph_dialog_system/icons/Search.svg" id="1_1wtbh"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/file_manager.gd" id="1_3v21c"]
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialog_system/icons/Script.svg" id="1_ym35f"]
 [ext_resource type="Texture2D" uid="uid://jkkjqtm5w3vk" path="res://addons/graph_dialog_system/icons/Edit.svg" id="2_mg22o"]
+[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="2_sfn5g"]
+[ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="4_2tafu"]
+[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="4_prnvu"]
 
-[node name="SideBar" type="VSplitContainer"]
+[node name="FileManager" type="VSplitContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3v21c")
+file_filters = PackedStringArray("*.json")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -34,6 +38,7 @@ unique_name_in_owner = true
 layout_mode = 2
 keep_pressed_outside = true
 text = "New"
+icon = ExtResource("2_sfn5g")
 switch_on_hover = true
 item_count = 2
 popup/item_0/text = "New Dialog..."
@@ -48,7 +53,7 @@ layout_mode = 2
 [node name="OpenFile" type="Button" parent="Margin/Container/Options"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Open"
+icon = ExtResource("4_prnvu")
 flat = true
 
 [node name="VSeparator2" type="VSeparator" parent="Margin/Container/Options"]
@@ -57,7 +62,7 @@ layout_mode = 2
 [node name="SaveFile" type="Button" parent="Margin/Container/Options"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Save"
+icon = ExtResource("4_2tafu")
 flat = true
 
 [node name="FilesDisplay" type="VBoxContainer" parent="Margin/Container"]

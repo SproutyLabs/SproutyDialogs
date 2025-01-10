@@ -1,8 +1,6 @@
 @tool
 extends BaseNode
 
-const NODE_TYPE_ID : int = 4
-
 @onready var type_selector : OptionButton = $Container/Type
 @onready var var_selector : OptionButton = $Container/Variable
 @onready var operator_selector : OptionButton = $Container/Operator
@@ -14,10 +12,10 @@ func _ready():
 func get_data() -> Dictionary:
 	# Get node data on dict
 	var dict := {}
-	var connections: Array = get_parent().get_connections(name)
+	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
-		"node_type_id" : NODE_TYPE_ID,
+		"node_type_id" : node_type_id,
 		"var_name" : var_selector.get_item_text(var_selector.selected),
 		"var_type" : type_selector.selected,
 		"operator" : operator_selector.selected,
@@ -30,7 +28,9 @@ func get_data() -> Dictionary:
 	}
 	if dict["to_node"][0] != "END":
 		for connection in connections:
-			dict[name.to_snake_case()]["to_node"].append(connection["to_node"])
+			dict[name.to_snake_case()]["to_node"].append(
+				connection["to_node"].to_snake_case()
+			)
 	
 	return dict
 
@@ -46,7 +46,7 @@ func set_data(dict: Dictionary) -> void:
 	operator_selector.select(dict["operator"])
 	value_input.set_value(dict["var_value"])
 	
-	to_node = [dict["to_node"]]
+	to_node = dict["to_node"]
 	position_offset.x = dict["offset"]["x"]
 	position_offset.y = dict["offset"]["y"]
 

@@ -58,25 +58,28 @@ func get_nodes_data() -> Dictionary:
 	
 	for child in get_children():
 		if child is BaseNode:
-			if child.NODE_TYPE_ID == 0: # Start nodes define dialogs trees
-				dict[child.node_dialog_id] = {}
-			elif child.node_dialog_id == "": 
+			if child.node_type_id == 0: # Start nodes define dialogs trees
+				dict["dialog_" + child.get_dialog_id()] = {}
+				dict["dialog_" + child.get_dialog_id()].merge(child.get_data())
+			elif child.get_dialog_id() == "": 
 				# Nodes without connection do not have a dialog tree associated
-				dict.merge(child.get_data())
+				if not dict.has("unplugged_nodes"):
+					dict["unplugged_nodes"] = {}
+				dict["unplugged_nodes"].merge(child.get_data())
 			else: # Any other node belongs to a dialog tree
-				dict[child.node_dialog_id].merge(child.get_data())
+				dict["dialog_" + child.get_dialog_id()].merge(child.get_data())
 	return dict
 	
 func load_nodes_data(dict : Dictionary) -> void:
 	# Load nodes from dictonary data
-	for dialog in dict["dialogs_data"]:
-		for node in dict["dialogs_data"][dialog]:
+	for node_group in dict["nodes_data"]:
+		for node_name in dict["nodes_data"][node_group]:
 			# Create nodes and load the data
-			var node_data = dict["dialogs_data"][dialog][node]
+			var node_data = dict.nodes_data.get(node_group).get(node_name)
 			nodes_count[node_data["node_type_id"]] += 1
 			var new_node := nodes_scenes[node_data["node_type_id"]].instantiate()
-			new_node.title += ' #' + node.split("_")[-1]
-			new_node.name = node
+			new_node.title += ' #' + node_name.split("_")[-1]
+			new_node.name = node_name
 			add_child(new_node, true)
 			new_node.set_data(node_data)
 	# When all the nodes are loaded, notify the nodes to connect them
@@ -114,10 +117,10 @@ func add_new_node(typeID : int) -> void:
 		if prev_connection.size() > 0:
 			disconnect_node(request_node, request_port, 
 				prev_connection[0]['to_node'], prev_connection[0]['to_port'])
-			get_node(prev_connection[0]["to_node"]).node_dialog_id = ""
+			get_node(prev_connection[0]["to_node"]).start_node = null
 		
 		connect_node(request_node, request_port, new_node.name, 0)
-		new_node.node_dialog_id = get_node(request_node).node_dialog_id
+		new_node.start_node = get_node(request_node).start_node
 		request_node = ""
 		request_port = -1
 
@@ -135,6 +138,19 @@ func _on_delete_nodes_request(nodes : Array[StringName]):
 	for child in get_children():
 		for node_name in nodes: # Remove selected nodes
 			if child.name == node_name: delete_node(child)
+
+func is_graph_empty() -> bool:
+	# Check if graph do not have nodes
+	for child in get_children():
+		if child is BaseNode:
+			return false
+	return true
+
+func clear_graph() -> void:
+	# Clear graph removing the current nodes
+	for child in get_children():
+		if child is BaseNode:
+			child.queue_free()
 #endregion
 
 #region --- Nodes Connection ---
@@ -170,11 +186,11 @@ func _on_connection_request(from_node: String, from_port : int, to_node : String
 	
 	if prev_connection.size() > 0: # Limit the connections to one, diconnecting the old one
 		disconnect_node(from_node, from_port, prev_connection[0]["to_node"], prev_connection[0]["to_port"])
-		get_node(prev_connection[0]["to_node"]).node_dialog_id = ""
+		get_node(prev_connection[0]["to_node"]).start_node = null
 	
 	# Handle nodes connection and assign the node to the connected dialog tree
 	connect_node(from_node, from_port, to_node, to_port)
-	get_node(to_node).node_dialog_id = get_node(from_node).node_dialog_id
+	get_node(to_node).start_node = get_node(from_node).start_node
 	
 func _on_connection_to_empty(from_node : String, from_port : int, release_position :Vector2):
 	request_node = from_node

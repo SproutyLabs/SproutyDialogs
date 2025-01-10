@@ -2,11 +2,11 @@
 class_name BaseNode
 extends GraphNode
 
+@export var node_type_id : int = 0
 @export_color_no_alpha var node_color : Color
 @export var node_icon : Texture2D
 
-@onready var to_node : Array[String] = []
-@onready var node_dialog_id : String = ""
+@onready var to_node : Array = []
 @onready var start_node : BaseNode = null
 
 var _remove_icon : Texture2D = preload("res://addons/graph_dialog_system/icons/Remove.svg")
@@ -15,15 +15,6 @@ func _ready():
 	get_parent().connect("nodes_loaded", _load_output_connections)
 	set_node_titlebar()
 
-func _on_resized() -> void:
-	size.y = 0 # Keep vertical size on resize
-
-func _load_output_connections() -> void:
-	# Load connection to output nodes
-	for output_node in to_node:
-		get_parent().connect_node(name, to_node.find(output_node), to_node, 0)
-		get_parent().get_node(output_node).node_dialog_id = node_dialog_id
-
 func get_data() -> Dictionary:
 	# Abstract method to get node data on dict
 	return {}
@@ -31,6 +22,22 @@ func get_data() -> Dictionary:
 func set_data(dict: Dictionary) -> void:
 	# Abstract method to set node data from dict
 	pass
+
+func _on_resized() -> void:
+	size.y = 0 # Keep vertical size on resize
+
+func _load_output_connections() -> void:
+	# Load connection to output nodes
+	for output_node in to_node:
+		if output_node == "END":
+			continue
+		get_parent().connect_node(name, to_node.find(output_node), output_node, 0)
+		get_parent().get_node(output_node).start_node = start_node
+
+func get_dialog_id() -> String:
+	# Get dialog id from start node
+	if start_node == null: return ""
+	else: return start_node.get_start_id()
 
 func set_node_titlebar():
 	# Set titlebar color and button icons

@@ -1,0 +1,51 @@
+{
+	"csv_file_path": "path/to/csv",
+	"nodes_data": {
+		"dialog_DIALOG1": {
+			"dialog_node_1": {
+				"char_key": "",
+				"dialog_key": "",
+				"node_type_id": 2,
+				"offset": {
+					"x": 460,
+					"y": 160
+				},
+				"to_node": [
+					"signal_node_1"
+				]
+			},
+			"signal_node_1": {
+				"node_type_id": 6,
+				"offset": {
+					"x": 800,
+					"y": 240
+				},
+				"signal_name": "XDDDDD",
+				"to_node": [
+					"END"
+				]
+			},
+			"start_node_1": {
+				"node_type_id": 0,
+				"offset": {
+					"x": 165,
+					"y": 192
+				},
+				"start_id": "DIALOG1",
+				"to_node": [
+					"dialog_node_1"
+				]
+			}
+		},
+		"unplugged_nodes": {
+			"comment_node_1": {
+				"comment_text": "comentario equisde",
+				"node_type_id": 1,
+				"offset": {
+					"x": 140,
+					"y": 340
+				}
+			}
+		}
+	}
+}

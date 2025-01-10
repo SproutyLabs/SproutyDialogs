@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/editor.gd" id="1_gu2d1"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_h283m"]
-[ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/side_bar.tscn" id="1_qbi36"]
+[ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/file_manager.tscn" id="1_qbi36"]
 [ext_resource type="PackedScene" uid="uid://b3dunt76vknsq" path="res://addons/graph_dialog_system/editor/characters_panel.tscn" id="3_7mghu"]
 [ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/graph_dialog_system/editor/workspace.tscn" id="4_yuhh0"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/graph_dialog_system/editor/variables_panel.tscn" id="6_4jako"]
@@ -43,7 +43,7 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 
-[node name="SideBar" parent="MainContainer" instance=ExtResource("1_qbi36")]
+[node name="FileManager" parent="MainContainer" instance=ExtResource("1_qbi36")]
 unique_name_in_owner = true
 layout_mode = 2
 
@@ -118,4 +118,3 @@ size = Vector2i(500, 400)
 ok_button_text = "Open"
 dialog_hide_on_ok = true
 file_mode = 0
-filters = PackedStringArray("csv")

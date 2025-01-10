@@ -1,8 +1,6 @@
 @tool
 extends BaseNode
 
-const NODE_TYPE_ID : int = 1
-
 @onready var text_input : TextEdit = $TextInput
 @onready var comment_text : String = text_input.text
 
@@ -14,7 +12,7 @@ func get_data() -> Dictionary:
 	var dict := {}
 	
 	dict[name.to_snake_case()] = {
-		"node_type_id" : NODE_TYPE_ID,
+		"node_type_id" : node_type_id,
 		"comment_text" : text_input.text,
 		"offset" : {
 			"x" : position_offset.x,

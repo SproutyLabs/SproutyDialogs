@@ -45,6 +45,7 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("5_3ppuo")
+node_type_id = null
 node_color = Color(0.803922, 0.498039, 0, 1)
 node_icon = ExtResource("6_6olnj")
 
@@ -70,4 +71,3 @@ size_flags_horizontal = 3
 placeholder_text = "Label..."
 
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="text_changed" from="Container/IDInput" to="." method="_on_id_input_text_changed"]
