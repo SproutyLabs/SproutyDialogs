@@ -25,7 +25,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
-placeholder_text = "Search a file path...."
+placeholder_text = "Search a file...."
 expand_to_text_length = true
 
 [node name="OpenButton" type="Button" parent="HBox"]

@@ -1,0 +1,20 @@
+{
+	"dialog_data": {
+		"csv_file_path": "",
+		"nodes_data": {
+			"dialog_aaaaaaa": {
+				"start_node_1": {
+					"node_type_id": 0,
+					"offset": {
+						"x": -658,
+						"y": -235
+					},
+					"start_id": "aaaaaaa",
+					"to_node": [
+						"END"
+					]
+				}
+			}
+		}
+	}
+}

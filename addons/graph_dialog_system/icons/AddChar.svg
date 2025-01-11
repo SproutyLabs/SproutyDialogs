@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="5.5028615mm"
+   height="3.9360163mm"
+   viewBox="0 0 5.5028615 3.9360163"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   inkscape:export-filename="AddDialog.svg"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm" /><defs
+     id="defs1" /><g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-103.4215,-151.07956)"><path
+       fill="#e0e0e0"
+       d="m 107.42892,152.41053 v 1.09418 h -1.12159 v 0.36472 h 1.12159 v 1.09418 h 0.37385 v -1.09418 h 1.12159 v -0.36472 h -1.12159 v -1.09418 z"
+       id="path1-7-8"
+       style="fill:#84ff84;fill-opacity:1;stroke-width:0.184632"
+       inkscape:transform-center-x="0.3162645"
+       inkscape:transform-center-y="0.60605546" /><g
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:0.00060671"
+       id="g3"
+       transform="matrix(0.07192983,0,0,0.06487393,102.53556,151.07958)"><g
+         id="SVGRepo_bgCarrier"
+         stroke-width="0" /><g
+         id="SVGRepo_tracerCarrier"
+         stroke-linecap="round"
+         stroke-linejoin="round" /><g
+         id="SVGRepo_iconCarrier"> <g
+   id="g2"> <g
+   id="g1-9"> <ellipse
+   style="fill:#ffffff"
+   cx="30.336"
+   cy="12.097"
+   rx="11.997"
+   ry="12.097"
+   id="ellipse1" /> <path
+   style="fill:#ffffff"
+   d="M 35.64,30.079 H 25.031 c -7.021,0 -12.714,5.739 -12.714,12.821 V 60.671 H 48.354 V 42.9 c 0,-7.082 -5.693,-12.821 -12.714,-12.821 z"
+   id="path1-0" /> </g> </g> </g></g></g></svg>

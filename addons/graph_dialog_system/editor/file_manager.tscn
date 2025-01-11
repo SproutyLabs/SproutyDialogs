@@ -1,12 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://dpscdg0f7o6ft"]
+[gd_scene load_steps=9 format=3 uid="uid://dpscdg0f7o6ft"]
 
 [ext_resource type="Texture2D" uid="uid://bwqotvkpjbndm" path="res://addons/graph_dialog_system/icons/Search.svg" id="1_1wtbh"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/file_manager.gd" id="1_3v21c"]
-[ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialog_system/icons/Script.svg" id="1_ym35f"]
-[ext_resource type="Texture2D" uid="uid://jkkjqtm5w3vk" path="res://addons/graph_dialog_system/icons/Edit.svg" id="2_mg22o"]
-[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="2_sfn5g"]
+[ext_resource type="Texture2D" uid="uid://dv53yhmd7k3d5" path="res://addons/graph_dialog_system/icons/AddDialog.svg" id="2_fjick"]
+[ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/graph_dialog_system/icons/AddChar.svg" id="3_ljhu2"]
 [ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="4_2tafu"]
 [ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="4_prnvu"]
+[ext_resource type="Texture2D" uid="uid://db2rm5mxqrejo" path="res://addons/graph_dialog_system/icons/Close.svg" id="8_s6vw8"]
+[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/field_file.tscn" id="8_wehoa"]
 
 [node name="FileManager" type="VSplitContainer"]
 anchors_preset = 15
@@ -15,7 +16,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3v21c")
-file_filters = PackedStringArray("*.json")
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -28,59 +28,73 @@ theme_override_constants/margin_bottom = 5
 [node name="Container" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
 
-[node name="Options" type="HBoxContainer" parent="Margin/Container"]
+[node name="FileOptions" type="HBoxContainer" parent="Margin/Container"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="NewFile" type="MenuButton" parent="Margin/Container/Options"]
+[node name="NewFile" type="Button" parent="Margin/Container/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
-keep_pressed_outside = true
-text = "New"
-icon = ExtResource("2_sfn5g")
-switch_on_hover = true
-item_count = 2
-popup/item_0/text = "New Dialog..."
-popup/item_0/icon = ExtResource("1_ym35f")
-popup/item_1/text = "New Character..."
-popup/item_1/icon = ExtResource("2_mg22o")
-popup/item_1/id = 1
+icon = ExtResource("2_fjick")
+flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Margin/Container/Options"]
+[node name="VSeparator" type="VSeparator" parent="Margin/Container/FileOptions"]
 layout_mode = 2
 
-[node name="OpenFile" type="Button" parent="Margin/Container/Options"]
+[node name="NewChar" type="Button" parent="Margin/Container/FileOptions"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_ljhu2")
+flat = true
+
+[node name="VSeparator2" type="VSeparator" parent="Margin/Container/FileOptions"]
+layout_mode = 2
+
+[node name="OpenFile" type="Button" parent="Margin/Container/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
 icon = ExtResource("4_prnvu")
 flat = true
 
-[node name="VSeparator2" type="VSeparator" parent="Margin/Container/Options"]
+[node name="VSeparator3" type="VSeparator" parent="Margin/Container/FileOptions"]
 layout_mode = 2
 
-[node name="SaveFile" type="Button" parent="Margin/Container/Options"]
+[node name="SaveFile" type="Button" parent="Margin/Container/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
 icon = ExtResource("4_2tafu")
 flat = true
 
-[node name="FilesDisplay" type="VBoxContainer" parent="Margin/Container"]
+[node name="FileDisplay" type="VBoxContainer" parent="Margin/Container"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Search" type="LineEdit" parent="Margin/Container/FilesDisplay"]
+[node name="FileSearch" type="LineEdit" parent="Margin/Container/FileDisplay"]
+unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Filter Files"
 right_icon = ExtResource("1_1wtbh")
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="FileList" type="ItemList" parent="Margin/Container/FilesDisplay"]
+[node name="FileList" type="ItemList" parent="Margin/Container/FileDisplay"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 same_column_width = true
+
+[node name="CSVFileContainer" type="VBoxContainer" parent="Margin/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Margin/Container/CSVFileContainer"]
+layout_mode = 2
+text = "CSV Translations File"
+
+[node name="FieldFile" parent="Margin/Container/CSVFileContainer" instance=ExtResource("8_wehoa")]
+layout_mode = 2
 
 [node name="Version" type="Label" parent="Margin/Container"]
 layout_mode = 2
@@ -90,5 +104,70 @@ text = "v0.1
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[connection signal="pressed" from="Margin/Container/Options/OpenFile" to="." method="_on_open_file_pressed"]
-[connection signal="pressed" from="Margin/Container/Options/SaveFile" to="." method="_on_save_file_pressed"]
+[node name="PopupWindows" type="Node" parent="."]
+
+[node name="FileMenu" type="PopupMenu" parent="PopupWindows"]
+size = Vector2i(102, 120)
+item_count = 5
+item_0/text = "Save"
+item_0/icon = ExtResource("4_2tafu")
+item_1/text = "Save As..."
+item_1/icon = ExtResource("4_2tafu")
+item_1/id = 1
+item_2/id = 4
+item_2/separator = true
+item_3/text = "Close"
+item_3/icon = ExtResource("8_s6vw8")
+item_3/id = 2
+item_4/text = "Close All"
+item_4/icon = ExtResource("8_s6vw8")
+item_4/id = 3
+
+[node name="ConfirmCloseFiles" type="ConfirmationDialog" parent="PopupWindows"]
+initial_position = 4
+size = Vector2i(400, 106)
+dialog_text = "The file/s contains unsaved changes. 
+Are you sure you want to close this file/s?"
+dialog_autowrap = true
+
+[node name="NewDialog" type="FileDialog" parent="PopupWindows"]
+title = "New Dialog"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Create File"
+filters = PackedStringArray("*.json")
+
+[node name="NewChar" type="FileDialog" parent="PopupWindows"]
+auto_translate_mode = 1
+title = "New Character"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Create File"
+filters = PackedStringArray("*.json")
+
+[node name="OpenFile" type="FileDialog" parent="PopupWindows"]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Open"
+file_mode = 0
+filters = PackedStringArray("*.json")
+
+[node name="SaveFile" type="FileDialog" parent="PopupWindows"]
+auto_translate_mode = 1
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Save"
+filters = PackedStringArray("*.json")
+
+[connection signal="pressed" from="Margin/Container/FileOptions/NewFile" to="." method="_on_new_dialog_pressed"]
+[connection signal="pressed" from="Margin/Container/FileOptions/NewChar" to="." method="_on_new_char_pressed"]
+[connection signal="pressed" from="Margin/Container/FileOptions/OpenFile" to="." method="_on_open_file_pressed"]
+[connection signal="pressed" from="Margin/Container/FileOptions/SaveFile" to="." method="_on_save_file_pressed"]
+[connection signal="empty_clicked" from="Margin/Container/FileDisplay/FileList" to="." method="_on_empty_clicked"]
+[connection signal="item_clicked" from="Margin/Container/FileDisplay/FileList" to="." method="_on_item_clicked"]
+[connection signal="item_selected" from="Margin/Container/FileDisplay/FileList" to="." method="_on_file_selected"]
+[connection signal="id_pressed" from="PopupWindows/FileMenu" to="." method="_on_file_menu_pressed"]
+[connection signal="canceled" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_panel_canceled"]
+[connection signal="custom_action" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_panel_action"]

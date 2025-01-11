@@ -1,6 +1,7 @@
 @tool
 extends GraphEdit
 
+signal modified
 signal nodes_loaded
 
 @export_category("Nodes Settings")
@@ -28,6 +29,9 @@ func _ready():
 	nodes_count.fill(0)
 	
 	set_add_node_menu()
+
+func _on_modified():
+	modified.emit()
 
 #region --- Input ---
 func _input(_event):
@@ -67,15 +71,17 @@ func get_nodes_data() -> Dictionary:
 					dict["unplugged_nodes"] = {}
 				dict["unplugged_nodes"].merge(child.get_data())
 			else: # Any other node belongs to a dialog tree
+				if not dict.has("dialog_" + child.get_dialog_id()):
+					dict["dialog_" + child.get_dialog_id()] = {}
 				dict["dialog_" + child.get_dialog_id()].merge(child.get_data())
 	return dict
 	
 func load_nodes_data(dict : Dictionary) -> void:
 	# Load nodes from dictonary data
-	for node_group in dict["nodes_data"]:
-		for node_name in dict["nodes_data"][node_group]:
+	for node_group in dict["dialog_data"]["nodes_data"]:
+		for node_name in dict["dialog_data"]["nodes_data"][node_group]:
 			# Create nodes and load the data
-			var node_data = dict.nodes_data.get(node_group).get(node_name)
+			var node_data = dict.dialog_data.nodes_data.get(node_group).get(node_name)
 			nodes_count[node_data["node_type_id"]] += 1
 			var new_node := nodes_scenes[node_data["node_type_id"]].instantiate()
 			new_node.title += ' #' + node_name.split("_")[-1]
