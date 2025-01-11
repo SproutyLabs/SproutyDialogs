@@ -3,16 +3,16 @@ extends VSplitContainer
 
 enum FileType { DIALOG, CHAR }
 
-@onready var file_list : ItemList = %FileList
-@onready var editor_main : Control = find_parent("Main")
-@onready var workspace : SplitContainer = editor_main.get_node("%Workspace")
+@export var editor_main : Control
+@export var workspace : SplitContainer
 
+@onready var file_list : ItemList = %FileList
 @onready var file_popup_menu : PopupMenu = $PopupWindows/FileMenu
-@onready var confirm_panel : ConfirmationDialog = $PopupWindows/ConfirmCloseFiles
 @onready var new_dialog_panel : FileDialog = $PopupWindows/NewDialog
 @onready var new_char_panel : FileDialog = $PopupWindows/NewChar
 @onready var open_file_panel : FileDialog = $PopupWindows/OpenFile
 @onready var save_file_panel : FileDialog = $PopupWindows/SaveFile
+@onready var confirm_panel : AcceptDialog = $PopupWindows/ConfirmCloseFiles
 
 var graph_scene := preload("res://addons/graph_dialog_system/editor/graph.tscn")
 var dialog_icon := preload("res://addons/graph_dialog_system/icons/Script.svg")
@@ -30,6 +30,7 @@ func _ready() -> void:
 	confirm_panel.get_ok_button().hide()
 	confirm_panel.add_button('Save', true, 'save_file')
 	confirm_panel.add_button('Discard', true, 'discard_file')
+	confirm_panel.add_cancel_button('Cancel')
 
 func new_file_item(file_name : String, path : String, type : FileType, data : Dictionary) -> void:
 	# Add a new item on file display
@@ -109,7 +110,7 @@ func load_file(path : String) -> void:
 			new_file_item(file_name, path, FileType.DIALOG, data)
 			editor_main.switch_active_tab(0)
 			# TODO: Switch current active file
-			workspace.get_node("Graph").load_nodes_data(data)
+			workspace.get_current_graph().load_nodes_data(data)
 		
 		elif data.has("character_data"): # Load a character
 			new_file_item(file_name, path, FileType.CHAR, data)
@@ -196,9 +197,7 @@ func switch_selected_file(file_index : int) -> void:
 	# Switch view to the new file
 	if new_metadata["file_type"] == FileType.DIALOG:
 		# Switch current graph and change tab view
-		workspace.remove_child(workspace.get_node("Graph"))
-		workspace.add_child(new_metadata["graph"])
-		workspace.move_child(new_metadata["graph"], 0)
+		workspace.switch_current_graph(new_metadata["graph"])
 		editor_main.switch_active_tab(0)
 	
 	elif new_metadata["file_type"] == FileType.CHAR:
@@ -256,9 +255,8 @@ func _on_file_menu_pressed(id : int) -> void:
 		3:
 			close_all() # Close all files
 
-func _on_confirm_panel_action(action):
+func _on_confirm_closing_action(action) -> void:
 	confirm_panel.hide()
-	
 	if deletion_queue.size() == 0:
 		return
 	
@@ -272,5 +270,5 @@ func _on_confirm_panel_action(action):
 				close_file(-1)
 	deletion_queue.clear()
 
-func _on_confirm_panel_canceled():
+func _on_confirm_closing_canceled():
 	deletion_queue.clear()

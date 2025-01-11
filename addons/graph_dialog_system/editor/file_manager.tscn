@@ -123,12 +123,12 @@ item_4/text = "Close All"
 item_4/icon = ExtResource("8_s6vw8")
 item_4/id = 3
 
-[node name="ConfirmCloseFiles" type="ConfirmationDialog" parent="PopupWindows"]
+[node name="ConfirmCloseFiles" type="AcceptDialog" parent="PopupWindows"]
+title = "Please Confirm..."
 initial_position = 4
-size = Vector2i(400, 106)
+size = Vector2i(336, 106)
 dialog_text = "The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?"
-dialog_autowrap = true
 
 [node name="NewDialog" type="FileDialog" parent="PopupWindows"]
 title = "New Dialog"
@@ -169,5 +169,5 @@ filters = PackedStringArray("*.json")
 [connection signal="item_clicked" from="Margin/Container/FileDisplay/FileList" to="." method="_on_item_clicked"]
 [connection signal="item_selected" from="Margin/Container/FileDisplay/FileList" to="." method="_on_file_selected"]
 [connection signal="id_pressed" from="PopupWindows/FileMenu" to="." method="_on_file_menu_pressed"]
-[connection signal="canceled" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_panel_canceled"]
-[connection signal="custom_action" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_panel_action"]
+[connection signal="canceled" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_closing_canceled"]
+[connection signal="custom_action" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_closing_action"]

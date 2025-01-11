@@ -40,4 +40,13 @@ layout_mode = 2
 icon = ExtResource("3_ve2o0")
 flat = true
 
+[node name="OpenFileDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 4
+size = Vector2i(500, 400)
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+file_mode = 0
+
 [connection signal="text_submitted" from="HBox/Field" to="." method="_on_file_dialog_selected"]

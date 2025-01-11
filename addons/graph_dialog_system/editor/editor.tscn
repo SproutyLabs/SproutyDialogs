@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://chmw64xy0cmck"]
+[gd_scene load_steps=8 format=3 uid="uid://chmw64xy0cmck"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/editor.gd" id="1_gu2d1"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_h283m"]
@@ -6,8 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://b3dunt76vknsq" path="res://addons/graph_dialog_system/editor/characters_panel.tscn" id="3_7mghu"]
 [ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/graph_dialog_system/editor/workspace.tscn" id="4_yuhh0"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/graph_dialog_system/editor/variables_panel.tscn" id="6_4jako"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5qk0r"]
 
 [sub_resource type="GDScript" id="GDScript_hlq48"]
 script/source = "extends HSplitContainer
@@ -43,9 +41,10 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 
-[node name="FileManager" parent="MainContainer" instance=ExtResource("1_qbi36")]
+[node name="FileManager" parent="MainContainer" node_paths=PackedStringArray("editor_main") instance=ExtResource("1_qbi36")]
 unique_name_in_owner = true
 layout_mode = 2
+editor_main = NodePath("../..")
 
 [node name="TabContainer" type="TabContainer" parent="MainContainer"]
 unique_name_in_owner = true
@@ -60,38 +59,6 @@ metadata/_tab_index = 0
 [node name="Workspace" parent="MainContainer/TabContainer/Dialogue" instance=ExtResource("4_yuhh0")]
 unique_name_in_owner = true
 layout_mode = 1
-
-[node name="StartPanel" type="Panel" parent="MainContainer/TabContainer/Dialogue"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Label" type="RichTextLabel" parent="MainContainer/TabContainer/Dialogue/StartPanel"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -172.0
-offset_top = -28.0
-offset_right = 100.0
-offset_bottom = 28.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_font_sizes/normal_font_size = 20
-theme_override_styles/normal = SubResource("StyleBoxEmpty_5qk0r")
-bbcode_enabled = true
-text = "[wave]Create a [color=orange]new dialog[/color] to start! 
-[center]\\( ^-^)/"
-fit_content = true
-scroll_active = false
-autowrap_mode = 0
 
 [node name="Characters" type="TabBar" parent="MainContainer/TabContainer"]
 visible = false
@@ -111,13 +78,5 @@ metadata/_tab_index = 2
 [node name="VariablesPanel" parent="MainContainer/TabContainer/Variables" instance=ExtResource("6_4jako")]
 unique_name_in_owner = true
 layout_mode = 1
-
-[node name="OpenFileDialog" type="FileDialog" parent="."]
-title = "Open a File"
-initial_position = 4
-size = Vector2i(500, 400)
-ok_button_text = "Open"
-dialog_hide_on_ok = true
-file_mode = 0
 
 [connection signal="tab_selected" from="MainContainer/TabContainer" to="." method="_on_tab_selected"]
