@@ -104,8 +104,9 @@ text = "Create CSV File"
 icon = ExtResource("4_qjqtm")
 
 [node name="OpenCSVDialog" type="FileDialog" parent="CSVFilePanel"]
-title = "Open a CSV File"
+title = "Open a File"
 initial_position = 4
+size = Vector2i(600, 400)
 ok_button_text = "Open"
 file_mode = 0
 filters = PackedStringArray("*.csv")
@@ -114,7 +115,7 @@ filters = PackedStringArray("*.csv")
 auto_translate_mode = 1
 title = "Create a CSV File"
 initial_position = 4
-size = Vector2i(208, 175)
+size = Vector2i(600, 400)
 ok_button_text = "Create File"
 filters = PackedStringArray("*.csv")
 

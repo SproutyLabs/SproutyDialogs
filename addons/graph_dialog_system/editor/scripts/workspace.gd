@@ -48,7 +48,9 @@ func _on_create_csv_file_pressed():
 	new_csv_dialog.popup_centered()
 
 func _on_open_csv_dialog_file_selected(path):
+	show_graph_editor()
 	pass # Replace with function body.
 
 func _on_new_csv_dialog_file_selected(path):
+	show_graph_editor()
 	pass # Replace with function body.
