@@ -57,9 +57,11 @@ current_tab = 0
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Workspace" parent="MainContainer/TabContainer/Dialogue" instance=ExtResource("4_yuhh0")]
+[node name="Workspace" parent="MainContainer/TabContainer/Dialogue" node_paths=PackedStringArray("editor_main", "file_manager") instance=ExtResource("4_yuhh0")]
 unique_name_in_owner = true
 layout_mode = 1
+editor_main = NodePath("../../../..")
+file_manager = NodePath("../../../FileManager")
 
 [node name="Characters" type="TabBar" parent="MainContainer/TabContainer"]
 visible = false

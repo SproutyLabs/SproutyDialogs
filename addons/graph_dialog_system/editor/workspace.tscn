@@ -1,13 +1,15 @@
-[gd_scene load_steps=10 format=3 uid="uid://bo8iha2w2kgt5"]
+[gd_scene load_steps=11 format=3 uid="uid://bo8iha2w2kgt5"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_u7p51"]
 [ext_resource type="PackedScene" uid="uid://cr20rw0unyne0" path="res://addons/graph_dialog_system/editor/graph.tscn" id="2_dnvg2"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/workspace.gd" id="2_vohmy"]
 [ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="3_jpc4g"]
-[ext_resource type="StyleBox" uid="uid://diwtetxmgsjqs" path="res://addons/graph_dialog_system/theme/orange_hover_button.tres" id="3_lg051"]
+[ext_resource type="StyleBox" uid="uid://diwtetxmgsjqs" path="res://addons/graph_dialog_system/theme/styled_hover_button.tres" id="3_lg051"]
 [ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialog_system/editor/text_editor.tscn" id="4_4ukmm"]
-[ext_resource type="StyleBox" uid="uid://dqfnh466dhnxw" path="res://addons/graph_dialog_system/theme/orange_normal_button.tres" id="4_5myt4"]
+[ext_resource type="StyleBox" uid="uid://dqfnh466dhnxw" path="res://addons/graph_dialog_system/theme/styled_normal_button.tres" id="4_5myt4"]
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="4_qjqtm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h0dl8"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gxvii"]
 
@@ -23,29 +25,53 @@ script = ExtResource("2_vohmy")
 [node name="StartPanel" type="Panel" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_h0dl8")
 
-[node name="Label" type="RichTextLabel" parent="StartPanel"]
+[node name="Container" type="VBoxContainer" parent="StartPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -136.0
-offset_top = -42.0
-offset_right = 136.0
-offset_bottom = 42.0
+offset_left = -176.5
+offset_top = -49.5
+offset_right = 176.5
+offset_bottom = 49.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 15
+
+[node name="Label" type="RichTextLabel" parent="StartPanel/Container"]
+layout_mode = 2
 theme_override_font_sizes/normal_font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_gxvii")
 bbcode_enabled = true
-text = "[center][wave]Create or open a 
-[color=orange]new dialog[/color] to start! 
+text = "[center][wave]Create or open a [color=orange]new dialog[/color] to start!
 [center]\\( ^-^)/"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="StartPanel/Container"]
+layout_mode = 2
+alignment = 1
+
+[node name="OpenDialogFile" type="Button" parent="StartPanel/Container/ButtonsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/hover = ExtResource("3_lg051")
+theme_override_styles/normal = ExtResource("4_5myt4")
+text = "Open Dialog"
+icon = ExtResource("3_jpc4g")
+
+[node name="CreateDialogFile" type="Button" parent="StartPanel/Container/ButtonsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+theme_override_styles/hover = ExtResource("3_lg051")
+theme_override_styles/normal = ExtResource("4_5myt4")
+text = "Create Dialog"
+icon = ExtResource("4_qjqtm")
 
 [node name="CSVFilePanel" type="Panel" parent="."]
 visible = false
@@ -59,28 +85,25 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -249.0
-offset_top = -94.0
+offset_top = -54.5
 offset_right = 249.0
-offset_bottom = -4.0
+offset_bottom = 54.5
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 15
 alignment = 1
 
-[node name="Label" type="Label" parent="CSVFilePanel/Container"]
-layout_mode = 2
-theme = ExtResource("1_u7p51")
-theme_type_variation = &"HeaderLarge"
-text = "Please select a CSV file"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="SubLabel" type="RichTextLabel" parent="CSVFilePanel/Container"]
+[node name="Label" type="RichTextLabel" parent="CSVFilePanel/Container"]
 layout_mode = 2
 theme = ExtResource("1_u7p51")
 theme_type_variation = &"HeaderSmall"
-theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 24
 bbcode_enabled = true
-text = "[center]To save the [color=orange][wave]dialogs[/wave][/color] and their [color=orange][wave]translations![/wave][/color]"
+text = "[center][b]\\( ^ . ^)/
+Please select a CSV file![/b]
+
+To save the [color=orange][wave]dialogs[/wave][/color] and their [color=orange][wave]translations![/wave][/color]"
 fit_content = true
 
 [node name="ButtonsContainer" type="HBoxContainer" parent="CSVFilePanel/Container"]
@@ -138,6 +161,8 @@ scroll_offset = Vector2(-12, 0)
 visible = false
 layout_mode = 2
 
+[connection signal="pressed" from="StartPanel/Container/ButtonsContainer/OpenDialogFile" to="." method="_on_open_dialog_file_pressed"]
+[connection signal="pressed" from="StartPanel/Container/ButtonsContainer/CreateDialogFile" to="." method="_on_create_dialog_file_pressed"]
 [connection signal="pressed" from="CSVFilePanel/Container/ButtonsContainer/OpenCSVFile" to="." method="_on_open_csv_file_pressed"]
 [connection signal="pressed" from="CSVFilePanel/Container/ButtonsContainer/CreateCSVFile" to="." method="_on_create_csv_file_pressed"]
 [connection signal="file_selected" from="CSVFilePanel/OpenCSVDialog" to="." method="_on_open_csv_dialog_file_selected"]

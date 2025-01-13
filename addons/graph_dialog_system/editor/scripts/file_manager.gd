@@ -7,6 +7,7 @@ enum FileType { DIALOG, CHAR }
 @export var workspace : SplitContainer
 
 @onready var file_list : ItemList = %FileList
+@onready var filtered_list : ItemList = %FilteredList
 @onready var file_popup_menu : PopupMenu = $PopupWindows/FileMenu
 @onready var new_dialog_panel : FileDialog = $PopupWindows/NewDialog
 @onready var new_char_panel : FileDialog = $PopupWindows/NewChar
@@ -19,7 +20,6 @@ var dialog_icon := preload("res://addons/graph_dialog_system/icons/Script.svg")
 var char_icon := preload("res://addons/graph_dialog_system/icons/Character.svg")
 
 var current_file_index : int = -1
-var dialogs_open_count : int = 0
 var closing_queue : Array[int] = []
 
 func _ready() -> void:
@@ -33,6 +33,7 @@ func _ready() -> void:
 	confirm_panel.add_button('Discard', true, 'discard_file')
 	confirm_panel.add_cancel_button('Cancel')
 
+#region --- New File ---
 func new_file_item(file_name : String, path : String, type : FileType, data : Dictionary) -> void:
 	# Add a new item on file display
 	var item_index : int = file_list.item_count
@@ -62,7 +63,6 @@ func new_file_item(file_name : String, path : String, type : FileType, data : Di
 			remove_child(graph)
 			metadata['graph'] = graph
 			
-			dialogs_open_count += 1
 			file_list.add_item(file_name, dialog_icon)
 			file_list.set_item_metadata(item_index, metadata)
 			
@@ -104,7 +104,9 @@ func new_character_file(path : String) -> void:
 	editor_main.switch_active_tab(1)
 	
 	print("[Graph Dialogs] Character file '" + file_name + "' created.")
+#endregion
 
+#region --- Save and Load ---
 func load_file(path : String) -> void:
 	# Load dialog data from JSON file
 	if JSONFileManager.file_exists(path):
@@ -142,7 +144,9 @@ func save_file(index : int = current_file_index, path: String = "") -> void:
 	file_list.set_item_metadata(index, file_metadata)
 	set_file_as_modified(index, false)
 	print("[Graph Dialogs] Dialog file saved.")
+#endregion
 
+#region --- Close Files ---
 func close_file(index : int = current_file_index) -> void:
 	# Close an open file
 	if file_list.item_count == 0: return
@@ -158,10 +162,6 @@ func close_file(index : int = current_file_index) -> void:
 	
 	if index == current_file_index:
 		# If the file to be closed is being edited
-		if dialogs_open_count == 1:
-			# If the last dialog file is closed
-			workspace.get_current_graph().clear_graph()
-		
 		if file_list.item_count == 1:
 			# If there are no open files to switch to them
 			current_file_index = -1
@@ -174,9 +174,8 @@ func close_file(index : int = current_file_index) -> void:
 	
 	if metadata["file_type"] == FileType.DIALOG:
 		metadata["graph"].queue_free()
-		dialogs_open_count -= 1
 	
-	if file_list.item_count == 0:
+	if file_list.item_count == 1:
 		workspace.show_start_panel()
 	
 	file_list.remove_item(index)
@@ -194,11 +193,13 @@ func close_all() -> void:
 		confirm_panel.popup_centered()
 		return
 	
-	# Delete if none are modified
+	# Close all if none are modified
 	current_file_index = -1
 	for index in range(file_list.item_count):
 		close_file(index)
+#endregion
 
+#region --- Work Files Handling ---
 func switch_selected_file(file_index : int) -> void:
 	# Switch current selected file
 	if file_list.item_count == 0 or file_index > file_list.item_count:
@@ -244,6 +245,21 @@ func _on_data_modified() -> void:
 	# When data is modified, set file as modified
 	set_file_as_modified(current_file_index, true)
 
+func filter_file_list(search_text : String)-> void:
+	# Filter file list by a input filter text
+	filtered_list.clear()
+	
+	for item in file_list.item_count:
+		if file_list.get_item_text(item).contains(search_text):
+			filtered_list.add_item(
+				file_list.get_item_text(item), 
+				file_list.get_item_icon(item)
+			)
+	file_list.visible = false
+	filtered_list.visible = true
+#endregion
+
+#region --- UI Handling ---
 func _on_save_file_pressed() -> void:
 	save_file() # Save current file
 
@@ -301,5 +317,15 @@ func _on_confirm_closing_action(action) -> void:
 				close_file(index)
 	closing_queue.clear()
 
-func _on_confirm_closing_canceled():
+func _on_confirm_closing_canceled() -> void:
 	closing_queue.clear()
+
+func _on_file_search_text_changed(new_text : String) -> void:
+	filter_file_list(new_text) # Filter file list by input filter text
+
+func _on_file_search_focus_exited() -> void:
+	# Disable the filtered list if it has no input filter and loses focus
+	if %FileSearch.text.is_empty():
+		filtered_list.visible = false
+		file_list.visible = true
+#endregion

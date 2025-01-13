@@ -85,6 +85,14 @@ layout_mode = 2
 size_flags_vertical = 3
 same_column_width = true
 
+[node name="FilteredList" type="ItemList" parent="Margin/Container/FileDisplay"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+same_column_width = true
+
 [node name="CSVFileContainer" type="VBoxContainer" parent="Margin/Container"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -165,9 +173,14 @@ filters = PackedStringArray("*.json")
 [connection signal="pressed" from="Margin/Container/FileOptions/NewChar" to="." method="_on_new_char_pressed"]
 [connection signal="pressed" from="Margin/Container/FileOptions/OpenFile" to="." method="_on_open_file_pressed"]
 [connection signal="pressed" from="Margin/Container/FileOptions/SaveFile" to="." method="_on_save_file_pressed"]
+[connection signal="focus_exited" from="Margin/Container/FileDisplay/FileSearch" to="." method="_on_file_search_focus_exited"]
+[connection signal="text_changed" from="Margin/Container/FileDisplay/FileSearch" to="." method="_on_file_search_text_changed"]
 [connection signal="empty_clicked" from="Margin/Container/FileDisplay/FileList" to="." method="_on_empty_clicked"]
 [connection signal="item_clicked" from="Margin/Container/FileDisplay/FileList" to="." method="_on_item_clicked"]
 [connection signal="item_selected" from="Margin/Container/FileDisplay/FileList" to="." method="_on_file_selected"]
+[connection signal="empty_clicked" from="Margin/Container/FileDisplay/FilteredList" to="." method="_on_empty_clicked"]
+[connection signal="item_clicked" from="Margin/Container/FileDisplay/FilteredList" to="." method="_on_item_clicked"]
+[connection signal="item_selected" from="Margin/Container/FileDisplay/FilteredList" to="." method="_on_file_selected"]
 [connection signal="id_pressed" from="PopupWindows/FileMenu" to="." method="_on_file_menu_pressed"]
 [connection signal="canceled" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_closing_canceled"]
 [connection signal="custom_action" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_closing_action"]
