@@ -2,15 +2,14 @@
 	"dialog_data": {
 		"csv_file_path": "",
 		"nodes_data": {
-			"dialog_hola": {
-				"dialog_node_1": {
-					"char_key": "",
-					"dialog_key": "",
-					"node_type_id": 2,
+			"dialog_xd": {
+				"signal_node_1": {
+					"node_type_id": 6,
 					"offset": {
-						"x": 520,
-						"y": 240
+						"x": -574,
+						"y": -448
 					},
+					"signal_name": "xd",
 					"to_node": [
 						"END"
 					]
@@ -18,22 +17,22 @@
 				"start_node_1": {
 					"node_type_id": 0,
 					"offset": {
-						"x": 100,
-						"y": 340
+						"x": -1077,
+						"y": -449
 					},
-					"start_id": "hola",
+					"start_id": "xd",
 					"to_node": [
-						"dialog_node_1"
+						"signal_node_1"
 					]
 				}
 			},
 			"unplugged_nodes": {
 				"comment_node_1": {
-					"comment_text": "holaaaa",
+					"comment_text": "aaaaaaaaa",
 					"node_type_id": 1,
 					"offset": {
-						"x": 140,
-						"y": 560
+						"x": -943,
+						"y": -217
 					}
 				}
 			}

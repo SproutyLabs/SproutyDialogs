@@ -19,7 +19,8 @@ var dialog_icon := preload("res://addons/graph_dialog_system/icons/Script.svg")
 var char_icon := preload("res://addons/graph_dialog_system/icons/Character.svg")
 
 var current_file_index : int = -1
-var deletion_queue : Array[int] = []
+var dialogs_open_count : int = 0
+var closing_queue : Array[int] = []
 
 func _ready() -> void:
 	open_file_panel.connect("file_selected", load_file)
@@ -61,6 +62,7 @@ func new_file_item(file_name : String, path : String, type : FileType, data : Di
 			remove_child(graph)
 			metadata['graph'] = graph
 			
+			dialogs_open_count += 1
 			file_list.add_item(file_name, dialog_icon)
 			file_list.set_item_metadata(item_index, metadata)
 			
@@ -112,8 +114,7 @@ func load_file(path : String) -> void:
 		if data.has("dialog_data"): # Load a dialog
 			new_file_item(file_name, path, FileType.DIALOG, data)
 			editor_main.switch_active_tab(0)
-			# TODO: Switch current active file
-			workspace.get_current_graph().load_nodes_data(data)
+			workspace.show_graph_editor()
 		
 		elif data.has("character_data"): # Load a character
 			new_file_item(file_name, path, FileType.CHAR, data)
@@ -143,41 +144,60 @@ func save_file(index : int = current_file_index, path: String = "") -> void:
 	print("[Graph Dialogs] Dialog file saved.")
 
 func close_file(index : int = current_file_index) -> void:
-	# Close a file
-	var metadata := file_list.get_item_metadata(current_file_index)
+	# Close an open file
+	if file_list.item_count == 0: return
+	
+	index = wrapi(index, 0, file_list.item_count)
+	var metadata := file_list.get_item_metadata(index)
 
-	if metadata["modified"] and not index in deletion_queue:
-		deletion_queue.append(index)
+	if metadata["modified"] and not index in closing_queue:
+		# If the file to be closed is unsaved, alert user before close
+		closing_queue.append(index)
 		confirm_panel.popup_centered()
 		return
 	
 	if index == current_file_index:
+		# If the file to be closed is being edited
+		if dialogs_open_count == 1:
+			# If the last dialog file is closed
+			workspace.get_current_graph().clear_graph()
+		
 		if file_list.item_count == 1:
+			# If there are no open files to switch to them
 			current_file_index = -1
 		elif index == 0:
+			# If the file to close is the first one, switch to second one
 			switch_selected_file(1)
 			current_file_index = 0
-		else:
+		else: # If not the first file, switch to the previous file
 			switch_selected_file(index - 1)
 	
 	if metadata["file_type"] == FileType.DIALOG:
 		metadata["graph"].queue_free()
+		dialogs_open_count -= 1
+	
+	if file_list.item_count == 0:
+		workspace.show_start_panel()
+	
 	file_list.remove_item(index)
 
 func close_all() -> void:
 	# Close all open files
-	deletion_queue.clear()
+	closing_queue.clear()
+	
+	# Add unsaved files to queue to wait for closing confirmation
 	for index in range(file_list.item_count):
 		if file_list.get_item_metadata(index)["modified"]:
-			deletion_queue.append(index)
-	if deletion_queue.size() > 0:
+			closing_queue.append(index)
+	
+	if closing_queue.size() > 0: # Alert unsaved changes
 		confirm_panel.popup_centered()
 		return
 	
 	# Delete if none are modified
 	current_file_index = -1
 	for index in range(file_list.item_count):
-		close_file(0)
+		close_file(index)
 
 func switch_selected_file(file_index : int) -> void:
 	# Switch current selected file
@@ -268,18 +288,18 @@ func _on_file_menu_pressed(id : int) -> void:
 func _on_confirm_closing_action(action) -> void:
 	# Set the confirm closing dialog actions
 	confirm_panel.hide()
-	if deletion_queue.size() == 0:
+	if closing_queue.size() == 0:
 		return
 	
 	match action:
 		"save_file":
-			for index in deletion_queue:
+			for index in closing_queue:
 				save_file(index)
 			close_all()
 		"discard_file":
 			for index in range(file_list.item_count):
-				close_file(-1)
-	deletion_queue.clear()
+				close_file(index)
+	closing_queue.clear()
 
 func _on_confirm_closing_canceled():
-	deletion_queue.clear()
+	closing_queue.clear()

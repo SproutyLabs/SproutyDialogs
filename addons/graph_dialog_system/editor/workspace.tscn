@@ -21,7 +21,6 @@ theme = ExtResource("1_u7p51")
 script = ExtResource("2_vohmy")
 
 [node name="StartPanel" type="Panel" parent="."]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -49,6 +48,7 @@ scroll_active = false
 autowrap_mode = 0
 
 [node name="CSVFilePanel" type="Panel" parent="."]
+visible = false
 layout_mode = 2
 
 [node name="Container" type="VBoxContainer" parent="CSVFilePanel"]

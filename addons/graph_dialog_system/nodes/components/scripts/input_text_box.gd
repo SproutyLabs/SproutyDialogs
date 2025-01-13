@@ -6,7 +6,7 @@ extends HBoxContainer
 var text_editor : Panel
 
 func _ready():
-	text_editor = find_parent("Main").get_node("%Workspace/%TextEditor")
+	text_editor = find_parent("Main").get_node("%Workspace/TextEditor")
 
 func _on_expand_button_pressed() -> void:
 	# Open the extended window to edit text

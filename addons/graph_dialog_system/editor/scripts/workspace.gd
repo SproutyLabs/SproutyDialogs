@@ -14,11 +14,14 @@ func _ready():
 
 func get_current_graph() -> GraphEdit:
 	# Return the current graph on editor
-	return graph_editor.get_node("Graph")
+	return graph_editor.get_child(0)
 
 func switch_current_graph(new_graph : GraphEdit) -> void:
 	# Switch the current graph on editor
-	remove_child(graph_editor.get_node("Graph"))
+	print("switching graph")
+	for child in graph_editor.get_children():
+		print(child.name)
+	graph_editor.remove_child(graph_editor.get_child(0))
 	graph_editor.add_child(new_graph)
 
 func show_start_panel() -> void:
