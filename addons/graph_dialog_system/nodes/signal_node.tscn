@@ -69,3 +69,4 @@ layout_mode = 2
 placeholder_text = "Value..."
 
 [connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="text_changed" from="NameInput" to="." method="_on_input_text_changed"]

@@ -3,18 +3,6 @@
 		"csv_file_path": "res://addons/graph_dialog_system/examples/example.csv",
 		"nodes_data": {
 			"dialog_hola": {
-				"dialog_node_1": {
-					"char_key": "",
-					"dialog_key": "",
-					"node_type_id": 2,
-					"offset": {
-						"x": 420,
-						"y": 300
-					},
-					"to_node": [
-						"END"
-					]
-				},
 				"start_node_1": {
 					"node_type_id": 0,
 					"offset": {

@@ -30,7 +30,7 @@ func _ready():
 	
 	set_add_node_menu()
 
-func _on_modified():
+func on_modified():
 	modified.emit()
 
 #region --- Input ---
@@ -116,6 +116,7 @@ func add_new_node(typeID : int) -> void:
 	new_node.position_offset = cursor_pos
 	new_node.selected = true
 	add_child(new_node, true)
+	on_modified()
 	
 	# Connect to a previous node if requested
 	if request_port > -1 and new_node.is_slot_enabled_left(0):
@@ -138,6 +139,7 @@ func delete_node(node : GraphNode) -> void:
 			connection["to_node"], connection["to_port"])
 	print("Removed node: "+ node.name)
 	node.queue_free() # Remove node
+	on_modified()
 
 func _on_delete_nodes_request(nodes : Array[StringName]):
 	# Delete selected nodes
@@ -186,6 +188,7 @@ func disconnect_node_on_port(node: String, port : int) -> void:
 	for connection in port_connections:
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
+	on_modified()
 
 func _on_connection_request(from_node: String, from_port : int, to_node : String, to_port : int) -> void:
 	var prev_connection = get_node_output_connections(from_node, from_port)
@@ -197,6 +200,7 @@ func _on_connection_request(from_node: String, from_port : int, to_node : String
 	# Handle nodes connection and assign the node to the connected dialog tree
 	connect_node(from_node, from_port, to_node, to_port)
 	get_node(to_node).start_node = get_node(from_node).start_node
+	on_modified()
 	
 func _on_connection_to_empty(from_node : String, from_port : int, release_position :Vector2):
 	request_node = from_node

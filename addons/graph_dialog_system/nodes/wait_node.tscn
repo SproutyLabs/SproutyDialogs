@@ -63,3 +63,5 @@ layout_mode = 2
 max_value = 9999.0
 step = 0.1
 suffix = "(s)"
+
+[connection signal="value_changed" from="Container/SpinBox" to="." method="_on_time_value_changed"]
