@@ -26,7 +26,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
 placeholder_text = "Search a file...."
-expand_to_text_length = true
 
 [node name="OpenButton" type="Button" parent="HBox"]
 unique_name_in_owner = true
@@ -44,7 +43,7 @@ flat = true
 auto_translate_mode = 1
 title = "Open a File"
 initial_position = 4
-size = Vector2i(500, 400)
+size = Vector2i(600, 400)
 ok_button_text = "Open"
 dialog_hide_on_ok = true
 file_mode = 0

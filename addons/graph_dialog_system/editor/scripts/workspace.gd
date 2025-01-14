@@ -35,6 +35,7 @@ func switch_current_graph(new_graph : GraphEdit) -> void:
 #region --- UI Panel Handling ---
 func show_start_panel() -> void:
 	# Show start panel instead of graph editor
+	file_manager.csv_file_field.get_parent().visible = false
 	csv_file_panel.visible = false
 	graph_editor.visible = false
 	text_editor.visible = false
@@ -42,12 +43,14 @@ func show_start_panel() -> void:
 
 func show_graph_editor() -> void:
 	# Show the graph editor
+	file_manager.csv_file_field.get_parent().visible = true
 	csv_file_panel.visible = false
 	graph_editor.visible = true
 	start_panel.visible = false
 
 func show_csv_file_panel() -> void:
 	# Show the csv file selector panel
+	file_manager.csv_file_field.get_parent().visible = false
 	csv_file_panel.visible = true
 	graph_editor.visible = false
 	text_editor.visible = false
@@ -55,25 +58,25 @@ func show_csv_file_panel() -> void:
 #endregion
 
 #region --- File Selection ---
-func _on_open_csv_file_pressed():
+func _on_open_csv_file_pressed() -> void:
 	open_csv_dialog.popup_centered()
 
-func _on_create_csv_file_pressed():
+func _on_create_csv_file_pressed() -> void:
 	new_csv_dialog.popup_centered()
 
-func _on_open_csv_dialog_file_selected(path):
+func _on_open_csv_dialog_file_selected(path : String) -> void:
+	file_manager.set_dialog_csv_file(path)
 	show_graph_editor()
-	pass # Replace with function body.
 
-func _on_new_csv_dialog_file_selected(path):
+func _on_new_csv_dialog_file_selected(path : String) -> void:
+	file_manager.new_csv_file(path)
 	show_graph_editor()
-	pass # Replace with function body.
 
-func _on_open_dialog_file_pressed():
+func _on_open_dialog_file_pressed() -> void:
 	# Open a dialog file to load
 	file_manager.open_file_panel.popup_centered()
 
-func _on_create_dialog_file_pressed():
+func _on_create_dialog_file_pressed() -> void:
 	# Create new dialog file
 	file_manager.new_dialog_panel.popup_centered()
 #endregion

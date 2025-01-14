@@ -14,6 +14,7 @@ enum FileType { DIALOG, CHAR }
 @onready var open_file_panel : FileDialog = $PopupWindows/OpenFile
 @onready var save_file_panel : FileDialog = $PopupWindows/SaveFile
 @onready var confirm_panel : AcceptDialog = $PopupWindows/ConfirmCloseFiles
+@onready var csv_file_field : MarginContainer = $%CSVFileContainer/FieldFile
 
 var graph_scene := preload("res://addons/graph_dialog_system/editor/graph.tscn")
 var dialog_icon := preload("res://addons/graph_dialog_system/icons/Script.svg")
@@ -32,6 +33,8 @@ func _ready() -> void:
 	confirm_panel.add_button('Save', true, 'save_file')
 	confirm_panel.add_button('Discard', true, 'discard_file')
 	confirm_panel.add_cancel_button('Cancel')
+	
+	csv_file_field.connect("file_path_changed", set_dialog_csv_file)
 
 #region --- New File ---
 func new_file_item(file_name : String, path : String, type : FileType, data : Dictionary) -> void:
@@ -83,8 +86,8 @@ func new_dialog_file(path : String) -> void:
 	}
 	JSONFileManager.save_file(data, path)
 	new_file_item(file_name, path, FileType.DIALOG, data)
-	workspace.show_csv_file_panel()
 	editor_main.switch_active_tab(0)
+	workspace.show_csv_file_panel()
 	
 	print("[Graph Dialogs] Dialog file '" + file_name + "' created.")
 
@@ -109,7 +112,7 @@ func new_character_file(path : String) -> void:
 #region --- Save and Load ---
 func load_file(path : String) -> void:
 	# Load dialog data from JSON file
-	if JSONFileManager.file_exists(path):
+	if FileAccess.file_exists(path):
 		var data = JSONFileManager.load_file(path)
 		var file_name : String = path.split('/')[-1]
 		
@@ -162,6 +165,8 @@ func close_file(index : int = current_file_index) -> void:
 	
 	if index == current_file_index:
 		# If the file to be closed is being edited
+		csv_file_field.set_value("")
+		
 		if file_list.item_count == 1:
 			# If there are no open files to switch to them
 			current_file_index = -1
@@ -222,6 +227,7 @@ func switch_selected_file(file_index : int) -> void:
 	if new_metadata["file_type"] == FileType.DIALOG:
 		# Switch current graph and change tab view
 		workspace.switch_current_graph(new_metadata["graph"])
+		csv_file_field.set_value(new_metadata["data"]["dialog_data"]["csv_file_path"])
 		editor_main.switch_active_tab(0)
 	
 	elif new_metadata["file_type"] == FileType.CHAR:
@@ -257,6 +263,23 @@ func filter_file_list(search_text : String)-> void:
 			)
 	file_list.visible = false
 	filtered_list.visible = true
+#endregion
+
+#region --- CSV Files Handling ---
+func new_csv_file(path : String) -> void:
+	# Create a new csv file and associate to a dialog file
+	var header = ["key"] # TODO: Set the header by locales
+	var content = [""]
+	
+	CSVFileManager.save_file(header, content, path)
+	set_dialog_csv_file(path)
+
+func set_dialog_csv_file(path : String) -> void:
+	# Set csv file path to the current data file
+	var metadata := file_list.get_item_metadata(current_file_index)
+	metadata["data"]["dialog_data"]["csv_file_path"] = path
+	file_list.set_item_metadata(current_file_index, metadata)
+	csv_file_field.set_value(path)
 #endregion
 
 #region --- UI Handling ---

@@ -1,6 +1,6 @@
 {
 	"dialog_data": {
-		"csv_file_path": "",
+		"csv_file_path": "res://addons/graph_dialog_system/examples/example.csv",
 		"nodes_data": {
 			"dialog_hola": {
 				"dialog_node_1": {
@@ -8,8 +8,8 @@
 					"dialog_key": "",
 					"node_type_id": 2,
 					"offset": {
-						"x": 520,
-						"y": 240
+						"x": 420,
+						"y": 300
 					},
 					"to_node": [
 						"END"

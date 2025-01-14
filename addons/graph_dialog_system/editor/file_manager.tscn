@@ -103,6 +103,7 @@ text = "CSV Translations File"
 
 [node name="FieldFile" parent="Margin/Container/CSVFileContainer" instance=ExtResource("8_wehoa")]
 layout_mode = 2
+file_filters = PackedStringArray("*.csv")
 
 [node name="Version" type="Label" parent="Margin/Container"]
 layout_mode = 2
