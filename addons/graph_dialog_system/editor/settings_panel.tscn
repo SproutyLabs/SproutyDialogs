@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://pdcicn3rbwbs"]
+[gd_scene load_steps=6 format=3 uid="uid://pdcicn3rbwbs"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_r0mi1"]
 [ext_resource type="PackedScene" uid="uid://ngq3wbnr5uin" path="res://addons/graph_dialog_system/editor/components/locale_field.tscn" id="2_3f01w"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/translation_manager.gd" id="2_b6xah"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="2_vi7jn"]
+[ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="4_irpy1"]
 
 [node name="SettingsPanel" type="TabContainer"]
 anchors_preset = 15
@@ -37,75 +39,85 @@ text = "(general settings)"
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="HSplitContainer" type="HSplitContainer" parent="Translation"]
+[node name="TranslationSettings" type="HSplitContainer" parent="Translation"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("2_b6xah")
 
-[node name="TranslationSettings" type="MarginContainer" parent="Translation/HSplitContainer"]
+[node name="LocalesSettings" type="MarginContainer" parent="Translation/TranslationSettings"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Container" type="VBoxContainer" parent="Translation/HSplitContainer/TranslationSettings"]
+[node name="Container" type="VBoxContainer" parent="Translation/TranslationSettings/LocalesSettings"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="Translation/HSplitContainer/TranslationSettings/Container"]
+[node name="Title" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
-text = "Translation Settings"
+text = "Localization Settings"
 
-[node name="DefaultLocale" type="HBoxContainer" parent="Translation/HSplitContainer/TranslationSettings/Container"]
+[node name="DefaultLocale" type="HBoxContainer" parent="Translation/TranslationSettings/LocalesSettings/Container"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Translation/HSplitContainer/TranslationSettings/Container/DefaultLocale"]
+[node name="Label" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container/DefaultLocale"]
 layout_mode = 2
 text = "Default Locale"
 
-[node name="OptionButton" type="OptionButton" parent="Translation/HSplitContainer/TranslationSettings/Container/DefaultLocale"]
+[node name="OptionButton" type="OptionButton" parent="Translation/TranslationSettings/LocalesSettings/Container/DefaultLocale"]
 layout_mode = 2
 size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "(no one)"
 
-[node name="TestingLocale" type="HBoxContainer" parent="Translation/HSplitContainer/TranslationSettings/Container"]
+[node name="TestingLocale" type="HBoxContainer" parent="Translation/TranslationSettings/LocalesSettings/Container"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Translation/HSplitContainer/TranslationSettings/Container/TestingLocale"]
+[node name="Label" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container/TestingLocale"]
 layout_mode = 2
 text = "Testing Locale"
 
-[node name="OptionButton" type="OptionButton" parent="Translation/HSplitContainer/TranslationSettings/Container/TestingLocale"]
+[node name="OptionButton" type="OptionButton" parent="Translation/TranslationSettings/LocalesSettings/Container/TestingLocale"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "(no one)"
+
+[node name="HSeparator" type="HSeparator" parent="Translation/TranslationSettings/LocalesSettings/Container"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HSeparator" type="HSeparator" parent="Translation/HSplitContainer/TranslationSettings/Container"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="Locales" type="VBoxContainer" parent="Translation/HSplitContainer/TranslationSettings/Container"]
+[node name="Locales" type="VBoxContainer" parent="Translation/TranslationSettings/LocalesSettings/Container"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="TopBar" type="HBoxContainer" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales"]
+[node name="TopBar" type="HBoxContainer" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/TopBar"]
+[node name="Label" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/TopBar"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"HeaderSmall"
 text = "Locales"
 
-[node name="AddButton" type="Button" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/TopBar"]
+[node name="AddButton" type="Button" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "New +"
 
-[node name="LocalesPanel" type="Panel" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales"]
+[node name="Panel" type="Panel" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales"]
 custom_minimum_size = Vector2(0, 250)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Container" type="VBoxContainer" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel"]
+[node name="Container" type="VBoxContainer" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -113,88 +125,99 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Header" type="HBoxContainer" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container"]
+[node name="Header" type="HBoxContainer" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container"]
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container/Header"]
+[node name="NameLabel" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/Header"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Code"
 horizontal_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container/Header"]
+[node name="VSeparator" type="VSeparator" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/Header"]
 layout_mode = 2
 
-[node name="TypeLabel" type="Label" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container/Header"]
+[node name="TypeLabel" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Language"
 horizontal_alignment = 1
 
-[node name="VSeparator2" type="VSeparator" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container/Header"]
+[node name="VSeparator2" type="VSeparator" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/Header"]
 layout_mode = 2
 
-[node name="ValueLabel" type="Label" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container/Header"]
+[node name="ValueLabel" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Country"
 horizontal_alignment = 1
 
-[node name="Label" type="Label" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container/Header"]
+[node name="Label" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/Header"]
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container"]
+[node name="HSeparator" type="HSeparator" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container/ScrollContainer"]
+[node name="LocalesContainer" type="VBoxContainer" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/ScrollContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="LocaleField" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container/ScrollContainer/VBoxContainer" instance=ExtResource("2_3f01w")]
+[node name="LocaleField" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/ScrollContainer/LocalesContainer" instance=ExtResource("2_3f01w")]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Translation/HSplitContainer/TranslationSettings/Container/Locales/LocalesPanel/Container/ScrollContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/ScrollContainer/LocalesContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 text = "Add some locales!"
 horizontal_alignment = 1
 
-[node name="CSVFiles" type="MarginContainer" parent="Translation/HSplitContainer"]
+[node name="SaveButton" type="Button" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Save Locales"
+icon = ExtResource("4_irpy1")
+alignment = 2
+
+[node name="CSVFiles" type="MarginContainer" parent="Translation/TranslationSettings"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Container" type="VBoxContainer" parent="Translation/HSplitContainer/CSVFiles"]
+[node name="Container" type="VBoxContainer" parent="Translation/TranslationSettings/CSVFiles"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="Translation/HSplitContainer/CSVFiles/Container"]
+[node name="Title" type="Label" parent="Translation/TranslationSettings/CSVFiles/Container"]
 layout_mode = 2
 theme = ExtResource("1_r0mi1")
 theme_type_variation = &"HeaderSmall"
-text = "CSV Files"
+text = "CSV Translation Files"
 
-[node name="CharCSVFile" type="HBoxContainer" parent="Translation/HSplitContainer/CSVFiles/Container"]
+[node name="CharCSVFile" type="HBoxContainer" parent="Translation/TranslationSettings/CSVFiles/Container"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Translation/HSplitContainer/CSVFiles/Container/CharCSVFile"]
+[node name="Label" type="Label" parent="Translation/TranslationSettings/CSVFiles/Container/CharCSVFile"]
 layout_mode = 2
-text = "Character display names"
+text = "Character Names"
 
-[node name="FileField" parent="Translation/HSplitContainer/CSVFiles/Container/CharCSVFile" instance=ExtResource("2_vi7jn")]
+[node name="FileField" parent="Translation/TranslationSettings/CSVFiles/Container/CharCSVFile" instance=ExtResource("2_vi7jn")]
 layout_mode = 2
 size_flags_horizontal = 3
 file_filters = PackedStringArray("*.csv")
+
+[connection signal="pressed" from="Translation/TranslationSettings/LocalesSettings/Container/Locales/TopBar/AddButton" to="Translation/TranslationSettings" method="_on_add_locale_button_pressed"]
+[connection signal="pressed" from="Translation/TranslationSettings/LocalesSettings/Container/Locales/SaveButton" to="Translation/TranslationSettings" method="_on_save_locales_button_pressed"]
