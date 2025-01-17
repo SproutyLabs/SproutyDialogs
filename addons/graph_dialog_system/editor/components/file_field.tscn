@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="2_byw4l"]
 [ext_resource type="Texture2D" uid="uid://bnxg1gkoe3jvl" path="res://addons/graph_dialog_system/icons/Clear.svg" id="3_ve2o0"]
 
-[node name="FieldFile" type="MarginContainer"]
+[node name="FileField" type="MarginContainer"]
 offset_right = 314.0
 offset_bottom = 40.0
 theme = ExtResource("1_2lkpj")

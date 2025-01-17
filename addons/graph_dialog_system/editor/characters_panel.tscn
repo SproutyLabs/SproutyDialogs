@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_mqdqa"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/translations_container.gd" id="2_tpd02"]
 [ext_resource type="Texture2D" uid="uid://bpa7g13kkbvyg" path="res://addons/graph_dialog_system/icons/Collapse.svg" id="3_3q8bw"]
-[ext_resource type="PackedScene" uid="uid://63ehl3ko3bdf" path="res://addons/graph_dialog_system/editor/components/field_portrait.tscn" id="3_j6s01"]
+[ext_resource type="PackedScene" uid="uid://63ehl3ko3bdf" path="res://addons/graph_dialog_system/editor/components/portrait_field.tscn" id="3_j6s01"]
 [ext_resource type="PackedScene" uid="uid://csswxs6vp2557" path="res://addons/graph_dialog_system/nodes/components/translation_name.tscn" id="4_as6xf"]
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="6_ugs6n"]
 

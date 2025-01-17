@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="4_2tafu"]
 [ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="4_prnvu"]
 [ext_resource type="Texture2D" uid="uid://db2rm5mxqrejo" path="res://addons/graph_dialog_system/icons/Close.svg" id="8_s6vw8"]
-[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/field_file.tscn" id="8_wehoa"]
+[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="8_wehoa"]
 
 [node name="FileManager" type="VSplitContainer"]
 anchors_preset = 15
@@ -101,7 +101,7 @@ layout_mode = 2
 layout_mode = 2
 text = "CSV Translations File"
 
-[node name="FieldFile" parent="Margin/Container/CSVFileContainer" instance=ExtResource("8_wehoa")]
+[node name="FileField" parent="Margin/Container/CSVFileContainer" instance=ExtResource("8_wehoa")]
 layout_mode = 2
 file_filters = PackedStringArray("*.csv")
 

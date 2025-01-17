@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dpmnyxltkkjsq"]
+[gd_scene load_steps=3 format=3 uid="uid://dpmnyxltkkjsq"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_j5uel"]
-[ext_resource type="PackedScene" uid="uid://dols4gqjh3n6g" path="res://addons/graph_dialog_system/editor/components/field_variable.tscn" id="2_1ethk"]
-[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/field_file.tscn" id="3_b2r13"]
+[ext_resource type="PackedScene" uid="uid://dols4gqjh3n6g" path="res://addons/graph_dialog_system/editor/components/variable_field.tscn" id="2_1ethk"]
 
 [node name="VariablesPanel" type="HSplitContainer"]
 anchors_preset = 15
@@ -102,49 +101,25 @@ size_flags_horizontal = 4
 size_flags_vertical = 6
 text = "Add some variables!"
 
-[node name="TranslationSettings" type="MarginContainer" parent="."]
+[node name="Instructions" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Container" type="VBoxContainer" parent="TranslationSettings"]
+[node name="Container" type="VBoxContainer" parent="Instructions"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="TranslationSettings/Container"]
+[node name="Label" type="Label" parent="Instructions/Container"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
-text = "Translation Settings"
+text = "How to use variables?"
 
-[node name="CSVFile" type="HBoxContainer" parent="TranslationSettings/Container"]
-unique_name_in_owner = true
+[node name="Panel" type="Panel" parent="Instructions/Container"]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 
-[node name="Label" type="Label" parent="TranslationSettings/Container/CSVFile"]
+[node name="Label2" type="Label" parent="Instructions/Container/Panel"]
 layout_mode = 2
-text = "CSV File"
-
-[node name="FieldFile" parent="TranslationSettings/Container/CSVFile" instance=ExtResource("3_b2r13")]
-layout_mode = 2
-size_flags_horizontal = 3
-file_filters = PackedStringArray("*.csv")
-
-[node name="DefaultLocale" type="HBoxContainer" parent="TranslationSettings/Container"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="TranslationSettings/Container/DefaultLocale"]
-layout_mode = 2
-text = "Default Locale"
-
-[node name="OptionButton" type="OptionButton" parent="TranslationSettings/Container/DefaultLocale"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="TestingLocale" type="HBoxContainer" parent="TranslationSettings/Container"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="TranslationSettings/Container/TestingLocale"]
-layout_mode = 2
-text = "Testing Locale"
-
-[node name="OptionButton" type="OptionButton" parent="TranslationSettings/Container/TestingLocale"]
-layout_mode = 2
-size_flags_horizontal = 3
+offset_top = 4.0
+offset_right = 550.0
+offset_bottom = 27.0
+text = "insert text..."

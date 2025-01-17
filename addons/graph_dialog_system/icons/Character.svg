@@ -1,7 +1,54 @@
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
-<svg height="64px" width="64px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 60.67 60.67" xml:space="preserve" fill="#ffffff" stroke="#ffffff" stroke-width="0.0006067100000000001">
-<g id="SVGRepo_bgCarrier" stroke-width="0"/>
-<g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
-<g id="SVGRepo_iconCarrier"> <g> <g> <ellipse style="fill:#ffffff;" cx="30.336" cy="12.097" rx="11.997" ry="12.097"/> <path style="fill:#ffffff;" d="M35.64,30.079H25.031c-7.021,0-12.714,5.739-12.714,12.821v17.771h36.037V42.9 C48.354,35.818,42.661,30.079,35.64,30.079z"/> </g> </g> </g>
-</svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+
+<svg
+   height="16.000002"
+   width="9.5036497"
+   version="1.1"
+   id="Capa_1"
+   viewBox="0 0 9.0091629 15.167502"
+   xml:space="preserve"
+   fill="#ffffff"
+   stroke="#ffffff"
+   stroke-width="0.00060671"
+   sodipodi:docname="Character.svg"
+   inkscape:export-filename="Character.svg"
+   inkscape:export-xdpi="24"
+   inkscape:export-ydpi="24"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+   id="defs2" /><sodipodi:namedview
+   id="namedview2"
+   pagecolor="#505050"
+   bordercolor="#eeeeee"
+   borderopacity="1"
+   inkscape:showpageshadow="0"
+   inkscape:pageopacity="0"
+   inkscape:pagecheckerboard="0"
+   inkscape:deskcolor="#505050" />
+
+
+
+
+
+<g
+   id="SVGRepo_iconCarrier"
+   transform="matrix(0.24999338,0,0,0.24999338,-3.079093,7.5917969e-5)"
+   inkscape:export-filename="Character.svg"
+   inkscape:export-xdpi="57.0219"
+   inkscape:export-ydpi="57.0219"> <g
+   id="g2"> <g
+   id="g1"> <ellipse
+   style="fill:#ffffff"
+   cx="30.336"
+   cy="12.097"
+   rx="11.997"
+   ry="12.097"
+   id="ellipse1" /> <path
+   style="fill:#ffffff"
+   d="M 35.64,30.079 H 25.031 c -7.021,0 -12.714,5.739 -12.714,12.821 V 60.671 H 48.354 V 42.9 c 0,-7.082 -5.693,-12.821 -12.714,-12.821 z"
+   id="path1" /> </g> </g> </g>
+
+</svg>

@@ -14,7 +14,7 @@ enum FileType { DIALOG, CHAR }
 @onready var open_file_panel : FileDialog = $PopupWindows/OpenFile
 @onready var save_file_panel : FileDialog = $PopupWindows/SaveFile
 @onready var confirm_panel : AcceptDialog = $PopupWindows/ConfirmCloseFiles
-@onready var csv_file_field : MarginContainer = $%CSVFileContainer/FieldFile
+@onready var csv_file_field : MarginContainer = $%CSVFileContainer/FileField
 
 var graph_scene := preload("res://addons/graph_dialog_system/editor/graph.tscn")
 var dialog_icon := preload("res://addons/graph_dialog_system/icons/Script.svg")
@@ -280,6 +280,12 @@ func set_dialog_csv_file(path : String) -> void:
 	metadata["data"]["dialog_data"]["csv_file_path"] = path
 	file_list.set_item_metadata(current_file_index, metadata)
 	csv_file_field.set_value(path)
+
+func show_csv_container() -> void:
+	%CSVFileContainer.visible = true
+	
+func hide_csv_container() -> void:
+	%CSVFileContainer.visible = false
 #endregion
 
 #region --- UI Handling ---

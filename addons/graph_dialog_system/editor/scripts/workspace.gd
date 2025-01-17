@@ -35,7 +35,7 @@ func switch_current_graph(new_graph : GraphEdit) -> void:
 #region --- UI Panel Handling ---
 func show_start_panel() -> void:
 	# Show start panel instead of graph editor
-	file_manager.csv_file_field.get_parent().visible = false
+	file_manager.hide_csv_container()
 	csv_file_panel.visible = false
 	graph_editor.visible = false
 	text_editor.visible = false
@@ -43,14 +43,14 @@ func show_start_panel() -> void:
 
 func show_graph_editor() -> void:
 	# Show the graph editor
-	file_manager.csv_file_field.get_parent().visible = true
+	file_manager.show_csv_container()
 	csv_file_panel.visible = false
 	graph_editor.visible = true
 	start_panel.visible = false
 
 func show_csv_file_panel() -> void:
 	# Show the csv file selector panel
-	file_manager.csv_file_field.get_parent().visible = false
+	file_manager.hide_csv_container()
 	csv_file_panel.visible = true
 	graph_editor.visible = false
 	text_editor.visible = false
