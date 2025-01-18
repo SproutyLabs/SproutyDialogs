@@ -16,12 +16,13 @@ static func save_file(header : Array, data : Array, file_path : String) -> void:
 	file.store_csv_line(PackedStringArray(header), ",")
 	
 	# Store data by rows in csv file
-	for row in data:
-		if row.size() != header.size():
-			printerr("[CSVFileManager] The data has %d columns,\
-				does not match with header size (%d)" % [row.size(), header.size()])
-			return
-		file.store_csv_line(PackedStringArray(row), ",")
+	if not data.is_empty():
+		for row in data:
+			if row.size() != header.size():
+				printerr("[CSVFileManager] The data has %d columns,\
+					does not match with header size (%d)" % [row.size(), header.size()])
+				return
+			file.store_csv_line(PackedStringArray(row), ",")
 	file.close()
 
 static func load_file(file_path : String) -> Variant:
