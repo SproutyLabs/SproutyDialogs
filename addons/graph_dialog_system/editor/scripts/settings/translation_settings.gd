@@ -6,15 +6,19 @@ signal locales_changed
 @onready var default_locale_dropdown : OptionButton = $"%DefaultLocale"/OptionButton
 @onready var testing_locale_dropdown : OptionButton = $"%TestingLocale"/OptionButton
 @onready var locales_container : VBoxContainer = %LocalesContainer
+@onready var csv_folder_field : MarginContainer = $"%CSVFolder"/Label/FolderField
 
 var locale_field := preload("res://addons/graph_dialog_system/editor/components/locale_field.tscn")
 
-func _ready():
+func _init() -> void:
 	GDialogsTranslationManager.load_translation_settings()
+
+func _ready() -> void:
+	csv_folder_field.connect("path_changed", _set_csv_folder_path)
 	_set_locales_on_dropdown(default_locale_dropdown)
 	_set_locales_on_dropdown(testing_locale_dropdown)
 	_set_locale_list()
-	
+
 func _set_locales_on_dropdown(dropdown : OptionButton) -> void:
 	# Load the saved locales on a dropdown
 	if GDialogsTranslationManager.locales.is_empty(): return
@@ -28,6 +32,9 @@ func _set_locale_list() -> void:
 	if locales_container.get_child(0) is MarginContainer:
 		locales_container.get_child(0).queue_free() # Remove placeholder
 	
+	if GDialogsTranslationManager.locales.is_empty(): return
+	$"%LocalesContainer"/Label.visible = false
+	
 	for locale in GDialogsTranslationManager.locales:
 		# Load saved locales in the list
 		var new_locale = locale_field.instantiate()
@@ -35,17 +42,17 @@ func _set_locale_list() -> void:
 		locales_container.add_child(new_locale)
 		new_locale.load_locale(locale)
 
-func get_default_locale() -> String:
-	# Return the default locale
-	return default_locale_dropdown.get_item_text(
-			default_locale_dropdown.get_selected_id())
+func _on_default_locale_selected(index: int) -> void:
+	# Select default locale from dropdown
+	GDialogsTranslationManager.default_locale = default_locale_dropdown.get_item_text(index)
+	GDialogsTranslationManager.save_translation_settings()
 
-func get_test_locale() -> String:
-	# Return the test locale
-	return testing_locale_dropdown.get_item_text(
-			testing_locale_dropdown.get_selected_id())
+func _on_testing_locale_selected(index: int) -> void:
+	# Select testing locale from dropdown
+	GDialogsTranslationManager.testing_locale = testing_locale_dropdown.get_item_text(index)
+	GDialogsTranslationManager.save_translation_settings()
 
-func _on_add_locale_button_pressed():
+func _on_add_locale_button_pressed() -> void:
 	# Add new locale to the list
 	var new_locale = locale_field.instantiate()
 	new_locale.connect("locale_removed", _on_locale_removed)
@@ -80,3 +87,6 @@ func _on_save_locales_button_pressed() -> void:
 
 func _on_collect_translations_pressed() -> void:
 	GDialogsTranslationManager.collect_translations()
+
+func _set_csv_folder_path(path : String) -> void:
+	GDialogsTranslationManager.csv_files_path = path

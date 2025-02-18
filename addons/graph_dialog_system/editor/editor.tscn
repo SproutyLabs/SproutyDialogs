@@ -43,6 +43,7 @@ file_manager = NodePath("MainContainer/FileManager")
 tab_container = NodePath("MainContainer/TabContainer")
 
 [node name="FirstSettings" type="Panel" parent="."]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -88,14 +89,13 @@ icon = ExtResource("8_h7scy")
 
 [node name="OpenFolderDialog" type="FileDialog" parent="FirstSettings"]
 auto_translate_mode = 1
-title = "Open a Directory"
+title = "Select the translations folder"
 initial_position = 4
 size = Vector2i(600, 400)
-ok_button_text = "Select Current Folder"
+ok_button_text = "Select Folder"
 file_mode = 2
 
 [node name="MainContainer" type="HSplitContainer" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

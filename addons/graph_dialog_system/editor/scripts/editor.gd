@@ -11,9 +11,6 @@ extends Control
 	preload("res://addons/graph_dialog_system/icons/Settings.svg")
 ]
 
-func _init() -> void:
-	GDialogsSettingsData.load_settings()
-
 func _ready():
 	_show_first_settings()
 	set_tabs_icons()

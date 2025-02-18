@@ -1,0 +1,216 @@
+[gd_scene load_steps=6 format=3 uid="uid://bk5rchg4mt0js"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/settings/translation_settings.gd" id="1_dnk3v"]
+[ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="2_cs7j5"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="3_poal8"]
+[ext_resource type="PackedScene" uid="uid://bceidtkw07484" path="res://addons/graph_dialog_system/editor/components/folder_field.tscn" id="4_01lks"]
+[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="4_erkog"]
+
+[node name="TranslationSettings" type="HSplitContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dnk3v")
+
+[node name="LocalesSettings" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Container" type="VBoxContainer" parent="LocalesSettings"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="LocalesSettings/Container"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Localization Settings"
+
+[node name="DefaultLocale" type="HBoxContainer" parent="LocalesSettings/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="LocalesSettings/Container/DefaultLocale"]
+layout_mode = 2
+text = "Default Locale"
+
+[node name="OptionButton" type="OptionButton" parent="LocalesSettings/Container/DefaultLocale"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 3
+popup/item_0/text = "en"
+popup/item_1/text = "es"
+popup/item_1/id = 1
+popup/item_2/text = "ja"
+popup/item_2/id = 2
+
+[node name="TestingLocale" type="HBoxContainer" parent="LocalesSettings/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="LocalesSettings/Container/TestingLocale"]
+layout_mode = 2
+text = "Testing Locale"
+
+[node name="OptionButton" type="OptionButton" parent="LocalesSettings/Container/TestingLocale"]
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+item_count = 3
+popup/item_0/text = "en"
+popup/item_1/text = "es"
+popup/item_1/id = 1
+popup/item_2/text = "ja"
+popup/item_2/id = 2
+
+[node name="HSeparator" type="HSeparator" parent="LocalesSettings/Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Locales" type="VBoxContainer" parent="LocalesSettings/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TopBar" type="HBoxContainer" parent="LocalesSettings/Container/Locales"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="LocalesSettings/Container/Locales/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeaderSmall"
+text = "Locales"
+
+[node name="AddButton" type="Button" parent="LocalesSettings/Container/Locales/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "New +"
+
+[node name="Panel" type="Panel" parent="LocalesSettings/Container/Locales"]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Container" type="VBoxContainer" parent="LocalesSettings/Container/Locales/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="LocalesSettings/Container/Locales/Panel/Container"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="LocalesSettings/Container/Locales/Panel/Container/Header"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Code"
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="LocalesSettings/Container/Locales/Panel/Container/Header"]
+layout_mode = 2
+
+[node name="TypeLabel" type="Label" parent="LocalesSettings/Container/Locales/Panel/Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Language"
+horizontal_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="LocalesSettings/Container/Locales/Panel/Container/Header"]
+layout_mode = 2
+
+[node name="ValueLabel" type="Label" parent="LocalesSettings/Container/Locales/Panel/Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Country (optional)"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="LocalesSettings/Container/Locales/Panel/Container/Header"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="LocalesSettings/Container/Locales/Panel/Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="LocalesSettings/Container/Locales/Panel/Container"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LocalesContainer" type="VBoxContainer" parent="LocalesSettings/Container/Locales/Panel/Container/ScrollContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="LocalesSettings/Container/Locales/Panel/Container/ScrollContainer/LocalesContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Add some locales!"
+horizontal_alignment = 1
+
+[node name="SaveButton" type="Button" parent="LocalesSettings/Container/Locales"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Save Locales"
+icon = ExtResource("2_cs7j5")
+alignment = 2
+
+[node name="CSVFiles" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Container" type="VBoxContainer" parent="CSVFiles"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="CSVFiles/Container"]
+layout_mode = 2
+theme = ExtResource("3_poal8")
+theme_type_variation = &"HeaderSmall"
+text = "CSV Translation Files"
+
+[node name="CSVFolder" type="HBoxContainer" parent="CSVFiles/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CSVFiles/Container/CSVFolder"]
+layout_mode = 2
+text = "CSV Files Folder"
+
+[node name="FolderField" parent="CSVFiles/Container/CSVFolder" instance=ExtResource("4_01lks")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CharCSVFile" type="HBoxContainer" parent="CSVFiles/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CSVFiles/Container/CharCSVFile"]
+layout_mode = 2
+text = "Character Names File"
+
+[node name="FileField" parent="CSVFiles/Container/CharCSVFile" instance=ExtResource("4_erkog")]
+layout_mode = 2
+size_flags_horizontal = 3
+file_filters = PackedStringArray("*.csv")
+
+[node name="CollectTranslations" type="Button" parent="CSVFiles/Container"]
+layout_mode = 2
+size_flags_horizontal = 0
+text = "Collect Translations"
+
+[connection signal="item_selected" from="LocalesSettings/Container/DefaultLocale/OptionButton" to="." method="_on_default_locale_selected"]
+[connection signal="item_selected" from="LocalesSettings/Container/TestingLocale/OptionButton" to="." method="_on_testing_locale_selected"]
+[connection signal="pressed" from="LocalesSettings/Container/Locales/TopBar/AddButton" to="." method="_on_add_locale_button_pressed"]
+[connection signal="pressed" from="LocalesSettings/Container/Locales/SaveButton" to="." method="_on_save_locales_button_pressed"]
+[connection signal="pressed" from="CSVFiles/Container/CollectTranslations" to="." method="_on_collect_translations_pressed"]

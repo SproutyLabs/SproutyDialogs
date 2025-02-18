@@ -1,10 +1,12 @@
 {
 	"graph_dialogs_settings": {
 		"translation": {
-			"csv_files_path": "res://addons/graph_dialog_system/examples/translations",
-			"default_locale": "",
-			"locales": ["en", "es", "ja"],
-			"testing_locale": ""
+			"translation": {
+				"csv_files_path": "res://addons/graph_dialog_system/examples/translations",
+				"default_locale": "en",
+				"locales": ["en", "es", "ja"],
+				"testing_locale": "en"
+			}
 		}
 	}
 }

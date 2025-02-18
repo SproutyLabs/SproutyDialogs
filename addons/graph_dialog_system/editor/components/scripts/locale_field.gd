@@ -43,7 +43,7 @@ func load_locale(locale_code : String) -> void:
 	lang_code = splited_code[0]
 	country_code = splited_code[1] if splited_code.size() > 1 else ""
 	
-	code_input.text = lang_code + "_" + country_code
+	code_input.text = lang_code + ("_" + country_code if country_code != "" else "")
 	language_dropdown.select(TranslationServer.get_all_languages().find(lang_code) + 1)
 	countries_dropdown.select(TranslationServer.get_all_countries().find(country_code) + 1)
 
@@ -66,13 +66,15 @@ func _set_countries_dropdown() -> void:
 
 func _on_language_dropdown_item_selected(index : int) -> void:
 	# Select language by dropdown
-	lang_code = TranslationServer.get_all_languages()[index - 1]
+	if index == 0: lang_code = ""
+	else: lang_code = TranslationServer.get_all_languages()[index - 1]
 	code_input.text = lang_code + ("_" + country_code if country_code != "" else "")
 
 func _on_country_dropdown_item_selected(index : int) -> void:
 	# Select country by dropdown
-	country_code = TranslationServer.get_all_countries()[index - 1]
-	code_input.text = lang_code + "_" + country_code
+	if index == 0: country_code = ""
+	else: country_code = TranslationServer.get_all_countries()[index - 1]
+	code_input.text = lang_code + ("_" + country_code if country_code != "" else "")
 #endregion
 
 #region --- Code input handling ---

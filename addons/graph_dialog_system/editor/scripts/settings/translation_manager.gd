@@ -5,33 +5,37 @@ extends Resource
 ## Handle translation
 ## ------------------------------------------------------------------
 
+const DATA_PATH = "res://addons/graph_dialog_system/editor/data/translation_settings.json"
+
 static var csv_files_path : String = ""
 static var default_locale : String = ""
 static var testing_locale : String = ""
 static var locales : Array = []
 
-static func save_translation_settings():
+static func save_translation_settings() -> void:
 	# Save translation settings in settings data
 	var data := {
-		"translation": {
+		"translation_settings": {
 			"csv_files_path" : csv_files_path,
 			"default_locale" : default_locale,
 			"testing_locale" : testing_locale,
 			"locales" : locales
 		}
 	}
-	GDialogsSettingsData.translation_settings = data
-	GDialogsSettingsData.save_settings()
+	GDialogsJSONFileManager.save_file(data, DATA_PATH)
 
-static func load_translation_settings():
+static func load_translation_settings() -> void:
 	# Load translation settings from settings data
-	GDialogsSettingsData.load_settings()
-	var data = GDialogsSettingsData.translation_settings
+	if not FileAccess.file_exists(DATA_PATH):
+		save_translation_settings()
+		return
 	
-	csv_files_path = data.csv_files_path
-	default_locale = data.csv_files_path
-	testing_locale = data.testing_locale
-	locales = data.locales
+	var data = GDialogsJSONFileManager.load_file(DATA_PATH)
+	
+	csv_files_path = data.translation_settings.csv_files_path
+	default_locale = data.translation_settings.default_locale
+	testing_locale = data.translation_settings.testing_locale
+	locales = data.translation_settings.locales
 
 static func new_csv_template_file(name : String) -> String:
 	# Create new csv file with selected locales template

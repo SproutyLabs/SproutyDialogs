@@ -242,7 +242,6 @@ func switch_selected_file(file_index : int) -> void:
 	elif new_metadata["file_type"] == FileType.CHAR:
 		# TODO: update character data
 		editor_main.switch_active_tab(1)
-	
 	current_file_index = file_index
 	file_list.select(file_index)
 
