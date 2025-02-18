@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://ct4khhdqydedj"
+
+[deps]
+
+files=["res://addons/graph_dialog_system/examples/translations/a.en.translation", "res://addons/graph_dialog_system/examples/translations/a.es.translation", "res://addons/graph_dialog_system/examples/translations/a.ja.translation"]
+
+source_file="res://addons/graph_dialog_system/examples/translations/a.csv"
+dest_files=["res://addons/graph_dialog_system/examples/translations/a.en.translation", "res://addons/graph_dialog_system/examples/translations/a.es.translation", "res://addons/graph_dialog_system/examples/translations/a.ja.translation"]
+
+[params]
+
+compress=true
+delimiter=0

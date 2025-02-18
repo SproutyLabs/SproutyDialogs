@@ -16,15 +16,10 @@ size_flags_vertical = 4
 [node name="Container" type="HBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="RemoveButton" type="TextureButton" parent="Container"]
+[node name="RemoveButton" type="Button" parent="Container"]
 layout_mode = 2
-size_flags_horizontal = 4
-texture_normal = ExtResource("1_kaqbm")
-texture_pressed = ExtResource("1_kaqbm")
-texture_hover = ExtResource("1_kaqbm")
-texture_disabled = ExtResource("1_kaqbm")
-texture_focused = ExtResource("1_kaqbm")
-stretch_mode = 5
+icon = ExtResource("1_kaqbm")
+flat = true
 
 [node name="NameInput" type="LineEdit" parent="Container"]
 custom_minimum_size = Vector2(120, 0)

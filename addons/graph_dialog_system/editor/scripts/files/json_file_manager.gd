@@ -1,4 +1,4 @@
-class_name JSONFileManager
+class_name GDialogsJSONFileManager
 extends RefCounted
 
 ## ------------------------------------------------------------------

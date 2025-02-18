@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://pdcicn3rbwbs"]
+[gd_scene load_steps=5 format=3 uid="uid://pdcicn3rbwbs"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_r0mi1"]
-[ext_resource type="PackedScene" uid="uid://ngq3wbnr5uin" path="res://addons/graph_dialog_system/editor/components/locale_field.tscn" id="2_3f01w"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/translation_manager.gd" id="2_b6xah"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/settings/translation_settings.gd" id="2_7jphf"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="2_vi7jn"]
 [ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="4_irpy1"]
 
@@ -46,8 +45,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("2_b6xah")
-csv_files_path = null
+script = ExtResource("2_7jphf")
 
 [node name="LocalesSettings" type="MarginContainer" parent="Translation/TranslationSettings"]
 layout_mode = 2
@@ -177,9 +175,6 @@ custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="LocaleField" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/ScrollContainer/LocalesContainer" instance=ExtResource("2_3f01w")]
-layout_mode = 2
 
 [node name="Label" type="Label" parent="Translation/TranslationSettings/LocalesSettings/Container/Locales/Panel/Container/ScrollContainer/LocalesContainer"]
 layout_mode = 2

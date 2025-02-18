@@ -1,4 +1,4 @@
-class_name CSVFileManager
+class_name GDialogsCSVFileManager
 extends RefCounted
 
 ## ------------------------------------------------------------------
@@ -19,10 +19,15 @@ static func save_file(header : Array, data : Array, file_path : String) -> void:
 	if not data.is_empty():
 		for row in data:
 			if row.size() != header.size():
-				printerr("[CSVFileManager] The data has %d columns,\
-					does not match with header size (%d)" % [row.size(), header.size()])
+				printerr("[CSVFileManager] The data has %d columns," +\
+					"does not match with header size (%d)" % [row.size(), header.size()])
 				return
 			file.store_csv_line(PackedStringArray(row), ",")
+	else: # Add empty row to avoid translation import error
+		var placeholder = []
+		placeholder.resize(header.size())
+		placeholder.fill("EMPTY")
+		file.store_csv_line(PackedStringArray(placeholder), ",")
 	file.close()
 
 static func load_file(file_path : String) -> Variant:

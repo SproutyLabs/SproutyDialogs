@@ -11,7 +11,11 @@ extends Control
 	preload("res://addons/graph_dialog_system/icons/Settings.svg")
 ]
 
+func _init() -> void:
+	GDialogsSettingsData.load_settings()
+
 func _ready():
+	_show_first_settings()
 	set_tabs_icons()
 
 func set_tabs_icons() -> void:
@@ -32,3 +36,23 @@ func _on_tab_selected(tab: int):
 			file_manager.hide_csv_container()
 		2: # Variable tab
 			file_manager.hide_csv_container()
+
+func _show_first_settings():
+	# Show first settings screen
+	if GDialogsTranslationManager.csv_files_path.is_empty():
+		$FirstSettings.visible = true
+		$MainContainer.visible = false
+	else:
+		$FirstSettings.visible = false
+		$MainContainer.visible = true
+
+func _on_select_csv_folder_pressed() -> void:
+	# Open the dialog to select a folder to CSV files
+	$FirstSettings/OpenFolderDialog.popup_centered()
+
+func _on_csv_folder_selected(path: String) -> void:
+	# Set a folder path for CSV files
+	GDialogsTranslationManager.csv_files_path = path
+	GDialogsTranslationManager.save_translation_settings()
+	$FirstSettings.visible = false
+	$MainContainer.visible = true

@@ -44,11 +44,12 @@ theme_override_constants/separation = 15
 
 [node name="Label" type="RichTextLabel" parent="StartPanel/Container"]
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxEmpty_gxvii")
 bbcode_enabled = true
-text = "[center][wave]Create or open a [color=orange]new dialog[/color] to start!
-[center]\\( ^-^)/"
+text = "[center][wave]Create or open a [color=orange]dialog[/color] to start!
+[center]\\( ^-^)/
+
+"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
@@ -59,17 +60,11 @@ alignment = 1
 
 [node name="OpenDialogFile" type="Button" parent="StartPanel/Container/ButtonsContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-theme_override_styles/hover = ExtResource("3_lg051")
-theme_override_styles/normal = ExtResource("4_5myt4")
 text = "Open Dialog"
 icon = ExtResource("3_jpc4g")
 
 [node name="CreateDialogFile" type="Button" parent="StartPanel/Container/ButtonsContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
-theme_override_styles/hover = ExtResource("3_lg051")
-theme_override_styles/normal = ExtResource("4_5myt4")
 text = "Create Dialog"
 icon = ExtResource("4_qjqtm")
 

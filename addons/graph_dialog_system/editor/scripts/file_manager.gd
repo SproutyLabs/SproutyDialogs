@@ -35,6 +35,9 @@ func _ready() -> void:
 	confirm_panel.add_cancel_button('Cancel')
 	
 	csv_file_field.connect("file_path_changed", set_dialog_csv_file)
+	hide_csv_container()
+	
+	$"%SaveFile".disabled = true
 
 #region --- New File ---
 func new_file_item(file_name : String, path : String, type : FileType, data : Dictionary) -> void:
@@ -74,20 +77,25 @@ func new_file_item(file_name : String, path : String, type : FileType, data : Di
 			file_list.set_item_metadata(item_index, metadata)
 	
 	switch_selected_file(item_index)
+	$"%SaveFile".disabled = false
 
 func new_dialog_file(path : String) -> void:
 	# Create a new dialog file
-	var file_name : String = path.split('/')[-1]
-	var data = {
+	var file_name := path.split('/')[-1]
+	var csv_path = GDialogsTranslationManager.new_csv_template_file(file_name)
+	$"%CSVFileContainer"/FileField.set_value(csv_path)
+	show_csv_container()
+	
+	var data := {
 		"dialog_data" : {
-			"csv_file_path" : "",
+			"csv_file_path" : csv_path,
 			"nodes_data" : {}
 		}
 	}
-	JSONFileManager.save_file(data, path)
+	GDialogsJSONFileManager.save_file(data, path)
 	new_file_item(file_name, path, FileType.DIALOG, data)
 	editor_main.switch_active_tab(0)
-	workspace.show_csv_file_panel()
+	workspace.show_graph_editor()
 	
 	print("[Graph Dialogs] Dialog file '" + file_name + "' created.")
 
@@ -102,7 +110,7 @@ func new_character_file(path : String) -> void:
 			"portraits": {}
 		}
 	}
-	JSONFileManager.save_file(data, path)
+	GDialogsJSONFileManager.save_file(data, path)
 	new_file_item(file_name, path, FileType.CHAR, data)
 	editor_main.switch_active_tab(1)
 	
@@ -113,7 +121,7 @@ func new_character_file(path : String) -> void:
 func load_file(path : String) -> void:
 	# Load dialog data from JSON file
 	if FileAccess.file_exists(path):
-		var data = JSONFileManager.load_file(path)
+		var data = GDialogsJSONFileManager.load_file(path)
 		var file_name : String = path.split('/')[-1]
 		
 		if data.has("dialog_data"): # Load a dialog
@@ -143,7 +151,7 @@ func save_file(index : int = current_file_index, path: String = "") -> void:
 			pass # TODO: Update the character data
 	
 	var save_path = file_metadata["file_path"] if path.is_empty() else path
-	JSONFileManager.save_file(data, save_path)
+	GDialogsJSONFileManager.save_file(data, save_path)
 	file_list.set_item_metadata(index, file_metadata)
 	set_file_as_modified(index, false)
 	print("[Graph Dialogs] Dialog file saved.")
@@ -182,6 +190,7 @@ func close_file(index : int = current_file_index) -> void:
 	
 	if file_list.item_count == 1:
 		workspace.show_start_panel()
+		$"%SaveFile".disabled = true
 	
 	file_list.remove_item(index)
 
@@ -271,7 +280,7 @@ func new_csv_file(path : String) -> void:
 	var header = ["key"] # TODO: Set the header by locales
 	var content = [""]
 	
-	CSVFileManager.save_file(header, content, path)
+	GDialogsCSVFileManager.save_file(header, content, path)
 	set_dialog_csv_file(path)
 
 func set_dialog_csv_file(path : String) -> void:
@@ -282,7 +291,8 @@ func set_dialog_csv_file(path : String) -> void:
 	csv_file_field.set_value(path)
 
 func show_csv_container() -> void:
-	%CSVFileContainer.visible = true
+	if current_file_index >= 0:
+		%CSVFileContainer.visible = true
 	
 func hide_csv_container() -> void:
 	%CSVFileContainer.visible = false
