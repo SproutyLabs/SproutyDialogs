@@ -83,6 +83,8 @@ func new_dialog_file(path : String) -> void:
 	# Create a new dialog file
 	var file_name := path.split('/')[-1]
 	var csv_path = GDialogsTranslationManager.new_csv_template_file(file_name)
+	if csv_path.is_empty(): return
+	
 	$"%CSVFileContainer"/FileField.set_value(csv_path)
 	show_csv_container()
 	

@@ -1,12 +1,12 @@
 {
 	"translation_settings": {
 		"csv_files_path": "res://addons/graph_dialog_system/examples/translations",
-		"default_locale": "",
+		"default_locale": "en",
 		"locales": [
 			"en",
 			"es",
 			"ja"
 		],
-		"testing_locale": ""
+		"testing_locale": "en"
 	}
 }

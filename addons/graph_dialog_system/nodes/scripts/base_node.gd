@@ -6,13 +6,14 @@ extends GraphNode
 @export_color_no_alpha var node_color : Color
 @export var node_icon : Texture2D
 
-@onready var to_node : Array = []
+@onready var graph_editor : GraphEdit = get_parent()
 @onready var start_node : BaseNode = null
+@onready var to_node : Array = []
 
 var _remove_icon : Texture2D = preload("res://addons/graph_dialog_system/icons/Remove.svg")
 
 func _ready():
-	get_parent().connect("nodes_loaded", _load_output_connections)
+	graph_editor.connect("nodes_loaded", _load_output_connections)
 	set_node_titlebar()
 
 func get_data() -> Dictionary:
@@ -31,10 +32,10 @@ func _load_output_connections() -> void:
 	for output_node in to_node:
 		if output_node == "END":
 			continue
-		get_parent().connect_node(name, to_node.find(output_node), output_node, 0)
-		get_parent().get_node(output_node).start_node = start_node
+		graph_editor.connect_node(name, to_node.find(output_node), output_node, 0)
+		graph_editor.get_node(output_node).start_node = start_node
 
-func get_dialog_id() -> String:
+func get_start_id() -> String:
 	# Get dialog id from start node
 	if start_node == null: return ""
 	else: return start_node.get_start_id()
@@ -64,5 +65,5 @@ func set_node_titlebar():
 	var remove_button = TextureButton.new()
 	remove_button.texture_normal = _remove_icon
 	remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	remove_button.connect("pressed", get_parent().delete_node.bind(self))
+	remove_button.connect("pressed", graph_editor.delete_node.bind(self))
 	node_titlebar.add_child(remove_button)

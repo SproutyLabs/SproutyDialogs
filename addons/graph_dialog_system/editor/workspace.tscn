@@ -1,12 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://bo8iha2w2kgt5"]
+[gd_scene load_steps=9 format=3 uid="uid://bo8iha2w2kgt5"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_u7p51"]
 [ext_resource type="PackedScene" uid="uid://cr20rw0unyne0" path="res://addons/graph_dialog_system/editor/graph.tscn" id="2_dnvg2"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/workspace.gd" id="2_vohmy"]
 [ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="3_jpc4g"]
-[ext_resource type="StyleBox" uid="uid://diwtetxmgsjqs" path="res://addons/graph_dialog_system/theme/styled_hover_button.tres" id="3_lg051"]
 [ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialog_system/editor/text_editor.tscn" id="4_4ukmm"]
-[ext_resource type="StyleBox" uid="uid://dqfnh466dhnxw" path="res://addons/graph_dialog_system/theme/styled_normal_button.tres" id="4_5myt4"]
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="4_qjqtm"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h0dl8"]
@@ -23,6 +21,7 @@ theme = ExtResource("1_u7p51")
 script = ExtResource("2_vohmy")
 
 [node name="StartPanel" type="Panel" parent="."]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_h0dl8")
@@ -68,77 +67,7 @@ layout_mode = 2
 text = "Create Dialog"
 icon = ExtResource("4_qjqtm")
 
-[node name="CSVFilePanel" type="Panel" parent="."]
-visible = false
-layout_mode = 2
-
-[node name="Container" type="VBoxContainer" parent="CSVFilePanel"]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -249.0
-offset_top = -54.5
-offset_right = 249.0
-offset_bottom = 54.5
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 15
-alignment = 1
-
-[node name="Label" type="RichTextLabel" parent="CSVFilePanel/Container"]
-layout_mode = 2
-theme = ExtResource("1_u7p51")
-theme_type_variation = &"HeaderSmall"
-theme_override_font_sizes/normal_font_size = 20
-theme_override_font_sizes/bold_font_size = 24
-bbcode_enabled = true
-text = "[center][b]\\( ^ . ^)/
-Please select a CSV file![/b]
-
-To save the [color=orange][wave]dialogs[/wave][/color] and their [color=orange][wave]translations![/wave][/color]"
-fit_content = true
-
-[node name="ButtonsContainer" type="HBoxContainer" parent="CSVFilePanel/Container"]
-layout_mode = 2
-alignment = 1
-
-[node name="OpenCSVFile" type="Button" parent="CSVFilePanel/Container/ButtonsContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-theme_override_styles/hover = ExtResource("3_lg051")
-theme_override_styles/normal = ExtResource("4_5myt4")
-text = "Open CSV File"
-icon = ExtResource("3_jpc4g")
-
-[node name="CreateCSVFile" type="Button" parent="CSVFilePanel/Container/ButtonsContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 16
-theme_override_styles/hover = ExtResource("3_lg051")
-theme_override_styles/normal = ExtResource("4_5myt4")
-text = "Create CSV File"
-icon = ExtResource("4_qjqtm")
-
-[node name="OpenCSVDialog" type="FileDialog" parent="CSVFilePanel"]
-title = "Open a File"
-initial_position = 4
-size = Vector2i(600, 400)
-ok_button_text = "Open"
-file_mode = 0
-filters = PackedStringArray("*.csv")
-
-[node name="NewCSVDialog" type="FileDialog" parent="CSVFilePanel"]
-auto_translate_mode = 1
-title = "Create a CSV File"
-initial_position = 4
-size = Vector2i(600, 400)
-ok_button_text = "Create File"
-filters = PackedStringArray("*.csv")
-
 [node name="GraphEditor" type="Panel" parent="."]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -158,7 +87,3 @@ layout_mode = 2
 
 [connection signal="pressed" from="StartPanel/Container/ButtonsContainer/OpenDialogFile" to="." method="_on_open_dialog_file_pressed"]
 [connection signal="pressed" from="StartPanel/Container/ButtonsContainer/CreateDialogFile" to="." method="_on_create_dialog_file_pressed"]
-[connection signal="pressed" from="CSVFilePanel/Container/ButtonsContainer/OpenCSVFile" to="." method="_on_open_csv_file_pressed"]
-[connection signal="pressed" from="CSVFilePanel/Container/ButtonsContainer/CreateCSVFile" to="." method="_on_create_csv_file_pressed"]
-[connection signal="file_selected" from="CSVFilePanel/OpenCSVDialog" to="." method="_on_open_csv_dialog_file_selected"]
-[connection signal="file_selected" from="CSVFilePanel/NewCSVDialog" to="." method="_on_new_csv_dialog_file_selected"]

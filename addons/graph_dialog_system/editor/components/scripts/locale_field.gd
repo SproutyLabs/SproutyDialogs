@@ -23,16 +23,16 @@ func get_locale_code() -> String:
 	
 	if lang != "": # Check language code
 		if not TranslationServer.get_all_languages().has(lang):
-			printerr("[Translation Settings] Language code '" + lang + "' is not valid.")
+			printerr("[Graph Dialogs] Language code '" + lang + "' is not valid.")
 			return ""
 	else:
-		printerr("[Translation Settings] Need to select a language, code '"+ 
+		printerr("[Graph Dialogs] Need to select a language, code '"+ 
 				code_input.text + "'' not valid.")
 		return ""
 	
 	if country != "": # Check country code
 		if not TranslationServer.get_all_countries().has(country.to_upper()):
-			printerr("[Translation Settings] Country code '" + country + "' is not valid.")
+			printerr("[Graph Dialogs] Country code '" + country + "' is not valid.")
 			return ""
 	
 	return code_input.text
@@ -126,10 +126,10 @@ func _on_code_input_text_submitted(new_text : String) -> void:
 			lang_code = lang
 		else:
 			language_dropdown.select(0)
-			printerr("[Translation Settings] Language code '" + lang + "' is not valid.")
+			printerr("[Graph Dialogs] Language code '" + lang + "' is not valid.")
 			return
 	else:
-		printerr("[Translation Settings] Need to select a language, code '"+ 
+		printerr("[Graph Dialogs] Need to select a language, code '"+ 
 				new_text + "'' not valid.")
 		language_dropdown.select(0)
 	
@@ -141,7 +141,7 @@ func _on_code_input_text_submitted(new_text : String) -> void:
 			country_code = country.to_upper()
 		else:
 			countries_dropdown.select(0)
-			printerr("[Translation Settings] Country code '" + country + "' is not valid.")
+			printerr("[Graph Dialogs] Country code '" + country + "' is not valid.")
 	else:
 		countries_dropdown.select(0)
 

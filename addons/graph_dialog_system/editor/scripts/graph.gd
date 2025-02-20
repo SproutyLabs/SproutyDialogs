@@ -63,17 +63,17 @@ func get_nodes_data() -> Dictionary:
 	for child in get_children():
 		if child is BaseNode:
 			if child.node_type_id == 0: # Start nodes define dialogs trees
-				dict["dialog_" + child.get_dialog_id()] = {}
-				dict["dialog_" + child.get_dialog_id()].merge(child.get_data())
-			elif child.get_dialog_id() == "": 
+				dict["dialog_" + child.get_start_id()] = {}
+				dict["dialog_" + child.get_start_id()].merge(child.get_data())
+			elif child.get_start_id() == "": 
 				# Nodes without connection do not have a dialog tree associated
 				if not dict.has("unplugged_nodes"):
 					dict["unplugged_nodes"] = {}
 				dict["unplugged_nodes"].merge(child.get_data())
 			else: # Any other node belongs to a dialog tree
-				if not dict.has("dialog_" + child.get_dialog_id()):
-					dict["dialog_" + child.get_dialog_id()] = {}
-				dict["dialog_" + child.get_dialog_id()].merge(child.get_data())
+				if not dict.has("dialog_" + child.get_start_id()):
+					dict["dialog_" + child.get_start_id()] = {}
+				dict["dialog_" + child.get_start_id()].merge(child.get_data())
 	return dict
 	
 func load_nodes_data(dict : Dictionary) -> void:

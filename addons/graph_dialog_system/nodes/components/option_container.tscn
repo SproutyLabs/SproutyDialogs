@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/option_container.gd" id="1_csyed"]
 [ext_resource type="Texture2D" uid="uid://cctr0cmrj70nc" path="res://addons/graph_dialog_system/icons/Remove.svg" id="1_nh6j6"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_container.tscn" id="2_6k3ms"]
-[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/input_text_box.tscn" id="3_5qfnu"]
+[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/dialog_text_box.tscn" id="3_5qfnu"]
 
 [node name="OptionContainer" type="VBoxContainer"]
 script = ExtResource("1_csyed")

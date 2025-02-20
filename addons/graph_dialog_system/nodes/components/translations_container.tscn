@@ -28,10 +28,7 @@ visible = false
 custom_minimum_size = Vector2(2.08165e-12, 100)
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="TextBoxes"]
-layout_mode = 2
-
-[node name="DialogueEs" parent="TextBoxes" instance=ExtResource("3_sqsni")]
+[node name="TranslationBox" parent="TextBoxes" instance=ExtResource("3_sqsni")]
 custom_minimum_size = Vector2(150, 100)
 layout_mode = 2
 
