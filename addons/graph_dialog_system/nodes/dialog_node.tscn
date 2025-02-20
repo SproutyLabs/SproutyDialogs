@@ -100,13 +100,15 @@ layout_mode = 2
 
 [node name="DialogLabel" type="Label" parent="DialogContainer/DialogHeader"]
 layout_mode = 2
+size_flags_horizontal = 0
 text = "Dialogue"
 
 [node name="DefaultLocaleLabel" type="Label" parent="DialogContainer/DialogHeader"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 0
 theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
-text = "en"
+text = "(en)"
 horizontal_alignment = 2
 
 [node name="DefaultTextBox" parent="DialogContainer" instance=ExtResource("6_2llfw")]

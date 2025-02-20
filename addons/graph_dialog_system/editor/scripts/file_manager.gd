@@ -34,7 +34,7 @@ func _ready() -> void:
 	confirm_panel.add_button('Discard', true, 'discard_file')
 	confirm_panel.add_cancel_button('Cancel')
 	
-	csv_file_field.connect("file_path_changed", set_dialog_csv_file)
+	csv_file_field.connect("file_path_changed", set_csv_file_to_dialog)
 	hide_csv_container()
 	
 	$"%SaveFile".disabled = true
@@ -147,8 +147,10 @@ func save_file(index : int = current_file_index, path: String = "") -> void:
 	
 	match file_metadata["file_type"]:
 		FileType.DIALOG:
-			data["dialog_data"]["nodes_data"] = file_metadata["graph"].get_nodes_data()
+			var graph_data = file_metadata["graph"].get_nodes_data()
+			data["dialog_data"]["nodes_data"] = graph_data["nodes_data"]
 			file_metadata["data"] = data
+			save_dialogs_on_csv(graph_data["dialogs"], data["dialog_data"]["csv_file_path"])
 		FileType.CHAR:
 			pass # TODO: Update the character data
 	
@@ -276,20 +278,27 @@ func filter_file_list(search_text : String)-> void:
 #endregion
 
 #region --- CSV Files Handling ---
-func new_csv_file(path : String) -> void:
-	# Create a new csv file and associate to a dialog file
-	var header = ["key"] # TODO: Set the header by locales
-	var content = [""]
-	
-	GDialogsCSVFileManager.save_file(header, content, path)
-	set_dialog_csv_file(path)
-
-func set_dialog_csv_file(path : String) -> void:
+func set_csv_file_to_dialog(path : String) -> void:
 	# Set csv file path to the current data file
 	var metadata := file_list.get_item_metadata(current_file_index)
 	metadata["data"]["dialog_data"]["csv_file_path"] = path
 	file_list.set_item_metadata(current_file_index, metadata)
 	csv_file_field.set_value(path)
+	
+func save_dialogs_on_csv(dialogs : Dictionary, path : String) -> void:
+	# Save all file dialogs on csv file
+	var header = ["key"]
+	var content = []
+	
+	for dialog_key in dialogs:
+		var row = [dialog_key]
+		for locale in dialogs[dialog_key]:
+			if header.size() < dialogs[dialog_key].size() + 1:
+				header.append(locale) # Set header
+			row.append(dialogs[dialog_key][locale])
+		content.append(row)
+	
+	GDialogsCSVFileManager.save_file(header, content, path)
 
 func show_csv_container() -> void:
 	if current_file_index >= 0:

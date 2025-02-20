@@ -10,6 +10,7 @@ extends GraphNode
 @onready var start_node : BaseNode = null
 @onready var to_node : Array = []
 
+var node_index : int = 0
 var _remove_icon : Texture2D = preload("res://addons/graph_dialog_system/icons/Remove.svg")
 
 func _ready():

@@ -13,6 +13,7 @@ func get_data() -> Dictionary:
 	
 	dict[name.to_snake_case()] = {
 		"node_type_id" : node_type_id,
+		"node_index" : node_index,
 		"options" : {},
 		"to_node" : [] if connections.size() > 0 else ["END"],
 		"offset" : {
@@ -35,6 +36,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict
+	node_index = dict["node_index"]
 	to_node = dict["to_node"]
 	position_offset.x = dict["offset"]["x"]
 	position_offset.y = dict["offset"]["y"]

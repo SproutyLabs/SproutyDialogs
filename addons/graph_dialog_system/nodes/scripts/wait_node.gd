@@ -14,6 +14,7 @@ func get_data() -> Dictionary:
 	
 	dict[name.to_snake_case()] = {
 		"node_type_id" : node_type_id,
+		"node_index" : node_index,
 		"time" : time_value,
 		"to_node" : [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
@@ -26,6 +27,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict
+	node_index = dict["node_index"]
 	time_value = dict["time"]
 	time_input.value = dict["time"]
 	

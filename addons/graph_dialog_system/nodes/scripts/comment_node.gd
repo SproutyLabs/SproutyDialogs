@@ -13,6 +13,7 @@ func get_data() -> Dictionary:
 	
 	dict[name.to_snake_case()] = {
 		"node_type_id" : node_type_id,
+		"node_index" : node_index,
 		"comment_text" : comment_text,
 		"offset" : {
 			"x" : position_offset.x,
@@ -23,6 +24,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict and return connections
+	node_index = dict["node_index"]
 	comment_text = dict["comment_text"]
 	text_input.text = dict["comment_text"]
 	position_offset.x = dict["offset"]["x"]

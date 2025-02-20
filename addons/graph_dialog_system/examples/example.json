@@ -1,28 +1,20 @@
 {
 	"dialog_data": {
-		"csv_file_path": "res://addons/graph_dialog_system/examples/example.csv",
+		"csv_file_path": "res://addons/graph_dialog_system/examples/translations/example.csv",
 		"nodes_data": {
-			"dialog_hola": {
-				"start_node_1": {
-					"node_type_id": 0,
-					"offset": {
-						"x": 100,
-						"y": 340
-					},
-					"start_id": "hola",
-					"to_node": [
-						"dialog_node_1"
-					]
-				}
-			},
 			"unplugged_nodes": {
-				"comment_node_1": {
-					"comment_text": "holaaaa",
-					"node_type_id": 1,
+				"dialog_node_1": {
+					"char_key": "",
+					"dialog_key": "DIALOG_1",
+					"node_index": 1,
+					"node_type_id": 2,
 					"offset": {
-						"x": 140,
-						"y": 560
-					}
+						"x": 740,
+						"y": 220
+					},
+					"to_node": [
+						"END"
+					]
 				}
 			}
 		}

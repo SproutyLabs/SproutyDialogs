@@ -58,22 +58,31 @@ func _on_remove_nodes_menu_selected(id : int) -> void:
 #region --- Save and Load nodes ---
 func get_nodes_data() -> Dictionary:
 	# Get nodes data in a dictionary
-	var dict := {}
+	var dict := {
+		"nodes_data" : {},
+		"dialogs" : {}
+	}
 	
 	for child in get_children():
 		if child is BaseNode:
-			if child.node_type_id == 0: # Start nodes define dialogs trees
-				dict["dialog_" + child.get_start_id()] = {}
-				dict["dialog_" + child.get_start_id()].merge(child.get_data())
-			elif child.get_start_id() == "": 
+			if child.node_type_id == 2:
+				# Get dialogs texts from dialog nodes
+				dict["dialogs"][child.get_dialog_key()] = child.get_dialogs_text()
+			
+			if child.node_type_id == 0:
+				# Start nodes define dialogs trees
+				dict["nodes_data"][child.get_start_id()] = {}
+				dict["nodes_data"][child.get_start_id()].merge(child.get_data())
+			elif child.get_start_id().is_empty():
 				# Nodes without connection do not have a dialog tree associated
 				if not dict.has("unplugged_nodes"):
-					dict["unplugged_nodes"] = {}
-				dict["unplugged_nodes"].merge(child.get_data())
-			else: # Any other node belongs to a dialog tree
-				if not dict.has("dialog_" + child.get_start_id()):
-					dict["dialog_" + child.get_start_id()] = {}
-				dict["dialog_" + child.get_start_id()].merge(child.get_data())
+					dict["nodes_data"]["unplugged_nodes"] = {}
+				dict["nodes_data"]["unplugged_nodes"].merge(child.get_data())
+			else:
+				# Any other node belongs to a dialog tree
+				if not dict.has(child.get_start_id()):
+					dict["nodes_data"][child.get_start_id()] = {}
+				dict["nodes_data"][child.get_start_id()].merge(child.get_data())
 	return dict
 	
 func load_nodes_data(dict : Dictionary) -> void:
@@ -84,7 +93,7 @@ func load_nodes_data(dict : Dictionary) -> void:
 			var node_data = dict.dialog_data.nodes_data.get(node_group).get(node_name)
 			nodes_count[node_data["node_type_id"]] += 1
 			var new_node := nodes_scenes[node_data["node_type_id"]].instantiate()
-			new_node.title += ' #' + node_name.split("_")[-1]
+			new_node.title += ' #' + str(node_data["node_index"])
 			new_node.name = node_name
 			add_child(new_node, true)
 			new_node.set_data(node_data)
@@ -113,6 +122,7 @@ func add_new_node(typeID : int) -> void:
 	var new_node := nodes_scenes[typeID].instantiate()
 	new_node.name += "_" + str(nodes_count[typeID])
 	new_node.title += ' #' + str(nodes_count[typeID])
+	new_node.node_index = nodes_count[typeID]
 	new_node.position_offset = cursor_pos
 	new_node.selected = true
 	add_child(new_node, true)

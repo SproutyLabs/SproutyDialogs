@@ -9,6 +9,13 @@ var translation_box := preload(
 func _ready():
 	text_boxes.visible = false
 
+func get_translations_text() -> Dictionary:
+	# Return the dialog translations text on a dict
+	var dialogs = {}
+	for box in text_boxes.get_children():
+		dialogs[box.get_locale()] = box.get_text()
+	return dialogs
+
 func set_translation_boxes(locales: Array) -> void:
 	# Set input text boxes for each locale
 	for box in text_boxes.get_children():

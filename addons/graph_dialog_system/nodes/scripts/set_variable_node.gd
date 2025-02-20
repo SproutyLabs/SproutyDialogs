@@ -16,6 +16,7 @@ func get_data() -> Dictionary:
 	
 	dict[name.to_snake_case()] = {
 		"node_type_id" : node_type_id,
+		"node_index" : node_index,
 		"var_name" : var_selector.get_item_text(var_selector.selected),
 		"var_type" : type_selector.selected,
 		"operator" : operator_selector.selected,
@@ -31,6 +32,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict
+	node_index = dict["node_index"]
 	type_selector.select(dict["var_type"])
 	value_input.change_var_type(dict["var_type"])
 	# TODO: filter variables by type

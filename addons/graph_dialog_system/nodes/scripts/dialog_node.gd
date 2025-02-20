@@ -6,12 +6,10 @@ extends BaseNode
 @onready var translation_boxes : VBoxContainer = %Translations
 
 @onready var char_key : String = char_selector.get_item_text(char_selector.selected)
-@onready var dialog_key : String = ""
 
 func _ready():
 	super()
-	_set_dialog_translations()
-	dialog_key = _create_dialog_key()
+	_set_translation_text_boxes()
 
 func get_data() -> Dictionary:
 	# Get node data on dict
@@ -20,8 +18,9 @@ func get_data() -> Dictionary:
 	
 	dict[name.to_snake_case()] = {
 		"node_type_id" : node_type_id,
+		"node_index" : node_index,
 		"char_key" : "",
-		"dialog_key" : "",
+		"dialog_key" : get_dialog_key(),
 		"to_node" : [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
 		"offset" : {
@@ -33,23 +32,33 @@ func get_data() -> Dictionary:
 
 func set_data(dict : Dictionary) -> void:
 	# Set node data from dict
+	node_index = dict["node_index"]
 	char_key = dict["char_key"]
-	dialog_key = dict["dialog_key"]
 	to_node = dict["to_node"]
 	position_offset.x = dict["offset"]["x"]
 	position_offset.y = dict["offset"]["y"]
 
-func load_data(dict : Dictionary) -> void:
+func load_dialogs(dict : Dictionary) -> void:
 	set_data(dict)
 	# TODO: Load character selected
 	# TODO: Load dialog and translations from csv
 	pass
 
-func _create_dialog_key() -> String:
-	# Create the dialog key for CSV reference
-	return get_start_id() + "_" + str(graph_editor.nodes_count[node_type_id])
+func get_dialogs_text() -> Dictionary:
+	# Return the dialog text and its translations
+	var dialogs = {}
+	dialogs[GDialogsTranslationManager.default_locale] = default_text_box.get_text()
+	dialogs.merge(translation_boxes.get_translations_text())
+	return dialogs
 
-func _set_dialog_translations() -> void:
+func get_dialog_key() -> String:
+	# Create the dialog key for CSV reference
+	if start_node != null: return get_start_id() + "_" + str(node_index)
+	else: return "DIALOG_" + str(node_index)
+
+func _set_translation_text_boxes() -> void:
 	# Set text boxes for translation
 	%DefaultLocaleLabel.text = "(" + GDialogsTranslationManager.default_locale + ")"
-	translation_boxes.set_translation_boxes(GDialogsTranslationManager.locales)
+	var translation_locales := GDialogsTranslationManager.locales
+	translation_locales.erase(GDialogsTranslationManager.default_locale)
+	translation_boxes.set_translation_boxes(translation_locales)
