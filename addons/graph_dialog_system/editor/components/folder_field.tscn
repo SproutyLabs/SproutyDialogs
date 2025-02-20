@@ -41,10 +41,10 @@ flat = true
 
 [node name="OpenFolderDialog" type="FileDialog" parent="."]
 auto_translate_mode = 1
-title = "Select the translations folder"
+title = "Open a Directory"
 initial_position = 4
 size = Vector2i(600, 400)
-ok_button_text = "Select Folder"
+ok_button_text = "Select Current Folder"
 dialog_hide_on_ok = true
 file_mode = 2
 

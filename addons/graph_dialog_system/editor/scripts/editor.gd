@@ -51,5 +51,6 @@ func _on_csv_folder_selected(path: String) -> void:
 	# Set a folder path for CSV files
 	GDialogsTranslationManager.csv_files_path = path
 	GDialogsTranslationManager.save_translation_settings()
+	$"%SettingsPanel"/"%TranslationSettings"/"%CSVFolderField".set_value(path)
 	$FirstSettings.visible = false
 	$MainContainer.visible = true

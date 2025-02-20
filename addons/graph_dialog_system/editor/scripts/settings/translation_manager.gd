@@ -5,7 +5,7 @@ extends Resource
 ## Handle translation
 ## ------------------------------------------------------------------
 
-const DATA_PATH = "res://addons/graph_dialog_system/editor/data/translation_settings.json"
+const DATA_PATH = "res://addons/graph_dialog_system/editor/settings/translation_settings.json"
 
 static var csv_files_path : String = ""
 static var default_locale : String = ""

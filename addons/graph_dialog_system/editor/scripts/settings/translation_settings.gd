@@ -6,7 +6,7 @@ signal locales_changed
 @onready var default_locale_dropdown : OptionButton = $"%DefaultLocale"/OptionButton
 @onready var testing_locale_dropdown : OptionButton = $"%TestingLocale"/OptionButton
 @onready var locales_container : VBoxContainer = %LocalesContainer
-@onready var csv_folder_field : MarginContainer = $"%CSVFolder"/Label/FolderField
+@onready var csv_folder_field : MarginContainer = %CSVFolderField
 
 var locale_field := preload("res://addons/graph_dialog_system/editor/components/locale_field.tscn")
 
@@ -14,16 +14,21 @@ func _init() -> void:
 	GDialogsTranslationManager.load_translation_settings()
 
 func _ready() -> void:
-	csv_folder_field.connect("path_changed", _set_csv_folder_path)
+	csv_folder_field.connect("folder_path_changed", _set_csv_files_path)
+	if not GDialogsTranslationManager.csv_files_path.is_empty():
+		csv_folder_field.set_value(GDialogsTranslationManager.csv_files_path)
+	
 	_set_locales_on_dropdown(default_locale_dropdown)
 	_set_locales_on_dropdown(testing_locale_dropdown)
 	_set_locale_list()
 
 func _set_locales_on_dropdown(dropdown : OptionButton) -> void:
 	# Load the saved locales on a dropdown
-	if GDialogsTranslationManager.locales.is_empty(): return
-	
 	dropdown.clear()
+	
+	if GDialogsTranslationManager.locales.is_empty():
+		dropdown.add_item("(no one)")
+	
 	for locale in GDialogsTranslationManager.locales:
 		dropdown.add_item(locale)
 
@@ -88,5 +93,7 @@ func _on_save_locales_button_pressed() -> void:
 func _on_collect_translations_pressed() -> void:
 	GDialogsTranslationManager.collect_translations()
 
-func _set_csv_folder_path(path : String) -> void:
+func _set_csv_files_path(path : String) -> void:
+	# Change the path to CSV translation files
 	GDialogsTranslationManager.csv_files_path = path
+	GDialogsTranslationManager.save_translation_settings()

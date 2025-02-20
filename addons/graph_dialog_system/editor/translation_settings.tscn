@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://bk5rchg4mt0js"]
+[gd_scene load_steps=7 format=3 uid="uid://bk5rchg4mt0js"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/settings/translation_settings.gd" id="1_dnk3v"]
 [ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="2_cs7j5"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="3_poal8"]
 [ext_resource type="PackedScene" uid="uid://bceidtkw07484" path="res://addons/graph_dialog_system/editor/components/folder_field.tscn" id="4_01lks"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="4_erkog"]
+[ext_resource type="Texture2D" uid="uid://duvyymvtfnkss" path="res://addons/graph_dialog_system/icons/File.svg" id="6_g5fpe"]
 
 [node name="TranslationSettings" type="HSplitContainer"]
 anchors_preset = 15
@@ -125,7 +126,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
-text = "Country (optional)"
+text = "Country"
 horizontal_alignment = 1
 
 [node name="Label" type="Label" parent="LocalesSettings/Container/Locales/Panel/Container/Header"]
@@ -180,19 +181,18 @@ theme_type_variation = &"HeaderSmall"
 text = "CSV Translation Files"
 
 [node name="CSVFolder" type="HBoxContainer" parent="CSVFiles/Container"]
-unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Label" type="Label" parent="CSVFiles/Container/CSVFolder"]
 layout_mode = 2
 text = "CSV Files Folder"
 
-[node name="FolderField" parent="CSVFiles/Container/CSVFolder" instance=ExtResource("4_01lks")]
+[node name="CSVFolderField" parent="CSVFiles/Container/CSVFolder" instance=ExtResource("4_01lks")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="CharCSVFile" type="HBoxContainer" parent="CSVFiles/Container"]
-unique_name_in_owner = true
 layout_mode = 2
 
 [node name="Label" type="Label" parent="CSVFiles/Container/CharCSVFile"]
@@ -208,6 +208,7 @@ file_filters = PackedStringArray("*.csv")
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Collect Translations"
+icon = ExtResource("6_g5fpe")
 
 [connection signal="item_selected" from="LocalesSettings/Container/DefaultLocale/OptionButton" to="." method="_on_default_locale_selected"]
 [connection signal="item_selected" from="LocalesSettings/Container/TestingLocale/OptionButton" to="." method="_on_testing_locale_selected"]

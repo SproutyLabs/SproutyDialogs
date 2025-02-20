@@ -37,4 +37,5 @@ layout_mode = 2
 metadata/_tab_index = 1
 
 [node name="TranslationSettings" parent="Translation" instance=ExtResource("2_g62sc")]
+unique_name_in_owner = true
 layout_mode = 1
