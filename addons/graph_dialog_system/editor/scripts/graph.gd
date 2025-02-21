@@ -88,18 +88,23 @@ func get_nodes_data() -> Dictionary:
 				dict["nodes_data"]["DIALOG_" + child.get_start_id()].merge(child.get_data())
 	return dict
 	
-func load_nodes_data(dict : Dictionary) -> void:
+func load_nodes_data(data : Dictionary, dialogs : Dictionary) -> void:
 	# Load nodes from dictonary data
-	for node_group in dict["dialog_data"]["nodes_data"]:
-		for node_name in dict["dialog_data"]["nodes_data"][node_group]:
+	for node_group in data["dialog_data"]["nodes_data"]:
+		for node_name in data["dialog_data"]["nodes_data"][node_group]:
 			# Create nodes and load the data
-			var node_data = dict.dialog_data.nodes_data.get(node_group).get(node_name)
+			var node_data = data.dialog_data.nodes_data.get(node_group).get(node_name)
 			nodes_count[node_data["node_type_id"]] += 1
 			var new_node := nodes_scenes[node_data["node_type_id"]].instantiate()
 			new_node.title += ' #' + str(node_data["node_index"])
 			new_node.name = node_name
 			add_child(new_node, true)
 			new_node.set_data(node_data)
+			
+			# Load dialogs on dialog nodes
+			if node_data["node_type_id"] == 2:
+				new_node.load_dialogs(dialogs[node_data["dialog_key"]])
+			
 	# When all the nodes are loaded, notify the nodes to connect them
 	nodes_loaded.emit()
 #endregion

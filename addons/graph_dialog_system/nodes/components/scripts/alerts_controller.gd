@@ -34,8 +34,10 @@ func show_alert(text : String, type : String) -> GDialogsAlert:
 
 func hide_alert(alert : GDialogsAlert) -> void:
 	# Hide and destroy a given alert
+	if not alert: return
 	alert.hide_alert()
 
 func focus_alert(alert : GDialogsAlert) -> void:
 	# Focus an alert doing an animation
+	if not alert: return
 	alert._play_focus_animation()

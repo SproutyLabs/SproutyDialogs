@@ -47,7 +47,8 @@ static func load_file(file_path : String) -> Variant:
 		
 		for row in raw_rows:
 			var row_data := row.split(",")
-			data.append(row)
+			if row_data.size() > 1: # Skip last empty row
+				data.append(row_data)
 		return data
 	else: 
 		printerr("[CSVFileManager] Cannot open non-existing file at %s" 

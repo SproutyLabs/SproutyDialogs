@@ -39,11 +39,11 @@ func set_data(dict : Dictionary) -> void:
 	position_offset.x = dict["offset"]["x"]
 	position_offset.y = dict["offset"]["y"]
 
-func load_dialogs(dict : Dictionary) -> void:
-	set_data(dict)
-	# TODO: Load character selected
-	# TODO: Load dialog and translations from csv
-	pass
+func load_dialogs(dialogs : Dictionary) -> void:
+	# Load dialog and translations from CSV data
+	default_text_box.set_text(dialogs[
+			GDialogsTranslationManager.default_locale])
+	translation_boxes.load_translations_text(dialogs)
 
 func get_dialogs_text() -> Dictionary:
 	# Return the dialog text and its translations

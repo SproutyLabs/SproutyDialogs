@@ -60,11 +60,13 @@ func new_file_item(file_name : String, path : String, type : FileType, data : Di
 
 	match type: # Add file item by type
 		FileType.DIALOG:
-			# Load graph on metadata
+			# Load graph and assign as metadata
 			var graph = graph_scene.instantiate()
 			add_child(graph)
 			graph.modified.connect(_on_data_modified)
-			graph.load_nodes_data(data)
+			var csv_path = data["dialog_data"]["csv_file_path"]
+			var dialogs = load_dialogs_from_csv(csv_path)
+			graph.load_nodes_data(data, dialogs)
 			graph.name = "Graph"
 			remove_child(graph)
 			metadata['graph'] = graph
@@ -290,7 +292,7 @@ func set_csv_file_to_dialog(path : String) -> void:
 	csv_file_field.set_value(path)
 	
 func save_dialogs_on_csv(dialogs : Dictionary, path : String) -> void:
-	# Save all file dialogs on csv file
+	# Save all graph dialogs on csv file
 	var header = ["key"]
 	var content = []
 	
@@ -303,6 +305,24 @@ func save_dialogs_on_csv(dialogs : Dictionary, path : String) -> void:
 		content.append(row)
 	
 	GDialogsCSVFileManager.save_file(header, content, path)
+
+func load_dialogs_from_csv(path : String) -> Dictionary:
+	# Load and return all the dialogs on a dictionary
+	var data := GDialogsCSVFileManager.load_file(path)
+	var header = data[0]
+	var dialogs := {}
+	
+	for row in data:
+		# For each row, add a dict with dialog key
+		if row == header: continue # Skip header
+		var key = row[0]
+		dialogs[key] = {}
+		for i in row.size(): 
+			# Add translations to each dialog
+			if i < 1: continue # Skip key
+			dialogs[key][header[i]] = row[i]
+	
+	return dialogs
 
 func show_csv_container() -> void:
 	if current_file_index >= 0:

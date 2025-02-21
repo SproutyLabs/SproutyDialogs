@@ -26,8 +26,11 @@ func set_translation_boxes(locales: Array) -> void:
 		text_boxes.add_child(box)
 		box.set_locale(locale)
 
-func load_translations_text() -> void:
-	pass
+func load_translations_text(dialogs : Dictionary) -> void:
+	# Load dialog translations
+	for box in text_boxes.get_children():
+		if dialogs.has(box.get_locale()):
+			box.set_text(dialogs[box.get_locale()])
 
 func _on_expand_button_toggled(toggled_on : bool) -> void:
 	text_boxes.visible = toggled_on
