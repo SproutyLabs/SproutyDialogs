@@ -43,5 +43,9 @@ func get_start_id() -> String:
 	return start_id
 
 func _on_id_input_changed(new_text : String) -> void:
+	# Become the id text to uppercase and save it
+	var caret_pos = ID_input.caret_column
+	ID_input.text = new_text.to_upper()
+	ID_input.caret_column = caret_pos
 	start_id = new_text
 	get_parent().on_modified()
