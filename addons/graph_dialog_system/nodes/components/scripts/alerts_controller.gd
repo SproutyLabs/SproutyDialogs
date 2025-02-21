@@ -2,6 +2,7 @@
 extends VBoxContainer
 
 var error_template = preload("res://addons/graph_dialog_system/nodes/components/error_alert.tscn")
+var warning_template = preload("res://addons/graph_dialog_system/nodes/components/warning_alert.tscn")
 
 func _ready() -> void:
 	# Clean old alerts
@@ -24,7 +25,10 @@ func show_alert(text : String, type : String) -> GDialogsAlert:
 			alert.show_alert(text)
 			return alert
 		"WARNING":
-			return null # TODO
+			var alert = warning_template.instantiate()
+			self.add_child(alert)
+			alert.show_alert(text)
+			return alert
 		_:
 			return null
 

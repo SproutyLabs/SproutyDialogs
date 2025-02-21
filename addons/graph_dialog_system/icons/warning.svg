@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+
+<svg
+   width="64"
+   height="64"
+   viewBox="0 0 24 24"
+   fill="none"
+   stroke="#ffffff"
+   version="1.1"
+   id="svg2"
+   sodipodi:docname="warning-1-svgrepo-com.svg"
+   inkscape:export-filename="warning.svg"
+   inkscape:export-xdpi="24"
+   inkscape:export-ydpi="24"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="namedview2"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     showgrid="false" />
+  <g
+     id="SVGRepo_iconCarrier">
+    <circle
+       cx="12"
+       cy="17"
+       r="1"
+       fill="#ffffff"
+       id="circle1" />
+    <path
+       d="m 12,10 v 4"
+       stroke="#ffffff"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path1" />
+    <path
+       d="M 3.44722,18.1056 10.2111,4.57771 c 0.7371,-1.4741 2.8407,-1.47409 3.5778,0 L 20.5528,18.1056 C 21.2177,19.4354 20.2507,21 18.7639,21 H 5.23607 C 3.7493,21 2.78231,19.4354 3.44722,18.1056 Z"
+       stroke="#ffffff"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       id="path2" />
+  </g>
+</svg>
