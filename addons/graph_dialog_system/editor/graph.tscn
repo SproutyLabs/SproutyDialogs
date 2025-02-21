@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cr20rw0unyne0"]
+[gd_scene load_steps=12 format=3 uid="uid://cr20rw0unyne0"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/graph.gd" id="1_jqja1"]
 [ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/Play.svg" id="2_5eg1u"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialog_system/icons/Signals.svg" id="8_3ejxv"]
 [ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/graph_dialog_system/icons/Timer.svg" id="9_sbm6t"]
 [ext_resource type="Texture2D" uid="uid://cctr0cmrj70nc" path="res://addons/graph_dialog_system/icons/Remove.svg" id="10_n1ig1"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/alerts_controller.gd" id="11_87q7j"]
 
 [node name="Graph" type="GraphEdit"]
 anchors_preset = 15
@@ -59,6 +60,19 @@ unfocusable = true
 item_count = 1
 item_0/text = "Delete selected nodes"
 item_0/icon = ExtResource("10_n1ig1")
+
+[node name="Alerts" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 60)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -128.0
+offset_bottom = -68.0
+grow_horizontal = 2
+grow_vertical = 0
+script = ExtResource("11_87q7j")
 
 [connection signal="connection_request" from="." to="." method="_on_connection_request"]
 [connection signal="connection_to_empty" from="." to="." method="_on_connection_to_empty"]

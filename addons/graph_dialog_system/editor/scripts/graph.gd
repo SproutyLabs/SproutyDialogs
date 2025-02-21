@@ -15,9 +15,12 @@ signal nodes_loaded
 	preload("res://addons/graph_dialog_system/nodes/signal_node.tscn"),
 	preload("res://addons/graph_dialog_system/nodes/wait_node.tscn"),
 ]
+
 @onready var add_node_menu : PopupMenu = $AddNodeMenu
 @onready var delete_nodes_menu : PopupMenu = $DeleteNodesMenu
+@onready var alerts : VBoxContainer = $Alerts
 @onready var nodes_count : Array[int]
+
 var request_node : String = ""
 var request_port : int = -1
 

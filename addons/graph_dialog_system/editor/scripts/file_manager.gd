@@ -147,6 +147,10 @@ func save_file(index : int = current_file_index, path: String = "") -> void:
 	
 	match file_metadata["file_type"]:
 		FileType.DIALOG:
+			if file_metadata["graph"].alerts.is_error_alert_active():
+				# If there is some error not solved, cannot save
+				printerr("[Graph Dialogs] Cannot save, please fix the errors.")
+				return
 			var graph_data = file_metadata["graph"].get_nodes_data()
 			data["dialog_data"]["nodes_data"] = graph_data["nodes_data"]
 			file_metadata["data"] = data

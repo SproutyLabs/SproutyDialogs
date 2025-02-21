@@ -69,5 +69,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Label..."
 
+[connection signal="node_deselected" from="." to="." method="_on_node_deselected"]
 [connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]
+[connection signal="focus_exited" from="Container/IDInput" to="." method="_on_id_input_focus_exited"]
 [connection signal="text_changed" from="Container/IDInput" to="." method="_on_id_input_changed"]

@@ -1,0 +1,58 @@
+[gd_scene load_steps=4 format=3 uid="uid://drygyfwdd5j1m"]
+
+[ext_resource type="Texture2D" uid="uid://db2rm5mxqrejo" path="res://addons/graph_dialog_system/icons/Close.svg" id="1_hug3j"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/graph_alert.gd" id="1_wjx5u"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u6f8d"]
+bg_color = Color(0.624666, 0.228983, 0.230446, 1)
+corner_radius_top_left = 30
+corner_radius_bottom_left = 30
+
+[node name="ErrorAlert" type="MarginContainer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -648.0
+offset_bottom = -588.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 25
+script = ExtResource("1_wjx5u")
+alert_type = "ERROR"
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(300, 60)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_u6f8d")
+
+[node name="Container" type="HBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Icon" type="TextureRect" parent="Panel/Container"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture = ExtResource("1_hug3j")
+expand_mode = 3
+stretch_mode = 3
+
+[node name="AlertType" type="Label" parent="Panel/Container"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_type_variation = &"HeaderSmall"
+text = "Error"
+vertical_alignment = 1
+
+[node name="TextLabel" type="RichTextLabel" parent="Panel/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+bbcode_enabled = true
+text = "Some error text"
+fit_content = true
