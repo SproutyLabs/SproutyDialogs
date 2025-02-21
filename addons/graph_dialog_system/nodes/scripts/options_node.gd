@@ -36,6 +36,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict
+	node_type_id = dict["node_type_id"]
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
 	position_offset.x = dict["offset"]["x"]

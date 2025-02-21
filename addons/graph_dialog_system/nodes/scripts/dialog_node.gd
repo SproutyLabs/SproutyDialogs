@@ -32,6 +32,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict : Dictionary) -> void:
 	# Set node data from dict
+	node_type_id = dict["node_type_id"]
 	node_index = dict["node_index"]
 	char_key = dict["char_key"]
 	to_node = dict["to_node"]
@@ -54,7 +55,7 @@ func get_dialogs_text() -> Dictionary:
 func get_dialog_key() -> String:
 	# Create the dialog key for CSV reference
 	if start_node != null: return get_start_id() + "_" + str(node_index)
-	else: return "DIALOG_" + str(node_index)
+	else: return "NODE_" + str(node_index)
 
 func _set_translation_text_boxes() -> void:
 	# Set text boxes for translation

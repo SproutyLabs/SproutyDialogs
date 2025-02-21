@@ -24,6 +24,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict and return connections
+	node_type_id = dict["node_type_id"]
 	node_index = dict["node_index"]
 	comment_text = dict["comment_text"]
 	text_input.text = dict["comment_text"]

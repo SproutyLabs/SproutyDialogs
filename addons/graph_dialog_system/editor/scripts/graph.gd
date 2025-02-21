@@ -71,18 +71,18 @@ func get_nodes_data() -> Dictionary:
 			
 			if child.node_type_id == 0:
 				# Start nodes define dialogs trees
-				dict["nodes_data"][child.get_start_id()] = {}
-				dict["nodes_data"][child.get_start_id()].merge(child.get_data())
-			elif child.get_start_id().is_empty():
+				dict["nodes_data"]["DIALOG_" + child.get_start_id()] = {}
+				dict["nodes_data"]["DIALOG_" + child.get_start_id()].merge(child.get_data())
+			elif child.start_node == null:
 				# Nodes without connection do not have a dialog tree associated
-				if not dict.has("unplugged_nodes"):
+				if not dict["nodes_data"].has("unplugged_nodes"):
 					dict["nodes_data"]["unplugged_nodes"] = {}
 				dict["nodes_data"]["unplugged_nodes"].merge(child.get_data())
 			else:
 				# Any other node belongs to a dialog tree
-				if not dict.has(child.get_start_id()):
-					dict["nodes_data"][child.get_start_id()] = {}
-				dict["nodes_data"][child.get_start_id()].merge(child.get_data())
+				if not dict["nodes_data"].has("DIALOG_" + child.get_start_id()):
+					dict["nodes_data"]["DIALOG_" + child.get_start_id()] = {}
+				dict["nodes_data"]["DIALOG_" + child.get_start_id()].merge(child.get_data())
 	return dict
 	
 func load_nodes_data(dict : Dictionary) -> void:
@@ -147,7 +147,7 @@ func delete_node(node : GraphNode) -> void:
 	for connection in node_connections: # Disconnect all connections
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
-	print("Removed node: "+ node.name)
+	nodes_count[node.node_type_id] -= 1
 	node.queue_free() # Remove node
 	on_modified()
 
@@ -198,6 +198,7 @@ func disconnect_node_on_port(node: String, port : int) -> void:
 	for connection in port_connections:
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
+		get_node(connection["to_node"]).start_node = null
 	on_modified()
 
 func _on_connection_request(from_node: String, from_port : int, to_node : String, to_port : int) -> void:

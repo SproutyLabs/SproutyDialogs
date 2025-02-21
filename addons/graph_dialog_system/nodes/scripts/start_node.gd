@@ -29,6 +29,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict
+	node_type_id = dict["node_type_id"]
 	node_index = dict["node_index"]
 	start_id = dict["start_id"]
 	ID_input.text = dict["start_id"]

@@ -37,6 +37,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict
+	node_type_id = dict["node_type_id"]
 	node_index = dict["node_index"]
 	type_selector.select(dict["var_type"])
 	value_input.change_var_type(dict["var_type"])
