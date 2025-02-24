@@ -107,5 +107,17 @@ text = "Save Locales"
 icon = ExtResource("1_8ebfy")
 alignment = 2
 
+[node name="ConfirmSaveLocales" type="AcceptDialog" parent="."]
+auto_translate_mode = 1
+title = "Please Confirm..."
+initial_position = 4
+size = Vector2i(600, 184)
+dialog_text = "Some locales have been removed, so their respective texts in the CSV translation files will be removed when saving the dialog files.
+
+Do you want to save the changes anyway?"
+dialog_autowrap = true
+
 [connection signal="pressed" from="TopBar/AddButton" to="." method="_on_add_locale_pressed"]
 [connection signal="pressed" from="SaveButton" to="." method="_on_save_locales_pressed"]
+[connection signal="canceled" from="ConfirmSaveLocales" to="." method="_on_confirm_save_canceled"]
+[connection signal="custom_action" from="ConfirmSaveLocales" to="." method="_on_confirm_save_action"]

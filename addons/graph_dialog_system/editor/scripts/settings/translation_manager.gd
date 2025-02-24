@@ -2,7 +2,7 @@ class_name GDialogsTranslationManager
 extends Resource
 
 ## ------------------------------------------------------------------
-## Handle translation
+## Handle translation on dialogs
 ## ------------------------------------------------------------------
 
 const DATA_PATH = "res://addons/graph_dialog_system/editor/settings/translation_settings.json"
@@ -11,6 +11,8 @@ static var csv_files_path : String = ""
 static var default_locale : String = ""
 static var testing_locale : String = ""
 static var locales : Array = []
+
+static var translation_settings : HSplitContainer
 
 static func save_translation_settings() -> void:
 	# Save translation settings in settings data

@@ -21,10 +21,15 @@ func set_translation_boxes(locales: Array) -> void:
 	for box in text_boxes.get_children():
 		box.queue_free() # Clear boxes
 	
+	if locales.is_empty(): 
+		self.visible = false
+		return
+	
 	for locale in locales: # Add a box for each locale
 		var box = translation_box.instantiate()
 		text_boxes.add_child(box)
 		box.set_locale(locale)
+	self.visible = true
 
 func load_translations_text(dialogs : Dictionary) -> void:
 	# Load dialog translations

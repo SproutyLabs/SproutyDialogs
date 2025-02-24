@@ -2,6 +2,7 @@
 extends MarginContainer
 
 signal locale_removed(locale_code : String)
+signal locale_modified
 
 @onready var code_input : LineEdit = $Container/CodeInput
 @onready var language_dropdown : OptionButton = $Container/LanguageDropdown
@@ -69,12 +70,14 @@ func _on_language_dropdown_item_selected(index : int) -> void:
 	if index == 0: lang_code = ""
 	else: lang_code = TranslationServer.get_all_languages()[index - 1]
 	code_input.text = lang_code + ("_" + country_code if country_code != "" else "")
+	locale_modified.emit()
 
 func _on_country_dropdown_item_selected(index : int) -> void:
 	# Select country by dropdown
 	if index == 0: country_code = ""
 	else: country_code = TranslationServer.get_all_countries()[index - 1]
 	code_input.text = lang_code + ("_" + country_code if country_code != "" else "")
+	locale_modified.emit()
 #endregion
 
 #region --- Code input handling ---
@@ -112,6 +115,8 @@ func _on_code_input_text_changed(new_text : String) -> void:
 	if popup_selector.item_count > 0: # Show popup
 		var pos := Vector2(100, 0) + code_input.global_position + Vector2(get_window().position)
 		popup_selector.popup(Rect2(pos, popup_selector.size))
+	
+	locale_modified.emit()
 
 func _on_code_input_text_submitted(new_text : String) -> void:
 	# Set the language and country manually typed in the dropdowns
@@ -144,6 +149,7 @@ func _on_code_input_text_submitted(new_text : String) -> void:
 			printerr("[Graph Dialogs] Country code '" + country + "' is not valid.")
 	else:
 		countries_dropdown.select(0)
+	locale_modified.emit()
 
 func _on_popup_selector_id_pressed(id : int) -> void:
 	# Select a language or country code
