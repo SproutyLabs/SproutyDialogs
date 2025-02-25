@@ -16,6 +16,15 @@ func _ready() -> void:
 	confirm_panel.add_cancel_button('Cancel')
 	_set_locale_list()
 
+func _new_locale() -> Node:
+	# Add a new locale on the list
+	var new_locale = locale_field.instantiate()
+	new_locale.connect("locale_removed", _on_locale_removed)
+	new_locale.connect("locale_modified", _on_locales_modified)
+	locales_container.add_child(new_locale)
+	$"%LocalesContainer"/Label.visible = false
+	return new_locale
+
 func _set_locale_list() -> void:
 	# Set locale list loading the saved locales
 	for child in locales_container.get_children():
@@ -26,21 +35,14 @@ func _set_locale_list() -> void:
 		$"%LocalesContainer"/Label.visible = true
 		return
 	
-	$"%LocalesContainer"/Label.visible = false
 	for locale in GDialogsTranslationManager.locales:
 		# Load saved locales in the list
-		var new_locale = locale_field.instantiate()
-		new_locale.connect("locale_removed", _on_locale_removed)
-		locales_container.add_child(new_locale)
+		var new_locale = _new_locale()
 		new_locale.load_locale(locale)
 
 func _on_add_locale_pressed() -> void:
-	# Add new locale to the list
-	var new_locale = locale_field.instantiate()
-	new_locale.connect("locale_removed", _on_locale_removed)
-	new_locale.connect("locale_modified", _on_locales_modified)
-	locales_container.add_child(new_locale)
-	$"%LocalesContainer"/Label.visible = false
+	# Add new locale when the add button is pressed
+	_new_locale()
 	_on_locales_modified()
 
 func _on_locale_removed(locale_code : String) -> void:
