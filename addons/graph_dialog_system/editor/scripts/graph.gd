@@ -73,7 +73,7 @@ func get_nodes_data() -> Dictionary:
 					dict["nodes_data"]["DIALOG_" + child.get_start_id()] = {}
 				dict["nodes_data"]["DIALOG_" + child.get_start_id()].merge(child.get_data())
 	return dict
-	
+
 func load_nodes_data(data : Dictionary, dialogs : Dictionary) -> void:
 	# Load nodes from dictonary data
 	for node_group in data["dialog_data"]["nodes_data"]:
@@ -144,7 +144,7 @@ func delete_node(node : GraphNode) -> void:
 	for connection in node_connections: # Disconnect all connections
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
-	nodes_type_count[node.node_type_id] -= 1
+	nodes_type_count[node.node_type] -= 1
 	node.queue_free() # Remove node
 	on_modified()
 
