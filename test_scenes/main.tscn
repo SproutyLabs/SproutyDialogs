@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://c537n4i4aibwp"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/utils/dialog_player.gd" id="1_sndaf"]
+
+[node name="Main" type="Node2D"]
+
+[node name="DialogPlayer" type="Node" parent="."]
+script = ExtResource("1_sndaf")
+dialog_file = "res://addons/graph_dialog_system/examples/example.json"
