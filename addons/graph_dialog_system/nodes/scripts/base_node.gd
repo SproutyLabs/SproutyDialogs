@@ -2,7 +2,6 @@
 class_name BaseNode
 extends GraphNode
 
-@export var node_type_id : int = 0
 @export_color_no_alpha var node_color : Color
 @export var node_icon : Texture2D
 
@@ -10,10 +9,13 @@ extends GraphNode
 @onready var start_node : BaseNode = null
 @onready var to_node : Array = []
 
+var node_type : String = ""
 var node_index : int = 0
+
 var _remove_icon : Texture2D = preload("res://addons/graph_dialog_system/icons/Remove.svg")
 
 func _ready():
+	node_type = name.to_snake_case().split("_node_")[0] + "_node"
 	graph_editor.connect("nodes_loaded", _load_output_connections)
 	set_node_titlebar()
 

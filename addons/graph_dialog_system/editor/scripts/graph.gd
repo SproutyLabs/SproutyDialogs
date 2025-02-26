@@ -4,26 +4,22 @@ extends GraphEdit
 signal modified
 signal nodes_loaded
 
-@export_category("Nodes Settings")
 @onready var add_node_menu : PopupMenu = $AddNodeMenu
 @onready var delete_nodes_menu : PopupMenu = $DeleteNodesMenu
 @onready var alerts : VBoxContainer = $Alerts
-@onready var nodes_count : Array[int]
 
-var nodes_scenes : Array[PackedScene]
+var nodes_ref : Dictionary = NodesReferences.nodes
+var nodes_type_count : Dictionary = {}
+
 var request_node : String = ""
 var request_port : int = -1
 
 var cursor_pos : Vector2 = Vector2.ZERO
 
 func _ready():
-	# Load nodes scenes
-	for scene in NodesReferences.nodes_scenes_path:
-		nodes_scenes.append(load(scene))
-	
 	# Initialize nodes count array
-	nodes_count.resize(nodes_scenes.size())
-	nodes_count.fill(0)
+	for node in nodes_ref:
+		nodes_type_count[node] = 0
 	
 	set_add_node_menu()
 
@@ -37,16 +33,12 @@ func _input(_event):
 		request_port = -1
 
 func _on_right_click(pos : Vector2) -> void:
-	# Handle when do right click on graph canvas
-	#if not selected_nodes.is_empty(): # Show pop-up to delete selected nodes
-	#	var pop_pos := pos + global_position + Vector2(get_window().position)
-	#	delete_nodes_menu.popup(Rect2(pop_pos.x, pop_pos.y, 
-	#		delete_nodes_menu.size.x, delete_nodes_menu.size.y))
-	#else: show_add_node_menu(pos) # Show add node menu
 	show_add_node_menu(pos)
 
 func _on_add_node_menu_selected(id : int) -> void:
-	add_new_node(id) # Add a node of the selected type
+	 # Add a node of the selected type
+	var node_type = add_node_menu.get_item_metadata(id)
+	add_new_node(node_type)
 
 func _on_remove_nodes_menu_selected(id : int) -> void:
 	pass
@@ -62,11 +54,11 @@ func get_nodes_data() -> Dictionary:
 	
 	for child in get_children():
 		if child is BaseNode:
-			if child.node_type_id == 2:
-				# Get dialogs texts from dialog nodes
+			if child.node_type == "dialogue_node":
+				# Get dialogs texts from dialogue nodes
 				dict["dialogs"][child.get_dialog_key()] = child.get_dialogs_text()
 			
-			if child.node_type_id == 0:
+			if child.node_type == "start_node":
 				# Start nodes define dialogs trees
 				dict["nodes_data"]["DIALOG_" + child.get_start_id()] = {}
 				dict["nodes_data"]["DIALOG_" + child.get_start_id()].merge(child.get_data())
@@ -88,15 +80,15 @@ func load_nodes_data(data : Dictionary, dialogs : Dictionary) -> void:
 		for node_name in data["dialog_data"]["nodes_data"][node_group]:
 			# Create nodes and load the data
 			var node_data = data.dialog_data.nodes_data.get(node_group).get(node_name)
-			nodes_count[node_data["node_type_id"]] += 1
-			var new_node := nodes_scenes[node_data["node_type_id"]].instantiate()
+			nodes_type_count[node_data["node_type"]] += 1
+			var new_node = nodes_ref[node_data["node_type"]]["scene"].instantiate()
 			new_node.title += ' #' + str(node_data["node_index"])
 			new_node.name = node_name
 			add_child(new_node, true)
 			new_node.set_data(node_data)
 			
 			# Load dialogs on dialog nodes
-			if node_data["node_type_id"] == 2:
+			if node_data["node_type"] == "dialogue_node":
 				new_node.load_dialogs(dialogs[node_data["dialog_key"]])
 			
 	# When all the nodes are loaded, notify the nodes to connect them
@@ -107,10 +99,13 @@ func load_nodes_data(data : Dictionary, dialogs : Dictionary) -> void:
 func set_add_node_menu() -> void:
 	# Set nodes list on popup node menu
 	add_node_menu.clear()
-	for node in nodes_scenes:
-		var node_aux = node.instantiate()
-		add_node_menu.add_icon_item(node_aux.node_icon, node_aux.name)
+	var index = 0
+	for node in nodes_ref:
+		var node_aux = nodes_ref[node]["scene"].instantiate()
+		add_node_menu.add_icon_item(node_aux.node_icon, node_aux.name.capitalize(), index)
+		add_node_menu.set_item_metadata(index, node)
 		node_aux.queue_free()
+		index += 1
 
 func show_add_node_menu(pos : Vector2) -> void:
 	# Show add node pop-up menu
@@ -118,13 +113,13 @@ func show_add_node_menu(pos : Vector2) -> void:
 	add_node_menu.popup(Rect2(pop_pos.x, pop_pos.y, add_node_menu.size.x, add_node_menu.size.y))
 	cursor_pos = (pos + scroll_offset) / zoom
 
-func add_new_node(typeID : int) -> void:
+func add_new_node(node_type : String) -> void:
 	# Create a new node
-	nodes_count[typeID] += 1
-	var new_node := nodes_scenes[typeID].instantiate()
-	new_node.name += "_" + str(nodes_count[typeID])
-	new_node.title += ' #' + str(nodes_count[typeID])
-	new_node.node_index = nodes_count[typeID]
+	nodes_type_count[node_type] += 1
+	var new_node = nodes_ref[node_type]["scene"].instantiate()
+	new_node.name += "_" + str(nodes_type_count[node_type])
+	new_node.title += ' #' + str(nodes_type_count[node_type])
+	new_node.node_index = nodes_type_count[node_type]
 	new_node.position_offset = cursor_pos
 	new_node.selected = true
 	add_child(new_node, true)
@@ -149,7 +144,7 @@ func delete_node(node : GraphNode) -> void:
 	for connection in node_connections: # Disconnect all connections
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
-	nodes_count[node.node_type_id] -= 1
+	nodes_type_count[node.node_type_id] -= 1
 	node.queue_free() # Remove node
 	on_modified()
 

@@ -25,9 +25,9 @@ func _ready() -> void:
 	if _nodes_data.is_empty():
 		_load_dialog_data(dialog_file)
 	
-	for parser in NodesReferences.nodes_parsers:
-		if parser != null:
-			parser.connect("continue_to_node", _process_dialog_node)
+	for node in NodesReferences.nodes:
+		if node.parser != null:
+			node.parser.connect("continue_to_node", _process_dialog_node)
 
 func _load_dialog_data(path : String) -> void:
 	# Load dialog data from dialog file
@@ -81,5 +81,5 @@ func _process_dialog_node(node_name : String) -> void:
 		stop()
 		return
 	
-	var node_id = _nodes_data[node_name]["node_type_id"]
-	NodesReferences.nodes_parsers[node_id].process_node(_nodes_data[node_name])
+	var node_type = _nodes_data[node_name]["node_type"]
+	NodesReferences.nodes[node_type]["parser"].process_node(_nodes_data[node_name])

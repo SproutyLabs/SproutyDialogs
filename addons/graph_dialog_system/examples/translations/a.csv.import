@@ -1,0 +1,15 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://gyltk25gwdxi"
+valid=false
+
+[deps]
+
+source_file="res://addons/graph_dialog_system/examples/translations/a.csv"
+
+[params]
+
+compress=true
+delimiter=0

@@ -19,7 +19,7 @@ func get_data() -> Dictionary:
 	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
-		"node_type_id" : node_type_id,
+		"node_type" : node_type,
 		"node_index" : node_index,
 		"start_id" : start_id,
 		"to_node" : [connections[0]["to_node"].to_snake_case()]
@@ -33,7 +33,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict: Dictionary) -> void:
 	# Set node data from dict
-	node_type_id = dict["node_type_id"]
+	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	start_id = dict["start_id"]
 	ID_input.text = dict["start_id"]

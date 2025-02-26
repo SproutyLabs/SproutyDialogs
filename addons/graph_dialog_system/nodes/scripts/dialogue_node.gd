@@ -25,7 +25,7 @@ func get_data() -> Dictionary:
 	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
-		"node_type_id" : node_type_id,
+		"node_type" : node_type,
 		"node_index" : node_index,
 		"char_key" : "",
 		"dialog_key" : get_dialog_key(),
@@ -40,7 +40,7 @@ func get_data() -> Dictionary:
 
 func set_data(dict : Dictionary) -> void:
 	# Set node data from dict
-	node_type_id = dict["node_type_id"]
+	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	char_key = dict["char_key"]
 	to_node = dict["to_node"]

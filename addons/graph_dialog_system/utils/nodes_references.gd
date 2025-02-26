@@ -1,27 +1,46 @@
+@tool
 class_name NodesReferences
 extends RefCounted
 
-static var nodes_scenes_path : Array[String] = [
-	"res://addons/graph_dialog_system/nodes/start_node.tscn",
-	"res://addons/graph_dialog_system/nodes/comment_node.tscn",
-	"res://addons/graph_dialog_system/nodes/dialogue_node.tscn",
-	"res://addons/graph_dialog_system/nodes/options_node.tscn",
-	"res://addons/graph_dialog_system/nodes/condition_node.tscn",
-	"res://addons/graph_dialog_system/nodes/set_variable_node.tscn",
-	"res://addons/graph_dialog_system/nodes/signal_node.tscn",
-	"res://addons/graph_dialog_system/nodes/wait_node.tscn",
-]
+## ------------------------------------------------------------------
+## References to every dialog node
+## ------------------------------------------------------------------
 
-static var nodes_parsers : Array[NodeParser] = [
-	StartNodeParser.new(),
-	null, # Comment node does nothing
-	DialogueNodeParser.new(),
-	OptionsNodeParser.new(),
-	ConditionNodeParser.new(),
-	SetVariableNodeParser.new(),
-	SignalNodeParser.new(),
-	WaitNodeParser.new()
-]
+const NODES_PATH = "res://addons/graph_dialog_system/nodes/"
 
-static func get_nodes_count() -> int:
-	return nodes_scenes_path.size()
+static var nodes : Dictionary = {
+	"start_node": {
+		"scene" : preload(NODES_PATH + "start_node.tscn"),
+		"parser" : StartNodeParser.new()
+	},
+	"comment_node": {
+		"scene" : preload(NODES_PATH + "comment_node.tscn"),
+		"parser" : null
+	},
+	"dialogue_node": {
+		"scene" : preload(NODES_PATH + "dialogue_node.tscn"),
+		"parser" : DialogueNodeParser.new()
+	},
+	"options_node": {
+		"scene" : preload(NODES_PATH + "options_node.tscn"),
+		"parser" : OptionsNodeParser.new()
+	},
+	"condition_node": {
+		"scene" : preload(NODES_PATH + "condition_node.tscn"),
+		"parser" : ConditionNodeParser.new()
+	},
+	"set_variable_node": {
+		"scene" : preload(NODES_PATH + "set_variable_node.tscn"),
+		"parser" : SetVariableNodeParser.new()
+	},
+	"signal_node": {
+		"scene" : preload(NODES_PATH + "signal_node.tscn"),
+		"parser" : SignalNodeParser.new()
+	},
+	"wait_node": {
+		"scene" : preload(NODES_PATH + "wait_node.tscn"),
+		"parser" : WaitNodeParser.new()
+	},
+	
+	# [!] ADD NEW NODES HERE TO USE THEM [!]
+}

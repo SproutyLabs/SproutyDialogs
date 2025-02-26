@@ -48,7 +48,7 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("5_achcx")
-node_type_id = 1
+node_type = ""
 node_color = Color(0.154876, 0.154876, 0.154876, 1)
 node_icon = ExtResource("3_g6856")
 

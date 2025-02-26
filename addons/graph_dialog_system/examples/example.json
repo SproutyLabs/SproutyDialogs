@@ -3,11 +3,11 @@
 		"csv_file_path": "res://addons/graph_dialog_system/examples/translations/example.csv",
 		"nodes_data": {
 			"DIALOG_EXAMPLE": {
-				"dialog_node_1": {
+				"dialogue_node_1": {
 					"char_key": "",
 					"dialog_key": "EXAMPLE_1",
 					"node_index": 1,
-					"node_type_id": 2,
+					"node_type": "dialogue_node",
 					"offset": {
 						"x": -469.43994140625,
 						"y": -67.67999267578125
@@ -18,14 +18,14 @@
 				},
 				"start_node_1": {
 					"node_index": 1,
-					"node_type_id": 0,
+					"node_type": "start_node",
 					"offset": {
 						"x": -987.43994140625,
 						"y": -81.67999267578125
 					},
 					"start_id": "EXAMPLE",
 					"to_node": [
-						"dialog_node_1"
+						"dialogue_node_1"
 					]
 				}
 			},
@@ -33,7 +33,7 @@
 				"comment_node_1": {
 					"comment_text": "This is a comment",
 					"node_index": 1,
-					"node_type_id": 1,
+					"node_type": "comment_node",
 					"offset": {
 						"x": -900.43994140625,
 						"y": 196.320007324219
