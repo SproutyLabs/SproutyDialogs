@@ -4,13 +4,26 @@
 		"nodes_data": {
 			"DIALOG_EXAMPLE": {
 				"dialogue_node_1": {
-					"char_key": "",
+					"char_key": "Alice",
 					"dialog_key": "EXAMPLE_1",
 					"node_index": 1,
 					"node_type": "dialogue_node",
 					"offset": {
-						"x": -469.43994140625,
-						"y": -67.67999267578125
+						"x": 580,
+						"y": 200
+					},
+					"to_node": [
+						"dialogue_node_2"
+					]
+				},
+				"dialogue_node_2": {
+					"char_key": "Bob",
+					"dialog_key": "EXAMPLE_2",
+					"node_index": 2,
+					"node_type": "dialogue_node",
+					"offset": {
+						"x": 1300,
+						"y": 260
 					},
 					"to_node": [
 						"END"
@@ -20,8 +33,8 @@
 					"node_index": 1,
 					"node_type": "start_node",
 					"offset": {
-						"x": -987.43994140625,
-						"y": -81.67999267578125
+						"x": 80,
+						"y": 300
 					},
 					"start_id": "EXAMPLE",
 					"to_node": [
@@ -29,15 +42,31 @@
 					]
 				}
 			},
-			"unplugged_nodes": {
-				"comment_node_1": {
-					"comment_text": "This is a comment",
-					"node_index": 1,
-					"node_type": "comment_node",
+			"DIALOG_LOL": {
+				"dialogue_node_3": {
+					"char_key": "Charlie",
+					"dialog_key": "LOL_3",
+					"node_index": 3,
+					"node_type": "dialogue_node",
 					"offset": {
-						"x": -900.43994140625,
-						"y": 196.320007324219
-					}
+						"x": 560,
+						"y": 780
+					},
+					"to_node": [
+						"END"
+					]
+				},
+				"start_node_2": {
+					"node_index": 2,
+					"node_type": "start_node",
+					"offset": {
+						"x": 60,
+						"y": 700
+					},
+					"start_id": "LOL",
+					"to_node": [
+						"dialogue_node_3"
+					]
 				}
 			}
 		}
