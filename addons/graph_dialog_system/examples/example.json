@@ -42,10 +42,10 @@
 					]
 				}
 			},
-			"DIALOG_LOL": {
+			"DIALOG_LOREM": {
 				"dialogue_node_3": {
 					"char_key": "Charlie",
-					"dialog_key": "LOL_3",
+					"dialog_key": "LOREM_3",
 					"node_index": 3,
 					"node_type": "dialogue_node",
 					"offset": {
@@ -63,7 +63,7 @@
 						"x": 60,
 						"y": 700
 					},
-					"start_id": "LOL",
+					"start_id": "LOREM",
 					"to_node": [
 						"dialogue_node_3"
 					]

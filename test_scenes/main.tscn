@@ -7,15 +7,17 @@
 
 [node name="DialogPlayer" type="Node" parent="."]
 script = ExtResource("1_sndaf")
+play_on_ready = true
 dialog_file = "res://addons/graph_dialog_system/examples/example.json"
-dialog_tree_id = "EXAMPLE"
-Alice_portrait_display = NodePath("../Sprite2D")
-Alice_dialogue_box = NodePath("../CanvasLayer/DialogBox")
-Bob_portrait_display = NodePath("../Sprite2D")
-Bob_dialogue_box = NodePath("../CanvasLayer/DialogBox")
+start_id = "LOREM"
+Charlie_portrait_display = {}
+Charlie_dialogue_box = NodePath("../CanvasLayer/DialogBox")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="DialogBox" parent="CanvasLayer" instance=ExtResource("2_io75r")]
+visible = false
+max_characters_to_display = 186
+type_time = 0.01

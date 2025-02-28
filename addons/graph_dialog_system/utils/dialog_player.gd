@@ -10,48 +10,56 @@ extends Node
 signal dialog_started(id: String)
 signal dialog_ended
 
-## Dialog file where is the dialog to play
-@export_file("*.json") var dialog_file : String :
+## Play the dialog when the node is ready.
+@export var play_on_ready: bool
+
+## JSON Dialog file where is the dialog to play.
+@export_file("*.json") var dialog_file: String:
 	set(value):
 		dialog_file = value
 		_load_dialog_data(value)
 		_get_dialogs_ids()
 		notify_property_list_changed()
 
-## Dialog tree ID to play
-var dialog_tree_id : String :
+## Start ID of the dialog to play.
+var start_id: String:
 	set(value):
-		dialog_tree_id = value
-		_get_dialog_characters(dialog_tree_id)
+		start_id = value
+		_get_dialog_characters(start_id)
 		_dialogue_boxes = _create_characters_dict()
 		_portrait_displays = _create_characters_dict()
 		notify_property_list_changed()
 
-var _portrait_displays : Dictionary
-var _dialogue_boxes : Dictionary
+var _portrait_displays: Dictionary
+var _dialogue_boxes: Dictionary
 
-var _nodes_data : Dictionary
-var _dialogs_ids : Array[String]
-var _chars_keys : Array[String]
+var _nodes_data: Dictionary
+var _dialogs_ids: Array[String]
+var _chars_keys: Array[String]
 
-var _is_running : bool = false
+var _current_dialog_box: DialogBox
+var _next_node : String = ""
+
+var _is_running: bool = false
 
 func _ready() -> void:
-	if not Engine.is_editor_hint():
-		_load_dialog_data(dialog_file)
-	
+	# Connect process node method on each node parser
 	for node in NodesReferences.nodes:
 		if NodesReferences.nodes[node].parser != null:
 			NodesReferences.nodes[node].parser.connect(
-				"continue_to_node", _process_dialog_node
+				"continue_to_node", _process_node
 			)
-	
+	# Connect dialogue process method on each dialogue node parser
 	NodesReferences.nodes.dialogue_node.parser.connect(
 		"dialogue_processed", _on_dialogue_processed
 	)
-	start(dialog_tree_id)
+	if not Engine.is_editor_hint(): # If is running in game
+		_load_dialog_data(dialog_file)
+		if play_on_ready:
+			await get_tree().create_timer(0.1).timeout
+			start(start_id)
 
-func _load_dialog_data(path : String) -> void:
+func _load_dialog_data(path: String) -> void:
 	# Load dialog data from dialog file
 	if path.is_empty(): return
 	if not FileAccess.file_exists(path):
@@ -78,12 +86,12 @@ func _get_property_list():
 				if id != _dialogs_ids[-1]:
 					id_list += ","
 			props.append({
-				"name": &"dialog_tree_id",
+				"name": &"start_id",
 				"type": TYPE_STRING,
 				"hint": PROPERTY_HINT_ENUM,
 				"hint_string": id_list
 			})
-			if not dialog_tree_id.is_empty():
+			if not start_id.is_empty():
 				# Set characters options
 				props.append({
 				"name": "Characters Settings",
@@ -146,7 +154,7 @@ func _get_dialogs_ids() -> void:
 		if dialog == "unplugged_nodes": continue
 		_dialogs_ids.append(dialog.replace("DIALOG_", ""))
 
-func _get_dialog_characters(dialog_id : String) -> Array:
+func _get_dialog_characters(dialog_id: String) -> Array:
 	# Get the characters in dialog tree 
 	_chars_keys = []
 	var dialog = "DIALOG_" + dialog_id
@@ -166,7 +174,7 @@ func _create_characters_dict() -> Dictionary:
 	return dict
 #endregion
 
-func start(id : String = dialog_tree_id) -> void:
+func start(id: String = start_id) -> void:
 	# Start processing a dialog tree by id
 	if not _dialogs_ids.has(id):
 		printerr("[DialogPlayer] Cannot find '" + id + "' ID on dialog file.")
@@ -176,7 +184,7 @@ func start(id : String = dialog_tree_id) -> void:
 	var dialog = "DIALOG_" + id
 	for node in _nodes_data[dialog]:
 		if node.contains("start_node"):
-			_process_dialog_node(_nodes_data[dialog][node]["to_node"][0])
+			_process_node(_nodes_data[dialog][node]["to_node"][0])
 			break
 
 func stop() -> void:
@@ -187,7 +195,7 @@ func stop() -> void:
 func is_running() -> bool:
 	return _is_running
 
-func _process_dialog_node(node_name : String) -> void:
+func _process_node(node_name: String) -> void:
 	# Process the next node on dialog tree
 	if not _is_running: return
 	if node_name == 'END':
@@ -196,9 +204,23 @@ func _process_dialog_node(node_name : String) -> void:
 	
 	var node_type = node_name.split("node")[0] + "node"
 	NodesReferences.nodes[node_type].parser.process_node(
-		_nodes_data["DIALOG_" + dialog_tree_id][node_name]
+		_nodes_data["DIALOG_" + start_id][node_name]
 		)
 
-func _on_dialogue_processed(char : String, dialog : String) -> void:
+func _on_dialogue_processed(char: String, dialog: String, next_node : String) -> void:
+	# When dialogue node was processed by parser, play the dialog
+	_next_node = next_node
 	var dialog_box = get_node(_dialogue_boxes[char])
-	dialog_box.play_dialogue(char, dialog)
+	
+	if _current_dialog_box and dialog_box != _current_dialog_box:
+		# When changing the dialog box, the previous one is closed
+		_current_dialog_box.end_dialog()
+	
+	_current_dialog_box = dialog_box
+	if not _current_dialog_box.is_connected("continue_dialog", _on_continue_dialog):
+		_current_dialog_box.connect("continue_dialog", _on_continue_dialog)
+	
+	_current_dialog_box.play_dialog(char, dialog, self)
+
+func _on_continue_dialog() -> void:
+	_process_node(_next_node)
