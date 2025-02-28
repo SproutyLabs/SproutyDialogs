@@ -41,8 +41,15 @@ func _ready() -> void:
 		_load_dialog_data(dialog_file)
 	
 	for node in NodesReferences.nodes:
-		if node.parser != null:
-			node.parser.connect("continue_to_node", _process_dialog_node)
+		if NodesReferences.nodes[node].parser != null:
+			NodesReferences.nodes[node].parser.connect(
+				"continue_to_node", _process_dialog_node
+			)
+	
+	NodesReferences.nodes.dialogue_node.parser.connect(
+		"dialogue_processed", _on_dialogue_processed
+	)
+	start(dialog_tree_id)
 
 func _load_dialog_data(path : String) -> void:
 	# Load dialog data from dialog file
@@ -165,11 +172,11 @@ func start(id : String = dialog_tree_id) -> void:
 		printerr("[DialogPlayer] Cannot find '" + id + "' ID on dialog file.")
 		return
 	# Search for start node and start processing from connected node
-	for node in _nodes_data[id]:
+	_is_running = true
+	var dialog = "DIALOG_" + id
+	for node in _nodes_data[dialog]:
 		if node.contains("start_node"):
-			var next_name = _nodes_data[id][node]["to_node"][0]
-			var next_node = _nodes_data[id][next_name]
-			_process_dialog_node(next_node)
+			_process_dialog_node(_nodes_data[dialog][node]["to_node"][0])
 			break
 
 func stop() -> void:
@@ -187,5 +194,11 @@ func _process_dialog_node(node_name : String) -> void:
 		stop()
 		return
 	
-	var node_type = _nodes_data[node_name]["node_type"]
-	NodesReferences.nodes[node_type]["parser"].process_node(_nodes_data[node_name])
+	var node_type = node_name.split("node")[0] + "node"
+	NodesReferences.nodes[node_type].parser.process_node(
+		_nodes_data["DIALOG_" + dialog_tree_id][node_name]
+		)
+
+func _on_dialogue_processed(char : String, dialog : String) -> void:
+	var dialog_box = get_node(_dialogue_boxes[char])
+	dialog_box.play_dialogue(char, dialog)

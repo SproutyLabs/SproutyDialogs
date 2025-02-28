@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c537n4i4aibwp"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/utils/dialog_player.gd" id="1_sndaf"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/utils/dialog_box.gd" id="2_bwhvi"]
+[ext_resource type="PackedScene" uid="uid://dkstwkk3tuecx" path="res://test_scenes/dialog_box.tscn" id="2_io75r"]
 
 [node name="Main" type="Node2D"]
 
@@ -10,13 +10,12 @@ script = ExtResource("1_sndaf")
 dialog_file = "res://addons/graph_dialog_system/examples/example.json"
 dialog_tree_id = "EXAMPLE"
 Alice_portrait_display = NodePath("../Sprite2D")
-Alice_dialogue_box = NodePath("../DialogBox")
+Alice_dialogue_box = NodePath("../CanvasLayer/DialogBox")
 Bob_portrait_display = NodePath("../Sprite2D")
-Bob_dialogue_box = NodePath("../DialogBox")
-
-[node name="DialogBox" type="Panel" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("2_bwhvi")
+Bob_dialogue_box = NodePath("../CanvasLayer/DialogBox")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="DialogBox" parent="CanvasLayer" instance=ExtResource("2_io75r")]

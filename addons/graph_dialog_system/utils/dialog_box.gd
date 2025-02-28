@@ -3,12 +3,11 @@
 class_name DialogBox
 extends Panel
 
-@export var dialog : String
-@export var dialog_text_label : RichTextLabel
-@export var continue_indicator : TextureRect
+@export var name_text : RichTextLabel
+@export var dialog_text : RichTextLabel
+@export var continue_indicator : Control
 
-@export var type_time : float
-
-func play_dialog(text : String = dialog) -> void:
-	print("Playing dialog...")
-	pass
+func play_dialogue(char : String , text : String) -> void:
+	name_text.text = char
+	dialog_text.text = text
+	print(char + " : " + text)

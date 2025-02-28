@@ -9,5 +9,8 @@ signal dialogue_processed(character : String, dialog : String)
 
 func process_node(node_data: Dictionary) -> void:
 	# Processes the dialogue node
-	# TODO: Process the node
+	var character = node_data["char_key"]
+	var dialog = tr(node_data["dialog_key"])
+	
+	dialogue_processed.emit(character, dialog)
 	continue_to_node.emit(node_data.to_node[0])

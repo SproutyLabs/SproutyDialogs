@@ -3,24 +3,25 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/utils/dialog_box.gd" id="1_7xa8g"]
 [ext_resource type="Texture2D" uid="uid://bpa7g13kkbvyg" path="res://addons/graph_dialog_system/icons/Collapse.svg" id="2_1untp"]
 
-[node name="DialogBox" type="Panel" node_paths=PackedStringArray("dialog_text_label", "continue_indicator")]
-anchors_preset = 7
+[node name="DialogBox" type="Panel" node_paths=PackedStringArray("name_text", "dialog_text", "continue_indicator")]
+custom_minimum_size = Vector2(600, 150)
+anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
+anchor_bottom = 0.5
 offset_left = -300.0
-offset_top = -200.0
+offset_top = -75.0
 offset_right = 300.0
-offset_bottom = -50.0
+offset_bottom = 75.0
 grow_horizontal = 2
-grow_vertical = 0
-size_flags_vertical = 8
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 script = ExtResource("1_7xa8g")
-dialog = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-dialog_text_label = NodePath("MarginContainer/VBoxContainer/Text")
+name_text = NodePath("MarginContainer/VBoxContainer/Name")
+dialog_text = NodePath("MarginContainer/VBoxContainer/Dialog")
 continue_indicator = NodePath("MarginContainer/VBoxContainer/Arrow")
-type_time = null
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -37,7 +38,13 @@ theme_override_constants/margin_bottom = 10
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="Text" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+[node name="Name" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "Name"
+fit_content = true
+
+[node name="Dialog" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
