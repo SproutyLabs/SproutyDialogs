@@ -1,33 +1,44 @@
 class_name GDialogsTranslationManager
 extends Resource
 
-## ------------------------------------------------------------------
-## Handle translation on dialogs
-## ------------------------------------------------------------------
+## -----------------------------------------------------------------------------
+## Translation Manager
+##
+## This class manages the translation settings and operations globally for the
+## dialog system.
+## -----------------------------------------------------------------------------
 
-const DATA_PATH = "res://addons/graph_dialog_system/editor/settings/translation_settings.json"
+## Path to the translation settings data
+const DATA_PATH = "res://addons/graph_dialog_system/editor/modules/settings/data/translation_settings.json"
 
-static var csv_files_path : String = ""
-static var default_locale : String = ""
-static var testing_locale : String = ""
-static var locales : Array = []
+## Path to the CSV translation files
+static var csv_files_path: String = ""
+## Default locale selected
+static var default_locale: String = ""
+## Testing locale selected
+static var testing_locale: String = ""
+## Available locales in the project
+static var locales: Array = []
 
-static var translation_settings : HSplitContainer
+## Translation settings container
+static var translation_settings: HSplitContainer
 
+
+## Save the translation settings in the settings data
 static func save_translation_settings() -> void:
-	# Save translation settings in settings data
 	var data := {
 		"translation_settings": {
-			"csv_files_path" : csv_files_path,
-			"default_locale" : default_locale,
-			"testing_locale" : testing_locale,
-			"locales" : locales
+			"csv_files_path": csv_files_path,
+			"default_locale": default_locale,
+			"testing_locale": testing_locale,
+			"locales": locales
 		}
 	}
 	GDialogsJSONFileManager.save_file(data, DATA_PATH)
 
+
+## Load translation settings from settings data
 static func load_translation_settings() -> void:
-	# Load translation settings from settings data
 	if not FileAccess.file_exists(DATA_PATH):
 		set_default_translation_settings()
 		save_translation_settings()
@@ -47,6 +58,8 @@ static func load_translation_settings() -> void:
 	elif testing_locale.is_empty():
 		testing_locale = locales[0]
 
+
+## Set the default translation settings
 static func set_default_translation_settings() -> void:
 	# Set the editor language as the default locale
 	var settings = EditorInterface.get_editor_settings()
@@ -55,27 +68,25 @@ static func set_default_translation_settings() -> void:
 	testing_locale = editor_lang
 	locales.append(editor_lang)
 
-static func new_csv_template_file(name : String) -> String:
-	# Create new csv file with selected locales template
-	if csv_files_path.is_empty(): 
+
+## Create a new CSV template file
+static func new_csv_template_file(name: String) -> String:
+	if csv_files_path.is_empty():
 		printerr("[Graph Dialogs] Cannot create file, need a path to CSV translation files.")
 		return ""
-	
 	var path = csv_files_path + "/" + name.split(".")[0] + ".csv"
 	var header = ["key"]
-	
 	for locale in locales:
 		header.append(locale)
-	
 	GDialogsCSVFileManager.save_file(header, [], path)
 	return path
 
-static func collect_translations(path : String = csv_files_path) -> void:
-	# Collect translation files and add to the project settings
-	if path.is_empty(): 
+
+## Collect translation files from the CSV folder
+static func collect_translations(path: String = csv_files_path) -> void:
+	if path.is_empty():
 		printerr("[Graph Dialogs] Cannot collect translations, need a path to CSV translation files.")
 		return
-	
 	var translation_files := []
 	var all_translation_files: Array = ProjectSettings.get_setting(
 			'internationalization/locale/translations', [])
@@ -100,6 +111,6 @@ static func collect_translations(path : String = csv_files_path) -> void:
 				break
 	
 	ProjectSettings.set_setting(
-			'internationalization/locale/translations', 
+			'internationalization/locale/translations',
 			PackedStringArray(valid_translation_files))
 	ProjectSettings.save()

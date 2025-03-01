@@ -3,14 +3,17 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/variable_input_field.gd" id="1_4gcwc"]
 [ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="1_msffi"]
 
-[node name="VariableInputField" type="Control"]
+[node name="VariableInputField" type="Control" node_paths=PackedStringArray("_string_value", "_int_value", "_float_value", "_bool_value")]
 layout_mode = 3
 anchors_preset = 0
 size_flags_horizontal = 3
 script = ExtResource("1_4gcwc")
+_string_value = NodePath("StringValue")
+_int_value = NodePath("IntValue")
+_float_value = NodePath("FloatValue")
+_bool_value = NodePath("BoolValue")
 
 [node name="StringValue" type="LineEdit" parent="."]
-visible = false
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5

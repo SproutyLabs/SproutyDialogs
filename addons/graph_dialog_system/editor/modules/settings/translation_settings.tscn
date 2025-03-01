@@ -1,19 +1,23 @@
 [gd_scene load_steps=7 format=3 uid="uid://bk5rchg4mt0js"]
 
-[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/settings/translation_settings.gd" id="1_dnk3v"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/settings/scripts/translation_settings.gd" id="1_dnk3v"]
 [ext_resource type="PackedScene" uid="uid://secb1eoygm27" path="res://addons/graph_dialog_system/editor/components/locales_selector.tscn" id="2_qh116"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="3_poal8"]
 [ext_resource type="PackedScene" uid="uid://bceidtkw07484" path="res://addons/graph_dialog_system/editor/components/folder_field.tscn" id="4_01lks"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="4_erkog"]
 [ext_resource type="Texture2D" uid="uid://duvyymvtfnkss" path="res://addons/graph_dialog_system/icons/File.svg" id="6_g5fpe"]
 
-[node name="TranslationSettings" type="HSplitContainer"]
+[node name="TranslationSettings" type="HSplitContainer" node_paths=PackedStringArray("default_locale_dropdown", "testing_locale_dropdown", "locales_selector", "csv_folder_field")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_dnk3v")
+default_locale_dropdown = NodePath("LocalesSettings/Container/DefaultLocale/OptionButton")
+testing_locale_dropdown = NodePath("LocalesSettings/Container/TestingLocale/OptionButton")
+locales_selector = NodePath("LocalesSettings/Container/LocalesSelector")
+csv_folder_field = NodePath("CSVFiles/Container/CSVFolder/CSVFolderField")
 
 [node name="LocalesSettings" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -38,13 +42,15 @@ text = "Default Locale"
 [node name="OptionButton" type="OptionButton" parent="LocalesSettings/Container/DefaultLocale"]
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 0
-item_count = 3
+selected = 3
+item_count = 4
 popup/item_0/text = "en"
-popup/item_1/text = "es"
+popup/item_1/text = "en"
 popup/item_1/id = 1
-popup/item_2/text = "ja"
+popup/item_2/text = "en"
 popup/item_2/id = 2
+popup/item_3/text = "en"
+popup/item_3/id = 3
 
 [node name="TestingLocale" type="HBoxContainer" parent="LocalesSettings/Container"]
 unique_name_in_owner = true
@@ -57,13 +63,15 @@ text = "Testing Locale"
 [node name="OptionButton" type="OptionButton" parent="LocalesSettings/Container/TestingLocale"]
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 0
-item_count = 3
+selected = 3
+item_count = 4
 popup/item_0/text = "en"
-popup/item_1/text = "es"
+popup/item_1/text = "en"
 popup/item_1/id = 1
-popup/item_2/text = "ja"
+popup/item_2/text = "en"
 popup/item_2/id = 2
+popup/item_3/text = "en"
+popup/item_3/id = 3
 
 [node name="HSeparator" type="HSeparator" parent="LocalesSettings/Container"]
 layout_mode = 2

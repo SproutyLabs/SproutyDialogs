@@ -2,27 +2,41 @@
 class_name OptionContainer
 extends VBoxContainer
 
+## -----------------------------------------------------------------------------
+## Option container component
+##
+## Component that display a dialog option in the options node.
+## -----------------------------------------------------------------------------
+
+## Triggered when the option is removed
 signal option_removed(index)
 
+## Option header to display the option position index
 @onready var option_label = $OptionHeader/OptionLabel
 
-var option_index : int = 0
-var dialog_key : String = ""
+## Option position index
+var option_index: int = 0
+## Dialog translation key of the option
+var dialog_key: String = ""
+
 
 func _ready() -> void:
 	_show_remove_button()
 
-func update_option_index(index : int) -> void:
-	# Update the option position index
+
+## Update the option position index
+func update_option_index(index: int) -> void:
 	option_label.text = "Option #" + str(index + 1)
 	name = name.split('_')[0] + "_" + str(index)
 	option_index = index
 	_show_remove_button()
 
+
+## Show remove button only when it is not the first option
 func _show_remove_button() -> void:
-	# Show remove button when it is not the first option
 	$OptionHeader/RemoveButton.visible = option_index
 
+
+## Remove option when the remove button is pressed
 func _on_remove_button_pressed() -> void:
-	# Delete the option
 	option_removed.emit(option_index)

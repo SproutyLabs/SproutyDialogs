@@ -1,30 +1,56 @@
 @tool
 extends MarginContainer
 
-signal file_path_changed(path : String)
+## =============================================================================
+##  File Field Component
+##
+##  Component that allows the user to select a file from the file system.
+## =============================================================================
 
-@export var file_filters : PackedStringArray
+## Triggered when the file path is changed.
+signal file_path_changed(path: String)
 
-@onready var file_dialog : FileDialog = $OpenFileDialog
-var current_value : String
+## File extension filters.
+@export var file_filters: PackedStringArray
+
+## File dialog to select a file.
+@onready var _file_dialog: FileDialog = $OpenFileDialog
+## Open button to show the file dialog.
+@onready var _open_button: Button = %OpenButton
+## Clear button to clear the current file path.
+@onready var _clear_button: Button = %ClearButton
+## Field to show the current file path.
+@onready var _path_field: LineEdit = %Field
+
+## Current file path.
+var _current_value: String
+
 
 func _ready():
-	file_dialog.connect("file_selected", _on_file_dialog_selected)
-	
-	%OpenButton.button_down.connect(_on_open_pressed)
-	%ClearButton.button_up.connect(clear_path)
+	# Connect signals
+	_file_dialog.connect("file_selected", _on_file_dialog_selected)
+	_open_button.button_down.connect(_on_open_pressed)
+	_clear_button.button_up.connect(clear_path)
 
-func set_value(value : String) -> void:
-	current_value = value
-	%Field.text = value
 
+## Set the current value of the field.
+func set_value(value: String) -> void:
+	_current_value = value
+	_path_field.text = value
+
+
+## Show the file dialog to select a file.
 func _on_open_pressed() -> void:
-	file_dialog.filters = file_filters
-	file_dialog.popup_centered()
+	_file_dialog.filters = file_filters
+	_file_dialog.popup_centered()
 
-func _on_file_dialog_selected(path : String) -> void:
+
+## Set path of file selected in the file dialog.
+func _on_file_dialog_selected(path: String) -> void:
 	file_path_changed.emit(path)
 	set_value(path)
 
+
+## Clear the current value of the field.
 func clear_path() -> void:
 	set_value("")

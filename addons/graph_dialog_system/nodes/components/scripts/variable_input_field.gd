@@ -2,66 +2,87 @@
 class_name VariableInputField
 extends Control
 
+## -----------------------------------------------------------------------------
+## Variable Input Field
+##
+## Component to input variables of different types.
+## -----------------------------------------------------------------------------
+
+## Variable types
 enum Type {STR, INT, FLOAT, BOOL}
 
-@onready var var_type : Type = 0
-@onready var current_field : Control = $StringValue
+## String input field
+@onready var _string_value: LineEdit = $StringValue
+## Integer input field
+@onready var _int_value: SpinBox = $IntValue
+## Float input field
+@onready var _float_value: SpinBox = $FloatValue
+## Boolean input field
+@onready var _bool_value: OptionButton = $BoolValue
+
+## Current variable type
+@onready var _var_type: Type = 0
+## Current variable input field
+@onready var _current_field: Control = _string_value
+
 
 func _ready() -> void:
+	## Hide all input fields
 	for child in get_children():
 		child.visible = false
+	update_var_field() # Update active input field
+
+
+## Get input field value
+func get_value() -> Variant:
+	match _var_type:
+		Type.STR:
+			return _string_value.text
+		Type.INT:
+			return _int_value.value
+		Type.FLOAT:
+			return _float_value.value
+		Type.BOOL:
+			return _bool_value.selected
+		_:
+			return null
+
+
+## Set input field value
+func set_value(value: Variant) -> void:
+	match _var_type:
+		Type.STR:
+			_string_value.text = value
+		Type.INT:
+			_int_value.value = value
+		Type.FLOAT:
+			_float_value.value = value
+		Type.BOOL:
+			_bool_value.selected = value
+
+
+## Change variable type
+func change_var_type(new_type: Type) -> void:
+	_var_type = new_type
 	update_var_field()
 
-func get_value():
-	# Get input field value
-	match var_type:
-		Type.STR:
-			return $StringValue.text
-		Type.INT:
-			return $IntValue.value
-		Type.FLOAT:
-			return $FloatValue.value
-		Type.BOOL:
-			return $BoolValue.selected
 
-func set_value(value) -> void:
-	# Set input field value
-	match var_type:
-		Type.STR:
-			$StringValue.text = value
-		Type.INT:
-			$IntValue.value = value
-		Type.FLOAT:
-			$FloatValue.value = value
-		Type.BOOL:
-			$BoolValue.selected = value
-
-func change_var_type( new_type : Type) -> void:
-	# Change current variable type
-	var_type = new_type
-	update_var_field()
-
+## Update active input field
 func update_var_field() -> void:
-	# Update active input field
-	match var_type:
+	match _var_type:
 		Type.STR:
-			$StringValue.visible = true
-			if current_field != $StringValue:
-				current_field.visible = false
-			current_field = $StringValue
+			_active_input_field(_string_value)
 		Type.INT:
-			$IntValue.visible = true
-			if current_field != $IntValue:
-				current_field.visible = false
-			current_field = $IntValue
+			_active_input_field(_int_value)
 		Type.FLOAT:
-			$FloatValue.visible = true
-			if current_field != $FloatValue:
-				current_field.visible = false
-			current_field = $FloatValue
+			_active_input_field(_float_value)
 		Type.BOOL:
-			$BoolValue.visible = true
-			if current_field != $BoolValue:
-				current_field.visible = false
-			current_field = $BoolValue
-		
+			_active_input_field(_bool_value)
+
+
+## Activate an input field
+func _active_input_field(input_field: Control) -> void:
+	input_field.visible = true
+	if _current_field != input_field:
+		_current_field.visible = false
+	_current_field = input_field

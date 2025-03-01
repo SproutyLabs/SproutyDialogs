@@ -1,11 +1,11 @@
 [gd_scene load_steps=9 format=3 uid="uid://bo8iha2w2kgt5"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_u7p51"]
-[ext_resource type="PackedScene" uid="uid://cr20rw0unyne0" path="res://addons/graph_dialog_system/editor/graph.tscn" id="2_dnvg2"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/workspace.gd" id="2_vohmy"]
-[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="3_jpc4g"]
-[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialog_system/editor/text_editor.tscn" id="4_4ukmm"]
-[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="4_qjqtm"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_1tvdf"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/workspace.gd" id="2_yu0sn"]
+[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="3_7hlaj"]
+[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="4_t0wwf"]
+[ext_resource type="PackedScene" uid="uid://cr20rw0unyne0" path="res://addons/graph_dialog_system/editor/modules/workspace/graph.tscn" id="5_yj855"]
+[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialog_system/editor/modules/workspace/text_editor.tscn" id="6_00hgx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h0dl8"]
 
@@ -17,11 +17,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_u7p51")
-script = ExtResource("2_vohmy")
+theme = ExtResource("1_1tvdf")
+script = ExtResource("2_yu0sn")
 
 [node name="StartPanel" type="Panel" parent="."]
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_h0dl8")
@@ -60,28 +59,22 @@ alignment = 1
 [node name="OpenDialogFile" type="Button" parent="StartPanel/Container/ButtonsContainer"]
 layout_mode = 2
 text = "Open Dialog"
-icon = ExtResource("3_jpc4g")
+icon = ExtResource("3_7hlaj")
 
 [node name="CreateDialogFile" type="Button" parent="StartPanel/Container/ButtonsContainer"]
 layout_mode = 2
 text = "Create Dialog"
-icon = ExtResource("4_qjqtm")
+icon = ExtResource("4_t0wwf")
 
 [node name="GraphEditor" type="Panel" parent="."]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Graph" parent="GraphEditor" instance=ExtResource("2_dnvg2")]
-layout_mode = 2
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 12.0
-offset_right = 1152.0
-offset_bottom = 648.0
-scroll_offset = Vector2(-12, 0)
+[node name="Graph" parent="GraphEditor" instance=ExtResource("5_yj855")]
+layout_mode = 1
 
-[node name="TextEditor" parent="." instance=ExtResource("4_4ukmm")]
+[node name="TextEditor" parent="." instance=ExtResource("6_00hgx")]
 visible = false
 layout_mode = 2
 

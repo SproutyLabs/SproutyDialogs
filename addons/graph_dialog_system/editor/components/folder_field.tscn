@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="3_yhf7b"]
 [ext_resource type="Texture2D" uid="uid://bnxg1gkoe3jvl" path="res://addons/graph_dialog_system/icons/Clear.svg" id="4_imvna"]
 
-[node name="FolderField" type="MarginContainer"]
+[node name="FolderField" type="MarginContainer" node_paths=PackedStringArray("_open_button", "_clear_button", "_path_field")]
 offset_right = 314.0
 offset_bottom = 40.0
 theme = ExtResource("1_c0j14")
@@ -14,6 +14,9 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 script = ExtResource("2_h5a0n")
+_open_button = NodePath("HBox/OpenButton")
+_clear_button = NodePath("HBox/ClearButton")
+_path_field = NodePath("HBox/Field")
 
 [node name="HBox" type="HBoxContainer" parent="."]
 layout_mode = 2

@@ -74,24 +74,6 @@ func _ready() -> void:
 			await get_tree().create_timer(0.1).timeout
 			start(start_id)
 
-## Load dialog data from dialog file
-func _load_dialog_data(path: String) -> void:
-	# Check if dialog file exists
-	if path.is_empty(): return
-	if not FileAccess.file_exists(path):
-		printerr("[DialogPlayer] Dialog file '" + path + "' does not exist.")
-		dialog_file = ""
-		return
-	
-	var data = GDialogsJSONFileManager.load_file(path)
-	# If JSON does not contains dialog data
-	if not data.has("dialog_data"):
-		printerr("[DialogPlayer] Dialog file " + path + "has an invalid format.")
-		dialog_file = ""
-		return
-	# Load dialog nodes data
-	_nodes_data = data["dialog_data"]["nodes_data"]
-
 #region === Editor properties ==================================================
 
 func _get_property_list():
@@ -225,6 +207,25 @@ func is_running() -> bool:
 	return _is_running
 
 
+## Load dialog data from dialog file
+func _load_dialog_data(path: String) -> void:
+	# Check if dialog file exists
+	if path.is_empty(): return
+	if not FileAccess.file_exists(path):
+		printerr("[DialogPlayer] Dialog file '" + path + "' does not exist.")
+		dialog_file = ""
+		return
+	
+	var data = GDialogsJSONFileManager.load_file(path)
+	# If JSON does not contains dialog data
+	if not data.has("dialog_data"):
+		printerr("[DialogPlayer] Dialog file " + path + "has an invalid format.")
+		dialog_file = ""
+		return
+	# Load dialog nodes data
+	_nodes_data = data["dialog_data"]["nodes_data"]
+
+
 ## Process the next node on dialog tree
 func _process_node(node_name: String) -> void:
 	# Check if the dialog is running
@@ -240,7 +241,7 @@ func _process_node(node_name: String) -> void:
 		)
 
 
-## When dialogue node was processed by parser, play the dialog
+## Play the dialog when the dialogue node is processed
 func _on_dialogue_processed(char: String, dialog: String, next_node: String) -> void:
 	_next_node = next_node
 	var dialog_box = get_node(_dialog_boxes[char])

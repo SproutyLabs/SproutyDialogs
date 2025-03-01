@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://deethj56qlsml"]
 
-[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/text_editor.gd" id="1_v143h"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://c5nss8jn0ix1p" path="res://addons/graph_dialog_system/icons/SideCollapse.svg" id="2_7qbxo"]
 
 [node name="TextEditor" type="Panel"]

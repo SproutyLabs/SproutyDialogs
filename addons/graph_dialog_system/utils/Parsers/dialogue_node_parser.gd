@@ -1,14 +1,15 @@
 class_name DialogueNodeParser
 extends NodeParser
 
-## ------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 ## Parser for process a dialogue node
-## ------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 
-signal dialogue_processed(character : String, dialog : String, next_node : String)
+## Signal to indicate that the dialogue node was processed
+signal dialogue_processed(character: String, dialog: String, next_node: String)
 
+## Process a dialogue node to display the dialog
 func process_node(node_data: Dictionary) -> void:
-	# Processes the dialogue node
 	var character = node_data["char_key"]
 	var dialog = tr(node_data["dialog_key"])
 	

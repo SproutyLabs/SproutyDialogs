@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://pdcicn3rbwbs"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_r0mi1"]
-[ext_resource type="PackedScene" uid="uid://bk5rchg4mt0js" path="res://addons/graph_dialog_system/editor/translation_settings.tscn" id="2_g62sc"]
+[ext_resource type="PackedScene" uid="uid://bk5rchg4mt0js" path="res://addons/graph_dialog_system/editor/modules/settings/translation_settings.tscn" id="2_g62sc"]
 
 [node name="SettingsPanel" type="TabContainer"]
 anchors_preset = 15

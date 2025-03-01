@@ -1,38 +1,54 @@
 @tool
 extends VBoxContainer
 
+## =============================================================================
+##  Locales Selector Component
+##
+##  Component that contains a list of locale fields to select the locales
+##  to be used in the translations of the dialog system.
+## =============================================================================
+
+## Triggered when the locales are changed.
 signal locales_changed
 
-@onready var locales_container : VBoxContainer = %LocalesContainer
-@onready var confirm_panel : AcceptDialog = $ConfirmSaveLocales
+## Container with the locales fields.
+@onready var _locales_container: VBoxContainer = %LocalesContainer
+## Confirm save locales dialog
+@onready var _confirm_panel: AcceptDialog = $ConfirmSaveLocales
 
-var locale_field := preload("res://addons/graph_dialog_system/editor/components/locale_field.tscn")
-var current_locales : Array = []
+## Locale field template.
+var _locale_field := preload("res://addons/graph_dialog_system/editor/components/locale_field.tscn")
+## Current locales for save.
+var _current_locales: Array = []
+
 
 func _ready() -> void:
-	confirm_panel.get_ok_button().hide()
-	confirm_panel.add_button('Save Changes', true, 'save_changes')
-	confirm_panel.add_button('Discard Changes', true, 'discard_changes')
-	confirm_panel.add_cancel_button('Cancel')
+	# Set the confirm save dialog actions
+	_confirm_panel.get_ok_button().hide()
+	_confirm_panel.add_button('Save Changes', true, 'save_changes')
+	_confirm_panel.add_button('Discard Changes', true, 'discard_changes')
+	_confirm_panel.add_cancel_button('Cancel')
 	_set_locale_list()
 
+
+## Add a new locale field to the list.
 func _new_locale() -> Node:
-	# Add a new locale on the list
-	var new_locale = locale_field.instantiate()
+	var new_locale = _locale_field.instantiate()
 	new_locale.connect("locale_removed", _on_locale_removed)
 	new_locale.connect("locale_modified", _on_locales_modified)
-	locales_container.add_child(new_locale)
-	$"%LocalesContainer"/Label.visible = false
+	_locales_container.add_child(new_locale)
+	$"%LocalesContainer" / Label.visible = false
 	return new_locale
 
+
+## Set the locale list loading the saved locales.
 func _set_locale_list() -> void:
-	# Set locale list loading the saved locales
-	for child in locales_container.get_children():
+	for child in _locales_container.get_children():
 		if child is MarginContainer:
 			child.queue_free()
 	
 	if GDialogsTranslationManager.locales.is_empty():
-		$"%LocalesContainer"/Label.visible = true
+		$"%LocalesContainer" / Label.visible = true
 		return
 	
 	for locale in GDialogsTranslationManager.locales:
@@ -40,59 +56,70 @@ func _set_locale_list() -> void:
 		var new_locale = _new_locale()
 		new_locale.load_locale(locale)
 
+
+## Add a new locale field when the add button is pressed.
 func _on_add_locale_pressed() -> void:
-	# Add new locale when the add button is pressed
 	_new_locale()
 	_on_locales_modified()
 
-func _on_locale_removed(locale_code : String) -> void:
-	# When a locale is removed check this
-	if locales_container.get_child_count() == 0:
-		$"%LocalesContainer"/Label.visible = true
+
+## When a locale is removed from the list, update the list.
+func _on_locale_removed(locale_code: String) -> void:
+	if _locales_container.get_child_count() == 0:
+		$"%LocalesContainer" / Label.visible = true
 	_on_locales_modified()
 
+
+## Save the locales selected.
 func _save_locales() -> void:
 	# Save locales in translation settings
-	GDialogsTranslationManager.locales = current_locales
+	GDialogsTranslationManager.locales = _current_locales
 	GDialogsTranslationManager.save_translation_settings()
 	GDialogsTranslationManager.collect_translations()
 	locales_changed.emit()
-	current_locales = []
+	_current_locales = []
 	$SaveButton.text = "Save Locales"
 	print("[Graph Dialogs] Locales saved.")
 
+
+## When the save locales button is pressed, save the locales selected.
 func _on_save_locales_pressed() -> void:
 	# Collect locales selected and save changes
-	for field in locales_container.get_children():
+	for field in _locales_container.get_children():
 		if not field is MarginContainer: continue
 		var locale = field.get_locale_code()
 		if locale == "":
 			printerr("[Graph Dialogs] Cannot save locales, please fix the issues.")
 			return
-		current_locales.append(locale)
+		_current_locales.append(locale)
 	
 	# If a locale has been removed, show confirmation alert
 	for locale in GDialogsTranslationManager.locales:
-		if not current_locales.has(locale):
-			confirm_panel.popup_centered()
+		if not _current_locales.has(locale):
+			_confirm_panel.popup_centered()
 			return
 	
 	_save_locales()
 
+
+## Set the confirm save dialog actions
 func _on_confirm_save_action(action) -> void:
-	# Set the confirm save dialog actions
-	confirm_panel.hide()
+	_confirm_panel.hide()
 	
 	match action:
 		"save_changes":
 			_save_locales()
 		"discard_changes":
 			$SaveButton.text = "Save Locales"
-			current_locales = []
+			_current_locales = []
 			_set_locale_list()
 
-func _on_confirm_save_canceled() -> void:
-	current_locales = []
 
+## When save is canceled, clear the locales for save.
+func _on_confirm_save_canceled() -> void:
+	_current_locales = []
+
+
+## When the locales are modified, indicate unsaved changes.
 func _on_locales_modified() -> void:
 	$SaveButton.text = "Save Locales (*)"

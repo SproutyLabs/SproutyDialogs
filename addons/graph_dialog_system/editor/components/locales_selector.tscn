@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="1_8ebfy"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/scripts/locales_selector.gd" id="1_ic1ok"]
 
-[node name="LocalesSelector" type="VBoxContainer"]
+[node name="LocalesSelector" type="VBoxContainer" node_paths=PackedStringArray("_locales_container", "_confirm_panel")]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -12,6 +12,8 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_ic1ok")
+_locales_container = NodePath("Panel/Container/ScrollContainer/LocalesContainer")
+_confirm_panel = NodePath("ConfirmSaveLocales")
 
 [node name="TopBar" type="HBoxContainer" parent="."]
 layout_mode = 2
