@@ -92,15 +92,56 @@ func _split_dialog(dialog : String) -> Array[String]:
 	# Split dialog when text is longer than character limit
 	if max_characters_to_display == 0:
 		return [dialog]
+	
 	if dialog.length() > max_characters_to_display:
+		# Dialog splitting by character limit
 		var words : Array = dialog.split(" ")
 		var sentences : Array[String] = []
+		var clean_sentence : String = ""
 		var sentence : String = ""
+		var opened_tags = []
+		
+		# Regex to get bbcodes tags from text
+		var regex_tags = RegEx.new()
+		regex_tags.compile("\\[.*?\\]")
+		
 		for word in words:
-			if (sentence + " " + word).length() < max_characters_to_display:
+			# Add each word without tags until reach the characters limit
+			var clean_word = regex_tags.sub(word, "", true)
+			var aux_sentence = clean_sentence + " " + clean_word
+			if aux_sentence.length() < max_characters_to_display:
 				sentence += " " + word
+				clean_sentence += "" + clean_word
 			else:
+				# Add remaining open tags from the previous sentence
+				if not opened_tags.is_empty():
+					for tag in opened_tags:
+						sentence = tag + sentence
+					opened_tags = []
+				
+				# Get the open tags in sentence to add them to the next one
+				var all_tags = regex_tags.search_all(sentence)
+				all_tags = all_tags.map(func(tag): return tag.get_string())
+				
+				var closed_tags = []
+				for i in all_tags.size():
+					# Look for openings tags
+					if not all_tags[i].begins_with("[/"):
+						var tag = all_tags[i].split("=")[0]\
+								.replace("[", "").replace("]", "")
+						# Look for closing tags and get its opening tag
+						for j in range(1, all_tags.size()):
+							if all_tags[j].begins_with("[/"):
+								if all_tags[j].contains(tag):
+									closed_tags.append(all_tags[i])
+									break
+				# Get tags that do not have a closing tag
+				opened_tags = all_tags.filter(
+					func(tag): return not tag.begins_with("[/")\
+							and not closed_tags.has(tag)
+					)
 				sentences.append(sentence)
+				clean_sentence = ""
 				sentence = ""
 		return sentences
 	return [dialog]
