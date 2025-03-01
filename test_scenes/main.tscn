@@ -19,5 +19,5 @@ Charlie_dialogue_box = NodePath("../CanvasLayer/DialogBox")
 
 [node name="DialogBox" parent="CanvasLayer" instance=ExtResource("2_io75r")]
 visible = false
-max_characters_to_display = 186
+max_characters_to_display = 100
 type_time = 0.01

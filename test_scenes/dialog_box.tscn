@@ -53,6 +53,7 @@ text = "Dialog text"
 scroll_following = true
 
 [node name="Arrow" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+visible = false
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 8
