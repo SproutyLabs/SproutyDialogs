@@ -1,10 +1,48 @@
-[gd_scene load_steps=3 format=3 uid="uid://deethj56qlsml"]
+[gd_scene load_steps=36 format=3 uid="uid://deethj56qlsml"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://c5nss8jn0ix1p" path="res://addons/graph_dialog_system/icons/SideCollapse.svg" id="2_7qbxo"]
+[ext_resource type="CodeHighlighter" uid="uid://dfy2njb4ljtel" path="res://addons/graph_dialog_system/nodes/components/code_highlighter.tres" id="3_3nqnv"]
+[ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/Play.svg" id="3_b12sr"]
+[ext_resource type="Texture2D" uid="uid://ban62atjybm0o" path="res://addons/graph_dialog_system/icons/text-bold.svg" id="4_8loe6"]
+[ext_resource type="Texture2D" uid="uid://cag0gxuqt8qwx" path="res://addons/graph_dialog_system/icons/text-italic.svg" id="5_gd2p5"]
+[ext_resource type="Texture2D" uid="uid://cos8i403ptej5" path="res://addons/graph_dialog_system/icons/text-underline.svg" id="6_3impe"]
+[ext_resource type="Texture2D" uid="uid://bq1xmruumyrt0" path="res://addons/graph_dialog_system/icons/text-strikethrough.svg" id="7_egkjt"]
+[ext_resource type="Texture2D" uid="uid://bgh3hr46y0c62" path="res://addons/graph_dialog_system/icons/text-font.svg" id="8_kwxkr"]
+[ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/graph_dialog_system/icons/text.svg" id="8_vunvl"]
+[ext_resource type="Texture2D" uid="uid://bcekxum0ffrii" path="res://addons/graph_dialog_system/icons/text_bg_color.svg" id="9_hslfk"]
+[ext_resource type="Texture2D" uid="uid://cco144t0k8m42" path="res://addons/graph_dialog_system/icons/text-color.svg" id="10_3icwq"]
+[ext_resource type="Texture2D" uid="uid://c0ss2hp6fq1e6" path="res://addons/graph_dialog_system/icons/text-align-left.svg" id="11_hjf5j"]
+[ext_resource type="Texture2D" uid="uid://dx1xnck5bpbsn" path="res://addons/graph_dialog_system/icons/text-align-center.svg" id="12_ayoih"]
+[ext_resource type="Texture2D" uid="uid://dmdfwuf3oh2vu" path="res://addons/graph_dialog_system/icons/link.svg" id="12_cel0j"]
+[ext_resource type="Texture2D" uid="uid://tg3lusr7qynj" path="res://addons/graph_dialog_system/icons/text-align-right.svg" id="13_lr516"]
+[ext_resource type="Texture2D" uid="uid://by1ux7iacms26" path="res://addons/graph_dialog_system/icons/Variable.svg" id="13_m5lcx"]
+[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialog_system/icons/image.svg" id="13_r6en5"]
+[ext_resource type="Texture2D" uid="uid://dmacl3fimk34t" path="res://addons/graph_dialog_system/icons/text-align-justify.svg" id="14_vanot"]
+[ext_resource type="Texture2D" uid="uid://3ygkqeueqkrd" path="res://addons/graph_dialog_system/icons/magic-wand.svg" id="18_do7oi"]
+[ext_resource type="Texture2D" uid="uid://5g3wml1xcuwa" path="res://addons/graph_dialog_system/icons/rainbow.svg" id="19_djbmw"]
+[ext_resource type="Texture2D" uid="uid://cyjfhon6vx11l" path="res://addons/graph_dialog_system/icons/waves.svg" id="20_h0nhk"]
+[ext_resource type="Texture2D" uid="uid://drhigy8q8yvor" path="res://addons/graph_dialog_system/icons/pulse.svg" id="21_cmowh"]
+[ext_resource type="Texture2D" uid="uid://bdkmuv37b5cx6" path="res://addons/graph_dialog_system/icons/tornado.svg" id="22_2gb2p"]
+[ext_resource type="Texture2D" uid="uid://ckqdg3q4kjmpk" path="res://addons/graph_dialog_system/icons/shake.svg" id="23_w4102"]
+[ext_resource type="Texture2D" uid="uid://bi8srcf0vhr15" path="res://addons/graph_dialog_system/icons/ghost.svg" id="24_5moyk"]
+[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="25_dx6e2"]
+[ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialog_system/icons/String.svg" id="25_r4ndn"]
+[ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialog_system/icons/int.svg" id="26_b0hwj"]
+[ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/float.svg" id="27_taqqf"]
+[ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="28_5tt54"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_am7i6"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_js32a"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_coir8"]
 
 [node name="TextEditor" type="Panel"]
 clip_contents = true
+custom_minimum_size = Vector2(500, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -23,37 +61,423 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="ToolBar" type="HBoxContainer" parent="Container"]
+[node name="Header" type="HBoxContainer" parent="Container"]
 layout_mode = 2
 
-[node name="CloseButton" type="Button" parent="Container/ToolBar"]
-custom_minimum_size = Vector2(70, 0)
+[node name="CloseButton" type="Button" parent="Container/Header"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Close"
 icon = ExtResource("2_7qbxo")
 
-[node name="VSeparator" type="VSeparator" parent="Container/ToolBar"]
+[node name="RunButton" type="Button" parent="Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Run"
+icon = ExtResource("3_b12sr")
+
+[node name="Toolbar" type="HFlowContainer" parent="Container"]
 layout_mode = 2
 
-[node name="Button2" type="Button" parent="Container/ToolBar"]
+[node name="---" type="VSeparator" parent="Container/Toolbar"]
 layout_mode = 2
-text = "button"
 
-[node name="Button3" type="Button" parent="Container/ToolBar"]
+[node name="AddBold" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
-text = "button"
+icon = ExtResource("4_8loe6")
 
-[node name="Button4" type="Button" parent="Container/ToolBar"]
+[node name="AddItalic" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
-text = "button"
+icon = ExtResource("5_gd2p5")
+
+[node name="AddUnderline" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("6_3impe")
+
+[node name="AddStrikethrough" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("7_egkjt")
+
+[node name="----" type="VSeparator" parent="Container/Toolbar"]
+layout_mode = 2
+
+[node name="TextFont" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("8_vunvl")
+
+[node name="TextSize" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("8_kwxkr")
+
+[node name="TextColor" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("10_3icwq")
+
+[node name="BGColor" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("9_hslfk")
+
+[node name="-----" type="VSeparator" parent="Container/Toolbar"]
+layout_mode = 2
+
+[node name="TextLeft" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("11_hjf5j")
+
+[node name="TextCenter" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("12_ayoih")
+
+[node name="TextRight" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("13_lr516")
+
+[node name="TextFill" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("14_vanot")
+
+[node name="------" type="VSeparator" parent="Container/Toolbar"]
+layout_mode = 2
+
+[node name="AddVariable" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("13_m5lcx")
+
+[node name="AddImage" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("13_r6en5")
+
+[node name="AddURL" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("12_cel0j")
+
+[node name="-------" type="VSeparator" parent="Container/Toolbar"]
+layout_mode = 2
+
+[node name="AddEffect" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+icon = ExtResource("18_do7oi")
+
+[node name="HSeparator" type="HSeparator" parent="Container"]
+layout_mode = 2
+
+[node name="EffectsBar" type="HFlowContainer" parent="Container"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/EffectsBar"]
+layout_mode = 2
+text = "Text Effects"
+icon = ExtResource("18_do7oi")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/EffectsBar"]
+layout_mode = 2
+
+[node name="PulseEffect" type="Button" parent="Container/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Pulse"
+icon = ExtResource("21_cmowh")
+
+[node name="WaveEffect" type="Button" parent="Container/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Wave"
+icon = ExtResource("20_h0nhk")
+
+[node name="TornadoEffect" type="Button" parent="Container/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Tornado"
+icon = ExtResource("22_2gb2p")
+
+[node name="ShakeEffect" type="Button" parent="Container/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Shake"
+icon = ExtResource("23_w4102")
+
+[node name="FadeEffect" type="Button" parent="Container/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Fade"
+icon = ExtResource("24_5moyk")
+
+[node name="RainbowEffect" type="Button" parent="Container/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Rainbow"
+icon = ExtResource("19_djbmw")
+
+[node name="FontBar" type="HFlowContainer" parent="Container"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/FontBar"]
+layout_mode = 2
+text = "Change Text Font"
+icon = ExtResource("8_vunvl")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/FontBar"]
+layout_mode = 2
+
+[node name="FileField" parent="Container/FontBar" instance=ExtResource("25_dx6e2")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="FontSizeBar" type="HFlowContainer" parent="Container"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/FontSizeBar"]
+layout_mode = 2
+text = "Change Font Size"
+icon = ExtResource("8_kwxkr")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/FontSizeBar"]
+layout_mode = 2
+
+[node name="SizeLabel" type="Label" parent="Container/FontSizeBar"]
+layout_mode = 2
+text = "Size"
+
+[node name="SpinBox" type="SpinBox" parent="Container/FontSizeBar"]
+layout_mode = 2
+
+[node name="TextColorBar" type="VBoxContainer" parent="Container"]
+visible = false
+layout_mode = 2
+
+[node name="ColorContainer" type="HFlowContainer" parent="Container/TextColorBar"]
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/TextColorBar/ColorContainer"]
+layout_mode = 2
+text = "Change Text Color"
+icon = ExtResource("10_3icwq")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/TextColorBar/ColorContainer"]
+layout_mode = 2
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="Container/TextColorBar/ColorContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+icon = ExtResource("10_3icwq")
+color = Color(1, 0, 0, 1)
+
+[node name="ColorSample" type="RichTextLabel" parent="Container/TextColorBar/ColorContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_am7i6")
+bbcode_enabled = true
+text = "Hex [color=red]#ff0000"
+fit_content = true
+scroll_active = false
+
+[node name="TextExample" type="RichTextLabel" parent="Container/TextColorBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_js32a")
+bbcode_enabled = true
+text = "Example: [color=red]This is what the text looks like with this color!"
+fit_content = true
+scroll_active = false
+
+[node name="HSeparator" type="HSeparator" parent="Container/TextColorBar"]
+layout_mode = 2
+
+[node name="BGColorBar" type="VBoxContainer" parent="Container"]
+visible = false
+layout_mode = 2
+
+[node name="ColorContainer" type="HFlowContainer" parent="Container/BGColorBar"]
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/BGColorBar/ColorContainer"]
+layout_mode = 2
+text = "Change Background Color"
+icon = ExtResource("9_hslfk")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/BGColorBar/ColorContainer"]
+layout_mode = 2
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="Container/BGColorBar/ColorContainer"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+icon = ExtResource("10_3icwq")
+color = Color(1, 0, 0, 1)
+
+[node name="ColorSample" type="RichTextLabel" parent="Container/BGColorBar/ColorContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ddten")
+bbcode_enabled = true
+text = "Hex [color=red]#ff0000"
+fit_content = true
+scroll_active = false
+
+[node name="TextExample" type="RichTextLabel" parent="Container/BGColorBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_coir8")
+bbcode_enabled = true
+text = "Example: [bgcolor=red]This is what the text looks like with this color!"
+fit_content = true
+scroll_active = false
+
+[node name="HSeparator" type="HSeparator" parent="Container/BGColorBar"]
+layout_mode = 2
+
+[node name="VariableBar" type="HFlowContainer" parent="Container"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/VariableBar"]
+layout_mode = 2
+text = "Display Variable"
+icon = ExtResource("13_m5lcx")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/VariableBar"]
+layout_mode = 2
+
+[node name="Type" type="OptionButton" parent="Container/VariableBar"]
+layout_mode = 2
+selected = 0
+item_count = 4
+popup/item_0/icon = ExtResource("25_r4ndn")
+popup/item_1/icon = ExtResource("26_b0hwj")
+popup/item_1/id = 1
+popup/item_2/icon = ExtResource("27_taqqf")
+popup/item_2/id = 2
+popup/item_3/icon = ExtResource("28_5tt54")
+popup/item_3/id = 3
+
+[node name="NameInput" type="LineEdit" parent="Container/VariableBar"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Variable name..."
+
+[node name="ImageBar" type="VBoxContainer" parent="Container"]
+visible = false
+layout_mode = 2
+
+[node name="PathContainer" type="HFlowContainer" parent="Container/ImageBar"]
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/ImageBar/PathContainer"]
+layout_mode = 2
+text = "Display image"
+icon = ExtResource("13_r6en5")
+flat = true
+
+[node name="---" type="VSeparator" parent="Container/ImageBar/PathContainer"]
+layout_mode = 2
+
+[node name="PathLabel" type="Label" parent="Container/ImageBar/PathContainer"]
+layout_mode = 2
+text = "Path"
+
+[node name="FileField" parent="Container/ImageBar/PathContainer" instance=ExtResource("25_dx6e2")]
+layout_mode = 2
+size_flags_horizontal = 3
+file_filters = PackedStringArray("*.jpg", "*.jpeg", "*.png", "*.svg", "*.webp", "*.bmp", "*.tga", "*.dds", "*.kts", "*.hdr", "*.exr")
+
+[node name="SettingsContainer" type="HFlowContainer" parent="Container/ImageBar"]
+layout_mode = 2
+
+[node name="PositionLabel" type="Label" parent="Container/ImageBar/SettingsContainer"]
+layout_mode = 2
+text = "Image Vertical Aligment"
+
+[node name="OptionButton" type="OptionButton" parent="Container/ImageBar/SettingsContainer"]
+layout_mode = 2
+selected = 0
+item_count = 3
+popup/item_0/text = "Center"
+popup/item_1/text = "Top"
+popup/item_1/id = 1
+popup/item_2/text = "Bottom"
+popup/item_2/id = 2
+
+[node name="----" type="VSeparator" parent="Container/ImageBar/SettingsContainer"]
+layout_mode = 2
+
+[node name="WidthLabel" type="Label" parent="Container/ImageBar/SettingsContainer"]
+layout_mode = 2
+text = "Width"
+
+[node name="WidthInput" type="SpinBox" parent="Container/ImageBar/SettingsContainer"]
+layout_mode = 2
+max_value = 9999.0
+suffix = "px"
+
+[node name="HeightLabel" type="Label" parent="Container/ImageBar/SettingsContainer"]
+layout_mode = 2
+text = "Height"
+
+[node name="HeightInput" type="SpinBox" parent="Container/ImageBar/SettingsContainer"]
+layout_mode = 2
+max_value = 9999.0
+suffix = "px"
+
+[node name="LinkBar" type="HFlowContainer" parent="Container"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/LinkBar"]
+layout_mode = 2
+text = "Add link to URL"
+icon = ExtResource("12_cel0j")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/LinkBar"]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="Container/LinkBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Write the url..."
 
 [node name="CodeEdit" type="CodeEdit" parent="Container"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+wrap_mode = 1
+syntax_highlighter = ExtResource("3_3nqnv")
+highlight_all_occurrences = true
 gutters_draw_line_numbers = true
+auto_brace_completion_enabled = true
+auto_brace_completion_highlight_matching = true
 
-[connection signal="pressed" from="Container/ToolBar/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/Header/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/Header/RunButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/EffectsBar/PulseEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/EffectsBar/WaveEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/EffectsBar/TornadoEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/EffectsBar/ShakeEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/EffectsBar/FadeEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/EffectsBar/RainbowEffect" to="." method="_on_close_button_pressed"]
 [connection signal="text_changed" from="Container/CodeEdit" to="." method="_on_code_edit_text_changed"]

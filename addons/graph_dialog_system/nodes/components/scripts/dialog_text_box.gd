@@ -16,7 +16,9 @@ var text_editor: Panel
 
 
 func _ready():
-	text_editor = find_parent("Main").get_node("%Workspace/TextEditor")
+	var editor_main = find_parent("Main")
+	if editor_main: # Get the text editor panel from the main node
+		text_editor = editor_main.get_node("%Workspace/TextEditor")
 
 
 ## Get the text from the text box

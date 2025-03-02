@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
+
+<svg
+   fill="#ffffff"
+   width="16"
+   height="15.999999"
+   viewBox="0 0 38.4 38.399998"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="text-centered.svg"
+   inkscape:export-filename="text-centered.svg"
+   inkscape:export-xdpi="48.150471"
+   inkscape:export-ydpi="48.150471"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050" />
+  <defs
+     id="defs1" />
+  <g
+     id="SVGRepo_iconCarrier"
+     transform="matrix(0.02,0,0,0.02142704,0,-1.3713306)"
+     inkscape:export-filename="text-centered.svg"
+     inkscape:export-xdpi="30.719999"
+     inkscape:export-ydpi="30.719999">
+    <path
+       d="m 1664,1600.128 v 256 H 256 v -256 z M 1920,1216 v 256.128 H 0 V 1216 Z M 1792,832.128 v 256 H 128 v -256 z m 128,-384 v 256 H 0 v -256 z M 1664,64 V 320.128 H 256 V 64 Z"
+       fill-rule="evenodd"
+       id="path1" />
+  </g>
+</svg>
