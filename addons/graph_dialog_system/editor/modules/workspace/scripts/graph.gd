@@ -13,10 +13,10 @@ signal modified
 ## Triggered when all the nodes are loaded
 signal nodes_loaded
 
+## Alerts container
+@onready var alerts: VBoxContainer = $Alerts
 ## Add node pop-up menu
 @onready var _add_node_menu: PopupMenu = $AddNodeMenu
-## Alerts container
-@onready var _alerts: VBoxContainer = $Alerts
 
 ## Nodes references
 var _nodes_ref: Dictionary = NodesReferences.nodes

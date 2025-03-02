@@ -354,7 +354,7 @@ func _filter_file_list(search_text: String) -> void:
 
 #region === CSV Files Handling =================================================
 
-## Set csv file path to the current data file
+## Set CSV file path to the current data file
 func set_csv_file_to_dialog(path: String) -> void:
 	var metadata := _file_list.get_item_metadata(_current_file_index)
 	metadata["data"]["dialog_data"]["csv_file_path"] = path
@@ -362,7 +362,7 @@ func set_csv_file_to_dialog(path: String) -> void:
 	_csv_file_field.set_value(path)
 	
 
-## Save all graph dialogs on csv file
+## Save all graph dialogs on CSV file
 func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 	var header = ["key"]
 	var content = []
@@ -378,31 +378,41 @@ func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 	GDialogsCSVFileManager.save_file(header, content, path)
 
 
-## Load all dialogs from csv file to a dictionary
+## Load all dialogs from a CSV file to a dictionary.
+## Returns a dictionary with the dialog data as:
+## { dialog_key: {
+##     locale_1: dialog_text,
+##     locale_2: dialog_text,
+##     ...
+##     }
+## }
 func load_dialogs_from_csv(path: String) -> Dictionary:
 	var data := GDialogsCSVFileManager.load_file(path)
+	if data.is_empty(): # If there is no data, an error occurred
+		printerr("[Graph Dialogs] Cannot load dialogs from CSV file.")
+		return {}
 	var header = data[0]
 	var dialogs := {}
 	
-	for row in data:
-		# For each row, add a dict with dialog key
-		if row == header: continue # Skip header
-		var key = row[0]
-		dialogs[key] = {}
-		for i in row.size() - 1:
-			# Add translations to each dialog
-			if i < 1: continue # Skip key
-			dialogs[key][header[i]] = row[i]
+	# Parse CSV data to a dictionary
+	for row in data.slice(1, data.size() - 1):
+		# Add a new dict for each dialog key
+		var dialog_key = row[0]
+		dialogs[dialog_key] = {}
+		# Add each dialog in their respective locale
+		for i in range(1, row.size()):
+			dialogs[dialog_key][header[i]] = row[i]
 	
 	return dialogs
 
 
-## Show the csv file path container
+## Show the CSV file path container
 func show_csv_container() -> void:
 	if _current_file_index >= 0:
 		_csv_file_field.get_parent().visible = true
-	
-## Hide the csv file path container
+
+
+## Hide the CSV file path container
 func hide_csv_container() -> void:
 	_csv_file_field.get_parent().visible = false
 #endregion

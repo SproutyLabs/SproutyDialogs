@@ -10,11 +10,12 @@ extends RefCounted
 
 ## Save data to a CSV file
 static func save_file(header: Array, data: Array, file_path: String) -> void:
+	# Open file or create it for writing data
 	var file := FileAccess.open(file_path, FileAccess.WRITE)
-	if file == null:
+	
+	if file == null: # Check if file is opened successfully
 		printerr("[CSVFileManager] %s" % [FileAccess.get_open_error()])
 		return
-	
 	# Store header in csv file
 	file.store_csv_line(PackedStringArray(header), ",")
 	
@@ -26,7 +27,8 @@ static func save_file(header: Array, data: Array, file_path: String) -> void:
 					"does not match with header size (%d)" % [row.size(), header.size()])
 				return
 			file.store_csv_line(PackedStringArray(row), ",")
-	else: # Add empty row to avoid translation import error
+	else:
+		# Add empty row to avoid translation import error
 		var placeholder = []
 		placeholder.resize(header.size())
 		placeholder.fill("EMPTY")
@@ -35,27 +37,25 @@ static func save_file(header: Array, data: Array, file_path: String) -> void:
 
 
 ## Load data from a CSV file
-static func load_file(file_path: String) -> Variant:
+static func load_file(file_path: String) -> Array:
+	# Check if file exists
 	if FileAccess.file_exists(file_path):
+		# Open file for reading data
 		var file := FileAccess.open(file_path, FileAccess.READ)
-		if file == null:
+
+		if file == null: # Check if file is opened successfully
 			printerr("[CSVFileManager] %s" % [FileAccess.get_open_error()])
-			return null
-		
-		var content := file.get_as_text()
-		file.close()
-		
-		# Parse content to string arrays
-		var raw_rows := content.split("\n")
+			return []
+		# Read each line from the file
 		var data := []
+		while !file.eof_reached():
+			var csv_data: Array = file.get_csv_line()
+			data.append(csv_data) # Add row to an array
 		
-		for row in raw_rows:
-			var row_data := row.split(",")
-			if row_data.size() > 0: # Skip last empty row
-				data.append(row_data)
+		file.close()
 		return data
-	else:
+	else: # File does not exist at the given path
 		printerr("[CSVFileManager] Cannot open non-existing file at %s"
 		% [file_path])
-		return null
-	return null
+		return []
+	return []

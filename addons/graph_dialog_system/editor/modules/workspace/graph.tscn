@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/graph_dialog_system/icons/EditAddRemove.svg" id="7_d84v1"]
 [ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialog_system/icons/Signals.svg" id="8_x24dq"]
 [ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/graph_dialog_system/icons/Timer.svg" id="9_pqpbi"]
-[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/alerts_controller.gd" id="10_difpe"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/components/scripts/alert_controller.gd" id="10_difpe"]
 
 [node name="Graph" type="GraphEdit" node_paths=PackedStringArray("_add_node_menu", "_alerts")]
 anchors_preset = 15
