@@ -33,5 +33,4 @@ func set_text(text: String) -> void:
 
 ## Open the text editor window
 func _on_expand_button_pressed() -> void:
-	text_editor.edited_text_box = text_box
-	text_editor.show_text_editor()
+	text_editor.show_text_editor(text_box)

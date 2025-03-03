@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://uw0si2bt6da1"
-path="res://.godot/imported/Back.svg-ac0d4d99ce3c52b419e1c4feab4770ff.ctex"
+uid="uid://d2g1blyeyjaqn"
+path="res://.godot/imported/collapse-right.svg-ed3fed7ca465b8558dfec7e4553b1beb.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/graph_dialog_system/icons/Back.svg"
-dest_files=["res://.godot/imported/Back.svg-ac0d4d99ce3c52b419e1c4feab4770ff.ctex"]
+source_file="res://addons/graph_dialog_system/icons/collapse-right.svg"
+dest_files=["res://.godot/imported/collapse-right.svg-ed3fed7ca465b8558dfec7e4553b1beb.ctex"]
 
 [params]
 

@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bpa7g13kkbvyg"
-path="res://.godot/imported/Collapse.svg-ac762c785e898537b0a655a44830e0b2.ctex"
+uid="uid://bix6vg2cttnqd"
+path="res://.godot/imported/collapse-up.svg-17b46f1671efafcaeefa2f92b235bb7a.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/graph_dialog_system/icons/Collapse.svg"
-dest_files=["res://.godot/imported/Collapse.svg-ac762c785e898537b0a655a44830e0b2.ctex"]
+source_file="res://addons/graph_dialog_system/icons/collapse-up.svg"
+dest_files=["res://.godot/imported/collapse-up.svg-17b46f1671efafcaeefa2f92b235bb7a.ctex"]
 
 [params]
 
