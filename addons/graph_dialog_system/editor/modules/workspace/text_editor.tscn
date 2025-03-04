@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://deethj56qlsml"]
+[gd_scene load_steps=35 format=3 uid="uid://deethj56qlsml"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialog_system/icons/collapse-right.svg" id="2_bd7d8"]
@@ -35,11 +35,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_am7i6"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_js32a"]
-
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_coir8"]
 
 [node name="TextEditor" type="Panel"]
 clip_contents = true
@@ -164,126 +160,75 @@ icon = ExtResource("18_do7oi")
 [node name="HSeparator" type="HSeparator" parent="Container"]
 layout_mode = 2
 
-[node name="Submenus" type="VBoxContainer" parent="Container"]
+[node name="OptionMenus" type="VBoxContainer" parent="Container"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="EffectsBar" type="HFlowContainer" parent="Container/Submenus"]
+[node name="FontBar" type="HFlowContainer" parent="Container/OptionMenus"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/Submenus/EffectsBar"]
-layout_mode = 2
-text = "Text Effects"
-icon = ExtResource("18_do7oi")
-flat = true
-
-[node name="VSeparator" type="VSeparator" parent="Container/Submenus/EffectsBar"]
-layout_mode = 2
-
-[node name="PulseEffect" type="Button" parent="Container/Submenus/EffectsBar"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Pulse"
-icon = ExtResource("21_cmowh")
-
-[node name="WaveEffect" type="Button" parent="Container/Submenus/EffectsBar"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Wave"
-icon = ExtResource("20_h0nhk")
-
-[node name="TornadoEffect" type="Button" parent="Container/Submenus/EffectsBar"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Tornado"
-icon = ExtResource("22_2gb2p")
-
-[node name="ShakeEffect" type="Button" parent="Container/Submenus/EffectsBar"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Shake"
-icon = ExtResource("23_w4102")
-
-[node name="FadeEffect" type="Button" parent="Container/Submenus/EffectsBar"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Fade"
-icon = ExtResource("24_5moyk")
-
-[node name="RainbowEffect" type="Button" parent="Container/Submenus/EffectsBar"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Rainbow"
-icon = ExtResource("19_djbmw")
-
-[node name="FontBar" type="HFlowContainer" parent="Container/Submenus"]
-visible = false
-layout_mode = 2
-
-[node name="Label" type="Button" parent="Container/Submenus/FontBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar"]
 layout_mode = 2
 text = "Change Text Font"
 icon = ExtResource("8_vunvl")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/Submenus/FontBar"]
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/FontBar"]
 layout_mode = 2
 
-[node name="FileField" parent="Container/Submenus/FontBar" instance=ExtResource("25_dx6e2")]
+[node name="FileField" parent="Container/OptionMenus/FontBar" instance=ExtResource("25_dx6e2")]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="FontSizeBar" type="HFlowContainer" parent="Container/Submenus"]
+[node name="FontSizeBar" type="HFlowContainer" parent="Container/OptionMenus"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/Submenus/FontSizeBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/FontSizeBar"]
 layout_mode = 2
 text = "Change Font Size"
 icon = ExtResource("8_kwxkr")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/Submenus/FontSizeBar"]
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/FontSizeBar"]
 layout_mode = 2
 
-[node name="SizeLabel" type="Label" parent="Container/Submenus/FontSizeBar"]
+[node name="SizeLabel" type="Label" parent="Container/OptionMenus/FontSizeBar"]
 layout_mode = 2
 text = "Size"
 
-[node name="SpinBox" type="SpinBox" parent="Container/Submenus/FontSizeBar"]
+[node name="SpinBox" type="SpinBox" parent="Container/OptionMenus/FontSizeBar"]
 layout_mode = 2
 
-[node name="TextColorBar" type="VBoxContainer" parent="Container/Submenus"]
+[node name="TextColorBar" type="HFlowContainer" parent="Container/OptionMenus"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="ColorContainer" type="HFlowContainer" parent="Container/Submenus/TextColorBar"]
-layout_mode = 2
-
-[node name="Label" type="Button" parent="Container/Submenus/TextColorBar/ColorContainer"]
+[node name="Label" type="Button" parent="Container/OptionMenus/TextColorBar"]
 layout_mode = 2
 text = "Change Text Color"
 icon = ExtResource("10_3icwq")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/Submenus/TextColorBar/ColorContainer"]
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/TextColorBar"]
 layout_mode = 2
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="Container/Submenus/TextColorBar/ColorContainer"]
+[node name="TextColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/TextColorBar"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 0
+toggle_mode = false
 icon = ExtResource("10_3icwq")
 color = Color(1, 0, 0, 1)
 
-[node name="ColorSample" type="RichTextLabel" parent="Container/Submenus/TextColorBar/ColorContainer"]
+[node name="TextColorSample" type="RichTextLabel" parent="Container/OptionMenus/TextColorBar"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -294,80 +239,55 @@ text = "Hex [color=red]#ff0000"
 fit_content = true
 scroll_active = false
 
-[node name="TextExample" type="RichTextLabel" parent="Container/Submenus/TextColorBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_styles/normal = SubResource("StyleBoxEmpty_js32a")
-bbcode_enabled = true
-text = "Example: [color=red]This is what the text looks like with this color!"
-fit_content = true
-scroll_active = false
-
-[node name="HSeparator" type="HSeparator" parent="Container/Submenus/TextColorBar"]
-layout_mode = 2
-
-[node name="BGColorBar" type="VBoxContainer" parent="Container/Submenus"]
+[node name="BGColorBar" type="HFlowContainer" parent="Container/OptionMenus"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="ColorContainer" type="HFlowContainer" parent="Container/Submenus/BGColorBar"]
-layout_mode = 2
-
-[node name="Label" type="Button" parent="Container/Submenus/BGColorBar/ColorContainer"]
+[node name="Label" type="Button" parent="Container/OptionMenus/BGColorBar"]
 layout_mode = 2
 text = "Change Background Color"
 icon = ExtResource("9_hslfk")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/Submenus/BGColorBar/ColorContainer"]
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/BGColorBar"]
 layout_mode = 2
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="Container/Submenus/BGColorBar/ColorContainer"]
+[node name="BgColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/BGColorBar"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 icon = ExtResource("10_3icwq")
 color = Color(1, 0, 0, 1)
 
-[node name="ColorSample" type="RichTextLabel" parent="Container/Submenus/BGColorBar/ColorContainer"]
+[node name="BgColorSample" type="RichTextLabel" parent="Container/OptionMenus/BGColorBar"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ddten")
 bbcode_enabled = true
-text = "Hex [color=red]#ff0000"
+text = "Hex  [bgcolor=red]#ff0000"
 fit_content = true
 scroll_active = false
 
-[node name="TextExample" type="RichTextLabel" parent="Container/Submenus/BGColorBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_styles/normal = SubResource("StyleBoxEmpty_coir8")
-bbcode_enabled = true
-text = "Example: [bgcolor=red]This is what the text looks like with this color!"
-fit_content = true
-scroll_active = false
-
-[node name="HSeparator" type="HSeparator" parent="Container/Submenus/BGColorBar"]
-layout_mode = 2
-
-[node name="VariableBar" type="HFlowContainer" parent="Container/Submenus"]
+[node name="VariableBar" type="HFlowContainer" parent="Container/OptionMenus"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/Submenus/VariableBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
 text = "Display Variable"
 icon = ExtResource("13_m5lcx")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/Submenus/VariableBar"]
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
 
-[node name="Type" type="OptionButton" parent="Container/Submenus/VariableBar"]
+[node name="Type" type="OptionButton" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
 selected = 0
 item_count = 4
@@ -379,45 +299,46 @@ popup/item_2/id = 2
 popup/item_3/icon = ExtResource("28_5tt54")
 popup/item_3/id = 3
 
-[node name="NameInput" type="LineEdit" parent="Container/Submenus/VariableBar"]
+[node name="NameInput" type="LineEdit" parent="Container/OptionMenus/VariableBar"]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Variable name..."
 
-[node name="ImageBar" type="VBoxContainer" parent="Container/Submenus"]
+[node name="ImageBar" type="VBoxContainer" parent="Container/OptionMenus"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="PathContainer" type="HFlowContainer" parent="Container/Submenus/ImageBar"]
+[node name="PathContainer" type="HFlowContainer" parent="Container/OptionMenus/ImageBar"]
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/Submenus/ImageBar/PathContainer"]
+[node name="Label" type="Button" parent="Container/OptionMenus/ImageBar/PathContainer"]
 layout_mode = 2
 text = "Display image"
 icon = ExtResource("13_r6en5")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/Submenus/ImageBar/PathContainer"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/PathContainer"]
 layout_mode = 2
 
-[node name="PathLabel" type="Label" parent="Container/Submenus/ImageBar/PathContainer"]
+[node name="PathLabel" type="Label" parent="Container/OptionMenus/ImageBar/PathContainer"]
 layout_mode = 2
 text = "Path"
 
-[node name="FileField" parent="Container/Submenus/ImageBar/PathContainer" instance=ExtResource("25_dx6e2")]
+[node name="FileField" parent="Container/OptionMenus/ImageBar/PathContainer" instance=ExtResource("25_dx6e2")]
 layout_mode = 2
 size_flags_horizontal = 3
 file_filters = PackedStringArray("*.jpg", "*.jpeg", "*.png", "*.svg", "*.webp", "*.bmp", "*.tga", "*.dds", "*.kts", "*.hdr", "*.exr")
 
-[node name="SettingsContainer" type="HFlowContainer" parent="Container/Submenus/ImageBar"]
+[node name="SettingsContainer" type="HFlowContainer" parent="Container/OptionMenus/ImageBar"]
 layout_mode = 2
 
-[node name="PositionLabel" type="Label" parent="Container/Submenus/ImageBar/SettingsContainer"]
+[node name="PositionLabel" type="Label" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
 layout_mode = 2
 text = "Image Vertical Aligment"
 
-[node name="OptionButton" type="OptionButton" parent="Container/Submenus/ImageBar/SettingsContainer"]
+[node name="OptionButton" type="OptionButton" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
 layout_mode = 2
 selected = 0
 item_count = 3
@@ -427,44 +348,101 @@ popup/item_1/id = 1
 popup/item_2/text = "Bottom"
 popup/item_2/id = 2
 
-[node name="----" type="VSeparator" parent="Container/Submenus/ImageBar/SettingsContainer"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
 layout_mode = 2
 
-[node name="WidthLabel" type="Label" parent="Container/Submenus/ImageBar/SettingsContainer"]
+[node name="WidthLabel" type="Label" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
 layout_mode = 2
 text = "Width"
 
-[node name="WidthInput" type="SpinBox" parent="Container/Submenus/ImageBar/SettingsContainer"]
+[node name="WidthInput" type="SpinBox" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
 layout_mode = 2
 max_value = 9999.0
 suffix = "px"
 
-[node name="HeightLabel" type="Label" parent="Container/Submenus/ImageBar/SettingsContainer"]
+[node name="HeightLabel" type="Label" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
 layout_mode = 2
 text = "Height"
 
-[node name="HeightInput" type="SpinBox" parent="Container/Submenus/ImageBar/SettingsContainer"]
+[node name="HeightInput" type="SpinBox" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
 layout_mode = 2
 max_value = 9999.0
 suffix = "px"
 
-[node name="LinkBar" type="HFlowContainer" parent="Container/Submenus"]
+[node name="LinkBar" type="HFlowContainer" parent="Container/OptionMenus"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/Submenus/LinkBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/LinkBar"]
 layout_mode = 2
 text = "Add link to URL"
 icon = ExtResource("12_cel0j")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/Submenus/LinkBar"]
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/LinkBar"]
 layout_mode = 2
 
-[node name="LineEdit" type="LineEdit" parent="Container/Submenus/LinkBar"]
+[node name="LineEdit" type="LineEdit" parent="Container/OptionMenus/LinkBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Write the url..."
+
+[node name="EffectsBar" type="HFlowContainer" parent="Container/OptionMenus"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar"]
+layout_mode = 2
+text = "Text Effects"
+icon = ExtResource("18_do7oi")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar"]
+layout_mode = 2
+
+[node name="PulseEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Pulse"
+icon = ExtResource("21_cmowh")
+
+[node name="WaveEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Wave"
+icon = ExtResource("20_h0nhk")
+
+[node name="TornadoEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Tornado"
+icon = ExtResource("22_2gb2p")
+
+[node name="ShakeEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Shake"
+icon = ExtResource("23_w4102")
+
+[node name="FadeEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Fade"
+icon = ExtResource("24_5moyk")
+
+[node name="RainbowEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Rainbow"
+icon = ExtResource("19_djbmw")
 
 [node name="TextBoxes" type="VSplitContainer" parent="Container"]
 unique_name_in_owner = true
@@ -476,6 +454,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 placeholder_text = "Write your dialogue here..."
+deselect_on_focus_loss_enabled = false
 wrap_mode = 1
 syntax_highlighter = ExtResource("3_3nqnv")
 highlight_all_occurrences = true
@@ -522,11 +501,21 @@ text = "Text preview..."
 [connection signal="pressed" from="Container/Toolbar/AddItalic" to="." method="_on_add_italic_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddUnderline" to="." method="_on_add_underline_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddStrikethrough" to="." method="_on_add_strikethrough_pressed"]
-[connection signal="pressed" from="Container/Submenus/EffectsBar/PulseEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/Submenus/EffectsBar/WaveEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/Submenus/EffectsBar/TornadoEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/Submenus/EffectsBar/ShakeEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/Submenus/EffectsBar/FadeEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/Submenus/EffectsBar/RainbowEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/Toolbar/TextFont" to="." method="_on_change_text_font_pressed"]
+[connection signal="pressed" from="Container/Toolbar/TextSize" to="." method="_on_change_text_size_pressed"]
+[connection signal="pressed" from="Container/Toolbar/TextColor" to="." method="_on_change_text_color_pressed"]
+[connection signal="pressed" from="Container/Toolbar/BGColor" to="." method="_on_change_bg_color_pressed"]
+[connection signal="pressed" from="Container/Toolbar/TextLeft" to="." method="_on_align_text_left_pressed"]
+[connection signal="pressed" from="Container/Toolbar/TextCenter" to="." method="_on_align_text_center_pressed"]
+[connection signal="pressed" from="Container/Toolbar/TextRight" to="." method="_on_align_text_right_pressed"]
+[connection signal="pressed" from="Container/Toolbar/TextFill" to="." method="_on_align_text_fill_pressed"]
+[connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]
+[connection signal="color_changed" from="Container/OptionMenus/BGColorBar/BgColorPicker" to="." method="_on_bg_color_picker_changed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/PulseEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/WaveEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/TornadoEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/ShakeEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/FadeEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/RainbowEffect" to="." method="_on_close_button_pressed"]
 [connection signal="text_changed" from="Container/TextBoxes/TextBox" to="." method="_on_code_edit_text_changed"]
 [connection signal="toggled" from="Container/TextBoxes/PreviewBox/Container/Header/ExpandPreviewButton" to="." method="_on_preview_expand_button_toggled"]
