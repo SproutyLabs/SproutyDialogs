@@ -166,7 +166,6 @@ layout_mode = 2
 size_flags_vertical = 4
 
 [node name="FontBar" type="HFlowContainer" parent="Container/OptionMenus"]
-unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
@@ -184,7 +183,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="FontSizeBar" type="HFlowContainer" parent="Container/OptionMenus"]
-unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
@@ -205,7 +203,6 @@ text = "Size"
 layout_mode = 2
 
 [node name="TextColorBar" type="HFlowContainer" parent="Container/OptionMenus"]
-unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
@@ -223,7 +220,6 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-toggle_mode = false
 icon = ExtResource("10_3icwq")
 color = Color(1, 0, 0, 1)
 
@@ -240,7 +236,6 @@ fit_content = true
 scroll_active = false
 
 [node name="BGColorBar" type="HFlowContainer" parent="Container/OptionMenus"]
-unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
@@ -274,7 +269,6 @@ fit_content = true
 scroll_active = false
 
 [node name="VariableBar" type="HFlowContainer" parent="Container/OptionMenus"]
-unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
@@ -306,7 +300,6 @@ size_flags_horizontal = 3
 placeholder_text = "Variable name..."
 
 [node name="ImageBar" type="VBoxContainer" parent="Container/OptionMenus"]
-unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
@@ -370,7 +363,6 @@ max_value = 9999.0
 suffix = "px"
 
 [node name="LinkBar" type="HFlowContainer" parent="Container/OptionMenus"]
-unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
@@ -388,61 +380,363 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Write the url..."
 
-[node name="EffectsBar" type="HFlowContainer" parent="Container/OptionMenus"]
-unique_name_in_owner = true
+[node name="EffectsBar" type="VBoxContainer" parent="Container/OptionMenus"]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar"]
+[node name="EffectsList" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
 layout_mode = 2
 text = "Text Effects"
 icon = ExtResource("18_do7oi")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar"]
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsList"]
 layout_mode = 2
 
-[node name="PulseEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+[node name="PulseEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Pulse"
 icon = ExtResource("21_cmowh")
 
-[node name="WaveEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+[node name="WaveEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Wave"
 icon = ExtResource("20_h0nhk")
 
-[node name="TornadoEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+[node name="TornadoEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Tornado"
 icon = ExtResource("22_2gb2p")
 
-[node name="ShakeEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+[node name="ShakeEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Shake"
 icon = ExtResource("23_w4102")
 
-[node name="FadeEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+[node name="FadeEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Fade"
 icon = ExtResource("24_5moyk")
 
-[node name="RainbowEffect" type="Button" parent="Container/OptionMenus/EffectsBar"]
+[node name="RainbowEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Rainbow"
 icon = ExtResource("19_djbmw")
+
+[node name="EffectsSeparator" type="HSeparator" parent="Container/OptionMenus/EffectsBar"]
+visible = false
+layout_mode = 2
+
+[node name="EffectsContainer" type="VBoxContainer" parent="Container/OptionMenus/EffectsBar"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="PulseEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
+text = "Pulse Effect"
+icon = ExtResource("21_cmowh")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
+
+[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
+tooltip_text = "Frequency of the half-pulsing cycle (higher is faster). A full pulsing cycle takes 2 * (1.0 / freq) seconds. "
+mouse_filter = 1
+text = "Frequency"
+
+[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 1.0
+
+[node name="ColorLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
+tooltip_text = "Color is the target color multiplier for blinking. The default mostly fades out text, but not entirely."
+mouse_filter = 1
+text = "Color"
+
+[node name="ColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+color = Color(1, 1, 1, 0.25098)
+
+[node name="EaseLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
+tooltip_text = "Ease is the easing function exponent to use. Negative values provide in-out easing, which is why the default is -2.0."
+mouse_filter = 1
+text = "Ease"
+
+[node name="EaseField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = -2.0
+
+[node name="WaveEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+layout_mode = 2
+text = "Wave Effect"
+icon = ExtResource("20_h0nhk")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+layout_mode = 2
+
+[node name="AmpLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+layout_mode = 2
+tooltip_text = "Amplitude controls how high and low the effect goes."
+mouse_filter = 1
+text = "Amplitude"
+
+[node name="AmpField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 50.0
+
+[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+layout_mode = 2
+tooltip_text = "Frequency controls how fast the text goes up and down. A frequency value of 0 will result in no visible waves, and negative frequency values won't display any waves either."
+mouse_filter = 1
+text = "Frequency"
+
+[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 5.0
+
+[node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+layout_mode = 2
+tooltip_text = " If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
+text = "Connected"
+
+[node name="TornadoEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+layout_mode = 2
+text = "Tornado Effect"
+icon = ExtResource("22_2gb2p")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+layout_mode = 2
+
+[node name="RadiusLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+layout_mode = 2
+tooltip_text = "Radius is the radius of the circle that controls the offset."
+mouse_filter = 1
+text = "Radius"
+
+[node name="RadiusField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 50.0
+
+[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+layout_mode = 2
+tooltip_text = "Frequency is how fast the text moves in a circle. A frequency value of 0 will pause the animation, while negative frequency will play the animation backwards."
+mouse_filter = 1
+text = "Frequency"
+
+[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 1.0
+
+[node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+layout_mode = 2
+tooltip_text = "If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
+text = "Connected"
+
+[node name="ShakeEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+layout_mode = 2
+text = "Shake Effect"
+icon = ExtResource("23_w4102")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+layout_mode = 2
+
+[node name="RateLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+layout_mode = 2
+tooltip_text = "Rate controls how fast the text shakes."
+mouse_filter = 1
+text = "Rate"
+
+[node name="RateField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 20.0
+
+[node name="LevelLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+layout_mode = 2
+tooltip_text = "Level controls how far the text is offset from the origin."
+mouse_filter = 1
+text = "Level"
+
+[node name="LevelField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+layout_mode = 2
+min_value = -100.0
+value = 5.0
+
+[node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+layout_mode = 2
+tooltip_text = "If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
+text = "Connected"
+
+[node name="FadeEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+layout_mode = 2
+text = "Fade Effect"
+icon = ExtResource("24_5moyk")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+layout_mode = 2
+
+[node name="StartLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+layout_mode = 2
+tooltip_text = "Start controls the starting position of the falloff relative to where the fade command is inserted."
+mouse_filter = 1
+text = "Start"
+
+[node name="StartField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+layout_mode = 2
+min_value = -100.0
+value = 4.0
+
+[node name="LengthLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+layout_mode = 2
+tooltip_text = "Length controls over how many characters should the fade out take place."
+mouse_filter = 1
+text = "Length"
+
+[node name="LengthField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+layout_mode = 2
+min_value = -100.0
+value = 14.0
+
+[node name="RainbowEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+text = "Rainbow Effect"
+icon = ExtResource("19_djbmw")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+
+[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+tooltip_text = "Frequency determines how many letters the rainbow extends over before it repeats itself."
+mouse_filter = 1
+text = "Frequency"
+
+[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 1.0
+
+[node name="SatLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+tooltip_text = "Saturation of the rainbow."
+mouse_filter = 1
+text = "Saturation"
+
+[node name="SatField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 0.8
+
+[node name="ValLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+tooltip_text = "Value of the rainbow."
+mouse_filter = 1
+text = "Value"
+
+[node name="ValField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 0.8
+
+[node name="SpeedLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+tooltip_text = "Speed is the number of full rainbow cycles per second. A positive speed value will play the animation forwards, a value of 0 will pause the animation, and a negative speed value will play the animation backwards."
+mouse_filter = 1
+text = "Speed"
+
+[node name="SpeedField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+value = 1.0
+
+[node name="EffectsMenu" type="PopupMenu" parent="Container/OptionMenus/EffectsBar"]
+unique_name_in_owner = true
+size = Vector2i(119, 224)
+item_count = 6
+item_0/text = "Add Pulse Effect"
+item_0/icon = ExtResource("21_cmowh")
+item_1/text = "Add Wave Effect"
+item_1/icon = ExtResource("20_h0nhk")
+item_1/id = 1
+item_2/text = "Add Tornado Effect"
+item_2/icon = ExtResource("22_2gb2p")
+item_2/id = 2
+item_3/text = "Add Shake Effect"
+item_3/icon = ExtResource("23_w4102")
+item_3/id = 3
+item_4/text = "Add Fade Effect"
+item_4/icon = ExtResource("24_5moyk")
+item_4/id = 4
+item_5/text = "Add Rainbow Effect"
+item_5/icon = ExtResource("19_djbmw")
+item_5/id = 5
 
 [node name="TextBoxes" type="VSplitContainer" parent="Container"]
 unique_name_in_owner = true
@@ -509,13 +803,22 @@ text = "Text preview..."
 [connection signal="pressed" from="Container/Toolbar/TextCenter" to="." method="_on_align_text_center_pressed"]
 [connection signal="pressed" from="Container/Toolbar/TextRight" to="." method="_on_align_text_right_pressed"]
 [connection signal="pressed" from="Container/Toolbar/TextFill" to="." method="_on_align_text_fill_pressed"]
+[connection signal="pressed" from="Container/Toolbar/AddVariable" to="." method="_on_add_variable_pressed"]
+[connection signal="pressed" from="Container/Toolbar/AddImage" to="." method="_on_add_image_pressed"]
+[connection signal="pressed" from="Container/Toolbar/AddURL" to="." method="_on_add_url_pressed"]
+[connection signal="pressed" from="Container/Toolbar/AddEffect" to="." method="_on_add_effect_pressed"]
 [connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/BGColorBar/BgColorPicker" to="." method="_on_bg_color_picker_changed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/PulseEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/WaveEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/TornadoEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/ShakeEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/FadeEffect" to="." method="_on_close_button_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/RainbowEffect" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/PulseEffect" to="." method="_on_pulse_effect_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/WaveEffect" to="." method="_on_wave_effect_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/TornadoEffect" to="." method="_on_tornado_effect_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/ShakeEffect" to="." method="_on_shake_effect_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/FadeEffect" to="." method="_on_fade_effect_pressed"]
+[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/RainbowEffect" to="." method="_on_rainbow_effect_pressed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/FreqField" to="." method="_on_pulse_freq_value_changed"]
+[connection signal="color_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/ColorPicker" to="." method="_on_pulse_color_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/EaseField" to="." method="_on_pulse_ease_value_changed"]
+[connection signal="id_pressed" from="Container/OptionMenus/EffectsBar/EffectsMenu" to="." method="_on_effects_menu_id_pressed"]
+[connection signal="focus_exited" from="Container/TextBoxes/TextBox" to="." method="_on_text_box_focus_exited"]
 [connection signal="text_changed" from="Container/TextBoxes/TextBox" to="." method="_on_code_edit_text_changed"]
 [connection signal="toggled" from="Container/TextBoxes/PreviewBox/Container/Header/ExpandPreviewButton" to="." method="_on_preview_expand_button_toggled"]
