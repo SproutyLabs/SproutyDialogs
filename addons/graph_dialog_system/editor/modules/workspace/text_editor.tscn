@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://deethj56qlsml"]
+[gd_scene load_steps=39 format=3 uid="uid://deethj56qlsml"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialog_system/icons/collapse-right.svg" id="2_bd7d8"]
@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://bq1xmruumyrt0" path="res://addons/graph_dialog_system/icons/text-strikethrough.svg" id="7_egkjt"]
 [ext_resource type="Texture2D" uid="uid://bgh3hr46y0c62" path="res://addons/graph_dialog_system/icons/text-font.svg" id="8_kwxkr"]
 [ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/graph_dialog_system/icons/text.svg" id="8_vunvl"]
+[ext_resource type="Texture2D" uid="uid://6arul6pxi4o7" path="res://addons/graph_dialog_system/icons/text-outline.svg" id="9_8eyqo"]
 [ext_resource type="Texture2D" uid="uid://bcekxum0ffrii" path="res://addons/graph_dialog_system/icons/text_bg_color.svg" id="9_hslfk"]
 [ext_resource type="Texture2D" uid="uid://cco144t0k8m42" path="res://addons/graph_dialog_system/icons/text-color.svg" id="10_3icwq"]
 [ext_resource type="Texture2D" uid="uid://c0ss2hp6fq1e6" path="res://addons/graph_dialog_system/icons/text-align-left.svg" id="11_hjf5j"]
@@ -110,7 +111,7 @@ icon = ExtResource("8_vunvl")
 
 [node name="TextOutline" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
-icon = ExtResource("8_kwxkr")
+icon = ExtResource("9_8eyqo")
 
 [node name="TextColor" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
