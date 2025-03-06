@@ -29,6 +29,11 @@ extends Panel
 ## Background sample color hex code
 @onready var _bg_color_sample_hex: RichTextLabel = %BgColorSample
 
+## Font spacing options bar
+@onready var _font_spacing_options: Control = %FontSpacingOptions
+## Font spacing expand button
+@onready var _font_spacing_expand: Button = %SpacingExpandButton
+
 ## Effects options bars (pulse, wave, shake, etc.)
 @onready var _effects_bars: Array = %EffectsContainer.get_children()
 
@@ -216,46 +221,80 @@ func _update_tag_attributes(old_tag: String, new_tag: String, remove_attr: Strin
 func _on_add_bold_pressed() -> void:
 	_insert_tags_on_selected_text("[b]", "[/b]")
 
-
 ## Add italic text to the selected text
 func _on_add_italic_pressed() -> void:
 	_insert_tags_on_selected_text("[i]", "[/i]")
-
 
 ## Add underline text to the selected text
 func _on_add_underline_pressed() -> void:
 	_insert_tags_on_selected_text("[u]", "[/u]")
 
-
 ## Add strikethrough text to the selected text
 func _on_add_strikethrough_pressed() -> void:
 	_insert_tags_on_selected_text("[s]", "[/s]")
-
 
 ## Align the text to the left
 func _on_align_text_left_pressed() -> void:
 	_insert_tags_on_selected_text("[left]", "[/left]")
 
-
 ## Align the text to the center
 func _on_align_text_center_pressed() -> void:
 	_insert_tags_on_selected_text("[center]", "[/center]")
-
 
 ## Align the text to the right
 func _on_align_text_right_pressed() -> void:
 	_insert_tags_on_selected_text("[right]", "[/right]")
 
-
 ## Align the text to fill the width (justify)
 func _on_align_text_fill_pressed() -> void:
 	_insert_tags_on_selected_text("[fill]", "[/fill]")
 
-
 ## Change the font of the selected text
 func _on_change_text_font_pressed() -> void:
 	_change_option_bar(0)
+	_insert_tags_on_selected_text("[font]", "[/font]")
 
+## Show the font spacing options bar
+func _on_font_spacing_expand_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		_font_spacing_expand.icon = _expand_icon
+		_font_spacing_options.show()
+	else:
+		_font_spacing_expand.icon = _collapse_icon
+		_font_spacing_options.hide()
+
+## Change the font size of the selected text
+func _on_font_size_value_changed(value: float) -> void:
+	_add_effect_attribute("font", "s", snapped(value, 0.1), 0.0)
+
+## Change the font of the selected text
+func _on_font_file_path_changed(path: String) -> void:
+	_add_effect_attribute("font", "n", path, "")
+
+## Update the font glyph spacing value
+func _on_font_gl_space_value_changed(value: float) -> void:
+	_add_effect_attribute("font", "gl", snapped(value, 0.1), 0.0)
+
+## Update the font space spacing value
+func _on_font_sp_space_value_changed(value: float) -> void:
+	_add_effect_attribute("font", "sp", snapped(value, 0.1), 0.0)
+
+## Update the font top spacing value
+func _on_font_top_space_value_changed(value: float) -> void:
+	_add_effect_attribute("font", "top", snapped(value, 0.1), 0.0)
+
+## Update the font bottom spacing value
+func _on_font_bottom_space_value_changed(value: float) -> void:
+	_add_effect_attribute("font", "bt", snapped(value, 0.1), 0.0)
+
+## Update the font embolden value
+func _on_font_embolden_value_changed(value: float) -> void:
+	_add_effect_attribute("font", "emb", snapped(value, 0.1), 0.0)
+
+## Update the font italics value
+func _on_font_slant_value_changed(value: float) -> void:
+	_add_effect_attribute("font", "sln", snapped(value, 0.1), 0.0)
+	
 
 ## Change the text size of the selected text
 func _on_change_text_size_pressed() -> void:

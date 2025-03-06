@@ -165,22 +165,165 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="FontBar" type="HFlowContainer" parent="Container/OptionMenus"]
+[node name="FontBar" type="VBoxContainer" parent="Container/OptionMenus"]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/FontBar"]
+[node name="HFlowContainer" type="HFlowContainer" parent="Container/OptionMenus/FontBar"]
 layout_mode = 2
-text = "Change Text Font"
+
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+layout_mode = 2
+text = "Change Font"
 icon = ExtResource("8_vunvl")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/FontBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/HFlowContainer"]
 layout_mode = 2
 
-[node name="FileField" parent="Container/OptionMenus/FontBar" instance=ExtResource("25_dx6e2")]
+[node name="SizeLabel" type="Label" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+layout_mode = 2
+text = "Size"
+
+[node name="SizeField" type="SpinBox" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+layout_mode = 2
+step = 0.1
+allow_greater = true
+suffix = "px"
+
+[node name="----" type="VSeparator" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+layout_mode = 2
+
+[node name="FontLabel" type="Label" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+layout_mode = 2
+text = "Font"
+
+[node name="FontField" parent="Container/OptionMenus/FontBar/HFlowContainer" instance=ExtResource("25_dx6e2")]
 layout_mode = 2
 size_flags_horizontal = 3
+file_filters = PackedStringArray("*.tres", "*.fontdata", "*.res", "*.ttf", "*.ttc", "*.otf", "*.otc", "*.woff", "*.woff2", "*.pfb", "*.pfm", "*.font", "*.fnt")
+
+[node name="---" type="HSeparator" parent="Container/OptionMenus/FontBar"]
+layout_mode = 2
+
+[node name="SpacingHeader" type="HBoxContainer" parent="Container/OptionMenus/FontBar"]
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/SpacingHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Spacing Options"
+icon = ExtResource("8_vunvl")
+flat = true
+alignment = 0
+
+[node name="SpacingExpandButton" type="Button" parent="Container/OptionMenus/FontBar/SpacingHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("32_hkfxn")
+flat = true
+
+[node name="FontSpacingOptions" type="VBoxContainer" parent="Container/OptionMenus/FontBar"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="Container/OptionMenus/FontBar/FontSpacingOptions"]
+layout_mode = 2
+
+[node name="Container" type="HFlowContainer" parent="Container/OptionMenus/FontBar/FontSpacingOptions"]
+layout_mode = 2
+
+[node name="GlSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+text = "Glyphs Space"
+
+[node name="GlSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+step = 0.1
+allow_greater = true
+suffix = "px"
+
+[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+
+[node name="SpSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+text = "Spaces"
+
+[node name="SpSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+step = 0.1
+allow_greater = true
+suffix = "px"
+
+[node name="----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+
+[node name="TopSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+text = "Top"
+
+[node name="TopSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+step = 0.1
+allow_greater = true
+suffix = "px"
+
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+
+[node name="BottomSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+text = "Bottom"
+
+[node name="BottomSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+layout_mode = 2
+step = 0.1
+allow_greater = true
+suffix = "px"
+
+[node name="----" type="HSeparator" parent="Container/OptionMenus/FontBar"]
+layout_mode = 2
+
+[node name="FontStyleOptions" type="HFlowContainer" parent="Container/OptionMenus/FontBar"]
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+layout_mode = 2
+toggle_mode = true
+text = "Style Options"
+icon = ExtResource("8_vunvl")
+flat = true
+alignment = 0
+
+[node name="--" type="VSeparator" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+layout_mode = 2
+
+[node name="EmboldenLabel" type="Label" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+layout_mode = 2
+text = "Embolden"
+
+[node name="EmboldenField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+layout_mode = 2
+step = 0.1
+suffix = "px"
+
+[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+layout_mode = 2
+
+[node name="SlantLabel" type="Label" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+layout_mode = 2
+text = "Slant"
+
+[node name="SlantField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+layout_mode = 2
+min_value = -100.0
+step = 0.1
+allow_greater = true
+suffix = "px"
 
 [node name="FontSizeBar" type="HFlowContainer" parent="Container/OptionMenus"]
 visible = false
@@ -844,6 +987,15 @@ text = "Text preview..."
 [connection signal="pressed" from="Container/Toolbar/AddImage" to="." method="_on_add_image_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddURL" to="." method="_on_add_url_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddEffect" to="." method="_on_add_effect_pressed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/HFlowContainer/SizeField" to="." method="_on_font_size_value_changed"]
+[connection signal="file_path_changed" from="Container/OptionMenus/FontBar/HFlowContainer/FontField" to="." method="_on_font_file_path_changed"]
+[connection signal="toggled" from="Container/OptionMenus/FontBar/SpacingHeader/SpacingExpandButton" to="." method="_on_font_spacing_expand_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/GlSpaceField" to="." method="_on_font_gl_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/SpSpaceField" to="." method="_on_font_sp_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/TopSpaceField" to="." method="_on_font_top_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/BottomSpaceField" to="." method="_on_font_bottom_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontStyleOptions/EmboldenField" to="." method="_on_font_embolden_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontStyleOptions/SlantField" to="." method="_on_font_slant_value_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/BGColorBar/BgColorPicker" to="." method="_on_bg_color_picker_changed"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/PulseEffect" to="." method="_on_pulse_effect_pressed"]
