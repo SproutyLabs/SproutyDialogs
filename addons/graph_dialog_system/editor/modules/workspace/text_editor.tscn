@@ -1,6 +1,6 @@
-[gd_scene load_steps=35 format=3 uid="uid://deethj56qlsml"]
+[gd_scene load_steps=38 format=3 uid="uid://deethj56qlsml"]
 
-[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor.gd" id="1_v143h"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialog_system/icons/collapse-right.svg" id="2_bd7d8"]
 [ext_resource type="CodeHighlighter" uid="uid://dfy2njb4ljtel" path="res://addons/graph_dialog_system/nodes/components/code_highlighter.tres" id="3_3nqnv"]
 [ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/Play.svg" id="3_b12sr"]
@@ -22,6 +22,7 @@
 [ext_resource type="Texture2D" uid="uid://3ygkqeueqkrd" path="res://addons/graph_dialog_system/icons/magic-wand.svg" id="18_do7oi"]
 [ext_resource type="Texture2D" uid="uid://5g3wml1xcuwa" path="res://addons/graph_dialog_system/icons/rainbow.svg" id="19_djbmw"]
 [ext_resource type="Texture2D" uid="uid://cyjfhon6vx11l" path="res://addons/graph_dialog_system/icons/waves.svg" id="20_h0nhk"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor_font_options.gd" id="20_krlt7"]
 [ext_resource type="Texture2D" uid="uid://drhigy8q8yvor" path="res://addons/graph_dialog_system/icons/pulse.svg" id="21_cmowh"]
 [ext_resource type="Texture2D" uid="uid://bu4fhmasoepps" path="res://addons/graph_dialog_system/icons/tornado.svg" id="22_2gb2p"]
 [ext_resource type="Texture2D" uid="uid://ckqdg3q4kjmpk" path="res://addons/graph_dialog_system/icons/shake.svg" id="23_w4102"]
@@ -29,6 +30,7 @@
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="25_dx6e2"]
 [ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialog_system/icons/String.svg" id="25_r4ndn"]
 [ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialog_system/icons/int.svg" id="26_b0hwj"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor_effects.gd" id="26_g04n3"]
 [ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/float.svg" id="27_taqqf"]
 [ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="28_5tt54"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse-down.svg" id="32_hkfxn"]
@@ -36,6 +38,8 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_am7i6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_px64i"]
 
 [node name="TextEditor" type="Panel"]
 clip_contents = true
@@ -104,7 +108,7 @@ layout_mode = 2
 layout_mode = 2
 icon = ExtResource("8_vunvl")
 
-[node name="TextSize" type="Button" parent="Container/Toolbar"]
+[node name="TextOutline" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
 icon = ExtResource("8_kwxkr")
 
@@ -165,9 +169,11 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="FontBar" type="VBoxContainer" parent="Container/OptionMenus"]
+[node name="FontBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
 visible = false
 layout_mode = 2
+script = ExtResource("20_krlt7")
+text_editor = NodePath("../../..")
 
 [node name="HFlowContainer" type="HFlowContainer" parent="Container/OptionMenus/FontBar"]
 layout_mode = 2
@@ -325,25 +331,52 @@ step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="FontSizeBar" type="HFlowContainer" parent="Container/OptionMenus"]
+[node name="OutlineBar" type="HFlowContainer" parent="Container/OptionMenus"]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/FontSizeBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/OutlineBar"]
 layout_mode = 2
-text = "Change Font Size"
+text = "Add Text Outline"
 icon = ExtResource("8_kwxkr")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/FontSizeBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/OutlineBar"]
 layout_mode = 2
 
-[node name="SizeLabel" type="Label" parent="Container/OptionMenus/FontSizeBar"]
+[node name="SizeLabel" type="Label" parent="Container/OptionMenus/OutlineBar"]
 layout_mode = 2
 text = "Size"
 
-[node name="SpinBox" type="SpinBox" parent="Container/OptionMenus/FontSizeBar"]
+[node name="SizeField" type="SpinBox" parent="Container/OptionMenus/OutlineBar"]
 layout_mode = 2
+value = 10.0
+allow_greater = true
+suffix = "px"
+
+[node name="----" type="VSeparator" parent="Container/OptionMenus/OutlineBar"]
+layout_mode = 2
+
+[node name="ColorLabel" type="Label" parent="Container/OptionMenus/OutlineBar"]
+layout_mode = 2
+text = "Color"
+
+[node name="ColorButton" type="ColorPickerButton" parent="Container/OptionMenus/OutlineBar"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+color = Color(1, 0, 0, 1)
+
+[node name="OutlineColorSample" type="RichTextLabel" parent="Container/OptionMenus/OutlineBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_am7i6")
+bbcode_enabled = true
+text = "Hex [outline_size=5][outline_color=ff0000]#ff0000"
+fit_content = true
+scroll_active = false
 
 [node name="TextColorBar" type="HFlowContainer" parent="Container/OptionMenus"]
 visible = false
@@ -355,7 +388,7 @@ text = "Change Text Color"
 icon = ExtResource("10_3icwq")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/TextColorBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/TextColorBar"]
 layout_mode = 2
 
 [node name="TextColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/TextColorBar"]
@@ -388,7 +421,7 @@ text = "Change Background Color"
 icon = ExtResource("9_hslfk")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/BGColorBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/BGColorBar"]
 layout_mode = 2
 
 [node name="BgColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/BGColorBar"]
@@ -421,7 +454,7 @@ text = "Display Variable"
 icon = ExtResource("13_m5lcx")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/VariableBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
 
 [node name="Type" type="OptionButton" parent="Container/OptionMenus/VariableBar"]
@@ -515,7 +548,7 @@ text = "Add link to URL"
 icon = ExtResource("12_cel0j")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/LinkBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/LinkBar"]
 layout_mode = 2
 
 [node name="LineEdit" type="LineEdit" parent="Container/OptionMenus/LinkBar"]
@@ -523,8 +556,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Write the url..."
 
-[node name="EffectsBar" type="VBoxContainer" parent="Container/OptionMenus"]
+[node name="EffectsBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
+visible = false
 layout_mode = 2
+script = ExtResource("26_g04n3")
+text_editor = NodePath("../../..")
 
 [node name="EffectsList" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar"]
 visible = false
@@ -581,7 +617,7 @@ size_flags_vertical = 4
 text = "Rainbow"
 icon = ExtResource("19_djbmw")
 
-[node name="EffectsSeparator" type="HSeparator" parent="Container/OptionMenus/EffectsBar"]
+[node name="---" type="HSeparator" parent="Container/OptionMenus/EffectsBar"]
 visible = false
 layout_mode = 2
 
@@ -599,7 +635,7 @@ text = "Pulse Effect"
 icon = ExtResource("21_cmowh")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="--" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
 layout_mode = 2
 
 [node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
@@ -613,21 +649,7 @@ layout_mode = 2
 step = 0.1
 value = 1.0
 
-[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
-layout_mode = 2
-
-[node name="ColorLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
-layout_mode = 2
-tooltip_text = "Color is the target color multiplier for blinking. The default mostly fades out text, but not entirely."
-mouse_filter = 1
-text = "Color"
-
-[node name="ColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-color = Color(1, 1, 1, 0.25098)
-
-[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
 layout_mode = 2
 
 [node name="EaseLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
@@ -642,6 +664,32 @@ min_value = -100.0
 step = 0.1
 value = -2.0
 
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
+
+[node name="ColorLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
+tooltip_text = "Color is the target color multiplier for blinking. The default mostly fades out text, but not entirely."
+mouse_filter = 1
+text = "Color"
+
+[node name="ColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+color = Color(1, 1, 1, 0.25098)
+
+[node name="PulseColorSample" type="RichTextLabel" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(115, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_am7i6")
+bbcode_enabled = true
+text = "Hex [color=ffffff40]#ffffff40"
+fit_content = true
+scroll_active = false
+
 [node name="WaveEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
 visible = false
 layout_mode = 2
@@ -652,7 +700,7 @@ text = "Wave Effect"
 icon = ExtResource("20_h0nhk")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
 layout_mode = 2
 
 [node name="AmpLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
@@ -667,7 +715,7 @@ max_value = 5000.0
 step = 0.1
 value = 20.0
 
-[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
 layout_mode = 2
 
 [node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
@@ -681,7 +729,7 @@ layout_mode = 2
 step = 0.1
 value = 5.0
 
-[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
 layout_mode = 2
 
 [node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
@@ -700,7 +748,7 @@ text = "Tornado Effect"
 icon = ExtResource("22_2gb2p")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
 layout_mode = 2
 
 [node name="RadiusLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
@@ -715,7 +763,7 @@ max_value = 500.0
 step = 0.1
 value = 10.0
 
-[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
 layout_mode = 2
 
 [node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
@@ -731,7 +779,7 @@ max_value = 1000.0
 step = 0.1
 value = 1.0
 
-[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
 layout_mode = 2
 
 [node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
@@ -750,7 +798,7 @@ text = "Shake Effect"
 icon = ExtResource("23_w4102")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
 layout_mode = 2
 
 [node name="RateLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
@@ -765,7 +813,7 @@ min_value = -1000.0
 max_value = 1000.0
 value = 20.0
 
-[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
 layout_mode = 2
 
 [node name="LevelLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
@@ -780,7 +828,7 @@ min_value = -1000.0
 max_value = 1000.0
 value = 5.0
 
-[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
 layout_mode = 2
 
 [node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
@@ -799,7 +847,7 @@ text = "Fade Effect"
 icon = ExtResource("24_5moyk")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
 layout_mode = 2
 
 [node name="StartLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
@@ -812,7 +860,7 @@ text = "Start"
 layout_mode = 2
 max_value = 1000.0
 
-[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
 layout_mode = 2
 
 [node name="LengthLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
@@ -836,7 +884,7 @@ text = "Rainbow Effect"
 icon = ExtResource("19_djbmw")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
 
 [node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
@@ -851,7 +899,7 @@ min_value = -100.0
 step = 0.1
 value = 1.0
 
-[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
 
 [node name="SatLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
@@ -866,7 +914,7 @@ max_value = 1.0
 step = 0.1
 value = 0.8
 
-[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
 
 [node name="ValLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
@@ -881,7 +929,7 @@ max_value = 5.0
 step = 0.1
 value = 0.8
 
-[node name="VSeparator4" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="------" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
 
 [node name="SpeedLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
@@ -898,7 +946,7 @@ value = 1.0
 
 [node name="EffectsMenu" type="PopupMenu" parent="Container/OptionMenus/EffectsBar"]
 unique_name_in_owner = true
-size = Vector2i(119, 224)
+size = Vector2i(202, 224)
 item_count = 6
 item_0/text = "Add Pulse Effect"
 item_0/icon = ExtResource("21_cmowh")
@@ -966,6 +1014,7 @@ flat = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/normal = SubResource("StyleBoxEmpty_px64i")
 bbcode_enabled = true
 text = "Text preview..."
 
@@ -975,8 +1024,8 @@ text = "Text preview..."
 [connection signal="pressed" from="Container/Toolbar/AddItalic" to="." method="_on_add_italic_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddUnderline" to="." method="_on_add_underline_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddStrikethrough" to="." method="_on_add_strikethrough_pressed"]
-[connection signal="pressed" from="Container/Toolbar/TextFont" to="." method="_on_change_text_font_pressed"]
-[connection signal="pressed" from="Container/Toolbar/TextSize" to="." method="_on_change_text_size_pressed"]
+[connection signal="pressed" from="Container/Toolbar/TextFont" to="Container/OptionMenus/FontBar" method="_on_change_text_font_pressed"]
+[connection signal="pressed" from="Container/Toolbar/TextOutline" to="." method="_on_add_text_outline_pressed"]
 [connection signal="pressed" from="Container/Toolbar/TextColor" to="." method="_on_change_text_color_pressed"]
 [connection signal="pressed" from="Container/Toolbar/BGColor" to="." method="_on_change_bg_color_pressed"]
 [connection signal="pressed" from="Container/Toolbar/TextLeft" to="." method="_on_align_text_left_pressed"]
@@ -986,16 +1035,18 @@ text = "Text preview..."
 [connection signal="pressed" from="Container/Toolbar/AddVariable" to="." method="_on_add_variable_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddImage" to="." method="_on_add_image_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddURL" to="." method="_on_add_url_pressed"]
-[connection signal="pressed" from="Container/Toolbar/AddEffect" to="." method="_on_add_effect_pressed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/HFlowContainer/SizeField" to="." method="_on_font_size_value_changed"]
-[connection signal="file_path_changed" from="Container/OptionMenus/FontBar/HFlowContainer/FontField" to="." method="_on_font_file_path_changed"]
-[connection signal="toggled" from="Container/OptionMenus/FontBar/SpacingHeader/SpacingExpandButton" to="." method="_on_font_spacing_expand_toggled"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/GlSpaceField" to="." method="_on_font_gl_space_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/SpSpaceField" to="." method="_on_font_sp_space_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/TopSpaceField" to="." method="_on_font_top_space_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/BottomSpaceField" to="." method="_on_font_bottom_space_value_changed"]
+[connection signal="pressed" from="Container/Toolbar/AddEffect" to="Container/OptionMenus/EffectsBar" method="_on_add_effect_pressed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/HFlowContainer/SizeField" to="Container/OptionMenus/FontBar" method="_on_font_size_value_changed"]
+[connection signal="file_path_changed" from="Container/OptionMenus/FontBar/HFlowContainer/FontField" to="Container/OptionMenus/FontBar" method="_on_font_file_path_changed"]
+[connection signal="toggled" from="Container/OptionMenus/FontBar/SpacingHeader/SpacingExpandButton" to="Container/OptionMenus/FontBar" method="_on_font_spacing_expand_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/GlSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_gl_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/SpSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_sp_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/TopSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_top_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/BottomSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_bottom_space_value_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/FontBar/FontStyleOptions/EmboldenField" to="." method="_on_font_embolden_value_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/FontBar/FontStyleOptions/SlantField" to="." method="_on_font_slant_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/OutlineBar/SizeField" to="." method="_on_outline_size_value_changed"]
+[connection signal="color_changed" from="Container/OptionMenus/OutlineBar/ColorButton" to="." method="_on_outline_color_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/BGColorBar/BgColorPicker" to="." method="_on_bg_color_picker_changed"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/PulseEffect" to="." method="_on_pulse_effect_pressed"]
@@ -1004,25 +1055,25 @@ text = "Text preview..."
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/ShakeEffect" to="." method="_on_shake_effect_pressed"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/FadeEffect" to="." method="_on_fade_effect_pressed"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/RainbowEffect" to="." method="_on_rainbow_effect_pressed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/FreqField" to="." method="_on_pulse_freq_value_changed"]
-[connection signal="color_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/ColorPicker" to="." method="_on_pulse_color_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/EaseField" to="." method="_on_pulse_ease_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar/AmpField" to="." method="_on_wave_amp_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar/FreqField" to="." method="_on_wave_freq_value_changed"]
-[connection signal="toggled" from="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar/Connected" to="." method="_on_wave_connected_toggled"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar/RadiusField" to="." method="_on_tornado_radius_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar/FreqField" to="." method="_on_tornado_freq_value_changed"]
-[connection signal="toggled" from="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar/Connected" to="." method="_on_tornado_connected_toggled"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar/RateField" to="." method="_on_shake_rate_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar/LevelField" to="." method="_on_shake_level_value_changed"]
-[connection signal="toggled" from="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar/Connected" to="." method="_on_shake_connected_toggled"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar/StartField" to="." method="_on_fade_start_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar/LengthField" to="." method="_on_fade_length_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/FreqField" to="." method="_on_rainbow_freq_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/SatField" to="." method="_on_rainbow_sat_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/ValField" to="." method="_on_rainbow_val_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/SpeedField" to="." method="_on_rainbow_speed_value_changed"]
-[connection signal="id_pressed" from="Container/OptionMenus/EffectsBar/EffectsMenu" to="." method="_on_effects_menu_id_pressed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/FreqField" to="Container/OptionMenus/EffectsBar" method="_on_pulse_freq_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/EaseField" to="Container/OptionMenus/EffectsBar" method="_on_pulse_ease_value_changed"]
+[connection signal="color_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/ColorPicker" to="Container/OptionMenus/EffectsBar" method="_on_pulse_color_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar/AmpField" to="Container/OptionMenus/EffectsBar" method="_on_wave_amp_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar/FreqField" to="Container/OptionMenus/EffectsBar" method="_on_wave_freq_value_changed"]
+[connection signal="toggled" from="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar/Connected" to="Container/OptionMenus/EffectsBar" method="_on_wave_connected_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar/RadiusField" to="Container/OptionMenus/EffectsBar" method="_on_tornado_radius_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar/FreqField" to="Container/OptionMenus/EffectsBar" method="_on_tornado_freq_value_changed"]
+[connection signal="toggled" from="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar/Connected" to="Container/OptionMenus/EffectsBar" method="_on_tornado_connected_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar/RateField" to="Container/OptionMenus/EffectsBar" method="_on_shake_rate_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar/LevelField" to="Container/OptionMenus/EffectsBar" method="_on_shake_level_value_changed"]
+[connection signal="toggled" from="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar/Connected" to="Container/OptionMenus/EffectsBar" method="_on_shake_connected_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar/StartField" to="Container/OptionMenus/EffectsBar" method="_on_fade_start_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar/LengthField" to="Container/OptionMenus/EffectsBar" method="_on_fade_length_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/FreqField" to="Container/OptionMenus/EffectsBar" method="_on_rainbow_freq_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/SatField" to="Container/OptionMenus/EffectsBar" method="_on_rainbow_sat_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/ValField" to="Container/OptionMenus/EffectsBar" method="_on_rainbow_val_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/SpeedField" to="Container/OptionMenus/EffectsBar" method="_on_rainbow_speed_value_changed"]
+[connection signal="id_pressed" from="Container/OptionMenus/EffectsBar/EffectsMenu" to="Container/OptionMenus/EffectsBar" method="_on_effects_menu_id_pressed"]
 [connection signal="focus_exited" from="Container/TextBoxes/TextBox" to="." method="_on_text_box_focus_exited"]
 [connection signal="text_changed" from="Container/TextBoxes/TextBox" to="." method="_on_code_edit_text_changed"]
 [connection signal="toggled" from="Container/TextBoxes/PreviewBox/Container/Header/ExpandPreviewButton" to="." method="_on_preview_expand_button_toggled"]
