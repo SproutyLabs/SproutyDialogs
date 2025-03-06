@@ -337,7 +337,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/OutlineBar"]
 layout_mode = 2
-text = "Add Text Outline"
+text = "Text Outline"
 icon = ExtResource("8_kwxkr")
 flat = true
 

@@ -4,7 +4,11 @@ extends Panel
 ## =============================================================================
 ## Text editor
 ##
-## This script handles a text editor window.
+## The text editor is used to edit the dialogues from the dialog system.
+## It allows the user to add text effects, font styles, colors and others to
+## the dialogue in the text boxes using BBCode tags.
+## 
+## The text editor is shown when the user clicks on the text box expand button.
 ## =============================================================================
 
 ## Text boxes container from the text editor
@@ -148,19 +152,27 @@ func update_code_tags(
 	if not _text_input.has_selection():
 		if add_on_empty: _insert_tags_at_cursor_pos(open_tag, close_tag)
 		return
-	# Open tag without attributes
+	# Get open tag without attributes
 	var open_tag_begin = open_tag.split("=")[0].split(" ")[0].replace("]", "")
+	var selected_text = _text_input.get_selected_text()
 
 	# If the selected text does not have the open tag, insert the tags
-	if not _text_input.get_selected_text().begins_with(open_tag_begin):
+	if not selected_text.contains(open_tag_begin):
 		if add_on_empty: insert_tags_on_selected_text(open_tag, close_tag)
 		return
+	
+	var selection_pos = _get_selected_text_position()
+	# If the open tag is not at the beginning of the selected text
+	if not selected_text.begins_with(open_tag_begin):
+		# Get position of opening tag inside the selected text
+		var open_tag_pos = selected_text.find(open_tag_begin)
+		selected_text = selected_text.substr(open_tag_pos)
+		selection_pos[1] += open_tag_pos # Update from column
 
-	# Get the old open tag to replace it with the new one
-	var old_open_tag = _text_input.get_selected_text().split("]")[0] + "]"
+	# Update the attributes and then replace the tags
+	var old_open_tag = selected_text.split("]")[0] + "]"
 	open_tag = _update_tag_attributes(old_open_tag, open_tag, remove_attr)
 
-	var selection_pos = _get_selected_text_position()
 	_text_input.remove_text(selection_pos[0], selection_pos[1],
 			selection_pos[0], selection_pos[1] + old_open_tag.length())
 
@@ -289,21 +301,26 @@ func _on_outline_size_value_changed(value: float) -> void:
 func _on_outline_color_changed(color: Color) -> void:
 	var open_tag = "[outline_color=" + color.to_html() + "]"
 	_outline_color_sample_hex.text = "Hex: #[outline_size=5]" + open_tag + color.to_html()
-	
-	# If the selected text is only the hex number, select the whole color tag
-	if _text_input.get_selected_text().is_valid_html_color():
-		_text_input.select(
-				_text_input.get_selection_from_line(),
-				_text_input.get_selection_from_column() - 15, # "[outline_color=" lenght
-				_text_input.get_selection_to_line(),
-				_text_input.get_selection_to_column() + 1 # "]" lenght
-			)
+	# Select the color tag when select the hex number
+	_select_color_tag_by_hex(open_tag)
 	update_code_tags(open_tag, "[/color]")
 
 #endregion
 #endregion
 
 #region === Text color options =================================================
+
+## Select the color tag when select the hex number
+func _select_color_tag_by_hex(color_tag: String) -> void:
+	var tag_length = color_tag.split("=")[0].length() + 1
+
+	if _text_input.get_selected_text().is_valid_html_color():
+		_text_input.select(
+				_text_input.get_selection_from_line(),
+				_text_input.get_selection_from_column() - tag_length,
+				_text_input.get_selection_to_line(),
+				_text_input.get_selection_to_column() + 1 # "]" lenght
+			)
 
 ## Change the text color of the selected text
 func _on_change_text_color_pressed() -> void:
@@ -318,15 +335,8 @@ func _on_change_text_color_pressed() -> void:
 func _on_text_color_picker_changed(color: Color) -> void:
 	var open_tag = "[color=" + color.to_html() + "]"
 	_text_color_sample_hex.text = "Hex: #" + open_tag + color.to_html()
-	
-	# If the selected text is only the hex number, select the whole color tag
-	if _text_input.get_selected_text().is_valid_html_color():
-		_text_input.select(
-				_text_input.get_selection_from_line(),
-				_text_input.get_selection_from_column() - 7, # "[color=" lenght
-				_text_input.get_selection_to_line(),
-				_text_input.get_selection_to_column() + 1 # "]" lenght
-			)
+	# Select the color tag when select the hex number
+	_select_color_tag_by_hex(open_tag)
 	update_code_tags(open_tag, "[/color]")
 
 
@@ -343,15 +353,8 @@ func _on_change_bg_color_pressed() -> void:
 func _on_bg_color_picker_changed(color: Color) -> void:
 	var open_tag = "[bgcolor=" + color.to_html() + "]"
 	_bg_color_sample_hex.text = "Hex: #" + open_tag + color.to_html()
-
-	# If the selected text is only the hex number, select the whole color tag
-	if _text_input.get_selected_text().is_valid_html_color():
-		_text_input.select(
-				_text_input.get_selection_from_line(),
-				_text_input.get_selection_from_column() - 9, # "[bgcolor=" lenght
-				_text_input.get_selection_to_line(),
-				_text_input.get_selection_to_column() + 1 # "]" lenght
-			)
+	# Select the color tag when select the hex number
+	_select_color_tag_by_hex(open_tag)
 	update_code_tags(open_tag, "[/bgcolor]")
 
 #endregion
