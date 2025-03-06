@@ -381,7 +381,6 @@ size_flags_horizontal = 3
 placeholder_text = "Write the url..."
 
 [node name="EffectsBar" type="VBoxContainer" parent="Container/OptionMenus"]
-visible = false
 layout_mode = 2
 
 [node name="EffectsList" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar"]
@@ -468,9 +467,11 @@ text = "Frequency"
 
 [node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
 layout_mode = 2
-min_value = -100.0
 step = 0.1
 value = 1.0
+
+[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
 
 [node name="ColorLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
 layout_mode = 2
@@ -482,6 +483,9 @@ text = "Color"
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 color = Color(1, 1, 1, 0.25098)
+
+[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+layout_mode = 2
 
 [node name="EaseLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
 layout_mode = 2
@@ -516,9 +520,12 @@ text = "Amplitude"
 
 [node name="AmpField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
 layout_mode = 2
-min_value = -100.0
+max_value = 5000.0
 step = 0.1
-value = 50.0
+value = 20.0
+
+[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+layout_mode = 2
 
 [node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
 layout_mode = 2
@@ -528,13 +535,16 @@ text = "Frequency"
 
 [node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
 layout_mode = 2
-min_value = -100.0
 step = 0.1
 value = 5.0
+
+[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+layout_mode = 2
 
 [node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
 layout_mode = 2
 tooltip_text = " If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
+button_pressed = true
 text = "Connected"
 
 [node name="TornadoEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
@@ -558,9 +568,12 @@ text = "Radius"
 
 [node name="RadiusField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
 layout_mode = 2
-min_value = -100.0
+max_value = 500.0
 step = 0.1
-value = 50.0
+value = 10.0
+
+[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+layout_mode = 2
 
 [node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
 layout_mode = 2
@@ -570,13 +583,18 @@ text = "Frequency"
 
 [node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
 layout_mode = 2
-min_value = -100.0
+min_value = -1000.0
+max_value = 1000.0
 step = 0.1
 value = 1.0
+
+[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+layout_mode = 2
 
 [node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
 layout_mode = 2
 tooltip_text = "If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
+button_pressed = true
 text = "Connected"
 
 [node name="ShakeEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
@@ -600,9 +618,12 @@ text = "Rate"
 
 [node name="RateField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
 layout_mode = 2
-min_value = -100.0
-step = 0.1
+min_value = -1000.0
+max_value = 1000.0
 value = 20.0
+
+[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+layout_mode = 2
 
 [node name="LevelLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
 layout_mode = 2
@@ -612,12 +633,17 @@ text = "Level"
 
 [node name="LevelField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
 layout_mode = 2
-min_value = -100.0
+min_value = -1000.0
+max_value = 1000.0
 value = 5.0
+
+[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+layout_mode = 2
 
 [node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
 layout_mode = 2
 tooltip_text = "If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
+button_pressed = true
 text = "Connected"
 
 [node name="FadeEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
@@ -641,8 +667,10 @@ text = "Start"
 
 [node name="StartField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
 layout_mode = 2
-min_value = -100.0
-value = 4.0
+max_value = 1000.0
+
+[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+layout_mode = 2
 
 [node name="LengthLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
 layout_mode = 2
@@ -652,8 +680,8 @@ text = "Length"
 
 [node name="LengthField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
 layout_mode = 2
-min_value = -100.0
-value = 14.0
+max_value = 1000.0
+value = 10.0
 
 [node name="RainbowEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
 visible = false
@@ -680,6 +708,9 @@ min_value = -100.0
 step = 0.1
 value = 1.0
 
+[node name="VSeparator2" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
+
 [node name="SatLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
 tooltip_text = "Saturation of the rainbow."
@@ -688,9 +719,12 @@ text = "Saturation"
 
 [node name="SatField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
-min_value = -100.0
+max_value = 1.0
 step = 0.1
 value = 0.8
+
+[node name="VSeparator3" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
 
 [node name="ValLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
@@ -700,9 +734,12 @@ text = "Value"
 
 [node name="ValField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
-min_value = -100.0
+max_value = 5.0
 step = 0.1
 value = 0.8
+
+[node name="VSeparator4" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+layout_mode = 2
 
 [node name="SpeedLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
@@ -818,6 +855,21 @@ text = "Text preview..."
 [connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/FreqField" to="." method="_on_pulse_freq_value_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/ColorPicker" to="." method="_on_pulse_color_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/EaseField" to="." method="_on_pulse_ease_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar/AmpField" to="." method="_on_wave_amp_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar/FreqField" to="." method="_on_wave_freq_value_changed"]
+[connection signal="toggled" from="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar/Connected" to="." method="_on_wave_connected_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar/RadiusField" to="." method="_on_tornado_radius_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar/FreqField" to="." method="_on_tornado_freq_value_changed"]
+[connection signal="toggled" from="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar/Connected" to="." method="_on_tornado_connected_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar/RateField" to="." method="_on_shake_rate_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar/LevelField" to="." method="_on_shake_level_value_changed"]
+[connection signal="toggled" from="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar/Connected" to="." method="_on_shake_connected_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar/StartField" to="." method="_on_fade_start_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar/LengthField" to="." method="_on_fade_length_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/FreqField" to="." method="_on_rainbow_freq_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/SatField" to="." method="_on_rainbow_sat_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/ValField" to="." method="_on_rainbow_val_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/SpeedField" to="." method="_on_rainbow_speed_value_changed"]
 [connection signal="id_pressed" from="Container/OptionMenus/EffectsBar/EffectsMenu" to="." method="_on_effects_menu_id_pressed"]
 [connection signal="focus_exited" from="Container/TextBoxes/TextBox" to="." method="_on_text_box_focus_exited"]
 [connection signal="text_changed" from="Container/TextBoxes/TextBox" to="." method="_on_code_edit_text_changed"]

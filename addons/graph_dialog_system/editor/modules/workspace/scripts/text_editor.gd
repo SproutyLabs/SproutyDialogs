@@ -377,70 +377,140 @@ func _on_effects_menu_id_pressed(id: int) -> void:
 			_on_rainbow_effect_pressed()
 
 
+## Add an effect attribute to the selected text
+func _add_effect_attribute(
+		tag_name: String,
+		attr: String,
+		value: Variant,
+		default_value: Variant) -> void:
+	var open_tag = "[" + tag_name
+	var close_tag = "[/" + tag_name + "]"
+
+	if value != default_value:
+		open_tag += " " + attr + "=" + str(value) + "]"
+		_update_code_tags(open_tag, close_tag)
+	else:
+		_update_code_tags(open_tag + "]", close_tag, attr)
+
+
+#region === Pulse effect handling ===============================================
+
 ## Add pulse effect to the selected text
 func _on_pulse_effect_pressed() -> void:
 	_change_effect_bar(0)
 	_insert_tags_on_selected_text("[pulse]", "[/pulse]", true)
+
+## Update the pulse frequency value
+func _on_pulse_freq_value_changed(value: float) -> void:
+	_add_effect_attribute("pulse", "freq", snapped(value, 0.1), 1.0)
+
+## Update the pulse color value
+func _on_pulse_color_changed(color: Color) -> void:
+	_add_effect_attribute("pulse", "color", color.to_html(), "#ffffff40")
+
+## Update the pulse ease value
+func _on_pulse_ease_value_changed(value: float) -> void:
+	_add_effect_attribute("pulse", "ease", snapped(value, 0.1), -2.0)
+#endregion
+
+#region === Wave effect handling ===============================================
 
 ## Add wave effect to the selected text
 func _on_wave_effect_pressed() -> void:
 	_change_effect_bar(1)
 	_insert_tags_on_selected_text("[wave]", "[/wave]", true)
 
+## Update the wave amplitude value
+func _on_wave_amp_value_changed(value: float) -> void:
+	_add_effect_attribute("wave", "amp", snapped(value, 0.1), 20.0)
+
+## Update the wave frequency value
+func _on_wave_freq_value_changed(value: float) -> void:
+	_add_effect_attribute("wave", "freq", snapped(value, 0.1), 5.0)
+
+## Update the wave speed value
+func _on_wave_connected_toggled(toggled_on: bool) -> void:
+	_add_effect_attribute("wave", "connected", int(toggled_on), 1)
+#endregion
+
+#region === Tornado effect handling ============================================
+
 ## Add tornado effect to the selected text
 func _on_tornado_effect_pressed() -> void:
 	_change_effect_bar(2)
 	_insert_tags_on_selected_text("[tornado]", "[/tornado]", true)
+
+## Update the tornado radius value
+func _on_tornado_radius_value_changed(value: float) -> void:
+	_add_effect_attribute("tornado", "radius", snapped(value, 0.1), 10.0)
+
+## Update the tornado frequency value
+func _on_tornado_freq_value_changed(value: float) -> void:
+	_add_effect_attribute("tornado", "freq", snapped(value, 0.1), 1.0)
+
+## Update the tornado connected value
+func _on_tornado_connected_toggled(toggled_on: bool) -> void:
+	_add_effect_attribute("tornado", "connected", int(toggled_on), 1)
+#endregion
+
+#region === Shake effect handling ==============================================
 
 ## Add shake effect to the selected text
 func _on_shake_effect_pressed() -> void:
 	_change_effect_bar(3)
 	_insert_tags_on_selected_text("[shake]", "[/shake]", true)
 
+## Update the shake rate value
+func _on_shake_rate_value_changed(value: float) -> void:
+	_add_effect_attribute("shake", "rate", snapped(value, 0.1), 20.0)
+
+## Update the shake level value
+func _on_shake_level_value_changed(value: float) -> void:
+	_add_effect_attribute("shake", "level", snapped(value, 0.1), 5.0)
+
+## Update the shake connected value
+func _on_shake_connected_toggled(toggled_on: bool) -> void:
+	_add_effect_attribute("shake", "connected", int(toggled_on), 1)
+#endregion
+
+#region === Fade effect handling ===============================================
+
 ## Add fade effect to the selected text
 func _on_fade_effect_pressed() -> void:
 	_change_effect_bar(4)
 	_insert_tags_on_selected_text("[fade]", "[/fade]", true)
+
+## Update the fade start value
+func _on_fade_start_value_changed(value: float) -> void:
+	_add_effect_attribute("fade", "start", snapped(value, 0.1), 0.0)
+
+## Update the fade length value
+func _on_fade_length_value_changed(value: float) -> void:
+	_add_effect_attribute("fade", "length", snapped(value, 0.1), 10.0)
+#endregion
+
+#region === Rainbow effect handling ============================================
 
 ## Add rainbow effect to the selected text
 func _on_rainbow_effect_pressed() -> void:
 	_change_effect_bar(5)
 	_insert_tags_on_selected_text("[rainbow]", "[/rainbow]", true)
 
-#region === Pulse effect options ===============================================
+## Update the rainbow frequency value
+func _on_rainbow_freq_value_changed(value: float) -> void:
+	_add_effect_attribute("rainbow", "freq", snapped(value, 0.1), 1.0)
 
-## Update the pulse frequency value
-func _on_pulse_freq_value_changed(value: float) -> void:
-	var open_tag = "[pulse"
-	if value != 1.0:
-		# If the frequency is not the default value (1.0)
-		open_tag += " freq=" + str(snapped(value, 0.1)) + "]"
-		_update_code_tags(open_tag, "[/pulse]")
-	else:
-		_update_code_tags(open_tag + "]", "[/pulse]", "freq")
+## Update the rainbow saturation value
+func _on_rainbow_sat_value_changed(value: float) -> void:
+	_add_effect_attribute("rainbow", "sat", snapped(value, 0.1), 0.8)
 
+## Update the rainbow 'value' value
+func _on_rainbow_val_value_changed(value: float) -> void:
+	_add_effect_attribute("rainbow", "val", snapped(value, 0.1), 0.8)
 
-## Update the pulse color value
-func _on_pulse_color_changed(color: Color) -> void:
-	var open_tag = "[pulse"
-	if color.to_html() != "#ffffff40":
-		# If the color is not the default value (#ffffff40)
-		open_tag += " color=" + color.to_html() + "]"
-		_update_code_tags(open_tag, "[/pulse]")
-	else:
-		_update_code_tags(open_tag + "]", "[/pulse]", "color")
-
-
-## Update the pulse ease value
-func _on_pulse_ease_value_changed(value: float) -> void:
-	var open_tag = "[pulse"
-	if value != -2.0:
-		# If the ease is not the default value (-2.0)
-		open_tag += " ease=" + str(snapped(value, 0.1)) + "]"
-		_update_code_tags(open_tag, "[/pulse]")
-	else:
-		_update_code_tags(open_tag + "]", "[/pulse]", "ease")
+## Update the rainbow speed value
+func _on_rainbow_speed_value_changed(value: float) -> void:
+	_add_effect_attribute("rainbow", "speed", snapped(value, 0.1), 1.0)
 #endregion
-
 
 #endregion
