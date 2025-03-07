@@ -14,7 +14,7 @@ extends Panel
 ## Text boxes container from the text editor
 @onready var _text_boxes_container: VSplitContainer = %TextBoxes
 ## Input text box from the text editor
-@onready var _text_input: CodeEdit = %TextBox
+@onready var text_input: CodeEdit = %TextBox
 ## Text preview label from the text editor
 @onready var _text_preview: RichTextLabel = %TextPreview
 ## Preview box from the text editor
@@ -53,7 +53,7 @@ func _ready():
 ## Show the text editor
 func show_text_editor(text_box: TextEdit) -> void:
 	_opened_text_box = text_box ## Set the text box to edit
-	_text_input.text = _opened_text_box.text
+	text_input.text = _opened_text_box.text
 	_text_preview.text = _opened_text_box.text
 	visible = true
 
@@ -78,8 +78,8 @@ func _on_close_button_pressed() -> void:
 
 ## Update the text box and preview with the text editor input
 func _on_code_edit_text_changed() -> void:
-	_opened_text_box.text = _text_input.text
-	_text_preview.text = _text_input.text
+	_opened_text_box.text = text_input.text
+	_text_preview.text = text_input.text
 
 
 ## Expsnd or collapse the text preview box
@@ -98,12 +98,12 @@ func _on_preview_expand_button_toggled(toggled_on: bool) -> void:
 #region === BBCode tags handling ===============================================
 
 ## Get the position of the selected text in the text input
-func _get_selected_text_position() -> Array:
+func get_selected_text_position() -> Array:
 	return [
-		_text_input.get_selection_from_line(), # From line
-		_text_input.get_selection_from_column(), # From column
-		_text_input.get_selection_to_line(), # To line
-		_text_input.get_selection_to_column() # To column
+		text_input.get_selection_from_line(), # From line
+		text_input.get_selection_from_column(), # From column
+		text_input.get_selection_to_line(), # To line
+		text_input.get_selection_to_column() # To column
 	]
 
 #region --- Insert tags --------------------------------------------------------
@@ -115,26 +115,26 @@ func insert_tags_on_selected_text(
 		add_on_empty: bool = false
 		) -> void:
 	# If there is no text selected
-	if not _text_input.has_selection():
-		if add_on_empty: _insert_tags_at_cursor_pos(open_tag, close_tag)
+	if not text_input.has_selection():
+		if add_on_empty: insert_tags_at_cursor_pos(open_tag, close_tag)
 		return
 	# Get the selection position
-	var selection_pos = _get_selected_text_position()
+	var selection_pos = get_selected_text_position()
 	
 	# Insert the tags in the selected text
-	_text_input.insert_text(close_tag, selection_pos[2], selection_pos[3])
-	_text_input.insert_text(open_tag, selection_pos[0], selection_pos[1])
-	_text_input.select(selection_pos[0], selection_pos[1], selection_pos[2],
+	text_input.insert_text(close_tag, selection_pos[2], selection_pos[3])
+	text_input.insert_text(open_tag, selection_pos[0], selection_pos[1])
+	text_input.select(selection_pos[0], selection_pos[1], selection_pos[2],
 			selection_pos[3] + open_tag.length() + close_tag.length())
 
 
 ## Insert tags at the cursor position
-func _insert_tags_at_cursor_pos(open_tag: String, close_tag: String) -> void:
-	var caret_line = _text_input.get_caret_line()
-	var caret_column = _text_input.get_caret_column()
+func insert_tags_at_cursor_pos(open_tag: String, close_tag: String) -> void:
+	var caret_line = text_input.get_caret_line()
+	var caret_column = text_input.get_caret_column()
 
-	_text_input.insert_text(open_tag + close_tag, caret_line, caret_column)
-	_text_input.select(caret_line, caret_column, caret_line,
+	text_input.insert_text(open_tag + close_tag, caret_line, caret_column)
+	text_input.select(caret_line, caret_column, caret_line,
 			caret_column + open_tag.length() + close_tag.length())
 
 #endregion
@@ -149,19 +149,19 @@ func update_code_tags(
 		add_on_empty: bool = false
 		) -> void:
 	# If there is no text selected
-	if not _text_input.has_selection():
-		if add_on_empty: _insert_tags_at_cursor_pos(open_tag, close_tag)
+	if not text_input.has_selection():
+		if add_on_empty: insert_tags_at_cursor_pos(open_tag, close_tag)
 		return
 	# Get open tag without attributes
 	var open_tag_begin = open_tag.split("=")[0].split(" ")[0].replace("]", "")
-	var selected_text = _text_input.get_selected_text()
+	var selected_text = text_input.get_selected_text()
 
 	# If the selected text does not have the open tag, insert the tags
 	if not selected_text.contains(open_tag_begin):
 		if add_on_empty: insert_tags_on_selected_text(open_tag, close_tag)
 		return
 	
-	var selection_pos = _get_selected_text_position()
+	var selection_pos = get_selected_text_position()
 	# If the open tag is not at the beginning of the selected text
 	if not selected_text.begins_with(open_tag_begin):
 		# Get position of opening tag inside the selected text
@@ -173,11 +173,11 @@ func update_code_tags(
 	var old_open_tag = selected_text.split("]")[0] + "]"
 	open_tag = _update_tag_attributes(old_open_tag, open_tag, remove_attr)
 
-	_text_input.remove_text(selection_pos[0], selection_pos[1],
+	text_input.remove_text(selection_pos[0], selection_pos[1],
 			selection_pos[0], selection_pos[1] + old_open_tag.length())
 
-	_text_input.insert_text(open_tag, selection_pos[0], selection_pos[1])
-	_text_input.select(selection_pos[0], selection_pos[1],
+	text_input.insert_text(open_tag, selection_pos[0], selection_pos[1])
+	text_input.select(selection_pos[0], selection_pos[1],
 			selection_pos[0], selection_pos[1] + open_tag.length())
 
 
@@ -314,12 +314,12 @@ func _on_outline_color_changed(color: Color) -> void:
 func _select_color_tag_by_hex(color_tag: String) -> void:
 	var tag_length = color_tag.split("=")[0].length() + 1
 
-	if _text_input.get_selected_text().is_valid_html_color():
-		_text_input.select(
-				_text_input.get_selection_from_line(),
-				_text_input.get_selection_from_column() - tag_length,
-				_text_input.get_selection_to_line(),
-				_text_input.get_selection_to_column() + 1 # "]" lenght
+	if text_input.get_selected_text().is_valid_html_color():
+		text_input.select(
+				text_input.get_selection_from_line(),
+				text_input.get_selection_from_column() - tag_length,
+				text_input.get_selection_to_line(),
+				text_input.get_selection_to_column() + 1 # "]" lenght
 			)
 
 ## Change the text color of the selected text
@@ -364,11 +364,13 @@ func _on_bg_color_picker_changed(color: Color) -> void:
 func _on_add_variable_pressed() -> void:
 	change_option_bar(4)
 
-
-func _on_add_image_pressed() -> void:
-	change_option_bar(5)
-
-
+## Add a url in the selected text
 func _on_add_url_pressed() -> void:
 	change_option_bar(6)
+	insert_tags_on_selected_text("[url=/insert_url]", "[/url]", true)
+
+## Update the url tags in the selected text
+func _on_url_input_submitted(new_text: String) -> void:
+	update_code_tags("[url=" + new_text + "]", "[/url]", "", true)
+
 #endregion

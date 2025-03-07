@@ -34,13 +34,12 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor_effects.gd" id="26_g04n3"]
 [ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/float.svg" id="27_taqqf"]
 [ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="28_5tt54"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor_images.gd" id="28_qnqd5"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse-down.svg" id="32_hkfxn"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_am7i6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_px64i"]
 
 [node name="TextEditor" type="Panel"]
 clip_contents = true
@@ -476,16 +475,18 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Variable name..."
 
-[node name="ImageBar" type="VBoxContainer" parent="Container/OptionMenus"]
+[node name="ImageBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
 visible = false
 layout_mode = 2
+script = ExtResource("28_qnqd5")
+text_editor = NodePath("../../..")
 
 [node name="PathContainer" type="HFlowContainer" parent="Container/OptionMenus/ImageBar"]
 layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/ImageBar/PathContainer"]
 layout_mode = 2
-text = "Display image"
+text = "Display Image"
 icon = ExtResource("13_r6en5")
 flat = true
 
@@ -496,48 +497,159 @@ layout_mode = 2
 layout_mode = 2
 text = "Path"
 
-[node name="FileField" parent="Container/OptionMenus/ImageBar/PathContainer" instance=ExtResource("25_dx6e2")]
+[node name="ImagePathField" parent="Container/OptionMenus/ImageBar/PathContainer" instance=ExtResource("25_dx6e2")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 file_filters = PackedStringArray("*.jpg", "*.jpeg", "*.png", "*.svg", "*.webp", "*.bmp", "*.tga", "*.dds", "*.kts", "*.hdr", "*.exr")
 
-[node name="SettingsContainer" type="HFlowContainer" parent="Container/OptionMenus/ImageBar"]
+[node name="---" type="HSeparator" parent="Container/OptionMenus/ImageBar"]
 layout_mode = 2
 
-[node name="PositionLabel" type="Label" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
-layout_mode = 2
-text = "Image Vertical Aligment"
-
-[node name="OptionButton" type="OptionButton" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
-layout_mode = 2
-selected = 0
-item_count = 3
-popup/item_0/text = "Center"
-popup/item_1/text = "Top"
-popup/item_1/id = 1
-popup/item_2/text = "Bottom"
-popup/item_2/id = 2
-
-[node name="----" type="VSeparator" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
+[node name="ImageSize" type="HFlowContainer" parent="Container/OptionMenus/ImageBar"]
 layout_mode = 2
 
-[node name="WidthLabel" type="Label" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
+[node name="SizeLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageSize"]
+layout_mode = 2
+size_flags_horizontal = 4
+toggle_mode = true
+text = "Size"
+icon = ExtResource("13_r6en5")
+flat = true
+alignment = 0
+
+[node name="--" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageSize"]
+layout_mode = 2
+
+[node name="WidthLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageSize"]
 layout_mode = 2
 text = "Width"
 
-[node name="WidthInput" type="SpinBox" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
+[node name="ImageWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageSize"]
 layout_mode = 2
 max_value = 9999.0
-suffix = "px"
 
-[node name="HeightLabel" type="Label" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
+[node name="HeightLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageSize"]
 layout_mode = 2
 text = "Height"
 
-[node name="HeightInput" type="SpinBox" parent="Container/OptionMenus/ImageBar/SettingsContainer"]
+[node name="ImageHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageSize"]
+layout_mode = 2
+max_value = 9999.0
+
+[node name="PixelsOrPercentButton" type="OptionButton" parent="Container/OptionMenus/ImageBar/ImageSize"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "px"
+popup/item_1/text = "%"
+popup/item_1/id = 1
+
+[node name="----" type="HSeparator" parent="Container/OptionMenus/ImageBar"]
+layout_mode = 2
+
+[node name="OptionsHeader" type="HBoxContainer" parent="Container/OptionMenus/ImageBar"]
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/ImageBar/OptionsHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Advanced Options"
+icon = ExtResource("13_r6en5")
+flat = true
+alignment = 0
+
+[node name="ImageOptionsExpandButton" type="Button" parent="Container/OptionMenus/ImageBar/OptionsHeader"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("32_hkfxn")
+flat = true
+
+[node name="-----" type="HSeparator" parent="Container/OptionMenus/ImageBar"]
+layout_mode = 2
+
+[node name="ImageOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RegionLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+text = "Region "
+
+[node name="XLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+text = "X"
+
+[node name="RegionX" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions"]
 layout_mode = 2
 max_value = 9999.0
 suffix = "px"
+
+[node name="YLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+text = "Y"
+
+[node name="RegionY" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+max_value = 9999.0
+update_on_text_changed = true
+suffix = "px"
+
+[node name="WLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+text = "Width"
+
+[node name="RegionWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+max_value = 9999.0
+suffix = "px"
+
+[node name="HLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+text = "Height"
+
+[node name="RegionHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+max_value = 9999.0
+suffix = "px"
+
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+
+[node name="Padding" type="CheckButton" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+tooltip_text = " If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
+text = "Padding"
+
+[node name="-------" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+
+[node name="ColorLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+text = "Modulate"
+
+[node name="ImageColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+icon = ExtResource("10_3icwq")
+color = Color(1, 1, 1, 1)
+
+[node name="ImageColorSample" type="RichTextLabel" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_styles/normal = SubResource("StyleBoxEmpty_am7i6")
+bbcode_enabled = true
+text = "Hex [color=ffffff]#ffffff"
+fit_content = true
+scroll_active = false
 
 [node name="LinkBar" type="HFlowContainer" parent="Container/OptionMenus"]
 visible = false
@@ -545,6 +657,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/LinkBar"]
 layout_mode = 2
+tooltip_text = "Add a hyperlink. By default, [url] tags do nothing when clicked. "
 text = "Add link to URL"
 icon = ExtResource("12_cel0j")
 flat = true
@@ -552,10 +665,10 @@ flat = true
 [node name="---" type="VSeparator" parent="Container/OptionMenus/LinkBar"]
 layout_mode = 2
 
-[node name="LineEdit" type="LineEdit" parent="Container/OptionMenus/LinkBar"]
+[node name="UrlInput" type="LineEdit" parent="Container/OptionMenus/LinkBar"]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Write the url..."
+placeholder_text = "Write a URL..."
 
 [node name="EffectsBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
 visible = false
@@ -1015,7 +1128,6 @@ flat = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/normal = SubResource("StyleBoxEmpty_px64i")
 bbcode_enabled = true
 text = "Text preview..."
 
@@ -1034,7 +1146,7 @@ text = "Text preview..."
 [connection signal="pressed" from="Container/Toolbar/TextRight" to="." method="_on_align_text_right_pressed"]
 [connection signal="pressed" from="Container/Toolbar/TextFill" to="." method="_on_align_text_fill_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddVariable" to="." method="_on_add_variable_pressed"]
-[connection signal="pressed" from="Container/Toolbar/AddImage" to="." method="_on_add_image_pressed"]
+[connection signal="pressed" from="Container/Toolbar/AddImage" to="Container/OptionMenus/ImageBar" method="_on_add_image_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddURL" to="." method="_on_add_url_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddEffect" to="Container/OptionMenus/EffectsBar" method="_on_add_effect_pressed"]
 [connection signal="value_changed" from="Container/OptionMenus/FontBar/HFlowContainer/SizeField" to="Container/OptionMenus/FontBar" method="_on_font_size_value_changed"]
@@ -1050,6 +1162,18 @@ text = "Text preview..."
 [connection signal="color_changed" from="Container/OptionMenus/OutlineBar/ColorButton" to="." method="_on_outline_color_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/BGColorBar/BgColorPicker" to="." method="_on_bg_color_picker_changed"]
+[connection signal="file_path_changed" from="Container/OptionMenus/ImageBar/PathContainer/ImagePathField" to="Container/OptionMenus/ImageBar" method="_on_image_path_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageSize/ImageWidth" to="Container/OptionMenus/ImageBar" method="_on_image_width_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageSize/ImageHeight" to="Container/OptionMenus/ImageBar" method="_on_image_height_value_changed"]
+[connection signal="item_selected" from="Container/OptionMenus/ImageBar/ImageSize/PixelsOrPercentButton" to="Container/OptionMenus/ImageBar" method="_on_pixels_or_percent_item_selected"]
+[connection signal="toggled" from="Container/OptionMenus/ImageBar/OptionsHeader/ImageOptionsExpandButton" to="Container/OptionMenus/ImageBar" method="_on_image_options_expand_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionX" to="Container/OptionMenus/ImageBar" method="_on_region_x_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionY" to="Container/OptionMenus/ImageBar" method="_on_region_y_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionWidth" to="Container/OptionMenus/ImageBar" method="_on_region_width_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionHeight" to="Container/OptionMenus/ImageBar" method="_on_region_height_value_changed"]
+[connection signal="toggled" from="Container/OptionMenus/ImageBar/ImageOptions/Padding" to="Container/OptionMenus/ImageBar" method="_on_padding_toggled"]
+[connection signal="color_changed" from="Container/OptionMenus/ImageBar/ImageOptions/ImageColorPicker" to="Container/OptionMenus/ImageBar" method="_on_image_color_changed"]
+[connection signal="text_submitted" from="Container/OptionMenus/LinkBar/UrlInput" to="." method="_on_url_input_submitted"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/PulseEffect" to="." method="_on_pulse_effect_pressed"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/WaveEffect" to="." method="_on_wave_effect_pressed"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/TornadoEffect" to="." method="_on_tornado_effect_pressed"]

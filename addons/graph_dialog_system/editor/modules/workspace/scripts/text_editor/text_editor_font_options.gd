@@ -20,6 +20,7 @@ extends VBoxContainer
 ## Change the font of the selected text
 func _on_change_text_font_pressed() -> void:
 	text_editor.change_option_bar(0)
+	_on_font_spacing_expand_toggled(false)
 	text_editor.insert_tags_on_selected_text("[font]", "[/font]")
 
 
