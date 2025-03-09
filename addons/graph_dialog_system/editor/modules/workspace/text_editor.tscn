@@ -87,18 +87,22 @@ layout_mode = 2
 
 [node name="AddBold" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Makes the selected text use bold font."
 icon = ExtResource("4_8loe6")
 
 [node name="AddItalic" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Makes the selected text use italic font."
 icon = ExtResource("5_gd2p5")
 
 [node name="AddUnderline" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Makes the selected text underlined."
 icon = ExtResource("6_3impe")
 
 [node name="AddStrikethrough" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Makes the selected text strikethrough."
 icon = ExtResource("7_egkjt")
 
 [node name="----" type="VSeparator" parent="Container/Toolbar"]
@@ -106,18 +110,22 @@ layout_mode = 2
 
 [node name="TextFont" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Change the font of the selected text."
 icon = ExtResource("8_vunvl")
 
 [node name="TextOutline" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Add outline to the selected text."
 icon = ExtResource("9_8eyqo")
 
 [node name="TextColor" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Change the color of the selected text."
 icon = ExtResource("10_3icwq")
 
 [node name="BGColor" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Change the background color of the selected text."
 icon = ExtResource("9_hslfk")
 
 [node name="-----" type="VSeparator" parent="Container/Toolbar"]
@@ -125,18 +133,22 @@ layout_mode = 2
 
 [node name="TextLeft" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Horizontally align the selected text to left."
 icon = ExtResource("11_hjf5j")
 
 [node name="TextCenter" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Horizontally align the selected text to center."
 icon = ExtResource("12_ayoih")
 
 [node name="TextRight" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Horizontally align the selected text to right."
 icon = ExtResource("13_lr516")
 
 [node name="TextFill" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Justify the selected text."
 icon = ExtResource("14_vanot")
 
 [node name="------" type="VSeparator" parent="Container/Toolbar"]
@@ -144,14 +156,17 @@ layout_mode = 2
 
 [node name="AddVariable" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Insert a variable in text."
 icon = ExtResource("13_m5lcx")
 
 [node name="AddImage" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Insert an image in text."
 icon = ExtResource("13_r6en5")
 
 [node name="AddURL" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Insert a hiperlink in the selected text."
 icon = ExtResource("12_cel0j")
 
 [node name="-------" type="VSeparator" parent="Container/Toolbar"]
@@ -159,6 +174,7 @@ layout_mode = 2
 
 [node name="AddEffect" type="Button" parent="Container/Toolbar"]
 layout_mode = 2
+tooltip_text = "Add an effect in the selected text."
 icon = ExtResource("18_do7oi")
 
 [node name="HSeparator" type="HSeparator" parent="Container"]
@@ -180,7 +196,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/FontBar/HFlowContainer"]
 layout_mode = 2
-tooltip_text = "Change font to selected text."
+tooltip_text = "Change the font of the selected text."
 text = "Change Font"
 icon = ExtResource("8_vunvl")
 flat = true
@@ -420,7 +436,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/TextColorBar"]
 layout_mode = 2
-tooltip_text = "Change the color of selected text."
+tooltip_text = "Change the color of the selected text."
 text = "Change Text Color"
 icon = ExtResource("10_3icwq")
 flat = true
@@ -454,7 +470,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/BGColorBar"]
 layout_mode = 2
-tooltip_text = "Change background color of selected text."
+tooltip_text = "Change the background color of the selected text."
 text = "Change Background Color"
 icon = ExtResource("9_hslfk")
 flat = true
@@ -488,7 +504,8 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
-text = "Display Variable"
+tooltip_text = "Insert a variable in text."
+text = "Insert Variable"
 icon = ExtResource("13_m5lcx")
 flat = true
 
