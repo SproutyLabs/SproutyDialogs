@@ -11,27 +11,27 @@ extends VBoxContainer
 ## Text editor reference
 @export var text_editor: Panel
 
-## Font spacing options bar
-@onready var _font_spacing_options: Control = %FontSpacingOptions
-## Font spacing expand button
-@onready var _font_spacing_expand: Button = %SpacingExpandButton
+## Font other options container
+@onready var _font_other_options: Control = %FontOptions
+## Font options expand button
+@onready var _font_options_expand_button: Button = %FontOptionsExpandButton
 
 
 ## Change the font of the selected text
 func _on_change_text_font_pressed() -> void:
 	text_editor.change_option_bar(0)
-	_on_font_spacing_expand_toggled(false)
+	_on_font_options_expand_toggled(false)
 	text_editor.insert_tags_on_selected_text("[font]", "[/font]")
 
 
 ## Show the font spacing options bar
-func _on_font_spacing_expand_toggled(toggled_on: bool) -> void:
+func _on_font_options_expand_toggled(toggled_on: bool) -> void:
 	if toggled_on:
-		_font_spacing_expand.icon = text_editor.expand_icon
-		_font_spacing_options.show()
+		_font_options_expand_button.icon = text_editor.expand_icon
+		_font_other_options.show()
 	else:
-		_font_spacing_expand.icon = text_editor.collapse_icon
-		_font_spacing_options.hide()
+		_font_options_expand_button.icon = text_editor.collapse_icon
+		_font_other_options.hide()
 
 
 ## Change the font size of the selected text

@@ -374,3 +374,7 @@ func _on_url_input_submitted(new_text: String) -> void:
 	update_code_tags("[url=" + new_text + "]", "[/url]", "", true)
 
 #endregion
+
+
+func _on_image_options_expand_toggled(toggled_on: bool) -> void:
+	pass # Replace with function body.

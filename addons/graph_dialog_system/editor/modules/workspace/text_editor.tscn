@@ -180,6 +180,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/FontBar/HFlowContainer"]
 layout_mode = 2
+tooltip_text = "Change font to selected text."
 text = "Change Font"
 icon = ExtResource("8_vunvl")
 flat = true
@@ -189,6 +190,8 @@ layout_mode = 2
 
 [node name="SizeLabel" type="Label" parent="Container/OptionMenus/FontBar/HFlowContainer"]
 layout_mode = 2
+tooltip_text = "Custom font size."
+mouse_filter = 1
 text = "Size"
 
 [node name="SizeField" type="SpinBox" parent="Container/OptionMenus/FontBar/HFlowContainer"]
@@ -202,6 +205,8 @@ layout_mode = 2
 
 [node name="FontLabel" type="Label" parent="Container/OptionMenus/FontBar/HFlowContainer"]
 layout_mode = 2
+tooltip_text = "Font resource path."
+mouse_filter = 1
 text = "Font"
 
 [node name="FontField" parent="Container/OptionMenus/FontBar/HFlowContainer" instance=ExtResource("25_dx6e2")]
@@ -209,122 +214,148 @@ layout_mode = 2
 size_flags_horizontal = 3
 file_filters = PackedStringArray("*.tres", "*.fontdata", "*.res", "*.ttf", "*.ttc", "*.otf", "*.otc", "*.woff", "*.woff2", "*.pfb", "*.pfm", "*.font", "*.fnt")
 
-[node name="---" type="HSeparator" parent="Container/OptionMenus/FontBar"]
+[node name="--" type="HSeparator" parent="Container/OptionMenus/FontBar"]
 layout_mode = 2
 
-[node name="SpacingHeader" type="HBoxContainer" parent="Container/OptionMenus/FontBar"]
+[node name="FontOptionsHeader" type="HBoxContainer" parent="Container/OptionMenus/FontBar"]
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/SpacingHeader"]
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontOptionsHeader"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Font advanced options."
 toggle_mode = true
-text = "Spacing Options"
+text = "Advanced Options"
 icon = ExtResource("8_vunvl")
 flat = true
 alignment = 0
 
-[node name="SpacingExpandButton" type="Button" parent="Container/OptionMenus/FontBar/SpacingHeader"]
+[node name="FontOptionsExpandButton" type="Button" parent="Container/OptionMenus/FontBar/FontOptionsHeader"]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 icon = ExtResource("32_hkfxn")
 flat = true
 
-[node name="FontSpacingOptions" type="VBoxContainer" parent="Container/OptionMenus/FontBar"]
+[node name="FontOptions" type="VBoxContainer" parent="Container/OptionMenus/FontBar"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="Container/OptionMenus/FontBar/FontSpacingOptions"]
+[node name="---" type="HSeparator" parent="Container/OptionMenus/FontBar/FontOptions"]
 layout_mode = 2
 
-[node name="Container" type="HFlowContainer" parent="Container/OptionMenus/FontBar/FontSpacingOptions"]
+[node name="FontSpacingOptions" type="HFlowContainer" parent="Container/OptionMenus/FontBar/FontOptions"]
 layout_mode = 2
 
-[node name="GlSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
-text = "Glyphs Space"
+tooltip_text = "Font spacing options."
+toggle_mode = true
+text = "Spacing Options"
+icon = ExtResource("8_vunvl")
+flat = true
+alignment = 0
 
-[node name="GlSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="--" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+layout_mode = 2
+
+[node name="GlSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+layout_mode = 2
+tooltip_text = "Extra spacing for each glyph."
+mouse_filter = 1
+text = "Glyphs"
+
+[node name="GlSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
 
-[node name="SpSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="SpSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
+tooltip_text = "Extra spacing for the space character."
+mouse_filter = 1
 text = "Spaces"
 
-[node name="SpSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="SpSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
 
-[node name="TopSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="TopSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
+tooltip_text = "Extra spacing at the top of the line."
+mouse_filter = 1
 text = "Top"
 
-[node name="TopSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="TopSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="-----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
 
-[node name="BottomSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="BottomSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
+tooltip_text = "Extra spacing at the bottom of the line."
+mouse_filter = 1
 text = "Bottom"
 
-[node name="BottomSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontSpacingOptions/Container"]
+[node name="BottomSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
 layout_mode = 2
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="----" type="HSeparator" parent="Container/OptionMenus/FontBar"]
+[node name="----" type="HSeparator" parent="Container/OptionMenus/FontBar/FontOptions"]
 layout_mode = 2
 
-[node name="FontStyleOptions" type="HFlowContainer" parent="Container/OptionMenus/FontBar"]
+[node name="FontStyleOptions" type="HFlowContainer" parent="Container/OptionMenus/FontBar/FontOptions"]
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
 layout_mode = 2
+tooltip_text = "Custom bold and italic font style."
 toggle_mode = true
 text = "Style Options"
 icon = ExtResource("8_vunvl")
 flat = true
 alignment = 0
 
-[node name="--" type="VSeparator" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+[node name="--" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
 layout_mode = 2
 
-[node name="EmboldenLabel" type="Label" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+[node name="EmboldenLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
 layout_mode = 2
+tooltip_text = "Font embolden strength, if it is not equal to zero, emboldens the font outlines. Negative values reduce the outline thickness."
+mouse_filter = 1
 text = "Embolden"
 
-[node name="EmboldenField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+[node name="EmboldenField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
 layout_mode = 2
 step = 0.1
 suffix = "px"
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
 layout_mode = 2
 
-[node name="SlantLabel" type="Label" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+[node name="SlantLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
 layout_mode = 2
+tooltip_text = "Font slant strength, positive values slant glyphs to the right. Negative values to the left."
+mouse_filter = 1
 text = "Slant"
 
-[node name="SlantField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontStyleOptions"]
+[node name="SlantField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
 layout_mode = 2
 min_value = -100.0
 step = 0.1
@@ -337,6 +368,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/OutlineBar"]
 layout_mode = 2
+tooltip_text = "Add outline to the selected text."
 text = "Text Outline"
 icon = ExtResource("8_kwxkr")
 flat = true
@@ -346,6 +378,8 @@ layout_mode = 2
 
 [node name="SizeLabel" type="Label" parent="Container/OptionMenus/OutlineBar"]
 layout_mode = 2
+tooltip_text = "Custom outline size."
+mouse_filter = 1
 text = "Size"
 
 [node name="SizeField" type="SpinBox" parent="Container/OptionMenus/OutlineBar"]
@@ -359,6 +393,8 @@ layout_mode = 2
 
 [node name="ColorLabel" type="Label" parent="Container/OptionMenus/OutlineBar"]
 layout_mode = 2
+tooltip_text = "Custom outline color."
+mouse_filter = 1
 text = "Color"
 
 [node name="ColorButton" type="ColorPickerButton" parent="Container/OptionMenus/OutlineBar"]
@@ -384,6 +420,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/TextColorBar"]
 layout_mode = 2
+tooltip_text = "Change the color of selected text."
 text = "Change Text Color"
 icon = ExtResource("10_3icwq")
 flat = true
@@ -417,6 +454,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/BGColorBar"]
 layout_mode = 2
+tooltip_text = "Change background color of selected text."
 text = "Change Background Color"
 icon = ExtResource("9_hslfk")
 flat = true
@@ -486,7 +524,8 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/ImageBar/PathContainer"]
 layout_mode = 2
-text = "Display Image"
+tooltip_text = "Insert an image in text."
+text = "Insert Image"
 icon = ExtResource("13_r6en5")
 flat = true
 
@@ -495,6 +534,8 @@ layout_mode = 2
 
 [node name="PathLabel" type="Label" parent="Container/OptionMenus/ImageBar/PathContainer"]
 layout_mode = 2
+tooltip_text = "Path of the image to insert."
+mouse_filter = 1
 text = "Path"
 
 [node name="ImagePathField" parent="Container/OptionMenus/ImageBar/PathContainer" instance=ExtResource("25_dx6e2")]
@@ -506,57 +547,15 @@ file_filters = PackedStringArray("*.jpg", "*.jpeg", "*.png", "*.svg", "*.webp", 
 [node name="---" type="HSeparator" parent="Container/OptionMenus/ImageBar"]
 layout_mode = 2
 
-[node name="ImageSize" type="HFlowContainer" parent="Container/OptionMenus/ImageBar"]
-layout_mode = 2
-
-[node name="SizeLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageSize"]
-layout_mode = 2
-size_flags_horizontal = 4
-toggle_mode = true
-text = "Size"
-icon = ExtResource("13_r6en5")
-flat = true
-alignment = 0
-
-[node name="--" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageSize"]
-layout_mode = 2
-
-[node name="WidthLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageSize"]
-layout_mode = 2
-text = "Width"
-
-[node name="ImageWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageSize"]
-layout_mode = 2
-max_value = 9999.0
-
-[node name="HeightLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageSize"]
-layout_mode = 2
-text = "Height"
-
-[node name="ImageHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageSize"]
-layout_mode = 2
-max_value = 9999.0
-
-[node name="PixelsOrPercentButton" type="OptionButton" parent="Container/OptionMenus/ImageBar/ImageSize"]
-unique_name_in_owner = true
-layout_mode = 2
-selected = 0
-item_count = 2
-popup/item_0/text = "px"
-popup/item_1/text = "%"
-popup/item_1/id = 1
-
-[node name="----" type="HSeparator" parent="Container/OptionMenus/ImageBar"]
-layout_mode = 2
-
 [node name="OptionsHeader" type="HBoxContainer" parent="Container/OptionMenus/ImageBar"]
 layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/ImageBar/OptionsHeader"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "More image options."
 toggle_mode = true
-text = "Advanced Options"
+text = "Image Settings"
 icon = ExtResource("13_r6en5")
 flat = true
 alignment = 0
@@ -568,70 +567,152 @@ toggle_mode = true
 icon = ExtResource("32_hkfxn")
 flat = true
 
-[node name="-----" type="HSeparator" parent="Container/OptionMenus/ImageBar"]
+[node name="ImageOptions" type="VBoxContainer" parent="Container/OptionMenus/ImageBar"]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
-[node name="ImageOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar"]
+[node name="---" type="HSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+
+[node name="SizeOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+
+[node name="SizeLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "Image size settings."
+toggle_mode = true
+text = "Size"
+icon = ExtResource("13_r6en5")
+flat = true
+alignment = 0
+
+[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+layout_mode = 2
+
+[node name="WidthLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+layout_mode = 2
+tooltip_text = "Target width of the image. If is provided, the image will try to fit that width maintaining the aspect ratio."
+mouse_filter = 1
+text = "Width"
+
+[node name="ImageWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+layout_mode = 2
+max_value = 9999.0
+
+[node name="HeightLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+layout_mode = 2
+tooltip_text = "Target height of the image. If both width and height are provided, the image will be scaled to that size."
+mouse_filter = 1
+text = "Height"
+
+[node name="ImageHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+layout_mode = 2
+max_value = 9999.0
+
+[node name="PixelsOrPercentButton" type="OptionButton" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Specify width and height values as percentages or pixels."
+selected = 0
+item_count = 2
+popup/item_0/text = "px"
+popup/item_1/text = "%"
+popup/item_1/id = 1
 
-[node name="RegionLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
 layout_mode = 2
-text = "Region "
 
-[node name="XLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="Padding" type="CheckButton" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
 layout_mode = 2
+tooltip_text = "If set to true, and the image is smaller than the size specified by width and height, the image padding is added to match the size instead of upscaling."
+text = "Padding"
+
+[node name="----" type="HSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+
+[node name="RegionOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+layout_mode = 2
+
+[node name="RegionLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "Region rect of the image. This can be used to display a single image from a spritesheet."
+toggle_mode = true
+text = "Region"
+icon = ExtResource("13_r6en5")
+flat = true
+alignment = 0
+
+[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+layout_mode = 2
+
+[node name="XLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+layout_mode = 2
+tooltip_text = "X coordinate where the image region begins."
+mouse_filter = 1
 text = "X"
 
-[node name="RegionX" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="RegionX" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
 layout_mode = 2
 max_value = 9999.0
 suffix = "px"
 
-[node name="YLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="YLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
 layout_mode = 2
+tooltip_text = "Y coordinate where the image region begins."
+mouse_filter = 1
 text = "Y"
 
-[node name="RegionY" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="RegionY" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
 layout_mode = 2
 max_value = 9999.0
 update_on_text_changed = true
 suffix = "px"
 
-[node name="WLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="WLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
 layout_mode = 2
+tooltip_text = "Width of the image region."
+mouse_filter = 1
 text = "Width"
 
-[node name="RegionWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="RegionWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
 layout_mode = 2
 max_value = 9999.0
 suffix = "px"
 
-[node name="HLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="HLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
 layout_mode = 2
+tooltip_text = "Height of the image region."
+mouse_filter = 1
 text = "Height"
 
-[node name="RegionHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="RegionHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
 layout_mode = 2
 max_value = 9999.0
 suffix = "px"
 
-[node name="-----" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="-----" type="HSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
 layout_mode = 2
 
-[node name="Padding" type="CheckButton" parent="Container/OptionMenus/ImageBar/ImageOptions"]
-layout_mode = 2
-tooltip_text = " If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
-text = "Padding"
-
-[node name="-------" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="ColorOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar/ImageOptions"]
 layout_mode = 2
 
-[node name="ColorLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="ColorLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions"]
 layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "Color tint of the image (modulation)."
+toggle_mode = true
 text = "Modulate"
+icon = ExtResource("13_r6en5")
+flat = true
+alignment = 0
 
-[node name="ImageColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions"]
+layout_mode = 2
+
+[node name="ImageColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
@@ -639,7 +720,7 @@ size_flags_horizontal = 0
 icon = ExtResource("10_3icwq")
 color = Color(1, 1, 1, 1)
 
-[node name="ImageColorSample" type="RichTextLabel" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="ImageColorSample" type="RichTextLabel" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -745,6 +826,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
 layout_mode = 2
+tooltip_text = "Pulse creates an animated pulsing effect that multiplies each character's opacity and color."
 text = "Pulse Effect"
 icon = ExtResource("21_cmowh")
 flat = true
@@ -810,6 +892,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
 layout_mode = 2
+tooltip_text = "Wave makes the text go up and down."
 text = "Wave Effect"
 icon = ExtResource("20_h0nhk")
 flat = true
@@ -858,6 +941,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
 layout_mode = 2
+tooltip_text = "Tornado makes the text move around in a circle."
 text = "Tornado Effect"
 icon = ExtResource("22_2gb2p")
 flat = true
@@ -908,6 +992,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
 layout_mode = 2
+tooltip_text = "Shake makes the text shake."
 text = "Shake Effect"
 icon = ExtResource("23_w4102")
 flat = true
@@ -957,6 +1042,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
 layout_mode = 2
+tooltip_text = "Fade creates a static fade effect that multiplies each character's opacity."
 text = "Fade Effect"
 icon = ExtResource("24_5moyk")
 flat = true
@@ -994,6 +1080,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
 layout_mode = 2
+tooltip_text = "Rainbow gives the text a rainbow color that changes over time."
 text = "Rainbow Effect"
 icon = ExtResource("19_djbmw")
 flat = true
@@ -1151,28 +1238,31 @@ text = "Text preview..."
 [connection signal="pressed" from="Container/Toolbar/AddEffect" to="Container/OptionMenus/EffectsBar" method="_on_add_effect_pressed"]
 [connection signal="value_changed" from="Container/OptionMenus/FontBar/HFlowContainer/SizeField" to="Container/OptionMenus/FontBar" method="_on_font_size_value_changed"]
 [connection signal="file_path_changed" from="Container/OptionMenus/FontBar/HFlowContainer/FontField" to="Container/OptionMenus/FontBar" method="_on_font_file_path_changed"]
-[connection signal="toggled" from="Container/OptionMenus/FontBar/SpacingHeader/SpacingExpandButton" to="Container/OptionMenus/FontBar" method="_on_font_spacing_expand_toggled"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/GlSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_gl_space_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/SpSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_sp_space_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/TopSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_top_space_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontSpacingOptions/Container/BottomSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_bottom_space_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontStyleOptions/EmboldenField" to="." method="_on_font_embolden_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontStyleOptions/SlantField" to="." method="_on_font_slant_value_changed"]
+[connection signal="toggled" from="Container/OptionMenus/FontBar/FontOptionsHeader/Label" to="Container/OptionMenus/FontBar" method="_on_font_options_expand_toggled"]
+[connection signal="toggled" from="Container/OptionMenus/FontBar/FontOptionsHeader/FontOptionsExpandButton" to="Container/OptionMenus/FontBar" method="_on_font_options_expand_toggled"]
+[connection signal="toggled" from="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions/Label" to="Container/OptionMenus/FontBar" method="_on_font_spacing_expand_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions/GlSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_gl_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions/SpSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_sp_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions/TopSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_top_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions/BottomSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_bottom_space_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions/EmboldenField" to="." method="_on_font_embolden_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions/SlantField" to="." method="_on_font_slant_value_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/OutlineBar/SizeField" to="." method="_on_outline_size_value_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/OutlineBar/ColorButton" to="." method="_on_outline_color_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/BGColorBar/BgColorPicker" to="." method="_on_bg_color_picker_changed"]
 [connection signal="file_path_changed" from="Container/OptionMenus/ImageBar/PathContainer/ImagePathField" to="Container/OptionMenus/ImageBar" method="_on_image_path_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageSize/ImageWidth" to="Container/OptionMenus/ImageBar" method="_on_image_width_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageSize/ImageHeight" to="Container/OptionMenus/ImageBar" method="_on_image_height_value_changed"]
-[connection signal="item_selected" from="Container/OptionMenus/ImageBar/ImageSize/PixelsOrPercentButton" to="Container/OptionMenus/ImageBar" method="_on_pixels_or_percent_item_selected"]
+[connection signal="toggled" from="Container/OptionMenus/ImageBar/OptionsHeader/Label" to="Container/OptionMenus/ImageBar" method="_on_image_options_expand_toggled"]
 [connection signal="toggled" from="Container/OptionMenus/ImageBar/OptionsHeader/ImageOptionsExpandButton" to="Container/OptionMenus/ImageBar" method="_on_image_options_expand_toggled"]
-[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionX" to="Container/OptionMenus/ImageBar" method="_on_region_x_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionY" to="Container/OptionMenus/ImageBar" method="_on_region_y_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionWidth" to="Container/OptionMenus/ImageBar" method="_on_region_width_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionHeight" to="Container/OptionMenus/ImageBar" method="_on_region_height_value_changed"]
-[connection signal="toggled" from="Container/OptionMenus/ImageBar/ImageOptions/Padding" to="Container/OptionMenus/ImageBar" method="_on_padding_toggled"]
-[connection signal="color_changed" from="Container/OptionMenus/ImageBar/ImageOptions/ImageColorPicker" to="Container/OptionMenus/ImageBar" method="_on_image_color_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions/ImageWidth" to="Container/OptionMenus/ImageBar" method="_on_image_width_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions/ImageHeight" to="Container/OptionMenus/ImageBar" method="_on_image_height_value_changed"]
+[connection signal="item_selected" from="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions/PixelsOrPercentButton" to="Container/OptionMenus/ImageBar" method="_on_pixels_or_percent_item_selected"]
+[connection signal="toggled" from="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions/Padding" to="Container/OptionMenus/ImageBar" method="_on_padding_toggled"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions/RegionX" to="Container/OptionMenus/ImageBar" method="_on_region_x_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions/RegionY" to="Container/OptionMenus/ImageBar" method="_on_region_y_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions/RegionWidth" to="Container/OptionMenus/ImageBar" method="_on_region_width_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions/RegionHeight" to="Container/OptionMenus/ImageBar" method="_on_region_height_value_changed"]
+[connection signal="color_changed" from="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions/ImageColorPicker" to="Container/OptionMenus/ImageBar" method="_on_image_color_changed"]
 [connection signal="text_submitted" from="Container/OptionMenus/LinkBar/UrlInput" to="." method="_on_url_input_submitted"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/PulseEffect" to="." method="_on_pulse_effect_pressed"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/WaveEffect" to="." method="_on_wave_effect_pressed"]
