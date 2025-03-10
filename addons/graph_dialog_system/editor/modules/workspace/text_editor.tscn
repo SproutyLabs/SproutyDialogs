@@ -504,8 +504,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
-tooltip_text = "Insert a variable in text."
-text = "Insert Variable"
+text = "Display Variable"
 icon = ExtResource("13_m5lcx")
 flat = true
 

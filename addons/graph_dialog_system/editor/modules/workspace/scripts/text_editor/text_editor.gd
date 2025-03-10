@@ -98,13 +98,48 @@ func _on_preview_expand_button_toggled(toggled_on: bool) -> void:
 #region === BBCode tags handling ===============================================
 
 ## Get the position of the selected text in the text input
-func get_selected_text_position() -> Array:
+func get_selected_text_position() -> Array[Vector2i]:
 	return [
-		text_input.get_selection_from_line(), # From line
-		text_input.get_selection_from_column(), # From column
-		text_input.get_selection_to_line(), # To line
-		text_input.get_selection_to_column() # To column
+		Vector2i( # From position: x: column, y: line
+			text_input.get_selection_from_column(),
+			text_input.get_selection_from_line(),
+		),
+		Vector2i( # To position: x: column, y: line
+			text_input.get_selection_to_column(),
+			text_input.get_selection_to_line()
+		)
 	]
+
+## Find the given tags around the cursor position
+func find_tags_around_cursor(open_tag: String, close_tag: String) -> Array[Vector2i]:
+	var caret_line = text_input.get_caret_line()
+	var caret_column = text_input.get_caret_column()
+	
+	var open_tag_pos = text_input.search(
+			open_tag, TextEdit.SEARCH_BACKWARDS, caret_line, caret_column)
+	var close_tag_pos = text_input.search(
+			close_tag, TextEdit.SEARCH_WHOLE_WORDS, caret_line, caret_column)
+
+	var before_close_tag = text_input.search(
+			close_tag, TextEdit.SEARCH_BACKWARDS, caret_line, caret_column)
+
+	if open_tag_pos.x == -1 or close_tag_pos.x == -1:
+		return [] # If there are no tags around the cursor, tags not found
+	
+	if open_tag_pos.y > caret_line or open_tag_pos.x > caret_column:
+		return [] # If the open tag is after the cursor, tags not found
+	
+	if close_tag_pos.y < caret_line or close_tag_pos.x < caret_column:
+		return [] # If the close tag is before the cursor, tags not found
+
+	if ((before_close_tag.y < caret_line or before_close_tag.x < caret_column)
+			and (before_close_tag.y > open_tag_pos.y or before_close_tag.x > open_tag_pos.x)):
+		return [] # If there are a close tag between the open tag and the cursor, tags not found
+
+	text_input.select(open_tag_pos.y, open_tag_pos.x,
+		close_tag_pos.y, close_tag_pos.x + close_tag.length())
+	
+	return [open_tag_pos, close_tag_pos]
 
 #region --- Insert tags --------------------------------------------------------
 
@@ -122,10 +157,10 @@ func insert_tags_on_selected_text(
 	var selection_pos = get_selected_text_position()
 	
 	# Insert the tags in the selected text
-	text_input.insert_text(close_tag, selection_pos[2], selection_pos[3])
-	text_input.insert_text(open_tag, selection_pos[0], selection_pos[1])
-	text_input.select(selection_pos[0], selection_pos[1], selection_pos[2],
-			selection_pos[3] + open_tag.length() + close_tag.length())
+	text_input.insert_text(close_tag, selection_pos[1].y, selection_pos[1].x)
+	text_input.insert_text(open_tag, selection_pos[0].y, selection_pos[0].x)
+	text_input.select(selection_pos[0].y, selection_pos[0].x, selection_pos[1].y,
+			selection_pos[0].x + open_tag.length() + close_tag.length())
 
 
 ## Insert tags at the cursor position
@@ -148,37 +183,53 @@ func update_code_tags(
 		remove_attr: String = "",
 		add_on_empty: bool = false
 		) -> void:
-	# If there is no text selected
-	if not text_input.has_selection():
-		if add_on_empty: insert_tags_at_cursor_pos(open_tag, close_tag)
-		return
 	# Get open tag without attributes
 	var open_tag_begin = open_tag.split("=")[0].split(" ")[0].replace("]", "")
 	var selected_text = text_input.get_selected_text()
+	var tags_pos = []
 
-	# If the selected text does not have the open tag, insert the tags
-	if not selected_text.contains(open_tag_begin):
-		if add_on_empty: insert_tags_on_selected_text(open_tag, close_tag)
-		return
+	# If there is text selected
+	if text_input.has_selection():
+		# If the selected text contains the open tag
+		if selected_text.contains(open_tag_begin):
+			tags_pos = get_selected_text_position()
+
+			# If the selected text does not begin with the open tag, find it
+			if not selected_text.begins_with(open_tag_begin):
+				var open_tag_pos = text_input.search(
+						open_tag_begin, TextEdit.SEARCH_WHOLE_WORDS,
+						tags_pos[0].y, tags_pos[0].x)
+				
+				text_input.select(open_tag_pos.y, open_tag_pos.x, tags_pos[1].y, tags_pos[1].x)
+				tags_pos[0] = open_tag_pos # Update the open tag position
+		else:
+			# If the selected text is a color, find the color tags to update
+			if selected_text.is_valid_html_color():
+				tags_pos = find_tags_around_cursor(open_tag_begin, close_tag)
+			else:
+				# If the selected text does not contain the open tag
+				if add_on_empty: insert_tags_on_selected_text(open_tag, close_tag)
+				return
+	else:
+		# Find the tags around the cursor position if there are no tags selected
+		tags_pos = find_tags_around_cursor(open_tag_begin, close_tag)
+		
+		if tags_pos.is_empty(): # If there are no tags around the cursor
+			if add_on_empty: insert_tags_at_cursor_pos(open_tag, close_tag)
+			return
 	
-	var selection_pos = get_selected_text_position()
-	# If the open tag is not at the beginning of the selected text
-	if not selected_text.begins_with(open_tag_begin):
-		# Get position of opening tag inside the selected text
-		var open_tag_pos = selected_text.find(open_tag_begin)
-		selected_text = selected_text.substr(open_tag_pos)
-		selection_pos[1] += open_tag_pos # Update from column
-
-	# Update the attributes and then replace the tags
+	# Get open tag with attributes and update it
+	selected_text = text_input.get_selected_text()
 	var old_open_tag = selected_text.split("]")[0] + "]"
 	open_tag = _update_tag_attributes(old_open_tag, open_tag, remove_attr)
 
-	text_input.remove_text(selection_pos[0], selection_pos[1],
-			selection_pos[0], selection_pos[1] + old_open_tag.length())
+	# Replace the tags in the selected text
+	text_input.remove_text(tags_pos[0].y, tags_pos[0].x,
+			tags_pos[0].y, tags_pos[0].x + old_open_tag.length())
 
-	text_input.insert_text(open_tag, selection_pos[0], selection_pos[1])
-	text_input.select(selection_pos[0], selection_pos[1],
-			selection_pos[0], selection_pos[1] + open_tag.length())
+	text_input.insert_text(open_tag, tags_pos[0].y, tags_pos[0].x)
+	text_input.select(tags_pos[0].y, tags_pos[0].x,
+		tags_pos[0].y, tags_pos[0].x + open_tag.length())
 
 
 ## Add an tag attribute to the selected text
@@ -301,26 +352,12 @@ func _on_outline_size_value_changed(value: float) -> void:
 func _on_outline_color_changed(color: Color) -> void:
 	var open_tag = "[outline_color=" + color.to_html() + "]"
 	_outline_color_sample_hex.text = "Hex: #[outline_size=5]" + open_tag + color.to_html()
-	# Select the color tag when select the hex number
-	_select_color_tag_by_hex(open_tag)
 	update_code_tags(open_tag, "[/color]")
 
 #endregion
 #endregion
 
 #region === Text color options =================================================
-
-## Select the color tag when select the hex number
-func _select_color_tag_by_hex(color_tag: String) -> void:
-	var tag_length = color_tag.split("=")[0].length() + 1
-
-	if text_input.get_selected_text().is_valid_html_color():
-		text_input.select(
-				text_input.get_selection_from_line(),
-				text_input.get_selection_from_column() - tag_length,
-				text_input.get_selection_to_line(),
-				text_input.get_selection_to_column() + 1 # "]" lenght
-			)
 
 ## Change the text color of the selected text
 func _on_change_text_color_pressed() -> void:
@@ -335,8 +372,6 @@ func _on_change_text_color_pressed() -> void:
 func _on_text_color_picker_changed(color: Color) -> void:
 	var open_tag = "[color=" + color.to_html() + "]"
 	_text_color_sample_hex.text = "Hex: #" + open_tag + color.to_html()
-	# Select the color tag when select the hex number
-	_select_color_tag_by_hex(open_tag)
 	update_code_tags(open_tag, "[/color]")
 
 
@@ -353,8 +388,6 @@ func _on_change_bg_color_pressed() -> void:
 func _on_bg_color_picker_changed(color: Color) -> void:
 	var open_tag = "[bgcolor=" + color.to_html() + "]"
 	_bg_color_sample_hex.text = "Hex: #" + open_tag + color.to_html()
-	# Select the color tag when select the hex number
-	_select_color_tag_by_hex(open_tag)
 	update_code_tags(open_tag, "[/bgcolor]")
 
 #endregion
@@ -374,7 +407,3 @@ func _on_url_input_submitted(new_text: String) -> void:
 	update_code_tags("[url=" + new_text + "]", "[/url]", "", true)
 
 #endregion
-
-
-func _on_image_options_expand_toggled(toggled_on: bool) -> void:
-	pass # Replace with function body.

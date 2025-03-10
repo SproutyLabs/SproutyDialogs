@@ -64,39 +64,33 @@ func _on_image_options_expand_toggled(toggled_on: bool) -> void:
 
 ## Change the selected image
 func _on_image_path_changed(path: String) -> void:
-	## If there is no selected text, insert a new image tag
-	if not text_editor.text_input.has_selection():
-		text_editor.insert_tags_at_cursor_pos("[img]" + path, "[/img]")
-		return
+	# Find the image tags around the cursor
+	var tags_pos = text_editor.find_tags_around_cursor("[img", "[/img]")
 
-	var selected_text = text_editor.text_input.get_selected_text()
-
-	# If the selected text does not have the open tag, insert the tags
-	if not selected_text.contains("[img"):
-		# TODO: Handle path replace when the selected text is a path
+	if tags_pos.is_empty(): # If there are no image tags, insert a new one
 		text_editor.insert_tags_at_cursor_pos("[img]" + path, "[/img]")
 		return
 	
-	# Find the position of the [img] tags to insert the path in between
-	var selection_pos = text_editor.get_selected_text_position()
-	var open_tag_split = selected_text.split("[img")
+	# Find the position of the path inside the tags
+	var selected_text = text_editor.text_input.get_selected_text()
+	var open_tag_split = selected_text.split("]")
 
-	var open_tag_end = open_tag_split[0].length() + open_tag_split[1].find("]") + 5
-	var close_tag_start = open_tag_split[0].length() + 5 + open_tag_split[1].find("[/img]") - 1
+	var open_tag_end = open_tag_split[0].length() + 1
+	var close_tag_start = open_tag_end + open_tag_split[1].find("[/img")
 
 	# Update the path start and end position
-	selection_pos[3] = selection_pos[1] + close_tag_start # End path position
-	selection_pos[1] += open_tag_end # Start path position
+	tags_pos[1].x = tags_pos[0].x + close_tag_start # End path position
+	tags_pos[0].x += open_tag_end # Start path position
 
 	text_editor.text_input.remove_text(
-			selection_pos[0], selection_pos[1],
-			selection_pos[0], selection_pos[3])
+			tags_pos[0].y, tags_pos[0].x,
+			tags_pos[0].y, tags_pos[1].x)
 	
-	text_editor.text_input.insert_text(path, selection_pos[0], selection_pos[1])
+	text_editor.text_input.insert_text(path, tags_pos[0].y, tags_pos[0].x)
 
 	text_editor.text_input.select(
-			selection_pos[0], selection_pos[1],
-			selection_pos[0], selection_pos[1] + path.length())
+			tags_pos[0].y, tags_pos[0].x,
+			tags_pos[0].y, tags_pos[0].x + path.length())
 
 
 ## Update the image width value
