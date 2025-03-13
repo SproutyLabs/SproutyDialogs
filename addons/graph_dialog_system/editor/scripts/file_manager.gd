@@ -19,6 +19,10 @@ enum FileType {DIALOG, CHAR}
 ## Workspace reference
 @export var _workspace: SplitContainer
 
+## Side bar container to show the file manager
+@onready var _side_bar_container: MarginContainer = $SideBarContainer
+## Expand button to show the file manager
+@onready var _expand_bar: HBoxContainer = $ExpandBar
 ## Save file button
 @onready var _save_file_button: Button = %SaveFileButton
 
@@ -76,6 +80,7 @@ func _ready() -> void:
 	hide_csv_container() # Hide csv container on start
 	
 	_save_file_button.disabled = true # Disable save button
+	_on_expand_button_pressed() # Show the file manager on start
 
 
 ## Open a file dialog to select a file to open
@@ -498,4 +503,14 @@ func _on_file_search_focus_exited() -> void:
 	if _file_search.text.is_empty():
 		_filtered_list.visible = false
 		_file_list.visible = true
+
+
+func _on_close_button_pressed() -> void:
+	_side_bar_container.hide() # Hide the file manager
+	_expand_bar.show() # Show the expand button
+
+
+func _on_expand_button_pressed() -> void:
+	_side_bar_container.show() # Show the file manager
+	_expand_bar.hide() # Hide the expand button
 #endregion

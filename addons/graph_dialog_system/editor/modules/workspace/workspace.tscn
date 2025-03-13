@@ -71,9 +71,8 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Graph" parent="GraphEditor" node_paths=PackedStringArray("text_editor") instance=ExtResource("5_yj855")]
+[node name="Graph" parent="GraphEditor" instance=ExtResource("5_yj855")]
 layout_mode = 1
-text_editor = NodePath("../../TextEditor")
 
 [node name="TextEditor" parent="." instance=ExtResource("6_00hgx")]
 visible = false

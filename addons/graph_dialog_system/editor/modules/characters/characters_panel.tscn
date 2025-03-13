@@ -29,37 +29,12 @@ layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Character Settings"
 
-[node name="KeyName" type="HBoxContainer" parent="Settings/Container"]
+[node name="NameLabel" type="Label" parent="Settings/Container"]
 layout_mode = 2
+theme_type_variation = &"HeaderLarge"
+text = "Name"
 
-[node name="Label" type="Label" parent="Settings/Container/KeyName"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-text = "Key Name"
-
-[node name="LineEdit" type="LineEdit" parent="Settings/Container/KeyName"]
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Insert a key name..."
-
-[node name="Description" type="HBoxContainer" parent="Settings/Container"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="Settings/Container/Description"]
-custom_minimum_size = Vector2(100, 0)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-text = "Description"
-
-[node name="TextEdit" type="TextEdit" parent="Settings/Container/Description"]
-custom_minimum_size = Vector2(0, 80)
-layout_mode = 2
-size_flags_horizontal = 3
-placeholder_text = "Character description (optional)..."
-
-[node name="HSeparator2" type="HSeparator" parent="Settings/Container"]
+[node name="--" type="HSeparator" parent="Settings/Container"]
 layout_mode = 2
 
 [node name="DisplayName" type="HBoxContainer" parent="Settings/Container"]
@@ -117,7 +92,26 @@ text = "Display Name Translations"
 [node name="TranslationName" parent="Settings/Container/TranslationsContainer/TextBoxes" instance=ExtResource("4_as6xf")]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="Settings/Container"]
+[node name="---" type="HSeparator" parent="Settings/Container"]
+layout_mode = 2
+
+[node name="Description" type="HBoxContainer" parent="Settings/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Settings/Container/Description"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "Description"
+
+[node name="TextEdit" type="TextEdit" parent="Settings/Container/Description"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Character description (optional)..."
+
+[node name="----" type="HSeparator" parent="Settings/Container"]
 layout_mode = 2
 
 [node name="PortraitsSettings" type="VBoxContainer" parent="Settings/Container"]
@@ -129,7 +123,7 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Settings/Container/PortraitsSettings/TopBar"]
 layout_mode = 2
-text = "Portraits Settings"
+text = "Portraits"
 
 [node name="AddButton" type="Button" parent="Settings/Container/PortraitsSettings/TopBar"]
 layout_mode = 2

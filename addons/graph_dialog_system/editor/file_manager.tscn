@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dpscdg0f7o6ft"]
+[gd_scene load_steps=11 format=3 uid="uid://dpscdg0f7o6ft"]
 
 [ext_resource type="Texture2D" uid="uid://bwqotvkpjbndm" path="res://addons/graph_dialog_system/icons/Search.svg" id="1_1wtbh"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/file_manager.gd" id="1_3v21c"]
@@ -6,27 +6,21 @@
 [ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/graph_dialog_system/icons/AddChar.svg" id="3_ljhu2"]
 [ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="4_2tafu"]
 [ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="4_prnvu"]
+[ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/graph_dialog_system/icons/collapse-left.svg" id="8_72tq1"]
 [ext_resource type="Texture2D" uid="uid://db2rm5mxqrejo" path="res://addons/graph_dialog_system/icons/Close.svg" id="8_s6vw8"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="8_wehoa"]
+[ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialog_system/icons/collapse-right.svg" id="9_xltsg"]
 
-[node name="FileManager" type="VSplitContainer" node_paths=PackedStringArray("_file_list", "_filtered_list", "_file_popup_menu", "_new_dialog_file_dialog", "_new_char_file_dialog", "_open_file_dialog", "_save_file_dialog", "_confirm_close_dialog", "_csv_file_field")]
+[node name="FileManager" type="VSplitContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3v21c")
-_file_list = NodePath("Margin/Container/FileDisplay/FileList")
-_filtered_list = NodePath("Margin/Container/FileDisplay/FilteredList")
-_file_popup_menu = NodePath("PopupWindows/FileMenu")
-_new_dialog_file_dialog = NodePath("PopupWindows/NewDialog")
-_new_char_file_dialog = NodePath("PopupWindows/NewChar")
-_open_file_dialog = NodePath("PopupWindows/OpenFile")
-_save_file_dialog = NodePath("PopupWindows/SaveFile")
-_confirm_close_dialog = NodePath("PopupWindows/ConfirmCloseFiles")
-_csv_file_field = NodePath("Margin/Container/CSVFileContainer/FileField")
 
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="SideBarContainer" type="MarginContainer" parent="."]
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
@@ -34,53 +28,53 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Container" type="VBoxContainer" parent="Margin"]
+[node name="Container" type="VBoxContainer" parent="SideBarContainer"]
 layout_mode = 2
 
-[node name="FileOptions" type="HBoxContainer" parent="Margin/Container"]
+[node name="FileOptions" type="HBoxContainer" parent="SideBarContainer/Container"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="NewDialogButton" type="Button" parent="Margin/Container/FileOptions"]
+[node name="NewDialogButton" type="Button" parent="SideBarContainer/Container/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
 icon = ExtResource("2_fjick")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="Margin/Container/FileOptions"]
+[node name="VSeparator" type="VSeparator" parent="SideBarContainer/Container/FileOptions"]
 layout_mode = 2
 
-[node name="NewCharButton" type="Button" parent="Margin/Container/FileOptions"]
+[node name="NewCharButton" type="Button" parent="SideBarContainer/Container/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
 icon = ExtResource("3_ljhu2")
 flat = true
 
-[node name="VSeparator2" type="VSeparator" parent="Margin/Container/FileOptions"]
+[node name="VSeparator2" type="VSeparator" parent="SideBarContainer/Container/FileOptions"]
 layout_mode = 2
 
-[node name="OpenFileButton" type="Button" parent="Margin/Container/FileOptions"]
+[node name="OpenFileButton" type="Button" parent="SideBarContainer/Container/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
 icon = ExtResource("4_prnvu")
 flat = true
 
-[node name="VSeparator3" type="VSeparator" parent="Margin/Container/FileOptions"]
+[node name="VSeparator3" type="VSeparator" parent="SideBarContainer/Container/FileOptions"]
 layout_mode = 2
 
-[node name="SaveFileButton" type="Button" parent="Margin/Container/FileOptions"]
+[node name="SaveFileButton" type="Button" parent="SideBarContainer/Container/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
 disabled = true
 icon = ExtResource("4_2tafu")
 flat = true
 
-[node name="FileDisplay" type="VBoxContainer" parent="Margin/Container"]
+[node name="FileDisplay" type="VBoxContainer" parent="SideBarContainer/Container"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="FileSearch" type="LineEdit" parent="Margin/Container/FileDisplay"]
+[node name="FileSearch" type="LineEdit" parent="SideBarContainer/Container/FileDisplay"]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Filter Files"
@@ -88,14 +82,14 @@ right_icon = ExtResource("1_1wtbh")
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="FileList" type="ItemList" parent="Margin/Container/FileDisplay"]
+[node name="FileList" type="ItemList" parent="SideBarContainer/Container/FileDisplay"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 same_column_width = true
 
-[node name="FilteredList" type="ItemList" parent="Margin/Container/FileDisplay"]
+[node name="FilteredList" type="ItemList" parent="SideBarContainer/Container/FileDisplay"]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(0, 100)
@@ -103,26 +97,47 @@ layout_mode = 2
 size_flags_vertical = 3
 same_column_width = true
 
-[node name="CSVFileContainer" type="VBoxContainer" parent="Margin/Container"]
+[node name="CSVFileContainer" type="VBoxContainer" parent="SideBarContainer/Container"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Margin/Container/CSVFileContainer"]
+[node name="Label" type="Label" parent="SideBarContainer/Container/CSVFileContainer"]
 layout_mode = 2
 text = "CSV Translations File"
 
-[node name="FileField" parent="Margin/Container/CSVFileContainer" instance=ExtResource("8_wehoa")]
+[node name="FileField" parent="SideBarContainer/Container/CSVFileContainer" instance=ExtResource("8_wehoa")]
 layout_mode = 2
 file_filters = PackedStringArray("*.csv")
 
-[node name="Version" type="Label" parent="Margin/Container"]
+[node name="BottomContainer" type="HBoxContainer" parent="SideBarContainer/Container"]
 layout_mode = 2
+
+[node name="Version" type="Label" parent="SideBarContainer/Container/BottomContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.619608, 0.611765, 0.568627, 1)
 text = "v0.1
 "
-horizontal_alignment = 2
 vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="SideBarContainer/Container/BottomContainer"]
+layout_mode = 2
+icon = ExtResource("8_72tq1")
+flat = true
+
+[node name="ExpandBar" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="ExpandButton" type="Button" parent="ExpandBar"]
+layout_mode = 2
+size_flags_horizontal = 0
+icon = ExtResource("9_xltsg")
+flat = true
+vertical_icon_alignment = 2
+
+[node name="VSeparator" type="VSeparator" parent="ExpandBar"]
+layout_mode = 2
 
 [node name="PopupWindows" type="Node" parent="."]
 
@@ -181,18 +196,20 @@ size = Vector2i(600, 400)
 ok_button_text = "Save"
 filters = PackedStringArray("*.json")
 
-[connection signal="pressed" from="Margin/Container/FileOptions/NewDialogButton" to="." method="_on_new_dialog_pressed"]
-[connection signal="pressed" from="Margin/Container/FileOptions/NewCharButton" to="." method="_on_new_char_pressed"]
-[connection signal="pressed" from="Margin/Container/FileOptions/OpenFileButton" to="." method="_on_open_file_pressed"]
-[connection signal="pressed" from="Margin/Container/FileOptions/SaveFileButton" to="." method="_on_save_file_pressed"]
-[connection signal="focus_exited" from="Margin/Container/FileDisplay/FileSearch" to="." method="_on_file_search_focus_exited"]
-[connection signal="text_changed" from="Margin/Container/FileDisplay/FileSearch" to="." method="_on_file_search_text_changed"]
-[connection signal="empty_clicked" from="Margin/Container/FileDisplay/FileList" to="." method="_on_empty_clicked"]
-[connection signal="item_clicked" from="Margin/Container/FileDisplay/FileList" to="." method="_on_item_clicked"]
-[connection signal="item_selected" from="Margin/Container/FileDisplay/FileList" to="." method="_on_file_selected"]
-[connection signal="empty_clicked" from="Margin/Container/FileDisplay/FilteredList" to="." method="_on_empty_clicked"]
-[connection signal="item_clicked" from="Margin/Container/FileDisplay/FilteredList" to="." method="_on_item_clicked"]
-[connection signal="item_selected" from="Margin/Container/FileDisplay/FilteredList" to="." method="_on_file_selected"]
+[connection signal="pressed" from="SideBarContainer/Container/FileOptions/NewDialogButton" to="." method="_on_new_dialog_pressed"]
+[connection signal="pressed" from="SideBarContainer/Container/FileOptions/NewCharButton" to="." method="_on_new_char_pressed"]
+[connection signal="pressed" from="SideBarContainer/Container/FileOptions/OpenFileButton" to="." method="_on_open_file_pressed"]
+[connection signal="pressed" from="SideBarContainer/Container/FileOptions/SaveFileButton" to="." method="_on_save_file_pressed"]
+[connection signal="focus_exited" from="SideBarContainer/Container/FileDisplay/FileSearch" to="." method="_on_file_search_focus_exited"]
+[connection signal="text_changed" from="SideBarContainer/Container/FileDisplay/FileSearch" to="." method="_on_file_search_text_changed"]
+[connection signal="empty_clicked" from="SideBarContainer/Container/FileDisplay/FileList" to="." method="_on_empty_clicked"]
+[connection signal="item_clicked" from="SideBarContainer/Container/FileDisplay/FileList" to="." method="_on_item_clicked"]
+[connection signal="item_selected" from="SideBarContainer/Container/FileDisplay/FileList" to="." method="_on_file_selected"]
+[connection signal="empty_clicked" from="SideBarContainer/Container/FileDisplay/FilteredList" to="." method="_on_empty_clicked"]
+[connection signal="item_clicked" from="SideBarContainer/Container/FileDisplay/FilteredList" to="." method="_on_item_clicked"]
+[connection signal="item_selected" from="SideBarContainer/Container/FileDisplay/FilteredList" to="." method="_on_file_selected"]
+[connection signal="pressed" from="SideBarContainer/Container/BottomContainer/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="ExpandBar/ExpandButton" to="." method="_on_expand_button_pressed"]
 [connection signal="id_pressed" from="PopupWindows/FileMenu" to="." method="_on_file_menu_pressed"]
 [connection signal="canceled" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_closing_canceled"]
 [connection signal="custom_action" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_closing_action"]

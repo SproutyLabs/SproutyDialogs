@@ -56,7 +56,10 @@ func _ready() -> void:
 	add_child(type_timer)
 	type_timer.wait_time = type_time
 	type_timer.connect("timeout", _on_type_timer_timeout)
-	dialog_display.connect("meta_clicked", _on_dialog_meta_clicked)
+
+	# Connect meta clicked signal to handle meta tags
+	if not dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
+		dialog_display.connect("meta_clicked", _on_dialog_meta_clicked)
 	
 	# Set up dialog box settings
 	dialog_display.bbcode_enabled = true

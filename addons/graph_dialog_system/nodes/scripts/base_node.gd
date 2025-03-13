@@ -14,7 +14,7 @@ extends GraphNode
 @export var node_icon: Texture2D
 
 ## Graph Editor where the node is placed.
-@onready var graph_editor: GraphEdit = get_parent()
+@onready var graph_editor: GraphEdit = get_parent() as GraphEdit
 ## Start node of the dialog tree.
 @onready var start_node: BaseNode = null
 ## Array to store the output nodes connections.
@@ -30,9 +30,10 @@ var _remove_icon: Texture2D = preload("res://addons/graph_dialog_system/icons/Re
 
 
 func _ready():
-	# Set node type and connect nodes loaded signal
+	# Set node type based on the node name
 	node_type = name.to_snake_case().split("_node_")[0] + "_node"
-	graph_editor.connect("nodes_loaded", _load_output_connections)
+	if graph_editor: # Check if the node is in the graph editor
+		graph_editor.connect("nodes_loaded", _load_output_connections)
 	set_node_titlebar()
 
 
@@ -88,7 +89,8 @@ func set_node_titlebar():
 	var remove_button = TextureButton.new()
 	remove_button.texture_normal = _remove_icon
 	remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	remove_button.connect("pressed", graph_editor.delete_node.bind(self))
+	if graph_editor: # Check if the node is in the graph editor
+		remove_button.connect("pressed", graph_editor.delete_node.bind(self))
 	node_titlebar.add_child(remove_button)
 
 
