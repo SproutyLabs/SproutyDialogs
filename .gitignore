@@ -27,3 +27,5 @@ mono_crash.*.json
 
 # Project-specific ignores
 test-scenes/
+addons/**
+!addons/graph_dialog_system/

@@ -506,11 +506,13 @@ func _on_file_search_focus_exited() -> void:
 
 
 func _on_close_button_pressed() -> void:
-	_side_bar_container.hide() # Hide the file manager
-	_expand_bar.show() # Show the expand button
+	get_parent().collapsed = true
+	_side_bar_container.hide()
+	_expand_bar.show()
 
 
 func _on_expand_button_pressed() -> void:
-	_side_bar_container.show() # Show the file manager
-	_expand_bar.hide() # Hide the expand button
+	get_parent().collapsed = false
+	_side_bar_container.show()
+	_expand_bar.hide()
 #endregion

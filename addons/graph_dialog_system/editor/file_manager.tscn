@@ -17,10 +17,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+collapsed = true
 script = ExtResource("1_3v21c")
 
 [node name="SideBarContainer" type="MarginContainer" parent="."]
-visible = false
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
@@ -127,7 +127,9 @@ icon = ExtResource("8_72tq1")
 flat = true
 
 [node name="ExpandBar" type="HBoxContainer" parent="."]
+visible = false
 layout_mode = 2
+theme_override_constants/separation = 0
 
 [node name="ExpandButton" type="Button" parent="ExpandBar"]
 layout_mode = 2
