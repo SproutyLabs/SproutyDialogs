@@ -748,21 +748,21 @@ text = "Hex [color=ffffff]#ffffff"
 fit_content = true
 scroll_active = false
 
-[node name="LinkBar" type="HFlowContainer" parent="Container/OptionMenus"]
+[node name="UrlBar" type="HFlowContainer" parent="Container/OptionMenus"]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/LinkBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/UrlBar"]
 layout_mode = 2
-tooltip_text = "Add a hyperlink. By default, [url] tags do nothing when clicked. "
+tooltip_text = "Add a hyperlink. By default, meta tags do nothing when clicked. Must be handled with the \"meta_clicked\" signal in the DialogBox to have an effect"
 text = "Add link to URL"
 icon = ExtResource("12_cel0j")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/LinkBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/UrlBar"]
 layout_mode = 2
 
-[node name="UrlInput" type="LineEdit" parent="Container/OptionMenus/LinkBar"]
+[node name="UrlInput" type="LineEdit" parent="Container/OptionMenus/UrlBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Write a URL..."
@@ -1279,7 +1279,7 @@ text = "Text preview..."
 [connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions/RegionWidth" to="Container/OptionMenus/ImageBar" method="_on_region_width_value_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions/RegionHeight" to="Container/OptionMenus/ImageBar" method="_on_region_height_value_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions/ImageColorPicker" to="Container/OptionMenus/ImageBar" method="_on_image_color_changed"]
-[connection signal="text_submitted" from="Container/OptionMenus/LinkBar/UrlInput" to="." method="_on_url_input_submitted"]
+[connection signal="text_submitted" from="Container/OptionMenus/UrlBar/UrlInput" to="." method="_on_url_input_submitted"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/PulseEffect" to="." method="_on_pulse_effect_pressed"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/WaveEffect" to="." method="_on_wave_effect_pressed"]
 [connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/TornadoEffect" to="." method="_on_tornado_effect_pressed"]

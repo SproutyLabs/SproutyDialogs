@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse-down.svg" id="2_1untp"]
 
 [node name="DialogBox" type="Panel" node_paths=PackedStringArray("name_display", "dialog_display", "continue_indicator")]
-visible = false
 custom_minimum_size = Vector2(600, 150)
 anchors_preset = 8
 anchor_left = 0.5
@@ -64,3 +63,5 @@ expand_mode = 2
 stretch_mode = 5
 
 [node name="Timer" type="Timer" parent="."]
+
+[connection signal="meta_clicked" from="MarginContainer/VBoxContainer/Dialog" to="." method="_on_dialog_meta_clicked"]

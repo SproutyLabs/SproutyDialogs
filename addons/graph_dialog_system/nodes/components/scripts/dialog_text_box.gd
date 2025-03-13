@@ -16,9 +16,9 @@ var text_editor: Panel
 
 
 func _ready():
-	var editor_main = find_parent("Main")
-	if editor_main: # Get the text editor panel from the main node
-		text_editor = editor_main.get_node("%Workspace/TextEditor")
+	# Find the Graph and get the text editor reference
+	var graph = find_parent("Graph")
+	if graph: text_editor = graph.text_editor
 
 
 ## Get the text from the text box

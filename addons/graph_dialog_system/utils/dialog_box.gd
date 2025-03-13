@@ -9,6 +9,8 @@ extends Panel
 
 ## Signal to continue the dialog tree when the player press the continue button.
 signal continue_dialog
+## Signal to do something when a meta tag is clicked in the dialog.
+signal meta_clicked(meta: String)
 
 ## Max number of characters to display in the dialog box.[br][br]
 ## The dialog will be split according to this limit and displayed in parts.
@@ -16,6 +18,8 @@ signal continue_dialog
 ## Time between typing dialog characters, controls the [b]speed[/b] of text display.
 ## [br][br][i]The higher the value, the slower the text is displayed.[/i]
 @export var type_time: float = 0.05
+## Flag to open URL when a meta tag is clicked in the dialog.
+@export var open_url_on_meta_click: bool = true
 
 @export_category("Input Actions")
 ## Input action to continue dialogue.[br][br]
@@ -52,6 +56,7 @@ func _ready() -> void:
 	add_child(type_timer)
 	type_timer.wait_time = type_time
 	type_timer.connect("timeout", _on_type_timer_timeout)
+	dialog_display.connect("meta_clicked", _on_dialog_meta_clicked)
 	
 	# Set up dialog box settings
 	dialog_display.bbcode_enabled = true
@@ -213,3 +218,10 @@ func _on_display_completed() -> void:
 ## When the dialog ends, close the dialog box
 func _on_dialog_ended() -> void:
 	end_dialog()
+
+
+## When a meta tag is clicked in the dialog
+func _on_dialog_meta_clicked(meta: String) -> void:
+	if open_url_on_meta_click:
+		OS.shell_open(meta) # Open the URL in the default browser
+	meta_clicked.emit(meta) # Emit the meta clicked signal

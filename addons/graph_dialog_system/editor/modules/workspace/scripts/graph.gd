@@ -13,6 +13,9 @@ signal modified
 ## Triggered when all the nodes are loaded
 signal nodes_loaded
 
+## Text editor reference
+@onready var text_editor: Panel = $"../../TextEditor"
+
 ## Alerts container
 @onready var alerts: VBoxContainer = $Alerts
 ## Add node pop-up menu

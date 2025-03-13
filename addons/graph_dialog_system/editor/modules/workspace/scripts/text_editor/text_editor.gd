@@ -147,11 +147,13 @@ func find_tags_around_cursor(open_tag: String, close_tag: String) -> Array[Vecto
 func insert_tags_on_selected_text(
 		open_tag: String,
 		close_tag: String,
-		add_on_empty: bool = false
+		add_on_empty: bool = false,
+		placeholder: String = ""
 		) -> void:
 	# If there is no text selected
 	if not text_input.has_selection():
-		if add_on_empty: insert_tags_at_cursor_pos(open_tag, close_tag)
+		if add_on_empty: # Add the tags with a placeholder
+			insert_tags_at_cursor_pos(open_tag + placeholder, close_tag)
 		return
 	# Get the selection position
 	var selection_pos = get_selected_text_position()
@@ -159,8 +161,12 @@ func insert_tags_on_selected_text(
 	# Insert the tags in the selected text
 	text_input.insert_text(close_tag, selection_pos[1].y, selection_pos[1].x)
 	text_input.insert_text(open_tag, selection_pos[0].y, selection_pos[0].x)
-	text_input.select(selection_pos[0].y, selection_pos[0].x, selection_pos[1].y,
-			selection_pos[0].x + open_tag.length() + close_tag.length())
+	text_input.select(
+			selection_pos[0].y,
+			selection_pos[0].x - open_tag.length(),
+			selection_pos[1].y,
+			selection_pos[1].x + open_tag.length() + close_tag.length()
+		)
 
 
 ## Insert tags at the cursor position
@@ -313,19 +319,19 @@ func _on_add_strikethrough_pressed() -> void:
 
 ## Align the text to the left
 func _on_align_text_left_pressed() -> void:
-	insert_tags_on_selected_text("[left]", "[/left]")
+	insert_tags_on_selected_text("[left]", "[/left]", true)
 
 ## Align the text to the center
 func _on_align_text_center_pressed() -> void:
-	insert_tags_on_selected_text("[center]", "[/center]")
+	insert_tags_on_selected_text("[center]", "[/center]", true)
 
 ## Align the text to the right
 func _on_align_text_right_pressed() -> void:
-	insert_tags_on_selected_text("[right]", "[/right]")
+	insert_tags_on_selected_text("[right]", "[/right]", true)
 
 ## Align the text to fill the width (justify)
 func _on_align_text_fill_pressed() -> void:
-	insert_tags_on_selected_text("[fill]", "[/fill]")
+	insert_tags_on_selected_text("[fill]", "[/fill]", true)
 #endregion
 
 #region --- Outline options ----------------------------------------------------
@@ -400,7 +406,7 @@ func _on_add_variable_pressed() -> void:
 ## Add a url in the selected text
 func _on_add_url_pressed() -> void:
 	change_option_bar(6)
-	insert_tags_on_selected_text("[url=/insert_url]", "[/url]", true)
+	insert_tags_on_selected_text("[url=/insert/an/url]", "[/url]", true, "link")
 
 ## Update the url tags in the selected text
 func _on_url_input_submitted(new_text: String) -> void:

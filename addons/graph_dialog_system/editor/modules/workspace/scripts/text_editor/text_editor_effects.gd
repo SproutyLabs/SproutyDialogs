@@ -60,7 +60,7 @@ func _on_effects_menu_id_pressed(id: int) -> void:
 ## Add pulse effect to the selected text
 func _on_pulse_effect_pressed() -> void:
 	_change_effect_bar(0)
-	text_editor.insert_tags_on_selected_text("[pulse]", "[/pulse]", true)
+	text_editor.insert_tags_on_selected_text("[pulse]", "[/pulse]", true, "example")
 
 ## Update the pulse frequency value
 func _on_pulse_freq_value_changed(value: float) -> void:
@@ -81,7 +81,7 @@ func _on_pulse_ease_value_changed(value: float) -> void:
 ## Add wave effect to the selected text
 func _on_wave_effect_pressed() -> void:
 	_change_effect_bar(1)
-	text_editor.insert_tags_on_selected_text("[wave]", "[/wave]", true)
+	text_editor.insert_tags_on_selected_text("[wave]", "[/wave]", true, "example")
 
 ## Update the wave amplitude value
 func _on_wave_amp_value_changed(value: float) -> void:
@@ -101,7 +101,7 @@ func _on_wave_connected_toggled(toggled_on: bool) -> void:
 ## Add tornado effect to the selected text
 func _on_tornado_effect_pressed() -> void:
 	_change_effect_bar(2)
-	text_editor.insert_tags_on_selected_text("[tornado]", "[/tornado]", true)
+	text_editor.insert_tags_on_selected_text("[tornado]", "[/tornado]", true, "example")
 
 ## Update the tornado radius value
 func _on_tornado_radius_value_changed(value: float) -> void:
@@ -121,7 +121,7 @@ func _on_tornado_connected_toggled(toggled_on: bool) -> void:
 ## Add shake effect to the selected text
 func _on_shake_effect_pressed() -> void:
 	_change_effect_bar(3)
-	text_editor.insert_tags_on_selected_text("[shake]", "[/shake]", true)
+	text_editor.insert_tags_on_selected_text("[shake]", "[/shake]", true, "example")
 
 ## Update the shake rate value
 func _on_shake_rate_value_changed(value: float) -> void:
@@ -141,7 +141,7 @@ func _on_shake_connected_toggled(toggled_on: bool) -> void:
 ## Add fade effect to the selected text
 func _on_fade_effect_pressed() -> void:
 	_change_effect_bar(4)
-	text_editor.insert_tags_on_selected_text("[fade]", "[/fade]", true)
+	text_editor.insert_tags_on_selected_text("[fade]", "[/fade]", true, "example")
 
 ## Update the fade start value
 func _on_fade_start_value_changed(value: float) -> void:
@@ -157,7 +157,7 @@ func _on_fade_length_value_changed(value: float) -> void:
 ## Add rainbow effect to the selected text
 func _on_rainbow_effect_pressed() -> void:
 	_change_effect_bar(5)
-	text_editor.insert_tags_on_selected_text("[rainbow]", "[/rainbow]", true)
+	text_editor.insert_tags_on_selected_text("[rainbow]", "[/rainbow]", true, "example")
 
 ## Update the rainbow frequency value
 func _on_rainbow_freq_value_changed(value: float) -> void:
