@@ -1,9 +1,9 @@
-[gd_scene load_steps=13 format=3 uid="uid://chmw64xy0cmck"]
+[gd_scene load_steps=12 format=3 uid="uid://chmw64xy0cmck"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/editor.gd" id="1_gu2d1"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_h283m"]
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/file_manager.tscn" id="1_qbi36"]
-[ext_resource type="PackedScene" uid="uid://b3dunt76vknsq" path="res://addons/graph_dialog_system/editor/modules/characters/characters_panel.tscn" id="3_7mghu"]
+[ext_resource type="PackedScene" uid="uid://b3dunt76vknsq" path="res://addons/graph_dialog_system/editor/modules/characters/character_editor.tscn" id="3_7mghu"]
 [ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/graph_dialog_system/editor/modules/workspace/workspace.tscn" id="4_yuhh0"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/graph_dialog_system/editor/modules/variables/variables_panel.tscn" id="6_4jako"]
 [ext_resource type="PackedScene" uid="uid://pdcicn3rbwbs" path="res://addons/graph_dialog_system/editor/modules/settings/settings_panel.tscn" id="7_xlq8u"]
@@ -14,20 +14,6 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lcwba"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_22uar"]
-
-[sub_resource type="GDScript" id="GDScript_hlq48"]
-script/source = "extends HSplitContainer
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-"
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -134,7 +120,6 @@ metadata/_tab_index = 1
 [node name="CharactersPanel" parent="MainContainer/TabContainer/Characters" instance=ExtResource("3_7mghu")]
 unique_name_in_owner = true
 layout_mode = 1
-script = SubResource("GDScript_hlq48")
 
 [node name="Variables" type="TabBar" parent="MainContainer/TabContainer"]
 visible = false

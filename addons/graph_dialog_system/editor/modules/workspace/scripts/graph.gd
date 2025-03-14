@@ -14,7 +14,7 @@ signal modified
 signal nodes_loaded
 
 ## Text editor reference
-@onready var text_editor: Panel = $"../../TextEditor"
+@export var text_editor: Panel
 
 ## Alerts container
 @onready var alerts: VBoxContainer = $Alerts

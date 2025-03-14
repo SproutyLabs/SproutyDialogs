@@ -10,6 +10,8 @@ extends MarginContainer
 ## Triggered when the file path is changed.
 signal file_path_changed(path: String)
 
+## Placeholder text to show when the field is empty.
+@export var _placeholder_text: String = "Select a file..."
 ## File extension filters.
 @export var file_filters: PackedStringArray
 
@@ -31,6 +33,7 @@ func _ready():
 	_file_dialog.connect("file_selected", _on_file_dialog_selected)
 	_open_button.button_down.connect(_on_open_pressed)
 	_clear_button.button_up.connect(clear_path)
+	_path_field.placeholder_text = _placeholder_text
 
 
 ## Set the current value of the field.

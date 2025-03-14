@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://deethj56qlsml"]
+[gd_scene load_steps=40 format=3 uid="uid://deethj56qlsml"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialog_system/icons/collapse-right.svg" id="2_bd7d8"]
@@ -36,12 +36,14 @@
 [ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="28_5tt54"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor_images.gd" id="28_qnqd5"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse-down.svg" id="32_hkfxn"]
+[ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/graph_dialog_system/icons/collapse-up.svg" id="37_phbom"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_am7i6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
 
 [node name="TextEditor" type="Panel"]
+visible = false
 clip_contents = true
 custom_minimum_size = Vector2(500, 0)
 anchors_preset = 15
@@ -186,7 +188,6 @@ layout_mode = 2
 size_flags_vertical = 4
 
 [node name="FontBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
-visible = false
 layout_mode = 2
 script = ExtResource("20_krlt7")
 text_editor = NodePath("../../..")
@@ -228,6 +229,7 @@ text = "Font"
 [node name="FontField" parent="Container/OptionMenus/FontBar/HFlowContainer" instance=ExtResource("25_dx6e2")]
 layout_mode = 2
 size_flags_horizontal = 3
+_placeholder_text = "Select a font..."
 file_filters = PackedStringArray("*.tres", "*.fontdata", "*.res", "*.ttf", "*.ttc", "*.otf", "*.otc", "*.woff", "*.woff2", "*.pfb", "*.pfm", "*.font", "*.fnt")
 
 [node name="--" type="HSeparator" parent="Container/OptionMenus/FontBar"]
@@ -558,6 +560,7 @@ text = "Path"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+_placeholder_text = "Select an image..."
 file_filters = PackedStringArray("*.jpg", "*.jpeg", "*.png", "*.svg", "*.webp", "*.bmp", "*.tga", "*.dds", "*.kts", "*.hdr", "*.exr")
 
 [node name="---" type="HSeparator" parent="Container/OptionMenus/ImageBar"]
@@ -1187,6 +1190,7 @@ item_5/id = 5
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
+collapsed = true
 
 [node name="TextBox" type="CodeEdit" parent="Container/TextBoxes"]
 unique_name_in_owner = true
@@ -1204,7 +1208,6 @@ auto_brace_completion_highlight_matching = true
 [node name="PreviewBox" type="MarginContainer" parent="Container/TextBoxes"]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="Container" type="VBoxContainer" parent="Container/TextBoxes/PreviewBox"]
 layout_mode = 2
@@ -1224,11 +1227,12 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 toggle_mode = true
-icon = ExtResource("32_hkfxn")
+icon = ExtResource("37_phbom")
 flat = true
 
 [node name="TextPreview" type="RichTextLabel" parent="Container/TextBoxes/PreviewBox/Container"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true

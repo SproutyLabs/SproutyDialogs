@@ -124,9 +124,10 @@ func new_character_file(path: String) -> void:
 	var file_name: String = path.split('/')[-1]
 	var data = {
 		"character_data": {
-			"csv_file_path": "",
-			"key_name": "",
+			"key_name": file_name.split('.')[0],
 			"description": "",
+			"dialog_box": "",
+			"typing_sounds": {},
 			"portraits": {}
 		}
 	}
@@ -163,6 +164,7 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 			var graph = _graph_scene.instantiate()
 			add_child(graph)
 			graph.modified.connect(_on_data_modified)
+			graph.text_editor = _workspace.text_editor
 			var csv_path = data["dialog_data"]["csv_file_path"]
 			var dialogs = load_dialogs_from_csv(csv_path)
 			graph.load_nodes_data(data, dialogs)
@@ -424,44 +426,44 @@ func hide_csv_container() -> void:
 
 #region === UI Handling ========================================================
 
+## Save current file
 func _on_save_file_pressed() -> void:
-	save_file() # Save current file
+	save_file()
 
 
+## Open file dialog to select a file
 func _on_open_file_pressed() -> void:
-	# Open file dialog to select a file
 	_open_file_dialog.popup_centered()
 
 
+## Create new dialog file
 func _on_new_dialog_pressed() -> void:
-	# Create new dialog file
 	_new_dialog_file_dialog.popup_centered()
 
 
+## Create new character file
 func _on_new_char_pressed() -> void:
-	# Create new character file
 	_new_char_file_dialog.popup_centered()
 
-
+## Switch to the selected file when clicked
 func _on_file_selected(index) -> void:
-	# When a file is selected, switch to this file
 	_switch_selected_file(index)
 
 
+## When the file list is right clicked, show file menu options
 func _on_empty_clicked(at_pos: Vector2, mouse_button_index: int) -> void:
-	# When the file list is right clicked, show file menu options
 	if mouse_button_index == MOUSE_BUTTON_RIGHT and _file_list.item_count > 0:
 		var pos := at_pos + _file_list.global_position + Vector2(get_window().position)
 		_file_popup_menu.popup(Rect2(pos, _file_popup_menu.size))
 
 
+## When a file is right clicked, show the file menu options
 func _on_item_clicked(_idx, at_pos: Vector2, mouse_button_index: int) -> void:
-	# When a file is right clicked, show the file menu options
 	_on_empty_clicked(at_pos, mouse_button_index)
 
 
+## Set the file menu options
 func _on_file_menu_pressed(id: int) -> void:
-	# Set the file menu options
 	match id:
 		0:
 			save_file() # Save current file
@@ -473,8 +475,8 @@ func _on_file_menu_pressed(id: int) -> void:
 			close_all() # Close all files
 
 
+## Set the confirm closing dialog actions
 func _on_confirm_closing_action(action) -> void:
-	# Set the confirm closing dialog actions
 	_confirm_close_dialog.hide()
 	if _closing_queue.size() == 0:
 		return
@@ -490,27 +492,31 @@ func _on_confirm_closing_action(action) -> void:
 	_closing_queue.clear()
 
 
+## Cancel the closing confirmation dialog
 func _on_confirm_closing_canceled() -> void:
-	_closing_queue.clear() # Clear closing queue
+	_closing_queue.clear()
 
 
+## Filter the file list by the input search text
 func _on_file_search_text_changed(new_text: String) -> void:
-	_filter_file_list(new_text) # Filter file list by input filter text
+	_filter_file_list(new_text)
 
 
+## Disable the filtered list if it has no input filter and loses focus
 func _on_file_search_focus_exited() -> void:
-	# Disable the filtered list if it has no input filter and loses focus
 	if _file_search.text.is_empty():
 		_filtered_list.visible = false
 		_file_list.visible = true
 
 
+## Collapse the file manager
 func _on_close_button_pressed() -> void:
 	get_parent().collapsed = true
 	_side_bar_container.hide()
 	_expand_bar.show()
 
 
+## Expand the file manager
 func _on_expand_button_pressed() -> void:
 	get_parent().collapsed = false
 	_side_bar_container.show()
