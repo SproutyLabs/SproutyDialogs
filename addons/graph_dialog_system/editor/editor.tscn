@@ -88,11 +88,12 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 
-[node name="FileManager" parent="MainContainer" node_paths=PackedStringArray("_editor_main", "_workspace") instance=ExtResource("1_qbi36")]
+[node name="FileManager" parent="MainContainer" node_paths=PackedStringArray("_editor_main", "_workspace", "_character_editor") instance=ExtResource("1_qbi36")]
 unique_name_in_owner = true
 layout_mode = 2
 _editor_main = NodePath("../..")
 _workspace = NodePath("../TabContainer/Dialogue/Workspace")
+_character_editor = NodePath("../TabContainer/Characters/CharacterEditor")
 
 [node name="TabContainer" type="TabContainer" parent="MainContainer"]
 unique_name_in_owner = true
@@ -117,7 +118,7 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="CharactersPanel" parent="MainContainer/TabContainer/Characters" instance=ExtResource("3_7mghu")]
+[node name="CharacterEditor" parent="MainContainer/TabContainer/Characters" instance=ExtResource("3_7mghu")]
 unique_name_in_owner = true
 layout_mode = 1
 

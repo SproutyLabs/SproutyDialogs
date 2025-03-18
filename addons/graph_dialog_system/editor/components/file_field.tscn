@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="2_byw4l"]
 [ext_resource type="Texture2D" uid="uid://bnxg1gkoe3jvl" path="res://addons/graph_dialog_system/icons/Clear.svg" id="3_ve2o0"]
 
-[node name="FileField" type="MarginContainer" node_paths=PackedStringArray("_file_dialog", "_open_button", "_clear_button", "_path_field")]
+[node name="FileField" type="MarginContainer"]
 offset_right = 314.0
 offset_bottom = 40.0
 theme = ExtResource("1_2lkpj")
@@ -14,10 +14,6 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 script = ExtResource("2_5xq0f")
-_file_dialog = NodePath("OpenFileDialog")
-_open_button = NodePath("HBox/OpenButton")
-_clear_button = NodePath("HBox/ClearButton")
-_path_field = NodePath("HBox/Field")
 
 [node name="HBox" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -29,7 +25,7 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
-placeholder_text = "Search a file...."
+placeholder_text = "Select a file..."
 
 [node name="OpenButton" type="Button" parent="HBox"]
 unique_name_in_owner = true
@@ -52,4 +48,5 @@ ok_button_text = "Open"
 dialog_hide_on_ok = true
 file_mode = 0
 
+[connection signal="text_changed" from="HBox/Field" to="." method="_on_field_text_changed"]
 [connection signal="text_submitted" from="HBox/Field" to="." method="_on_file_dialog_selected"]

@@ -22,25 +22,22 @@ signal testing_locale_changed
 @onready var testing_locale_dropdown: OptionButton = $"%TestingLocale" / OptionButton
 ## Locales selector container
 @onready var locales_selector: VBoxContainer = %LocalesSelector
-## CSV folder field
+## CSV folder path field
 @onready var csv_folder_field: MarginContainer = %CSVFolderField
-
-
-func _init() -> void:
-	# Load the translation settings from the translation manager
-	GDialogsTranslationManager.load_translation_settings()
-	GDialogsTranslationManager.translation_settings = self
+## Character names CSV path field
+@onready var char_names_csv_field: MarginContainer = %CharNamesCSVField
 
 
 func _ready() -> void:
+	# Load the translation settings from the translation manager
+	GDialogsTranslationManager.translation_settings = self
+	GDialogsTranslationManager.load_translation_settings()
+
 	# Connect signals
 	locales_selector.connect("locales_changed", _on_locales_changed)
-	csv_folder_field.connect("folder_path_changed", _set_csv_files_path)
-	
-	# Load the csv files path
-	if not GDialogsTranslationManager.csv_files_path.is_empty():
-		csv_folder_field.set_value(GDialogsTranslationManager.csv_files_path)
-	
+	csv_folder_field.connect("folder_path_changed", _on_csv_files_path_changed)
+	char_names_csv_field.connect("file_path_changed", _on_char_names_csv_path_changed)
+
 	# Load the locales on the dropdowns
 	_set_locales_on_dropdown(default_locale_dropdown, true)
 	_set_locales_on_dropdown(testing_locale_dropdown, false)
@@ -92,9 +89,29 @@ func _on_locales_changed() -> void:
 
 
 ## Set the path to the CSV translation files
-func _set_csv_files_path(path: String) -> void:
+func _on_csv_files_path_changed(path: String) -> void:
+	# Check if the path is empty or doesn't exist
+	if path.is_empty() or not DirAccess.dir_exists_absolute(path):
+		printerr("[Graph Dialogs] Please select a folder for CSV translation files.")
+		return
 	GDialogsTranslationManager.csv_files_path = path
-	GDialogsTranslationManager.save_translation_settings()
+
+
+## Set the path to the CSV with character names translations
+func _on_char_names_csv_path_changed(path: String) -> void:
+	# Check if the path is empty
+	if path.is_empty():
+			printerr("[Graph Dialogs] Please select a CSV file for character names translation.")
+			return
+	# Check if the file is a CSV
+	if not path.ends_with('.csv'):
+		printerr("[Graph Dialogs] Character names file must be a CSV.")
+		return
+	# Check if the path is inside the CSV folder
+	if not path.begins_with(GDialogsTranslationManager.csv_files_path):
+		printerr("[Graph Dialogs] Character names CSV file must be inside the CSV files folder.")
+		return
+	GDialogsTranslationManager.char_names_csv_path = path
 
 
 ## Collect the translations from the CSV files

@@ -1,5 +1,6 @@
 {
 	"translation_settings": {
+		"char_names_csv_path": "res://addons/graph_dialog_system/examples/translations/character_names.csv",
 		"csv_files_path": "res://addons/graph_dialog_system/examples/translations",
 		"default_locale": "en",
 		"locales": [

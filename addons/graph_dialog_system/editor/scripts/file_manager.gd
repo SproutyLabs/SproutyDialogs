@@ -18,6 +18,8 @@ enum FileType {DIALOG, CHAR}
 @export var _editor_main: Control
 ## Workspace reference
 @export var _workspace: SplitContainer
+## Character editor reference
+@export var _character_editor: SplitContainer
 
 ## Side bar container to show the file manager
 @onready var _side_bar_container: MarginContainer = $SideBarContainer
@@ -177,6 +179,9 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 			_file_list.set_item_metadata(item_index, metadata)
 			
 		FileType.CHAR:
+			# Load character data
+			_character_editor.load_character(data)
+
 			# Add item to the file list
 			_file_list.add_item(file_name, _char_icon)
 			_file_list.set_item_metadata(item_index, metadata)
@@ -392,6 +397,7 @@ func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 ##     locale_2: dialog_text,
 ##     ...
 ##     }
+##   ...
 ## }
 func load_dialogs_from_csv(path: String) -> Dictionary:
 	var data := GDialogsCSVFileManager.load_file(path)
@@ -411,6 +417,36 @@ func load_dialogs_from_csv(path: String) -> Dictionary:
 			dialogs[dialog_key][header[i]] = row[i]
 	
 	return dialogs
+
+func save_character_names_on_csv() -> void:
+	pass # TODO: Save names on CSV file
+
+
+## Load character names from a CSV file to a dictionary.
+## Returns a dictionary with the character names as:
+## { locale_1: character_name_1,
+##   locale_2: character_name_2,
+##   ...
+## }
+func load_character_names_from_csv(key_name: String) -> Dictionary:
+	var path = GDialogsTranslationManager.char_names_csv_path
+	var data := GDialogsCSVFileManager.load_file(path)
+	if data.is_empty():
+		printerr("[Graph Dialogs] Cannot load character names from CSV file.")
+		return {}
+	
+	# Get the row with the key name
+	var row = data.find(key_name)
+	if row == -1:
+		printerr("[Graph Dialogs] Character name not found in CSV file.")
+		return {}
+	
+	# Get the names and parse to a dictionary
+	var names = data[row].slice(1, data[row].size() - 1)
+	var dict = {}
+	for i in range(names.size()):
+		dict[data[0][i + 1]] = names[i]
+	return dict
 
 
 ## Show the CSV file path container

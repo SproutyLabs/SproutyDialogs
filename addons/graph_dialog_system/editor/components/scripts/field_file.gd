@@ -54,6 +54,13 @@ func _on_file_dialog_selected(path: String) -> void:
 	set_value(path)
 
 
+## Triggered when the text of the field changes.
+func _on_field_text_changed(new_text: String) -> void:
+	file_path_changed.emit(new_text)
+	set_value(new_text)
+
+
 ## Clear the current value of the field.
 func clear_path() -> void:
+	file_path_changed.emit("")
 	set_value("")

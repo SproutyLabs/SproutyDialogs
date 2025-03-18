@@ -10,9 +10,27 @@ extends Resource
 
 ## Path to the translation settings data
 const DATA_PATH = "res://addons/graph_dialog_system/editor/modules/settings/data/translation_settings.json"
+const DEFAULT_CHAR_NAMES_CSV = "character_names.csv"
+
+## Translation settings container
+static var translation_settings: HSplitContainer
 
 ## Path to the CSV translation files
-static var csv_files_path: String = ""
+static var csv_files_path: String = "":
+	set(value):
+		csv_files_path = value
+		if translation_settings != null:
+			translation_settings.csv_folder_field.set_value(value)
+		save_translation_settings()
+
+## Path to the CSV with character names translations
+static var char_names_csv_path: String = "":
+	set(value):
+		char_names_csv_path = value
+		if translation_settings != null:
+			translation_settings.char_names_csv_field.set_value(value)
+		save_translation_settings()
+
 ## Default locale selected
 static var default_locale: String = ""
 ## Testing locale selected
@@ -20,15 +38,13 @@ static var testing_locale: String = ""
 ## Available locales in the project
 static var locales: Array = []
 
-## Translation settings container
-static var translation_settings: HSplitContainer
-
 
 ## Save the translation settings in the settings data
 static func save_translation_settings() -> void:
 	var data := {
 		"translation_settings": {
 			"csv_files_path": csv_files_path,
+			"char_names_csv_path": char_names_csv_path,
 			"default_locale": default_locale,
 			"testing_locale": testing_locale,
 			"locales": locales
@@ -46,6 +62,7 @@ static func load_translation_settings() -> void:
 	
 	var data = GDialogsJSONFileManager.load_file(DATA_PATH)
 	csv_files_path = data.translation_settings.csv_files_path
+	char_names_csv_path = data.translation_settings.char_names_csv_path
 	default_locale = data.translation_settings.default_locale
 	testing_locale = data.translation_settings.testing_locale
 	locales = data.translation_settings.locales
@@ -87,15 +104,9 @@ static func collect_translations(path: String = csv_files_path) -> void:
 	if path.is_empty():
 		printerr("[Graph Dialogs] Cannot collect translations, need a path to CSV translation files.")
 		return
-	var translation_files := []
+	var translation_files := get_translation_files(path)
 	var all_translation_files: Array = ProjectSettings.get_setting(
 			'internationalization/locale/translations', [])
-	
-	# Collect translation files from csv folder
-	for file in DirAccess.get_files_at(path):
-		if file.ends_with('.translation'):
-			if not file in translation_files:
-				translation_files.append(file)
 	
 	# Add new translation files to the old ones
 	for file in translation_files:
@@ -114,3 +125,18 @@ static func collect_translations(path: String = csv_files_path) -> void:
 			'internationalization/locale/translations',
 			PackedStringArray(valid_translation_files))
 	ProjectSettings.save()
+
+
+## Get the translation files from csv folder and its subfolders
+static func get_translation_files(path: String) -> Array:
+	var translation_files := []
+	var subfolders = Array(DirAccess.get_directories_at(path)).map(
+			func(folder): path + "/" + folder)
+	subfolders.insert(0, path) # Add the main folder
+
+	for folder in subfolders:
+		for file in DirAccess.get_files_at(folder):
+			if file.ends_with('.translation'):
+				if not file in translation_files:
+					translation_files.append(file)
+	return translation_files

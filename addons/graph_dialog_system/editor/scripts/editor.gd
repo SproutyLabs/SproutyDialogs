@@ -73,7 +73,15 @@ func _on_select_csv_folder_pressed() -> void:
 ## Set a folder path for CSV files
 func _on_csv_folder_selected(path: String) -> void:
 	GDialogsTranslationManager.csv_files_path = path
-	GDialogsTranslationManager.save_translation_settings()
-	$"%SettingsPanel" / "%TranslationSettings" / "%CSVFolderField".set_value(path)
+	
+	# Set the path of the CSV file for character names
+	GDialogsTranslationManager.char_names_csv_path = (
+		path + "/" + GDialogsTranslationManager.DEFAULT_CHAR_NAMES_CSV
+		)
+	# Create the CSV file for character names
+	if not FileAccess.file_exists(GDialogsTranslationManager.char_names_csv_path):
+		GDialogsTranslationManager.new_csv_template_file(
+			GDialogsTranslationManager.DEFAULT_CHAR_NAMES_CSV
+			)
 	first_settings.visible = false
 	main_container.visible = true
