@@ -18,7 +18,7 @@ extends HSplitContainer
 ## Empty panel reference
 @onready var _empty_panel: Panel = $EmptyPanel
 ## Text editor reference
-@onready var _text_editor: Panel = $TextEditor
+@onready var text_editor: Panel = $TextEditor
 
 
 func _ready() -> void:
@@ -50,7 +50,7 @@ func show_start_panel() -> void:
 	if _file_manager:
 		_file_manager.hide_csv_container()
 	_graph_editor.visible = false
-	_text_editor.visible = false
+	text_editor.visible = false
 	_empty_panel.visible = true
 
 

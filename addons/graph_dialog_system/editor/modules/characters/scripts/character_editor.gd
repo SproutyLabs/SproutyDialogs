@@ -11,11 +11,18 @@ func _ready() -> void:
 	show_start_panel()
 
 
+## Get the current character editor panel
+func get_current_character_panel() -> Container:
+	if get_child_count() > 1:
+		return get_child(1)
+	return null
+
+
 ## Switch the current character editor panel
 func switch_current_character_panel(new_panel: Container) -> void:
 	# Remove old panel and switch to the new one
 	if get_child_count() > 1:
-		remove_child(find_child("CharacterPanel"))
+		remove_child(get_child(1))
 	add_child(new_panel)
 
 

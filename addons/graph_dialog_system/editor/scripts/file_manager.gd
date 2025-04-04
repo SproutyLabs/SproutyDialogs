@@ -179,6 +179,7 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 			# Create a graph and load the nodes data
 			var graph = _graph_scene.instantiate()
 			add_child(graph)
+			graph.set_meta("file_index", item_index)
 			graph.modified.connect(_on_data_modified)
 			graph.text_editor = _workspace.text_editor
 			var csv_path = data["dialog_data"]["csv_file_path"]
@@ -198,6 +199,7 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 			var character_editor = _char_scene.instantiate()
 			add_child(character_editor)
 			data = data.character_data
+			character_editor.set_meta("file_index", item_index)
 			character_editor.modified.connect(_on_data_modified)
 			var name_data = load_character_names_from_csv(data.key_name)
 			character_editor.load_character(data, name_data)
@@ -345,6 +347,33 @@ func close_all() -> void:
 
 #region === Work Files Handling ================================================
 
+## Switch to the file on the current tab
+func switch_to_file_on_tab(tab: int) -> void:
+	if _file_list.item_count == 0 or _current_file_index == -1:
+		return # No files open or no file selected
+	var to_file := -1
+
+	match tab:
+		0:
+			# Switched to the graph dialog tab
+			var current_graph = _workspace.get_current_graph()
+			if current_graph and current_graph.has_meta("file_index"):
+				to_file = current_graph.get_meta("file_index")
+			else: # No graph loaded
+				return
+		1:
+			# Switched to the character editor tab
+			var current_panel = _character_editor.get_current_character_panel()
+			if current_panel and current_panel.has_meta("file_index"):
+				to_file = current_panel.get_meta("file_index")
+			else: # No character panel loaded
+				return
+		_: # Switched to other tab
+			return
+	
+	_current_file_index = to_file
+	_file_list.select(_current_file_index)
+
 ## Switch to a selected file
 func _switch_selected_file(file_index: int) -> void:
 	if _file_list.item_count == 0 or file_index > _file_list.item_count:
@@ -480,13 +509,13 @@ func save_character_names_on_csv(name_data: Dictionary) -> void:
 		else:
 			row.append("EMPTY")
 	
-	# The locales tht not exist in header are added to the end of the row
+	# The locales that not exist in header are added to the end of the row
 	for i in range(name_data[key_name].size()):
 		if not header.has(name_data[key_name].keys()[i]):
 			row.append(name_data[key_name].values()[i])
 			header.append(name_data[key_name].keys()[i])
 
-	GDialogsCSVFileManager.update_row(path, header, row) # Save updated csv
+	GDialogsCSVFileManager.update_row(path, header, row)
 
 
 ## Load character name translations from a CSV file to a dictionary.
@@ -506,18 +535,24 @@ func load_character_names_from_csv(key_name: String) -> Dictionary:
 		return {}
 	
 	# Get the row with the key name
-	var row = data.find(key_name)
-	if row == -1: # If the key is not found, return an empty template dictionary
+	var row = data.filter(
+		func(item: Array) -> bool:
+			return item[0] == key_name
+	)
+	
+	if row.is_empty():
+		# If the key is not found, return an empty template dictionary
 		var dict = {key_name: {}}
 		for i in range(data[0].size() - 1):
 			dict[key_name][data[0][i + 1]] = ""
 		return dict
 	
 	# Get the names and parse to a dictionary
-	var names = data[row].slice(1, data[row].size() - 1)
+	var names = row[0].slice(1, row[0].size())
 	var dict = {key_name: {}}
 	for i in range(names.size()):
 		dict[key_name][data[0][i + 1]] = names[i]
+	
 	return dict
 
 

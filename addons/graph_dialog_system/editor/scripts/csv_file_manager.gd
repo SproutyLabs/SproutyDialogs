@@ -22,11 +22,8 @@ static func save_file(header: Array, data: Array, file_path: String) -> void:
 	# Store data by rows in csv file
 	if not data.is_empty():
 		for row in data:
-			if row.size() != header.size():
-				printerr("[CSVFileManager] The data has %d columns," + \
-					"does not match with header size (%d)" % [row.size(), header.size()])
-				return
-			file.store_csv_line(PackedStringArray(row), ",")
+			if row != []: # Skip empty rows
+				file.store_csv_line(PackedStringArray(row), ",")
 	else:
 		# Add empty row to avoid translation import error
 		var placeholder = []
@@ -50,7 +47,8 @@ static func load_file(file_path: String) -> Array:
 		var data := []
 		while !file.eof_reached():
 			var csv_data: Array = file.get_csv_line()
-			data.append(csv_data) # Add row to an array
+			if csv_data != []: # Skip empty lines
+				data.append(csv_data) # Add row to an array
 		
 		file.close()
 		return data
@@ -65,7 +63,8 @@ static func load_file(file_path: String) -> Array:
 static func update_row(file_path: String, header: Array, row: Array) -> void:
 	# Load the CSV file
 	var csv_data = load_file(file_path)
-	
+	var content = csv_data.slice(1, csv_data.size())
+
 	# Check if the CSV file is empty
 	if csv_data.size() == 0:
 		save_file(header, [row], file_path)
@@ -73,16 +72,21 @@ static func update_row(file_path: String, header: Array, row: Array) -> void:
 	
 	# Update or add the row
 	var row_updated = false
-	for i in range(1, csv_data.size()):
+	for i in range(content.size()):
 		# Check if the row already exists by key
-		if csv_data[i][0] == row[0]:
-			csv_data[i] = row
+		if content[i][0] == "EMPTY":
+			content = []
+			break
+		if content[i][0] == row[0]:
+			content[i] = row
 			row_updated = true
 			break
 	
 	# If the row was not found, add it
 	if not row_updated:
-		csv_data.append(row)
+		content.append(row)
+	
+	content = content.filter(func(x): return x != [""]) # Remove empty rows
 	
 	# Save the updated CSV file
-	save_file(header, csv_data, file_path)
+	save_file(header, content, file_path)

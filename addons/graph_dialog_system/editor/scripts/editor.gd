@@ -47,9 +47,11 @@ func _on_tab_selected(tab: int):
 		0: # Graph dialog tab
 			if file_manager:
 				file_manager.show_csv_container()
+				file_manager.switch_to_file_on_tab(tab)
 		1: # Character tab
 			if file_manager:
 				file_manager.hide_csv_container()
+				file_manager.switch_to_file_on_tab(tab)
 		2: # Variable tab
 			if file_manager:
 				file_manager.hide_csv_container()

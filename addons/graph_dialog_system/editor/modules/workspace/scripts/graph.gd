@@ -65,7 +65,7 @@ func get_nodes_data() -> Dictionary:
 		if child is BaseNode:
 			# Get dialogs texts from dialogue nodes
 			if child.node_type == "dialogue_node":
-				dict["dialogs"][child.get_dialog_key()] = child.get_dialogs_text()
+				dict["dialogs"][child.get_dialog_translation_key()] = child.get_dialogs_text()
 			
 			if child.node_type == "start_node":
 				# Start nodes define dialogs trees

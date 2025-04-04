@@ -60,7 +60,6 @@ placeholder_text = "Insert character name..."
 
 [node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/Container"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 script = ExtResource("2_tpd02")
 useTextBoxes = false
