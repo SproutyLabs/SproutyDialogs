@@ -17,9 +17,9 @@ signal default_locale_changed
 signal testing_locale_changed
 
 ## Default locale dropdown
-@onready var default_locale_dropdown: OptionButton = $"%DefaultLocale" / OptionButton
+@onready var default_locale_dropdown: OptionButton = %DefaultLocale/OptionButton
 ## Testing locale dropdown
-@onready var testing_locale_dropdown: OptionButton = $"%TestingLocale" / OptionButton
+@onready var testing_locale_dropdown: OptionButton = %TestingLocale/OptionButton
 ## Locales selector container
 @onready var locales_selector: VBoxContainer = %LocalesSelector
 ## CSV folder path field

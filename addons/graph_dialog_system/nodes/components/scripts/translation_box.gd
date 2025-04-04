@@ -1,11 +1,14 @@
 @tool
-extends VBoxContainer
+class_name GDialogsTranslationBox
+extends Container
 
 ## -----------------------------------------------------------------------------
 ## Translation box
 ##
-## Component to display a dialog text box with header labels that indicates the 
+## Component to display a text box with header labels that indicates the 
 ## language and locale code of the translation.
+##
+## Needs a text box child node that can be a LineEdit or a TextEdit.
 ## -----------------------------------------------------------------------------
 
 ## Language label of the translation
@@ -13,20 +16,23 @@ extends VBoxContainer
 ## Locale code label of the translation
 @onready var code_label: Label = $Header/CodeLabel
 ## Input text box
-@onready var text_box: HBoxContainer = $DialogTextBox
+@onready var text_box: Control = $TextBox
 
 ## Locale code of the translation
 var locale_code: String = ""
 
-
 ## Get the text from the text box
 func get_text() -> String:
-	return text_box.get_text()
+	if text_box is LineEdit:
+		return text_box.text
+	else: return text_box.get_text()
 
 
 ## Set the text to the text box
 func set_text(text: String) -> void:
-	text_box.set_text(text)
+	if text_box is LineEdit:
+		text_box.text = text
+	else: text_box.set_text(text)
 
 
 ## Get the locale code

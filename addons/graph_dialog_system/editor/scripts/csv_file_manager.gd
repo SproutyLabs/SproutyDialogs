@@ -59,3 +59,30 @@ static func load_file(file_path: String) -> Array:
 		% [file_path])
 		return []
 	return []
+
+
+## Add or update a row in a CSV file
+static func update_row(file_path: String, header: Array, row: Array) -> void:
+	# Load the CSV file
+	var csv_data = load_file(file_path)
+	
+	# Check if the CSV file is empty
+	if csv_data.size() == 0:
+		save_file(header, [row], file_path)
+		return
+	
+	# Update or add the row
+	var row_updated = false
+	for i in range(1, csv_data.size()):
+		# Check if the row already exists by key
+		if csv_data[i][0] == row[0]:
+			csv_data[i] = row
+			row_updated = true
+			break
+	
+	# If the row was not found, add it
+	if not row_updated:
+		csv_data.append(row)
+	
+	# Save the updated CSV file
+	save_file(header, csv_data, file_path)

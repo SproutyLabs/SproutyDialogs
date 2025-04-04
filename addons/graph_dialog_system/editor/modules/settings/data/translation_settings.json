@@ -4,9 +4,7 @@
 		"csv_files_path": "res://addons/graph_dialog_system/examples/translations",
 		"default_locale": "en",
 		"locales": [
-			"en",
-			"es",
-			"ja"
+			"en"
 		],
 		"testing_locale": "en"
 	}

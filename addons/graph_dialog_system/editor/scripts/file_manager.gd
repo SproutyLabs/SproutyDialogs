@@ -17,9 +17,9 @@ enum FileType {DIALOG, CHAR}
 ## Editor main reference
 @export var _editor_main: Control
 ## Workspace reference
-@export var _workspace: SplitContainer
+@export var _workspace: Container
 ## Character editor reference
-@export var _character_editor: SplitContainer
+@export var _character_editor: Container
 
 ## Side bar container to show the file manager
 @onready var _side_bar_container: MarginContainer = $SideBarContainer
@@ -53,6 +53,8 @@ enum FileType {DIALOG, CHAR}
 
 ## Graph scene reference
 var _graph_scene := preload("res://addons/graph_dialog_system/editor/modules/workspace/graph.tscn")
+## Character scene reference
+var _char_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/character_panel.tscn")
 
 ## Dialog file icon
 var _dialog_icon := preload("res://addons/graph_dialog_system/icons/Script.svg")
@@ -64,6 +66,10 @@ var _current_file_index: int = -1
 ## Files to close queue
 var _closing_queue: Array[int] = []
 
+## Number of dialogs in the file list
+var _dialogs_count: int = 0
+## Number of characters in the file list
+var _characters_count: int = 0
 
 func _ready() -> void:
 	# Connect signals
@@ -93,6 +99,10 @@ func select_file_to_open() -> void:
 ## Open a file dialog to select where create a new dialog file
 func select_new_dialog_file() -> void:
 	_new_dialog_file_dialog.popup_centered()
+
+## Open a file dialog to select where create a new character file
+func select_new_character_file() -> void:
+	_new_char_file_dialog.popup_centered()
 
 
 #region === New Files ==========================================================
@@ -126,7 +136,10 @@ func new_character_file(path: String) -> void:
 	var file_name: String = path.split('/')[-1]
 	var data = {
 		"character_data": {
-			"key_name": file_name.split('.')[0],
+			"key_name": file_name.split('.json')[0],
+			"display_name": {
+				GDialogsTranslationManager.default_locale: ""
+			},
 			"description": "",
 			"dialog_box": "",
 			"typing_sounds": {},
@@ -137,6 +150,7 @@ func new_character_file(path: String) -> void:
 	GDialogsJSONFileManager.save_file(data, path)
 	_new_file_item(file_name, path, FileType.CHAR, data)
 	_editor_main.switch_active_tab(1)
+	_character_editor.show_character_panel()
 	print("[Graph Dialogs] Character file '" + file_name + "' created.")
 
 
@@ -177,17 +191,29 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 			# Add item to the file list
 			_file_list.add_item(file_name, _dialog_icon)
 			_file_list.set_item_metadata(item_index, metadata)
+			_dialogs_count += 1
 			
 		FileType.CHAR:
-			# Load character data
-			_character_editor.load_character(data)
+			# Load character data in a new a character panel
+			var character_editor = _char_scene.instantiate()
+			add_child(character_editor)
+			data = data.character_data
+			character_editor.modified.connect(_on_data_modified)
+			var name_data = load_character_names_from_csv(data.key_name)
+			character_editor.load_character(data, name_data)
+			character_editor.name = "CharacterPanel"
+			remove_child(character_editor)
+
+			metadata['char_panel'] = character_editor # Add character panel to metadata
 
 			# Add item to the file list
 			_file_list.add_item(file_name, _char_icon)
 			_file_list.set_item_metadata(item_index, metadata)
+			_characters_count += 1
 
 	_switch_selected_file(item_index)
 	_save_file_button.disabled = false
+
 #endregion
 
 #region === Save and Load ======================================================
@@ -206,7 +232,7 @@ func load_file(path: String) -> void:
 		elif data.has("character_data"): # Load a character
 			_new_file_item(file_name, path, FileType.CHAR, data)
 			_editor_main.switch_active_tab(1)
-			# TODO: Load character data
+			_character_editor.show_character_panel()
 		else:
 			printerr("[Graph Dialogs] File " + path + "has an invalid format.")
 	else:
@@ -232,7 +258,11 @@ func save_file(index: int = _current_file_index, path: String = "") -> void:
 			save_dialogs_on_csv(graph_data["dialogs"], data["dialog_data"]["csv_file_path"])
 
 		FileType.CHAR: # Save character data
-			pass # TODO: Update the character data
+			# Get character data from the editor
+			data = file_metadata["char_panel"].get_character_data()
+			file_metadata["data"] = data
+			# Save character names on csv file
+			save_character_names_on_csv(data["character_data"]["display_name"])
 	
 	# Save file on the given path
 	var save_path = file_metadata["file_path"] if path.is_empty() else path
@@ -260,7 +290,6 @@ func close_file(index: int = _current_file_index) -> void:
 	if index == _current_file_index:
 		# If the file to be closed is being edited
 		_csv_file_field.set_value("")
-		
 		if _file_list.item_count == 1:
 			# If there are no open files to switch to them
 			_current_file_index = -1
@@ -271,11 +300,25 @@ func close_file(index: int = _current_file_index) -> void:
 		else: # If not the first file, switch to the previous file
 			_switch_selected_file(index - 1)
 	
+	# Free the cached graph or character panel
 	if metadata["file_type"] == FileType.DIALOG:
 		metadata["graph"].queue_free()
+		_dialogs_count -= 1
+	elif metadata["file_type"] == FileType.CHAR:
+		metadata["char_panel"].queue_free()
+		_characters_count -= 1
 	
-	if _file_list.item_count == 1:
+	# Show start panel if there are no dialogs open
+	if _dialogs_count == 0:
 		_workspace.show_start_panel()
+		_csv_file_field.set_value("")
+	
+	# Show start panel if there are no characters open
+	if _characters_count == 0:
+		_character_editor.show_start_panel()
+
+	# Disable save button if there are no files open
+	if _file_list.item_count == 1:
 		_save_file_button.disabled = true
 	
 	_file_list.remove_item(index)
@@ -316,7 +359,8 @@ func _switch_selected_file(file_index: int) -> void:
 					current_metadata["graph"].get_nodes_data()
 		
 		elif current_metadata["file_type"] == FileType.CHAR:
-			pass # TODO: update character metadata
+			current_metadata.data.character_data = \
+					current_metadata["char_panel"].get_character_data()
 		
 		_file_list.set_item_metadata(_current_file_index, current_metadata)
 	
@@ -328,7 +372,7 @@ func _switch_selected_file(file_index: int) -> void:
 		_editor_main.switch_active_tab(0)
 	
 	elif new_metadata["file_type"] == FileType.CHAR:
-		# TODO: update character data
+		_character_editor.switch_current_character_panel(new_metadata["char_panel"])
 		_editor_main.switch_active_tab(1)
 	_current_file_index = file_index
 	_file_list.select(file_index)
@@ -418,15 +462,41 @@ func load_dialogs_from_csv(path: String) -> Dictionary:
 	
 	return dialogs
 
-func save_character_names_on_csv() -> void:
-	pass # TODO: Save names on CSV file
+
+## Save character name translations on CSV file
+func save_character_names_on_csv(name_data: Dictionary) -> void:
+	var path = GDialogsTranslationManager.char_names_csv_path
+	var csv_file = GDialogsCSVFileManager.load_file(path)
+	var header = csv_file[0]
+	var key_name = name_data.keys()[0]
+
+	# Parse name data to an array and sort by header locales
+	var row = [key_name]
+	for i in range(header.size()):
+		if header[i] == "key":
+			continue
+		if name_data[key_name].has(header[i]):
+			row.append(name_data[key_name][header[i]])
+		else:
+			row.append("EMPTY")
+	
+	# The locales tht not exist in header are added to the end of the row
+	for i in range(name_data[key_name].size()):
+		if not header.has(name_data[key_name].keys()[i]):
+			row.append(name_data[key_name].values()[i])
+			header.append(name_data[key_name].keys()[i])
+
+	GDialogsCSVFileManager.update_row(path, header, row) # Save updated csv
 
 
-## Load character names from a CSV file to a dictionary.
+## Load character name translations from a CSV file to a dictionary.
 ## Returns a dictionary with the character names as:
-## { locale_1: character_name_1,
-##   locale_2: character_name_2,
-##   ...
+## { key_name: {
+## 		{ locale_1: character_name_1,
+##  	  locale_2: character_name_2,
+## 		  ...
+## 		}
+##    }
 ## }
 func load_character_names_from_csv(key_name: String) -> Dictionary:
 	var path = GDialogsTranslationManager.char_names_csv_path
@@ -437,15 +507,17 @@ func load_character_names_from_csv(key_name: String) -> Dictionary:
 	
 	# Get the row with the key name
 	var row = data.find(key_name)
-	if row == -1:
-		printerr("[Graph Dialogs] Character name not found in CSV file.")
-		return {}
+	if row == -1: # If the key is not found, return an empty template dictionary
+		var dict = {key_name: {}}
+		for i in range(data[0].size() - 1):
+			dict[key_name][data[0][i + 1]] = ""
+		return dict
 	
 	# Get the names and parse to a dictionary
 	var names = data[row].slice(1, data[row].size() - 1)
-	var dict = {}
+	var dict = {key_name: {}}
 	for i in range(names.size()):
-		dict[data[0][i + 1]] = names[i]
+		dict[key_name][data[0][i + 1]] = names[i]
 	return dict
 
 

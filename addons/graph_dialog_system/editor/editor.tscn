@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/editor.gd" id="1_gu2d1"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_h283m"]
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/file_manager.tscn" id="1_qbi36"]
-[ext_resource type="PackedScene" uid="uid://b3dunt76vknsq" path="res://addons/graph_dialog_system/editor/modules/characters/character_editor.tscn" id="3_7mghu"]
+[ext_resource type="PackedScene" uid="uid://d0gf52rcd1hn" path="res://addons/graph_dialog_system/editor/modules/characters/character_editor.tscn" id="3_7mghu"]
 [ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/graph_dialog_system/editor/modules/workspace/workspace.tscn" id="4_yuhh0"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/graph_dialog_system/editor/modules/variables/variables_panel.tscn" id="6_4jako"]
 [ext_resource type="PackedScene" uid="uid://pdcicn3rbwbs" path="res://addons/graph_dialog_system/editor/modules/settings/settings_panel.tscn" id="7_xlq8u"]
@@ -101,26 +101,27 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/tabbar_background = SubResource("StyleBoxEmpty_22uar")
-current_tab = 0
+current_tab = 1
 
 [node name="Dialogue" type="TabBar" parent="MainContainer/TabContainer"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Workspace" parent="MainContainer/TabContainer/Dialogue" node_paths=PackedStringArray("editor_main", "file_manager") instance=ExtResource("4_yuhh0")]
+[node name="Workspace" parent="MainContainer/TabContainer/Dialogue" node_paths=PackedStringArray("_editor_main", "_file_manager") instance=ExtResource("4_yuhh0")]
 unique_name_in_owner = true
 layout_mode = 1
-editor_main = NodePath("../../../..")
-file_manager = NodePath("../../../FileManager")
+_editor_main = NodePath("../../../..")
+_file_manager = NodePath("../../../FileManager")
 
 [node name="Characters" type="TabBar" parent="MainContainer/TabContainer"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="CharacterEditor" parent="MainContainer/TabContainer/Characters" instance=ExtResource("3_7mghu")]
+[node name="CharacterEditor" parent="MainContainer/TabContainer/Characters" node_paths=PackedStringArray("_file_manager") instance=ExtResource("3_7mghu")]
 unique_name_in_owner = true
 layout_mode = 1
+_file_manager = NodePath("../../../FileManager")
 
 [node name="Variables" type="TabBar" parent="MainContainer/TabContainer"]
 visible = false
