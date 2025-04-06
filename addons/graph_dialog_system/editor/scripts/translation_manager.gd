@@ -21,7 +21,7 @@ static var csv_files_path: String = "":
 		csv_files_path = value
 		if translation_settings != null:
 			translation_settings.csv_folder_field.set_value(value)
-		save_translation_settings()
+		save_translation_setting("csv_files_path", value)
 
 ## Path to the CSV with character names translations
 static var char_names_csv_path: String = "":
@@ -29,7 +29,7 @@ static var char_names_csv_path: String = "":
 		char_names_csv_path = value
 		if translation_settings != null:
 			translation_settings.char_names_csv_field.set_value(value)
-		save_translation_settings()
+		save_translation_setting("char_names_csv_path", value)
 
 ## Default locale selected
 static var default_locale: String = ""
@@ -40,7 +40,7 @@ static var locales: Array = []
 
 
 ## Save the translation settings in the settings data
-static func save_translation_settings() -> void:
+static func save_all_translation_settings() -> void:
 	var data := {
 		"translation_settings": {
 			"csv_files_path": csv_files_path,
@@ -53,11 +53,18 @@ static func save_translation_settings() -> void:
 	GDialogsJSONFileManager.save_file(data, DATA_PATH)
 
 
+## Save a specific translation setting in the settings data
+static func save_translation_setting(key: String, value: Variant) -> void:
+	var data = GDialogsJSONFileManager.load_file(DATA_PATH)
+	data.translation_settings[key] = value
+	GDialogsJSONFileManager.save_file(data, DATA_PATH)
+
+
 ## Load translation settings from settings data
 static func load_translation_settings() -> void:
 	if not FileAccess.file_exists(DATA_PATH):
 		set_default_translation_settings()
-		save_translation_settings()
+		save_all_translation_settings()
 		return
 	
 	var data = GDialogsJSONFileManager.load_file(DATA_PATH)

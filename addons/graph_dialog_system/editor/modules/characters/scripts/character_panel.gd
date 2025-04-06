@@ -31,10 +31,12 @@ var _default_locale: String = ""
 
 func _ready() -> void:
 	_set_translation_text_boxes()
-	GDialogsTranslationManager.translation_settings.connect(
+	if GDialogsTranslationManager.translation_settings:
+		# Connect to the translation settings signals
+		GDialogsTranslationManager.translation_settings.connect(
 			"locales_changed", _on_locales_changed
 		)
-	GDialogsTranslationManager.translation_settings.connect(
+		GDialogsTranslationManager.translation_settings.connect(
 			"default_locale_changed", _on_locales_changed
 		)
 

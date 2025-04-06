@@ -61,14 +61,18 @@ func _set_locales_on_dropdown(dropdown: OptionButton, default: bool) -> void:
 ## Select the default locale from the dropdown
 func _on_default_locale_selected(index: int) -> void:
 	GDialogsTranslationManager.default_locale = default_locale_dropdown.get_item_text(index)
-	GDialogsTranslationManager.save_translation_settings()
+	GDialogsTranslationManager.save_translation_setting(
+		"default_locale", GDialogsTranslationManager.default_locale
+		)
 	default_locale_changed.emit()
 
 
 ## Select the testing locale from the dropdown
 func _on_testing_locale_selected(index: int) -> void:
 	GDialogsTranslationManager.testing_locale = testing_locale_dropdown.get_item_text(index)
-	GDialogsTranslationManager.save_translation_settings()
+	GDialogsTranslationManager.save_translation_setting(
+		"testing_locale", GDialogsTranslationManager.testing_locale
+		)
 	testing_locale_changed.emit()
 
 

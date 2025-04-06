@@ -13,7 +13,7 @@ extends VBoxContainer
 @export var useTextBoxes: bool = true
 
 ## Text boxes container
-@onready var text_boxes = $TextBoxes
+@onready var text_boxes: Container = $TextBoxes
 
 ## Translation box scene
 var translation_box := preload(
