@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://b3dunt76vknsq"]
+[gd_scene load_steps=9 format=3 uid="uid://b3dunt76vknsq"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_mqdqa"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/character_panel.gd" id="2_8cc8c"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/translations_container.gd" id="2_tpd02"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse-down.svg" id="3_3q8bw"]
 [ext_resource type="PackedScene" uid="uid://63ehl3ko3bdf" path="res://addons/graph_dialog_system/editor/components/portrait_field.tscn" id="3_j6s01"]
+[ext_resource type="Texture2D" uid="uid://c4wvkxks4rkxb" path="res://addons/graph_dialog_system/icons/PackedScene.svg" id="5_7nh8d"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="5_x3nyu"]
 [ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="6_ugs6n"]
 
@@ -60,7 +61,6 @@ placeholder_text = "Insert character name..."
 
 [node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/Container"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 script = ExtResource("2_tpd02")
 useTextBoxes = false
@@ -110,20 +110,36 @@ placeholder_text = "Character description (optional)..."
 [node name="----" type="HSeparator" parent="CharacterSettings/Container"]
 layout_mode = 2
 
-[node name="DialogBox" type="HBoxContainer" parent="CharacterSettings/Container"]
+[node name="Label" type="Label" parent="CharacterSettings/Container"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Text Box Settings"
+
+[node name="TextBox" type="HBoxContainer" parent="CharacterSettings/Container"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterSettings/Container/DialogBox"]
+[node name="Label" type="Label" parent="CharacterSettings/Container/TextBox"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 0
-text = "Dialogue Box"
+text = "Text Box"
 
-[node name="FileField" parent="CharacterSettings/Container/DialogBox" instance=ExtResource("5_x3nyu")]
+[node name="TextBoxSceneButton" type="Button" parent="CharacterSettings/Container/TextBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+icon = ExtResource("5_7nh8d")
+
+[node name="TextBoxSceneFile" parent="CharacterSettings/Container/TextBox" instance=ExtResource("5_x3nyu")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _placeholder_text = "Select a scene..."
 file_filters = PackedStringArray("*.tscn")
+
+[node name="PortraitOnTextBoxToggle" type="CheckButton" parent="CharacterSettings/Container"]
+layout_mode = 2
+text = "Portrait on text box"
 
 [node name="-----" type="HSeparator" parent="CharacterSettings/Container"]
 layout_mode = 2
@@ -223,10 +239,6 @@ layout_mode = 2
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Portrait Settings"
-
-[node name="CheckButton" type="CheckButton" parent="PortraitSettings/Container"]
-layout_mode = 2
-text = "Portrait on Dialogue Box"
 
 [node name="PortraitDisplay" type="HBoxContainer" parent="PortraitSettings/Container"]
 layout_mode = 2
@@ -360,3 +372,6 @@ suffix = "px"
 layout_mode = 2
 
 [connection signal="toggled" from="CharacterSettings/Container/NameTranslationsContainer/ExpandButton" to="CharacterSettings/Container/NameTranslationsContainer" method="_on_expand_button_toggled"]
+[connection signal="pressed" from="CharacterSettings/Container/TextBox/TextBoxSceneButton" to="." method="_on_text_box_scene_button_pressed"]
+[connection signal="file_path_changed" from="CharacterSettings/Container/TextBox/TextBoxSceneFile" to="." method="_on_text_box_scene_path_changed"]
+[connection signal="toggled" from="CharacterSettings/Container/PortraitOnTextBoxToggle" to="." method="_on_portrait_text_box_toggled"]

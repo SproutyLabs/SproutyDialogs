@@ -20,13 +20,21 @@ signal modified
 @onready var _name_default_locale_field: LineEdit = %NameDefaultLocaleField
 ## Translation container for display name
 @onready var _name_translations_container: VBoxContainer = %NameTranslationsContainer
+
 ## Description text input field
 @onready var _description_field: TextEdit = %DescriptionField
+## Text box scene file field
+@onready var _text_box_scene_file: GDialogsFileField = %TextBoxSceneFile
+## Text box scene button
+@onready var _text_box_scene_button: Button = %TextBoxSceneButton
 
 ## Key name of the character (file name)
 var _key_name: String = ""
 ## Default locale for dialog text
 var _default_locale: String = ""
+
+## Portrait display on text box option
+var _portrait_on_text_box: bool = false
 
 
 func _ready() -> void:
@@ -48,7 +56,8 @@ func get_character_data() -> Dictionary:
 			"key_name": _key_name,
 			"display_name": {_key_name: get_name_translations()},
 			"description": _description_field.text,
-			"dialog_box": "",
+			"text_box": _text_box_scene_file.get_value(),
+			"portrait_on_text_box": _portrait_on_text_box,
 			"typing_sounds": {},
 			"portraits": {}
 		}
@@ -61,14 +70,19 @@ func load_character(data: Dictionary, name_data: Dictionary) -> void:
 	_key_name = data.key_name
 	_key_name_label.text = _key_name.to_pascal_case()
 	var name_translations = name_data[_key_name]
+	_description_field.text = data.description
 
 	# Character name and its translations
 	_set_translation_text_boxes()
 	_name_default_locale_field.text = name_translations[_default_locale]
 	_name_translations_container.load_translations_text(name_translations)
 
-	_description_field.text = data.description
-
+	# Text box scene file
+	_text_box_scene_file.set_value(data.text_box)
+	if data.text_box.ends_with(".tscn"):
+		_text_box_scene_button.visible = true
+	_portrait_on_text_box = data.portrait_on_text_box
+	
 
 #region === Character Name Translation =========================================
 
@@ -105,3 +119,35 @@ func _on_locales_changed() -> void:
 	load_name_translations(translations)
 
 #endregion
+
+
+## Handle the text box scene file path
+func _on_text_box_scene_path_changed(path: String) -> void:
+	if path.is_empty(): # No path selected
+		_text_box_scene_button.visible = false
+	elif path.ends_with(".tscn"):
+		_text_box_scene_button.visible = true # Valid path
+
+
+## Open a scene in the editor
+func _open_scene_in_editor(path: String) -> void:
+	if path.is_empty():
+		return
+	# Check if the path is valid
+	if path.ends_with(".tscn"):
+		if ResourceLoader.exists(path):
+			EditorInterface.open_scene_from_path(path)
+			await get_tree().process_frame
+			EditorInterface.set_main_screen_editor("2D")
+	else:
+		printerr("[Graph Dialogs] Invalid scene file path.")
+
+
+## Handle the text box scene button press
+func _on_text_box_scene_button_pressed() -> void:
+	_open_scene_in_editor(_text_box_scene_file.get_value())
+
+
+## Handle the text box portrait display toggle
+func _on_portrait_text_box_toggled(toggled_on: bool) -> void:
+	_portrait_on_text_box = toggled_on

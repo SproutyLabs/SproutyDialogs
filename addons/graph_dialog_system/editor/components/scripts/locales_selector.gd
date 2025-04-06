@@ -74,7 +74,7 @@ func _on_locale_removed(locale_code: String) -> void:
 func _save_locales() -> void:
 	# Save locales in translation settings
 	GDialogsTranslationManager.locales = _current_locales
-	GDialogsTranslationManager.save_translation_settings()
+	GDialogsTranslationManager.save_translation_setting("locales", _current_locales)
 	GDialogsTranslationManager.collect_translations()
 	locales_changed.emit()
 	_current_locales = []

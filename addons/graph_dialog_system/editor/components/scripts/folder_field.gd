@@ -1,5 +1,6 @@
 @tool
 extends MarginContainer
+class_name GDialogsFolderField
 
 ## =============================================================================
 ##  Folder Field Component
@@ -27,6 +28,11 @@ func _ready():
 	_folder_dialog.connect("dir_selected", _on_folder_path_selected)
 	_open_button.button_down.connect(_on_open_pressed)
 	_clear_button.button_up.connect(clear_path)
+
+
+## Get the current value of the field.
+func get_value() -> String:
+	return _path_field.text
 
 
 ## Set the current value of the field.

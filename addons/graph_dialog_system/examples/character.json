@@ -1,9 +1,8 @@
 {
 	"character_data": {
 		"description": "Insert character description here.",
-		"dialog_box": "",
 		"display_name": {
-			"char": {
+			"character": {
 				"en": "Character",
 				"es": "Personaje",
 				"ja": "キャラクター"
@@ -11,6 +10,8 @@
 		},
 		"key_name": "character",
 		"portraits": {},
+		"text_box": "res://test_scenes/dialog_box.tscn",
+		"portrait_on_text_box": false,
 		"typing_sounds": {}
 	}
 }

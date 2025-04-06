@@ -1,5 +1,6 @@
 @tool
 extends MarginContainer
+class_name GDialogsFileField
 
 ## =============================================================================
 ##  File Field Component
@@ -34,6 +35,11 @@ func _ready():
 	_open_button.button_down.connect(_on_open_pressed)
 	_clear_button.button_up.connect(clear_path)
 	_path_field.placeholder_text = _placeholder_text
+
+
+## Get the current value of the field.
+func get_value() -> String:
+	return _path_field.text
 
 
 ## Set the current value of the field.
