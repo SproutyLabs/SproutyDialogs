@@ -18,10 +18,10 @@ extends Control
 
 ## Tab icons
 @onready var tab_icons: Array[Texture2D] = [
-	preload("res://addons/graph_dialog_system/icons/Script.svg"),
-	preload("res://addons/graph_dialog_system/icons/Character.svg"),
-	preload("res://addons/graph_dialog_system/icons/Variable.svg"),
-	preload("res://addons/graph_dialog_system/icons/Settings.svg")
+	get_theme_icon('Script', 'EditorIcons'),
+	preload("res://addons/graph_dialog_system/icons/character.svg"),
+	preload("res://addons/graph_dialog_system/icons/variable.svg"),
+	preload("res://addons/graph_dialog_system/icons/settings.svg")
 ]
 
 

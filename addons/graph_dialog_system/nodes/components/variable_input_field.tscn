@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://m1gd4uysgciu"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/variable_input_field.gd" id="1_4gcwc"]
-[ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="1_msffi"]
+[ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/variable_types/bool.svg" id="1_msffi"]
 
 [node name="VariableInputField" type="Control" node_paths=PackedStringArray("_string_value", "_int_value", "_float_value", "_bool_value")]
 layout_mode = 3

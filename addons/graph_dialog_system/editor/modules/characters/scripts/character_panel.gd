@@ -28,6 +28,9 @@ signal modified
 ## Text box scene button
 @onready var _text_box_scene_button: Button = %TextBoxSceneButton
 
+## Portrait tree
+@onready var _portrait_tree: Tree = %PortraitTree
+
 ## Key name of the character (file name)
 var _key_name: String = ""
 ## Default locale for dialog text
@@ -47,6 +50,7 @@ func _ready() -> void:
 		GDialogsTranslationManager.translation_settings.connect(
 			"default_locale_changed", _on_locales_changed
 		)
+	_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 
 
 ## Get the character data from the editor
@@ -82,7 +86,7 @@ func load_character(data: Dictionary, name_data: Dictionary) -> void:
 	if data.text_box.ends_with(".tscn"):
 		_text_box_scene_button.visible = true
 	_portrait_on_text_box = data.portrait_on_text_box
-	
+
 
 #region === Character Name Translation =========================================
 
@@ -120,7 +124,7 @@ func _on_locales_changed() -> void:
 
 #endregion
 
-
+#region === Text box ===========================================================
 ## Handle the text box scene file path
 func _on_text_box_scene_path_changed(path: String) -> void:
 	if path.is_empty(): # No path selected
@@ -151,3 +155,31 @@ func _on_text_box_scene_button_pressed() -> void:
 ## Handle the text box portrait display toggle
 func _on_portrait_text_box_toggled(toggled_on: bool) -> void:
 	_portrait_on_text_box = toggled_on
+
+#endregion
+
+func _on_add_portrait_button_pressed() -> void:
+	# Open the portrait editor
+	var parent: TreeItem = _portrait_tree.get_root()
+	if _portrait_tree.get_selected():
+		if _portrait_tree.get_selected().get_metadata(0) and \
+			_portrait_tree.get_selected().get_metadata(0).has('group'):
+			parent = _portrait_tree.get_selected()
+		else:
+			parent = _portrait_tree.get_selected().get_parent()
+	var item: TreeItem = _portrait_tree.new_portrait("New Portrait", {}, parent)
+	item.set_editable(0, true)
+	item.select(0)
+
+func _on_add_folder_button_pressed() -> void:
+	# Open the portrait editor
+	var parent: TreeItem = _portrait_tree.get_root()
+	if _portrait_tree.get_selected():
+		if _portrait_tree.get_selected().get_metadata(0) and \
+			_portrait_tree.get_selected().get_metadata(0).has('group'):
+			parent = _portrait_tree.get_selected()
+		else:
+			parent = _portrait_tree.get_selected().get_parent()
+	var item: TreeItem = _portrait_tree.new_portrait_group("New Group", parent)
+	item.set_editable(0, true)
+	item.select(0)

@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="3_poal8"]
 [ext_resource type="PackedScene" uid="uid://bceidtkw07484" path="res://addons/graph_dialog_system/editor/components/folder_field.tscn" id="4_01lks"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="4_erkog"]
-[ext_resource type="Texture2D" uid="uid://duvyymvtfnkss" path="res://addons/graph_dialog_system/icons/File.svg" id="6_g5fpe"]
+[ext_resource type="Texture2D" uid="uid://duvyymvtfnkss" path="res://addons/graph_dialog_system/icons/godot/File.svg" id="6_g5fpe"]
 
 [node name="TranslationSettings" type="HSplitContainer"]
 anchors_preset = 15

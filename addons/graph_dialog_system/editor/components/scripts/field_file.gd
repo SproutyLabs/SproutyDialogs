@@ -34,6 +34,10 @@ func _ready():
 	_file_dialog.connect("file_selected", _on_file_dialog_selected)
 	_open_button.button_down.connect(_on_open_pressed)
 	_clear_button.button_up.connect(clear_path)
+
+	_open_button.icon = get_theme_icon("Folder", "EditorIcons")
+	_clear_button.icon = get_theme_icon("Clear", "EditorIcons")
+	
 	_path_field.placeholder_text = _placeholder_text
 
 

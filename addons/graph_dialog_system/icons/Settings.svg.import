@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://t7ujqvnbwl36"
-path="res://.godot/imported/Settings.svg-ba214f8316ba1b9c77f9c11622993816.ctex"
+path="res://.godot/imported/settings.svg-a2b042506d44d1c9afa433fe61627ea8.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/graph_dialog_system/icons/Settings.svg"
-dest_files=["res://.godot/imported/Settings.svg-ba214f8316ba1b9c77f9c11622993816.ctex"]
+source_file="res://addons/graph_dialog_system/icons/settings.svg"
+dest_files=["res://.godot/imported/settings.svg-a2b042506d44d1c9afa433fe61627ea8.ctex"]
 
 [params]
 

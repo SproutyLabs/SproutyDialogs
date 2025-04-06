@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://n6xtq0g0yp1m"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_05qy5"]
-[ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialog_system/icons/Script.svg" id="4_hljjc"]
+[ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialog_system/icons/nodes/Script.svg" id="4_hljjc"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/nodes/components/translations_container.tscn" id="5_kt63k"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/dialogue_node.gd" id="5_v7cqa"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/nodes/components/dialog_text_box.tscn" id="6_2llfw"]

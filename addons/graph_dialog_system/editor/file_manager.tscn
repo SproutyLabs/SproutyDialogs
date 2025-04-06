@@ -1,15 +1,15 @@
 [gd_scene load_steps=11 format=3 uid="uid://dpscdg0f7o6ft"]
 
-[ext_resource type="Texture2D" uid="uid://bwqotvkpjbndm" path="res://addons/graph_dialog_system/icons/Search.svg" id="1_1wtbh"]
+[ext_resource type="Texture2D" uid="uid://bwqotvkpjbndm" path="res://addons/graph_dialog_system/icons/godot/Search.svg" id="1_1wtbh"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/scripts/file_manager.gd" id="1_3v21c"]
-[ext_resource type="Texture2D" uid="uid://dv53yhmd7k3d5" path="res://addons/graph_dialog_system/icons/AddDialog.svg" id="2_fjick"]
-[ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/graph_dialog_system/icons/AddChar.svg" id="3_ljhu2"]
-[ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="4_2tafu"]
-[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="4_prnvu"]
-[ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/graph_dialog_system/icons/collapse-left.svg" id="8_72tq1"]
-[ext_resource type="Texture2D" uid="uid://db2rm5mxqrejo" path="res://addons/graph_dialog_system/icons/Close.svg" id="8_s6vw8"]
+[ext_resource type="Texture2D" uid="uid://dv53yhmd7k3d5" path="res://addons/graph_dialog_system/icons/add-dialog.svg" id="2_fjick"]
+[ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/graph_dialog_system/icons/add-char.svg" id="3_ljhu2"]
+[ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/godot/Save.svg" id="4_2tafu"]
+[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/godot/Folder.svg" id="4_prnvu"]
+[ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/graph_dialog_system/icons/collapse/collapse-left.svg" id="8_72tq1"]
+[ext_resource type="Texture2D" uid="uid://db2rm5mxqrejo" path="res://addons/graph_dialog_system/icons/godot/Close.svg" id="8_s6vw8"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="8_wehoa"]
-[ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialog_system/icons/collapse-right.svg" id="9_xltsg"]
+[ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialog_system/icons/collapse/collapse-right.svg" id="9_xltsg"]
 
 [node name="FileManager" type="VSplitContainer"]
 anchors_preset = 15
@@ -198,10 +198,6 @@ size = Vector2i(600, 400)
 ok_button_text = "Save"
 filters = PackedStringArray("*.json")
 
-[connection signal="pressed" from="SideBarContainer/Container/FileOptions/NewDialogButton" to="." method="_on_new_dialog_pressed"]
-[connection signal="pressed" from="SideBarContainer/Container/FileOptions/NewCharButton" to="." method="_on_new_char_pressed"]
-[connection signal="pressed" from="SideBarContainer/Container/FileOptions/OpenFileButton" to="." method="_on_open_file_pressed"]
-[connection signal="pressed" from="SideBarContainer/Container/FileOptions/SaveFileButton" to="." method="_on_save_file_pressed"]
 [connection signal="focus_exited" from="SideBarContainer/Container/FileDisplay/FileSearch" to="." method="_on_file_search_focus_exited"]
 [connection signal="text_changed" from="SideBarContainer/Container/FileDisplay/FileSearch" to="." method="_on_file_search_text_changed"]
 [connection signal="empty_clicked" from="SideBarContainer/Container/FileDisplay/FileList" to="." method="_on_empty_clicked"]

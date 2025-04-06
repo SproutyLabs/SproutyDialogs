@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://secb1eoygm27"]
 
-[ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/Save.svg" id="1_8ebfy"]
+[ext_resource type="Texture2D" uid="uid://bsllhsbt3u8y6" path="res://addons/graph_dialog_system/icons/godot/Save.svg" id="1_8ebfy"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/scripts/locales_selector.gd" id="1_ic1ok"]
 
 [node name="LocalesSelector" type="VBoxContainer" node_paths=PackedStringArray("_locales_container", "_confirm_panel")]

@@ -2,8 +2,8 @@
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_c0j14"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/scripts/folder_field.gd" id="2_h5a0n"]
-[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="3_yhf7b"]
-[ext_resource type="Texture2D" uid="uid://bnxg1gkoe3jvl" path="res://addons/graph_dialog_system/icons/Clear.svg" id="4_imvna"]
+[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/godot/Folder.svg" id="3_yhf7b"]
+[ext_resource type="Texture2D" uid="uid://bnxg1gkoe3jvl" path="res://addons/graph_dialog_system/icons/godot/Clear.svg" id="4_imvna"]
 
 [node name="FolderField" type="MarginContainer"]
 offset_right = 314.0

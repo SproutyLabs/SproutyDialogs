@@ -2,11 +2,11 @@
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_bouee"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/set_variable_node.gd" id="5_5o0bh"]
-[ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialog_system/icons/String.svg" id="5_x6wg3"]
-[ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialog_system/icons/int.svg" id="6_s4wn6"]
-[ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/graph_dialog_system/icons/EditAddRemove.svg" id="6_sx7hg"]
-[ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/bool.svg" id="6_xgw2l"]
-[ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/float.svg" id="7_u13yd"]
+[ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialog_system/icons/variable_types/String.svg" id="5_x6wg3"]
+[ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialog_system/icons/variable_types/int.svg" id="6_s4wn6"]
+[ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/graph_dialog_system/icons/nodes/EditAddRemove.svg" id="6_sx7hg"]
+[ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/variable_types/bool.svg" id="6_xgw2l"]
+[ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/variable_types/float.svg" id="7_u13yd"]
 [ext_resource type="PackedScene" uid="uid://m1gd4uysgciu" path="res://addons/graph_dialog_system/nodes/components/variable_input_field.tscn" id="8_nkflc"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0am0n"]

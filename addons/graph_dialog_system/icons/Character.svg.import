@@ -3,7 +3,7 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c80u5yueu7wit"
-path="res://.godot/imported/Character.svg-761dddcb398e913c4d483646bf9b4988.ctex"
+path="res://.godot/imported/character.svg-ba839feecda08b577eae0c23a3d4d9b4.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/graph_dialog_system/icons/Character.svg"
-dest_files=["res://.godot/imported/Character.svg-761dddcb398e913c4d483646bf9b4988.ctex"]
+source_file="res://addons/graph_dialog_system/icons/character.svg"
+dest_files=["res://.godot/imported/character.svg-ba839feecda08b577eae0c23a3d4d9b4.ctex"]
 
 [params]
 

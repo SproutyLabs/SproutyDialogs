@@ -1,9 +1,9 @@
 [gd_scene load_steps=8 format=3 uid="uid://d0gf52rcd1hn"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/character_editor.gd" id="2_8cc8c"]
-[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="2_rgiq1"]
+[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/godot/Folder.svg" id="2_rgiq1"]
 [ext_resource type="PackedScene" uid="uid://b3dunt76vknsq" path="res://addons/graph_dialog_system/editor/modules/characters/character_panel.tscn" id="3_gsk7m"]
-[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="6_ugs6n"]
+[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/godot/Add.svg" id="6_ugs6n"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7lnmp"]
 

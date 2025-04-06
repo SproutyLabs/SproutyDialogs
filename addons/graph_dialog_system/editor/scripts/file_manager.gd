@@ -25,6 +25,13 @@ enum FileType {DIALOG, CHAR}
 @onready var _side_bar_container: MarginContainer = $SideBarContainer
 ## Expand button to show the file manager
 @onready var _expand_bar: HBoxContainer = $ExpandBar
+
+## New dialog button
+@onready var _new_dialog_button: Button = %NewDialogButton
+## New character button
+@onready var _new_char_button: Button = %NewCharButton
+## Open file button
+@onready var _open_file_button: Button = %OpenFileButton
 ## Save file button
 @onready var _save_file_button: Button = %SaveFileButton
 
@@ -56,10 +63,13 @@ var _graph_scene := preload("res://addons/graph_dialog_system/editor/modules/wor
 ## Character scene reference
 var _char_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/character_panel.tscn")
 
-## Dialog file icon
-var _dialog_icon := preload("res://addons/graph_dialog_system/icons/Script.svg")
-## Character file icon
-var _char_icon := preload("res://addons/graph_dialog_system/icons/Character.svg")
+## Dialog icons
+var _dialog_icon := get_theme_icon('Script', 'EditorIcons')
+var _new_dialog_icon := preload("res://addons/graph_dialog_system/icons/add-dialog.svg")
+
+## Character icons
+var _char_icon := preload("res://addons/graph_dialog_system/icons/character.svg")
+var _new_char_icon := preload("res://addons/graph_dialog_system/icons/add-char.svg")
 
 ## Current file index
 var _current_file_index: int = -1
@@ -73,6 +83,17 @@ var _characters_count: int = 0
 
 func _ready() -> void:
 	# Connect signals
+	_new_dialog_button.connect("pressed", _on_new_dialog_pressed)
+	_new_char_button.connect("pressed", _on_new_char_pressed)
+	_open_file_button.connect("pressed", _on_open_file_pressed)
+	_save_file_button.connect("pressed", _on_save_file_pressed)
+
+	_open_file_button.icon = get_theme_icon("Folder", "EditorIcons")
+	_save_file_button.icon = get_theme_icon("Save", "EditorIcons")
+	_new_dialog_button.icon = _new_dialog_icon
+	_new_char_button.icon = _new_char_icon
+
+	# Connect dialogs signals
 	_open_file_dialog.connect("file_selected", load_file)
 	_save_file_dialog.connect("file_selected", save_file)
 	_new_dialog_file_dialog.connect("file_selected", new_dialog_file)
@@ -87,8 +108,8 @@ func _ready() -> void:
 	_csv_file_field.connect("file_path_changed", set_csv_file_to_dialog)
 	hide_csv_container() # Hide csv container on start
 	
-	_save_file_button.disabled = true # Disable save button
 	_on_expand_button_pressed() # Show the file manager on start
+	_save_file_button.disabled = true # Disable save button
 
 
 ## Open a file dialog to select a file to open
@@ -99,6 +120,7 @@ func select_file_to_open() -> void:
 ## Open a file dialog to select where create a new dialog file
 func select_new_dialog_file() -> void:
 	_new_dialog_file_dialog.popup_centered()
+
 
 ## Open a file dialog to select where create a new character file
 func select_new_character_file() -> void:

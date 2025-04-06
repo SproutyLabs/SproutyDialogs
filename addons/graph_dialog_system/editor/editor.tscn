@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/graph_dialog_system/editor/modules/workspace/workspace.tscn" id="4_yuhh0"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/graph_dialog_system/editor/modules/variables/variables_panel.tscn" id="6_4jako"]
 [ext_resource type="PackedScene" uid="uid://pdcicn3rbwbs" path="res://addons/graph_dialog_system/editor/modules/settings/settings_panel.tscn" id="7_xlq8u"]
-[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="8_h7scy"]
+[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/godot/Folder.svg" id="8_h7scy"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_peilh"]
 

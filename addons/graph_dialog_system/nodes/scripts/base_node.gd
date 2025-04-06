@@ -25,9 +25,6 @@ var node_type: String = ""
 ## Index of the node in the graph editor.
 var node_index: int = 0
 
-## Icon of the remove button.
-var _remove_icon: Texture2D = preload("res://addons/graph_dialog_system/icons/Remove.svg")
-
 
 func _ready():
 	# Set node type based on the node name
@@ -87,7 +84,7 @@ func set_node_titlebar():
 	
 	# Add remove node button
 	var remove_button = TextureButton.new()
-	remove_button.texture_normal = _remove_icon
+	remove_button.texture_normal = get_theme_icon('Remove', 'EditorIcons')
 	remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	if graph_editor: # Check if the node is in the graph editor
 		remove_button.connect("pressed", graph_editor.delete_node.bind(self))

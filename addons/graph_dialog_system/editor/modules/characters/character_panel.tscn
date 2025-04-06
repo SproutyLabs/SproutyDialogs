@@ -1,13 +1,30 @@
-[gd_scene load_steps=9 format=3 uid="uid://b3dunt76vknsq"]
+[gd_scene load_steps=15 format=3 uid="uid://b3dunt76vknsq"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_mqdqa"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/character_panel.gd" id="2_8cc8c"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/translations_container.gd" id="2_tpd02"]
-[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse-down.svg" id="3_3q8bw"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse/collapse-down.svg" id="3_3q8bw"]
 [ext_resource type="PackedScene" uid="uid://63ehl3ko3bdf" path="res://addons/graph_dialog_system/editor/components/portrait_field.tscn" id="3_j6s01"]
-[ext_resource type="Texture2D" uid="uid://c4wvkxks4rkxb" path="res://addons/graph_dialog_system/icons/PackedScene.svg" id="5_7nh8d"]
+[ext_resource type="Texture2D" uid="uid://c4wvkxks4rkxb" path="res://addons/graph_dialog_system/icons/godot/PackedScene.svg" id="5_7nh8d"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="5_x3nyu"]
-[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="6_ugs6n"]
+[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/godot/Add.svg" id="6_ugs6n"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/character_portrait_tree.gd" id="7_7kmf4"]
+[ext_resource type="Texture2D" uid="uid://bwqotvkpjbndm" path="res://addons/graph_dialog_system/icons/godot/Search.svg" id="7_s65oe"]
+[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/godot/Folder.svg" id="8_kgby8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f8fk6"]
+
+[sub_resource type="Image" id="Image_7ij2d"]
+data = {
+"data": PackedByteArray(255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 93, 93, 41, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0),
+"format": "RGBA8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_qlh3q"]
+image = SubResource("Image_7ij2d")
 
 [node name="CharacterPanel" type="HSplitContainer"]
 anchors_preset = 15
@@ -40,6 +57,7 @@ layout_mode = 2
 
 [node name="DisplayName" type="HBoxContainer" parent="CharacterSettings/Container"]
 layout_mode = 2
+tooltip_text = "The name that will be displayed for this character."
 
 [node name="Label" type="Label" parent="CharacterSettings/Container/DisplayName"]
 layout_mode = 2
@@ -51,7 +69,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
-text = "(en)"
+text = "()"
 
 [node name="NameDefaultLocaleField" type="LineEdit" parent="CharacterSettings/Container/DisplayName"]
 unique_name_in_owner = true
@@ -61,7 +79,9 @@ placeholder_text = "Insert character name..."
 
 [node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/Container"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
+tooltip_text = "Translations of the name to display."
 script = ExtResource("2_tpd02")
 useTextBoxes = false
 
@@ -92,6 +112,7 @@ layout_mode = 2
 
 [node name="Description" type="HBoxContainer" parent="CharacterSettings/Container"]
 layout_mode = 2
+tooltip_text = "It does nothing. It is for your reference only."
 
 [node name="Label" type="Label" parent="CharacterSettings/Container/Description"]
 custom_minimum_size = Vector2(100, 0)
@@ -117,6 +138,7 @@ text = "Text Box Settings"
 
 [node name="TextBox" type="HBoxContainer" parent="CharacterSettings/Container"]
 layout_mode = 2
+tooltip_text = "Scene with the text box where the text will be displayed. The root node must be a DialogBox node."
 
 [node name="Label" type="Label" parent="CharacterSettings/Container/TextBox"]
 custom_minimum_size = Vector2(100, 0)
@@ -139,6 +161,7 @@ file_filters = PackedStringArray("*.tscn")
 
 [node name="PortraitOnTextBoxToggle" type="CheckButton" parent="CharacterSettings/Container"]
 layout_mode = 2
+tooltip_text = "Select this option to display the portrait inside the text box. You need to assign a 2D Sprite node in the DialogBox node to display the portrait."
 text = "Portrait on text box"
 
 [node name="-----" type="HSeparator" parent="CharacterSettings/Container"]
@@ -157,72 +180,109 @@ icon_alignment = 2
 visible = false
 layout_mode = 2
 
-[node name="PortraitsSettings" type="VBoxContainer" parent="CharacterSettings/Container"]
+[node name="Portraits" type="VBoxContainer" parent="CharacterSettings/Container"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="TopBar" type="HBoxContainer" parent="CharacterSettings/Container/PortraitsSettings"]
+[node name="TopBar" type="HBoxContainer" parent="CharacterSettings/Container/Portraits"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterSettings/Container/PortraitsSettings/TopBar"]
+[node name="Label" type="Label" parent="CharacterSettings/Container/Portraits/TopBar"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"HeaderMedium"
 text = "Portraits"
 
-[node name="AddButton" type="Button" parent="CharacterSettings/Container/PortraitsSettings/TopBar"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CharacterSettings/Container/Portraits"]
 layout_mode = 2
-size_flags_horizontal = 10
-text = "New +"
 
-[node name="Panel" type="Panel" parent="CharacterSettings/Container/PortraitsSettings"]
+[node name="LineEdit" type="LineEdit" parent="CharacterSettings/Container/Portraits/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Filter portraits"
+right_icon = ExtResource("7_s65oe")
+
+[node name="AddPortraitButton" type="Button" parent="CharacterSettings/Container/Portraits/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+icon = ExtResource("6_ugs6n")
+icon_alignment = 2
+
+[node name="AddFolderButton" type="Button" parent="CharacterSettings/Container/Portraits/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+icon = ExtResource("8_kgby8")
+icon_alignment = 2
+
+[node name="PortraitsPanel" type="PanelContainer" parent="CharacterSettings/Container/Portraits"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_f8fk6")
 
-[node name="Container" type="VBoxContainer" parent="CharacterSettings/Container/PortraitsSettings/Panel"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="PortraitTree" type="Tree" parent="CharacterSettings/Container/Portraits/PortraitsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+allow_reselect = true
+allow_rmb_select = true
+hide_root = true
+drop_mode_flags = 3
+script = ExtResource("7_7kmf4")
 
-[node name="Header" type="HBoxContainer" parent="CharacterSettings/Container/PortraitsSettings/Panel/Container"]
+[node name="PortraitPopupMenu" type="PopupMenu" parent="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree"]
+size = Vector2i(110, 100)
+visible = true
+unfocusable = true
+item_count = 3
+item_0/text = "Rename"
+item_0/icon = SubResource("ImageTexture_qlh3q")
+item_1/text = "Duplicate"
+item_1/icon = SubResource("ImageTexture_qlh3q")
+item_1/id = 1
+item_2/text = "Remove"
+item_2/icon = SubResource("ImageTexture_qlh3q")
+item_2/id = 2
+
+[node name="Container" type="VBoxContainer" parent="CharacterSettings/Container/Portraits/PortraitsPanel"]
+visible = false
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="CharacterSettings/Container/PortraitsSettings/Panel/Container/Header"]
+[node name="Header" type="HBoxContainer" parent="CharacterSettings/Container/Portraits/PortraitsPanel/Container"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="CharacterSettings/Container/Portraits/PortraitsPanel/Container/Header"]
 custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Name"
 horizontal_alignment = 1
 
-[node name="VSeparator" type="VSeparator" parent="CharacterSettings/Container/PortraitsSettings/Panel/Container/Header"]
+[node name="VSeparator" type="VSeparator" parent="CharacterSettings/Container/Portraits/PortraitsPanel/Container/Header"]
 layout_mode = 2
 
-[node name="ImageLabel" type="Label" parent="CharacterSettings/Container/PortraitsSettings/Panel/Container/Header"]
+[node name="ImageLabel" type="Label" parent="CharacterSettings/Container/Portraits/PortraitsPanel/Container/Header"]
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 0
 text = "Image"
 
-[node name="HSeparator" type="HSeparator" parent="CharacterSettings/Container/PortraitsSettings/Panel/Container"]
+[node name="HSeparator" type="HSeparator" parent="CharacterSettings/Container/Portraits/PortraitsPanel/Container"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CharacterSettings/Container/PortraitsSettings/Panel/Container"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CharacterSettings/Container/Portraits/PortraitsPanel/Container"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CharacterSettings/Container/PortraitsSettings/Panel/Container/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CharacterSettings/Container/Portraits/PortraitsPanel/Container/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="PortraitField" parent="CharacterSettings/Container/PortraitsSettings/Panel/Container/ScrollContainer/VBoxContainer" instance=ExtResource("3_j6s01")]
+[node name="PortraitField" parent="CharacterSettings/Container/Portraits/PortraitsPanel/Container/ScrollContainer/VBoxContainer" instance=ExtResource("3_j6s01")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterSettings/Container/PortraitsSettings/Panel/Container/ScrollContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="CharacterSettings/Container/Portraits/PortraitsPanel/Container/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
@@ -240,6 +300,17 @@ layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Portrait Settings"
 
+[node name="PortraitImage" type="HBoxContainer" parent="PortraitSettings/Container"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PortraitSettings/Container/PortraitImage"]
+layout_mode = 2
+text = "Portrait Image"
+
+[node name="FileField" parent="PortraitSettings/Container/PortraitImage" instance=ExtResource("5_x3nyu")]
+layout_mode = 2
+size_flags_horizontal = 3
+
 [node name="PortraitDisplay" type="HBoxContainer" parent="PortraitSettings/Container"]
 layout_mode = 2
 
@@ -250,6 +321,7 @@ text = "Portrait Display"
 [node name="FileField" parent="PortraitSettings/Container/PortraitDisplay" instance=ExtResource("5_x3nyu")]
 layout_mode = 2
 size_flags_horizontal = 3
+_placeholder_text = "Select a scene..."
 
 [node name="---" type="HSeparator" parent="PortraitSettings/Container"]
 layout_mode = 2
@@ -285,19 +357,6 @@ pivot_offset = Vector2(20, 20)
 [node name="Sprite2D" type="Sprite2D" parent="PortraitSettings/Container/PortraitPreview/Panel/Control"]
 position = Vector2(20, 20)
 texture = ExtResource("6_ugs6n")
-
-[node name="PortraitImage" type="HBoxContainer" parent="PortraitSettings/Container"]
-visible = false
-layout_mode = 2
-
-[node name="Label" type="Label" parent="PortraitSettings/Container/PortraitImage"]
-layout_mode = 2
-text = "Image"
-
-[node name="FileField" parent="PortraitSettings/Container/PortraitImage" instance=ExtResource("5_x3nyu")]
-layout_mode = 2
-size_flags_horizontal = 3
-_placeholder_text = "Select a scene..."
 
 [node name="ExpandImageSettingsButton" type="Button" parent="PortraitSettings/Container"]
 layout_mode = 2
@@ -375,3 +434,5 @@ layout_mode = 2
 [connection signal="pressed" from="CharacterSettings/Container/TextBox/TextBoxSceneButton" to="." method="_on_text_box_scene_button_pressed"]
 [connection signal="file_path_changed" from="CharacterSettings/Container/TextBox/TextBoxSceneFile" to="." method="_on_text_box_scene_path_changed"]
 [connection signal="toggled" from="CharacterSettings/Container/PortraitOnTextBoxToggle" to="." method="_on_portrait_text_box_toggled"]
+[connection signal="pressed" from="CharacterSettings/Container/Portraits/HBoxContainer/AddPortraitButton" to="." method="_on_add_portrait_button_pressed"]
+[connection signal="pressed" from="CharacterSettings/Container/Portraits/HBoxContainer/AddFolderButton" to="." method="_on_add_folder_button_pressed"]

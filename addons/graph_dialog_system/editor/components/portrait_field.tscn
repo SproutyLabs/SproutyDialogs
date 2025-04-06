@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://63ehl3ko3bdf"]
 
-[ext_resource type="Texture2D" uid="uid://cctr0cmrj70nc" path="res://addons/graph_dialog_system/icons/Remove.svg" id="1_kaqbm"]
-[ext_resource type="Texture2D" uid="uid://c80u5yueu7wit" path="res://addons/graph_dialog_system/icons/Character.svg" id="1_vobf8"]
+[ext_resource type="Texture2D" uid="uid://cctr0cmrj70nc" path="res://addons/graph_dialog_system/icons/godot/Remove.svg" id="1_kaqbm"]
+[ext_resource type="Texture2D" uid="uid://c80u5yueu7wit" path="res://addons/graph_dialog_system/icons/character.svg" id="1_vobf8"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="2_brfol"]
 
 [node name="FieldPortrait" type="MarginContainer"]

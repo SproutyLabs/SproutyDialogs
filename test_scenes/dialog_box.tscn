@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dkstwkk3tuecx"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/utils/dialog_box.gd" id="1_7xa8g"]
-[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse-down.svg" id="2_1untp"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse/collapse-down.svg" id="2_1untp"]
 
 [node name="DialogBox" type="Panel" node_paths=PackedStringArray("name_display", "dialog_display", "continue_indicator")]
 custom_minimum_size = Vector2(600, 150)

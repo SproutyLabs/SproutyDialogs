@@ -2,8 +2,8 @@
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_1tvdf"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/workspace.gd" id="2_yu0sn"]
-[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/Folder.svg" id="3_7hlaj"]
-[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/Add.svg" id="4_t0wwf"]
+[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/godot/Folder.svg" id="3_7hlaj"]
+[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/godot/Add.svg" id="4_t0wwf"]
 [ext_resource type="PackedScene" uid="uid://cr20rw0unyne0" path="res://addons/graph_dialog_system/editor/modules/workspace/graph.tscn" id="5_yj855"]
 [ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialog_system/editor/modules/workspace/text_editor.tscn" id="6_00hgx"]
 

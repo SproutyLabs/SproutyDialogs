@@ -42,8 +42,8 @@ var _current_option_bar: Control = null
 var _opened_text_box: TextEdit
 
 ## Expand and collapse icons
-var expand_icon: Texture = preload("res://addons/graph_dialog_system/icons/collapse-up.svg")
-var collapse_icon: Texture = preload("res://addons/graph_dialog_system/icons/collapse-down.svg")
+var expand_icon: Texture = preload("res://addons/graph_dialog_system/icons/collapse/collapse-up.svg")
+var collapse_icon: Texture = preload("res://addons/graph_dialog_system/icons/collapse/collapse-down.svg")
 
 
 func _ready():

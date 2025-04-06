@@ -29,6 +29,9 @@ func _ready():
 	_open_button.button_down.connect(_on_open_pressed)
 	_clear_button.button_up.connect(clear_path)
 
+	_open_button.icon = get_theme_icon("Folder", "EditorIcons")
+	_clear_button.icon = get_theme_icon("Clear", "EditorIcons")
+
 
 ## Get the current value of the field.
 func get_value() -> String:
