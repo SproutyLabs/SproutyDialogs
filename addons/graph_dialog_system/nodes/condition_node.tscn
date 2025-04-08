@@ -1,12 +1,12 @@
 [gd_scene load_steps=11 format=3 uid="uid://wex81cyrw24j"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_8k3p6"]
-[ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialog_system/icons/nodes/AnimationTrackGroup.svg" id="3_7frl5"]
+[ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialog_system/icons/nodes/condition.svg" id="3_7frl5"]
 [ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialog_system/icons/variable_types/String.svg" id="5_5hpwr"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/condition_node.gd" id="5_swe6e"]
 [ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialog_system/icons/variable_types/int.svg" id="6_ug6l5"]
 [ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/variable_types/float.svg" id="7_gelaf"]
-[ext_resource type="PackedScene" uid="uid://m1gd4uysgciu" path="res://addons/graph_dialog_system/nodes/components/variable_input_field.tscn" id="8_aiasw"]
+[ext_resource type="PackedScene" uid="uid://m1gd4uysgciu" path="res://addons/graph_dialog_system/editor/components/variable_input_field.tscn" id="8_aiasw"]
 [ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/variable_types/bool.svg" id="8_tn2oy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avnbs"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://csswxs6vp2557"]
 
-[ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/components/scripts/translation_box.gd" id="1_4gyl1"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/scripts/translation_box.gd" id="1_4gyl1"]
 
 [node name="TranslationLine" type="HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)

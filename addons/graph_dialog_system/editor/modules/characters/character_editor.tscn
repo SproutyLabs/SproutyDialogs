@@ -1,9 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://d0gf52rcd1hn"]
+[gd_scene load_steps=6 format=3 uid="uid://d0gf52rcd1hn"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/character_editor.gd" id="2_8cc8c"]
-[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/godot/Folder.svg" id="2_rgiq1"]
 [ext_resource type="PackedScene" uid="uid://b3dunt76vknsq" path="res://addons/graph_dialog_system/editor/modules/characters/character_panel.tscn" id="3_gsk7m"]
-[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/godot/Add.svg" id="6_ugs6n"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7lnmp"]
 
@@ -56,20 +54,20 @@ autowrap_mode = 0
 layout_mode = 2
 alignment = 1
 
-[node name="NewCharacterFile" type="Button" parent="EmptyPanel/Container/ButtonsContainer"]
+[node name="NewCharacterButton" type="Button" parent="EmptyPanel/Container/ButtonsContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "New Character"
-icon = ExtResource("6_ugs6n")
 
-[node name="OpenCharacterFile" type="Button" parent="EmptyPanel/Container/ButtonsContainer"]
+[node name="OpenCharacterButton" type="Button" parent="EmptyPanel/Container/ButtonsContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Open Character"
-icon = ExtResource("2_rgiq1")
 
 [node name="CharacterPanel" parent="." instance=ExtResource("3_gsk7m")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[connection signal="pressed" from="EmptyPanel/Container/ButtonsContainer/NewCharacterFile" to="." method="_on_new_character_file_pressed"]
-[connection signal="pressed" from="EmptyPanel/Container/ButtonsContainer/OpenCharacterFile" to="." method="_on_open_character_file_pressed"]
+[connection signal="pressed" from="EmptyPanel/Container/ButtonsContainer/NewCharacterButton" to="." method="_on_new_character_file_pressed"]
+[connection signal="pressed" from="EmptyPanel/Container/ButtonsContainer/OpenCharacterButton" to="." method="_on_open_character_file_pressed"]

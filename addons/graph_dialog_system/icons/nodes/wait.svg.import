@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdnfwcuasgtqk"
-path="res://.godot/imported/play.svg-9424c8b4fb3a0e52e613e4004fde3e38.ctex"
+uid="uid://me1oaiuyigif"
+path="res://.godot/imported/wait.svg-9d29d7a7547de67652fa8513e86e4934.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/graph_dialog_system/icons/nodes/play.svg"
-dest_files=["res://.godot/imported/play.svg-9424c8b4fb3a0e52e613e4004fde3e38.ctex"]
+source_file="res://addons/graph_dialog_system/icons/nodes/wait.svg"
+dest_files=["res://.godot/imported/wait.svg-9d29d7a7547de67652fa8513e86e4934.ctex"]
 
 [params]
 

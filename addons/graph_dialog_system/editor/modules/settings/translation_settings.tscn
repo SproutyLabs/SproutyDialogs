@@ -1,11 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://bk5rchg4mt0js"]
+[gd_scene load_steps=6 format=3 uid="uid://bk5rchg4mt0js"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/settings/scripts/translation_settings.gd" id="1_dnk3v"]
-[ext_resource type="PackedScene" uid="uid://secb1eoygm27" path="res://addons/graph_dialog_system/editor/components/locales_selector.tscn" id="2_qh116"]
+[ext_resource type="PackedScene" uid="uid://secb1eoygm27" path="res://addons/graph_dialog_system/editor/modules/settings/locales_selector.tscn" id="2_qh116"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="3_poal8"]
 [ext_resource type="PackedScene" uid="uid://bceidtkw07484" path="res://addons/graph_dialog_system/editor/components/folder_field.tscn" id="4_01lks"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="4_erkog"]
-[ext_resource type="Texture2D" uid="uid://duvyymvtfnkss" path="res://addons/graph_dialog_system/icons/godot/File.svg" id="6_g5fpe"]
 
 [node name="TranslationSettings" type="HSplitContainer"]
 anchors_preset = 15
@@ -39,8 +38,12 @@ text = "Default Locale"
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
-item_count = 1
+item_count = 3
 popup/item_0/text = "en"
+popup/item_1/text = "es"
+popup/item_1/id = 1
+popup/item_2/text = "ja"
+popup/item_2/id = 2
 
 [node name="TestingLocale" type="HBoxContainer" parent="LocalesSettings/Container"]
 unique_name_in_owner = true
@@ -54,8 +57,12 @@ text = "Testing Locale"
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
-item_count = 1
+item_count = 3
 popup/item_0/text = "en"
+popup/item_1/text = "es"
+popup/item_1/id = 1
+popup/item_2/text = "ja"
+popup/item_2/id = 2
 
 [node name="HSeparator" type="HSeparator" parent="LocalesSettings/Container"]
 layout_mode = 2
@@ -108,7 +115,6 @@ file_filters = PackedStringArray("*.csv")
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Collect Translations"
-icon = ExtResource("6_g5fpe")
 
 [connection signal="item_selected" from="LocalesSettings/Container/DefaultLocale/OptionButton" to="." method="_on_default_locale_selected"]
 [connection signal="item_selected" from="LocalesSettings/Container/TestingLocale/OptionButton" to="." method="_on_testing_locale_selected"]

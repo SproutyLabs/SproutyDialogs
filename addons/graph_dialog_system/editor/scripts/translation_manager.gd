@@ -9,7 +9,7 @@ extends Resource
 ## -----------------------------------------------------------------------------
 
 ## Path to the translation settings data
-const DATA_PATH = "res://addons/graph_dialog_system/editor/modules/settings/data/translation_settings.json"
+const DATA_PATH = "res://addons/graph_dialog_system/settings/translation_settings.json"
 const DEFAULT_CHAR_NAMES_CSV = "character_names.csv"
 
 ## Translation settings container

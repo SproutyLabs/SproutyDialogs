@@ -1,0 +1,30 @@
+[gd_scene load_steps=3 format=3 uid="uid://cs6visnc0puc3"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/scripts/translation_box.gd" id="1_6gyal"]
+[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/editor/components/dialog_text_box.tscn" id="1_iud00"]
+
+[node name="TranslationBox" type="VBoxContainer"]
+custom_minimum_size = Vector2(150, 0)
+offset_right = 92.0
+offset_bottom = 127.0
+size_flags_vertical = 3
+script = ExtResource("1_6gyal")
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LanguageLabel" type="Label" parent="Header"]
+layout_mode = 2
+text = "Español"
+
+[node name="CodeLabel" type="Label" parent="Header"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
+text = "(Es)"
+horizontal_alignment = 2
+
+[node name="TextBox" parent="." instance=ExtResource("1_iud00")]
+layout_mode = 2

@@ -1,9 +1,9 @@
 [gd_scene load_steps=40 format=3 uid="uid://deethj56qlsml"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor.gd" id="1_v143h"]
-[ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialog_system/icons/collapse/collapse-right.svg" id="2_bd7d8"]
-[ext_resource type="CodeHighlighter" uid="uid://dfy2njb4ljtel" path="res://addons/graph_dialog_system/nodes/components/code_highlighter.tres" id="3_3nqnv"]
-[ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/nodes/Play.svg" id="3_b12sr"]
+[ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialog_system/icons/interactable/collapse-right.svg" id="2_bd7d8"]
+[ext_resource type="CodeHighlighter" uid="uid://dfy2njb4ljtel" path="res://addons/graph_dialog_system/editor/modules/workspace/code_highlighter.tres" id="3_3nqnv"]
+[ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialog_system/icons/nodes/play.svg" id="3_b12sr"]
 [ext_resource type="Texture2D" uid="uid://ban62atjybm0o" path="res://addons/graph_dialog_system/icons/text_editor/text-bold.svg" id="4_8loe6"]
 [ext_resource type="Texture2D" uid="uid://cag0gxuqt8qwx" path="res://addons/graph_dialog_system/icons/text_editor/text-italic.svg" id="5_gd2p5"]
 [ext_resource type="Texture2D" uid="uid://cos8i403ptej5" path="res://addons/graph_dialog_system/icons/text_editor/text-underline.svg" id="6_3impe"]
@@ -18,7 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://dmdfwuf3oh2vu" path="res://addons/graph_dialog_system/icons/text_editor/link.svg" id="12_cel0j"]
 [ext_resource type="Texture2D" uid="uid://tg3lusr7qynj" path="res://addons/graph_dialog_system/icons/text_editor/text-align-right.svg" id="13_lr516"]
 [ext_resource type="Texture2D" uid="uid://by1ux7iacms26" path="res://addons/graph_dialog_system/icons/variable.svg" id="13_m5lcx"]
-[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialog_system/icons/godot/image.svg" id="13_r6en5"]
+[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialog_system/icons/text_editor/image.svg" id="13_r6en5"]
 [ext_resource type="Texture2D" uid="uid://dmacl3fimk34t" path="res://addons/graph_dialog_system/icons/text_editor/text-align-justify.svg" id="14_vanot"]
 [ext_resource type="Texture2D" uid="uid://3ygkqeueqkrd" path="res://addons/graph_dialog_system/icons/text_editor/magic-wand.svg" id="18_do7oi"]
 [ext_resource type="Texture2D" uid="uid://5g3wml1xcuwa" path="res://addons/graph_dialog_system/icons/text_editor/rainbow.svg" id="19_djbmw"]
@@ -35,8 +35,8 @@
 [ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialog_system/icons/variable_types/float.svg" id="27_taqqf"]
 [ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialog_system/icons/variable_types/bool.svg" id="28_5tt54"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/text_editor/text_editor_images.gd" id="28_qnqd5"]
-[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/collapse/collapse-down.svg" id="32_hkfxn"]
-[ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/graph_dialog_system/icons/collapse/collapse-up.svg" id="37_phbom"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/interactable/collapse-down.svg" id="32_hkfxn"]
+[ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/graph_dialog_system/icons/interactable/collapse-up.svg" id="37_phbom"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_am7i6"]
 

@@ -1,9 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://bo8iha2w2kgt5"]
+[gd_scene load_steps=7 format=3 uid="uid://bo8iha2w2kgt5"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_1tvdf"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/workspace/scripts/workspace.gd" id="2_yu0sn"]
-[ext_resource type="Texture2D" uid="uid://y4axxgwk17jl" path="res://addons/graph_dialog_system/icons/godot/Folder.svg" id="3_7hlaj"]
-[ext_resource type="Texture2D" uid="uid://brssa48gtjult" path="res://addons/graph_dialog_system/icons/godot/Add.svg" id="4_t0wwf"]
 [ext_resource type="PackedScene" uid="uid://cr20rw0unyne0" path="res://addons/graph_dialog_system/editor/modules/workspace/graph.tscn" id="5_yj855"]
 [ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialog_system/editor/modules/workspace/text_editor.tscn" id="6_00hgx"]
 
@@ -56,15 +54,15 @@ autowrap_mode = 0
 layout_mode = 2
 alignment = 1
 
-[node name="NewDialogFile" type="Button" parent="EmptyPanel/Container/ButtonsContainer"]
+[node name="NewDialogButton" type="Button" parent="EmptyPanel/Container/ButtonsContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "New Dialog"
-icon = ExtResource("4_t0wwf")
 
-[node name="OpenDialogFile" type="Button" parent="EmptyPanel/Container/ButtonsContainer"]
+[node name="OpenDialogButton" type="Button" parent="EmptyPanel/Container/ButtonsContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Open Dialog"
-icon = ExtResource("3_7hlaj")
 
 [node name="GraphEditor" type="Panel" parent="."]
 visible = false
@@ -77,5 +75,5 @@ layout_mode = 1
 [node name="TextEditor" parent="." instance=ExtResource("6_00hgx")]
 layout_mode = 2
 
-[connection signal="pressed" from="EmptyPanel/Container/ButtonsContainer/NewDialogFile" to="." method="_on_new_dialog_file_pressed"]
-[connection signal="pressed" from="EmptyPanel/Container/ButtonsContainer/OpenDialogFile" to="." method="_on_open_dialog_file_pressed"]
+[connection signal="pressed" from="EmptyPanel/Container/ButtonsContainer/NewDialogButton" to="." method="_on_new_dialog_file_pressed"]
+[connection signal="pressed" from="EmptyPanel/Container/ButtonsContainer/OpenDialogButton" to="." method="_on_open_dialog_file_pressed"]

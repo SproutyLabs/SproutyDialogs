@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_j2rs0"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/nodes/scripts/signal_node.gd" id="5_vbbrw"]
-[ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialog_system/icons/Signals.svg" id="6_b1lau"]
+[ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialog_system/icons/nodes/signal.svg" id="6_b1lau"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ee2or"]
 content_margin_left = 4.0

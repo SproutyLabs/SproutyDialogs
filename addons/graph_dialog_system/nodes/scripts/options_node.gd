@@ -8,11 +8,12 @@ extends BaseNode
 ## -----------------------------------------------------------------------------
 
 ## Option container template
-@onready var option_scene: PackedScene = preload("res://addons/graph_dialog_system/nodes/components/option_container.tscn")
+@onready var option_scene := preload("res://addons/graph_dialog_system/editor/components/option_container.tscn")
 
 
 func _ready():
-	super()
+	super ()
+	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
 
 
 func get_data() -> Dictionary:

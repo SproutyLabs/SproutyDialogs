@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2yssuibgdpbd"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/scripts/option_container.gd" id="1_csyed"]
+[ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialog_system/editor/components/translations_container.tscn" id="2_6k3ms"]
+[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialog_system/icons/text_editor/image.svg" id="2_gt7wu"]
+[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialog_system/editor/components/dialog_text_box.tscn" id="3_5qfnu"]
+
+[node name="OptionContainer" type="VBoxContainer"]
+script = ExtResource("1_csyed")
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="OptionHeader" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="OptionLabel" type="Label" parent="OptionHeader"]
+layout_mode = 2
+text = "Option #1"
+
+[node name="LanguageLabel" type="Label" parent="OptionHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
+text = "(En)"
+
+[node name="RemoveButton" type="Button" parent="OptionHeader"]
+layout_mode = 2
+icon = ExtResource("2_gt7wu")
+flat = true
+
+[node name="DialogueTextBox" parent="." instance=ExtResource("3_5qfnu")]
+layout_mode = 2
+
+[node name="TranslationsContainer" parent="." instance=ExtResource("2_6k3ms")]
+layout_mode = 2

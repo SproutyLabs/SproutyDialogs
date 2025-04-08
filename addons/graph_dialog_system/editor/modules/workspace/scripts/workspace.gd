@@ -23,6 +23,8 @@ extends HSplitContainer
 
 func _ready() -> void:
 	show_start_panel()
+	%NewDialogButton.icon = get_theme_icon("Add", "EditorIcons")
+	%OpenDialogButton.icon = get_theme_icon("Folder", "EditorIcons")
 
 
 #region === Graph Editor =======================================================

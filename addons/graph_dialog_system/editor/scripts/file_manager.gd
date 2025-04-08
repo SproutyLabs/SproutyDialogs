@@ -83,31 +83,36 @@ var _characters_count: int = 0
 
 func _ready() -> void:
 	# Connect signals
+	_csv_file_field.connect("file_path_changed", set_csv_file_to_dialog)
 	_new_dialog_button.connect("pressed", _on_new_dialog_pressed)
 	_new_char_button.connect("pressed", _on_new_char_pressed)
 	_open_file_button.connect("pressed", _on_open_file_pressed)
 	_save_file_button.connect("pressed", _on_save_file_pressed)
 
+	_open_file_dialog.connect("file_selected", load_file)
+	_save_file_dialog.connect("file_selected", save_file)
+	_new_dialog_file_dialog.connect("file_selected", new_dialog_file)
+	_new_char_file_dialog.connect("file_selected", new_character_file)
+
+	# Set icons for buttons
+	_file_popup_menu.set_item_icon(0, get_theme_icon("Save", "EditorIcons"))
+	_file_popup_menu.set_item_icon(1, get_theme_icon("Save", "EditorIcons"))
+	_file_popup_menu.set_item_icon(3, get_theme_icon("Close", "EditorIcons"))
+	_file_popup_menu.set_item_icon(4, get_theme_icon("Close", "EditorIcons"))
+
+	_file_search.right_icon = get_theme_icon("Search", "EditorIcons")
 	_open_file_button.icon = get_theme_icon("Folder", "EditorIcons")
 	_save_file_button.icon = get_theme_icon("Save", "EditorIcons")
 	_new_dialog_button.icon = _new_dialog_icon
 	_new_char_button.icon = _new_char_icon
 
-	# Connect dialogs signals
-	_open_file_dialog.connect("file_selected", load_file)
-	_save_file_dialog.connect("file_selected", save_file)
-	_new_dialog_file_dialog.connect("file_selected", new_dialog_file)
-	_new_char_file_dialog.connect("file_selected", new_character_file)
-	
 	# Set confirm closing dialog actions
 	_confirm_close_dialog.get_ok_button().hide()
 	_confirm_close_dialog.add_button('Save', true, 'save_file')
 	_confirm_close_dialog.add_button('Discard', true, 'discard_file')
 	_confirm_close_dialog.add_cancel_button('Cancel')
 	
-	_csv_file_field.connect("file_path_changed", set_csv_file_to_dialog)
 	hide_csv_container() # Hide csv container on start
-	
 	_on_expand_button_pressed() # Show the file manager on start
 	_save_file_button.disabled = true # Disable save button
 
@@ -676,14 +681,16 @@ func _on_file_search_focus_exited() -> void:
 
 ## Collapse the file manager
 func _on_close_button_pressed() -> void:
-	get_parent().collapsed = true
-	_side_bar_container.hide()
-	_expand_bar.show()
+	if get_parent() is SplitContainer:
+		get_parent().collapsed = true
+		_side_bar_container.hide()
+		_expand_bar.show()
 
 
 ## Expand the file manager
 func _on_expand_button_pressed() -> void:
-	get_parent().collapsed = false
-	_side_bar_container.show()
-	_expand_bar.hide()
+	if get_parent() is SplitContainer:
+		get_parent().collapsed = false
+		_side_bar_container.show()
+		_expand_bar.hide()
 #endregion

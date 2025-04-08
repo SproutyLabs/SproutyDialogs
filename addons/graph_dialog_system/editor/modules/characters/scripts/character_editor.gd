@@ -9,6 +9,8 @@ extends PanelContainer
 
 func _ready() -> void:
 	show_start_panel()
+	%NewCharacterButton.icon = get_theme_icon("Add", "EditorIcons")
+	%OpenCharacterButton.icon = get_theme_icon("Folder", "EditorIcons")
 
 
 ## Get the current character editor panel

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dpmnyxltkkjsq"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_j5uel"]
-[ext_resource type="PackedScene" uid="uid://dols4gqjh3n6g" path="res://addons/graph_dialog_system/editor/components/variable_field.tscn" id="2_1ethk"]
+[ext_resource type="PackedScene" uid="uid://dols4gqjh3n6g" path="res://addons/graph_dialog_system/editor/modules/variables/variable_field.tscn" id="2_1ethk"]
 
 [node name="VariablesPanel" type="HSplitContainer"]
 anchors_preset = 15

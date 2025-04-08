@@ -30,6 +30,12 @@ signal modified
 
 ## Portrait tree
 @onready var _portrait_tree: Tree = %PortraitTree
+## Portrait tree search bar
+@onready var _portrait_search_bar: LineEdit = %PortraitSearchBar
+## Add portrait button
+@onready var _add_portrait_button: Button = %AddPortraitButton
+## Add folder button
+@onready var _add_folder_button: Button = %AddFolderButton
 
 ## Key name of the character (file name)
 var _key_name: String = ""
@@ -51,6 +57,9 @@ func _ready() -> void:
 			"default_locale_changed", _on_locales_changed
 		)
 	_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
+	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
+	_add_portrait_button.icon = get_theme_icon("Add", "EditorIcons")
+	_add_folder_button.icon = get_theme_icon("Folder", "EditorIcons")
 
 
 ## Get the character data from the editor
