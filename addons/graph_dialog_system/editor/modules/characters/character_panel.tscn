@@ -8,7 +8,7 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/character_portrait_tree.gd" id="7_7kmf4"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialog_system/icons/text_editor/image.svg" id="7_60od3"]
 
-[sub_resource type="Image" id="Image_747xw"]
+[sub_resource type="Image" id="Image_ajdfl"]
 data = {
 "data": PackedByteArray(255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 93, 93, 41, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0),
 "format": "RGBA8",
@@ -17,8 +17,8 @@ data = {
 "width": 16
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_yb3bo"]
-image = SubResource("Image_747xw")
+[sub_resource type="ImageTexture" id="ImageTexture_h1qni"]
+image = SubResource("Image_ajdfl")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f8fk6"]
 
@@ -145,7 +145,7 @@ text = "Text Box"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-icon = SubResource("ImageTexture_yb3bo")
+icon = SubResource("ImageTexture_h1qni")
 
 [node name="TextBoxSceneFile" parent="CharacterSettings/Container/TextBox" instance=ExtResource("5_x3nyu")]
 unique_name_in_owner = true
@@ -155,6 +155,7 @@ _placeholder_text = "Select a scene..."
 file_filters = PackedStringArray("*.tscn")
 
 [node name="PortraitOnTextBoxToggle" type="CheckButton" parent="CharacterSettings/Container"]
+unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Select this option to display the portrait inside the text box. You need to assign a 2D Sprite node in the DialogBox node to display the portrait."
 text = "Portrait on text box"
@@ -196,20 +197,20 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search portraits..."
-right_icon = SubResource("ImageTexture_yb3bo")
+right_icon = SubResource("ImageTexture_h1qni")
 
 [node name="AddPortraitButton" type="Button" parent="CharacterSettings/Container/Portraits/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
-icon = SubResource("ImageTexture_yb3bo")
+icon = SubResource("ImageTexture_h1qni")
 icon_alignment = 2
 
 [node name="AddFolderButton" type="Button" parent="CharacterSettings/Container/Portraits/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
-icon = SubResource("ImageTexture_yb3bo")
+icon = SubResource("ImageTexture_h1qni")
 icon_alignment = 2
 
 [node name="PortraitsPanel" type="PanelContainer" parent="CharacterSettings/Container/Portraits"]
@@ -228,16 +229,14 @@ script = ExtResource("7_7kmf4")
 
 [node name="PortraitPopupMenu" type="PopupMenu" parent="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree"]
 size = Vector2i(110, 100)
-visible = true
-unfocusable = true
 item_count = 3
 item_0/text = "Rename"
-item_0/icon = SubResource("ImageTexture_yb3bo")
+item_0/icon = SubResource("ImageTexture_h1qni")
 item_1/text = "Duplicate"
-item_1/icon = SubResource("ImageTexture_yb3bo")
+item_1/icon = SubResource("ImageTexture_h1qni")
 item_1/id = 1
 item_2/text = "Remove"
-item_2/icon = SubResource("ImageTexture_yb3bo")
+item_2/icon = SubResource("ImageTexture_h1qni")
 item_2/id = 2
 
 [node name="PortraitSettings" type="MarginContainer" parent="."]
@@ -388,3 +387,7 @@ layout_mode = 2
 [connection signal="toggled" from="CharacterSettings/Container/PortraitOnTextBoxToggle" to="." method="_on_portrait_text_box_toggled"]
 [connection signal="pressed" from="CharacterSettings/Container/Portraits/HBoxContainer/AddPortraitButton" to="." method="_on_add_portrait_button_pressed"]
 [connection signal="pressed" from="CharacterSettings/Container/Portraits/HBoxContainer/AddFolderButton" to="." method="_on_add_folder_button_pressed"]
+[connection signal="button_clicked" from="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" to="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_item_button_clicked"]
+[connection signal="item_edited" from="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" to="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_item_edited"]
+[connection signal="item_mouse_selected" from="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" to="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_item_mouse_selected"]
+[connection signal="id_pressed" from="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree/PortraitPopupMenu" to="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_popup_menu_id_pressed"]

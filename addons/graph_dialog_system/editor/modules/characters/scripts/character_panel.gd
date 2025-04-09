@@ -32,10 +32,6 @@ signal modified
 @onready var _portrait_tree: Tree = %PortraitTree
 ## Portrait tree search bar
 @onready var _portrait_search_bar: LineEdit = %PortraitSearchBar
-## Add portrait button
-@onready var _add_portrait_button: Button = %AddPortraitButton
-## Add folder button
-@onready var _add_folder_button: Button = %AddFolderButton
 
 ## Key name of the character (file name)
 var _key_name: String = ""
@@ -58,8 +54,13 @@ func _ready() -> void:
 		)
 	_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
-	_add_portrait_button.icon = get_theme_icon("Add", "EditorIcons")
-	_add_folder_button.icon = get_theme_icon("Folder", "EditorIcons")
+	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
+	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
+
+
+## Emit the modified signal
+func on_modified():
+	modified.emit()
 
 
 ## Get the character data from the editor
@@ -95,6 +96,7 @@ func load_character(data: Dictionary, name_data: Dictionary) -> void:
 	if data.text_box.ends_with(".tscn"):
 		_text_box_scene_button.visible = true
 	_portrait_on_text_box = data.portrait_on_text_box
+	%PortraitOnTextBoxToggle.button_pressed = _portrait_on_text_box
 
 
 #region === Character Name Translation =========================================
@@ -134,12 +136,14 @@ func _on_locales_changed() -> void:
 #endregion
 
 #region === Text box ===========================================================
+
 ## Handle the text box scene file path
 func _on_text_box_scene_path_changed(path: String) -> void:
 	if path.is_empty(): # No path selected
 		_text_box_scene_button.visible = false
 	elif path.ends_with(".tscn"):
 		_text_box_scene_button.visible = true # Valid path
+	on_modified()
 
 
 ## Open a scene in the editor
@@ -164,11 +168,14 @@ func _on_text_box_scene_button_pressed() -> void:
 ## Handle the text box portrait display toggle
 func _on_portrait_text_box_toggled(toggled_on: bool) -> void:
 	_portrait_on_text_box = toggled_on
+	on_modified()
 
 #endregion
 
+#region === Portrait Tree ======================================================
+
+## Add a new portrait to the tree
 func _on_add_portrait_button_pressed() -> void:
-	# Open the portrait editor
 	var parent: TreeItem = _portrait_tree.get_root()
 	if _portrait_tree.get_selected():
 		if _portrait_tree.get_selected().get_metadata(0) and \
@@ -180,8 +187,9 @@ func _on_add_portrait_button_pressed() -> void:
 	item.set_editable(0, true)
 	item.select(0)
 
+
+## Add a new portrait group to the tree
 func _on_add_folder_button_pressed() -> void:
-	# Open the portrait editor
 	var parent: TreeItem = _portrait_tree.get_root()
 	if _portrait_tree.get_selected():
 		if _portrait_tree.get_selected().get_metadata(0) and \
