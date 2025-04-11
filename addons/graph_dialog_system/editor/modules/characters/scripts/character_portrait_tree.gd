@@ -1,6 +1,13 @@
 @tool
 extends Tree
 
+## -----------------------------------------------------------------------------
+## Character Portrait Tree
+##
+## This module is responsible for the character portrait tree.
+## It allows the user to add, remove, rename and duplicate portraits.
+## -----------------------------------------------------------------------------
+
 ## Triggered when something is modified
 signal modified
 
@@ -69,7 +76,7 @@ func remove_portrait_item(item: TreeItem) -> void:
 ## Renames the portrait item
 func rename_portrait_item(item: TreeItem) -> void:
 	item.set_editable(0, true)
-	item.select(0)
+	call_deferred('edit_selected')
 
 
 ## Get the path of the item in the tree
@@ -80,6 +87,26 @@ func get_item_path(item: TreeItem) -> String:
 		item_name = item.get_parent().get_text(0) + "/" + item_name
 		item = item.get_parent()
 	return item_name
+
+
+## Filters the tree items based on the search term
+func filter_branch(parent: TreeItem, filter: String) -> bool:
+	var match_found := false
+	for item in parent.get_children():
+		# Check if the item name matches the filter
+		var match_filter = filter.to_lower() in item.get_text(0).to_lower()
+		var filter_in_group = false
+
+		# If the item is a group, check if any of its children match the filter
+		if item.get_metadata(0).has('group') and not match_filter:
+			filter_in_group = filter_branch(item, filter)
+		
+		item.visible = match_filter or filter.is_empty() or filter_in_group
+
+		if item.visible: # If the item is visible, check that found a match
+			match_found = true
+	return match_found
+
 
 #region === Drag and Drop ======================================================
 

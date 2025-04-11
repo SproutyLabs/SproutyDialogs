@@ -61,7 +61,7 @@ enum FileType {DIALOG, CHAR}
 ## Graph scene reference
 var _graph_scene := preload("res://addons/graph_dialog_system/editor/modules/workspace/graph.tscn")
 ## Character scene reference
-var _char_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/character_panel.tscn")
+var _char_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/character_editor.tscn")
 
 ## Dialog icons
 var _dialog_icon := get_theme_icon('Script', 'EditorIcons')
@@ -223,17 +223,17 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 			
 		FileType.CHAR:
 			# Load character data in a new a character panel
-			var character_panel = _char_scene.instantiate()
-			add_child(character_panel)
+			var character_editor = _char_scene.instantiate()
+			add_child(character_editor)
 			data = data.character_data
-			character_panel.set_meta("file_index", item_index)
-			character_panel.modified.connect(_on_data_modified)
+			character_editor.set_meta("file_index", item_index)
+			character_editor.modified.connect(_on_data_modified)
 			var name_data = load_character_names_from_csv(data.key_name)
-			character_panel.load_character(data, name_data)
-			character_panel.name = "CharacterPanel"
-			remove_child(character_panel)
+			character_editor.load_character(data, name_data)
+			character_editor.name = "CharacterEditor"
+			remove_child(character_editor)
 
-			metadata['char_panel'] = character_panel # Add character panel to metadata
+			metadata['char_panel'] = character_editor # Add character panel to metadata
 
 			# Add item to the file list
 			_file_list.add_item(file_name, _char_icon)

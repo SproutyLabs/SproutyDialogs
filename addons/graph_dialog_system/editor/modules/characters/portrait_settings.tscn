@@ -1,0 +1,144 @@
+[gd_scene load_steps=4 format=3 uid="uid://881twee1nau2"]
+
+[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="1_4ou2u"]
+[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialog_system/icons/text_editor/image.svg" id="2_hihgd"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/interactable/collapse-down.svg" id="3_6ncm1"]
+
+[node name="PortraitSettings" type="VBoxContainer"]
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Portrait Settings"
+
+[node name="PortraitImage" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PortraitImage"]
+layout_mode = 2
+text = "Portrait Image"
+
+[node name="FileField" parent="PortraitImage" instance=ExtResource("1_4ou2u")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PortraitDisplay" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PortraitDisplay"]
+layout_mode = 2
+text = "Portrait Display"
+
+[node name="FileField" parent="PortraitDisplay" instance=ExtResource("1_4ou2u")]
+layout_mode = 2
+size_flags_horizontal = 3
+_placeholder_text = "Select a scene..."
+
+[node name="---" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="PortraitPreview" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="PortraitPreview"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Portrait Preview"
+
+[node name="Panel" type="Panel" parent="PortraitPreview"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Control" type="Control" parent="PortraitPreview/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(20, 20)
+
+[node name="Sprite2D" type="Sprite2D" parent="PortraitPreview/Panel/Control"]
+position = Vector2(20, 20)
+texture = ExtResource("2_hihgd")
+
+[node name="ExpandImageSettingsButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Image Settings"
+icon = ExtResource("3_6ncm1")
+flat = true
+alignment = 0
+clip_text = true
+icon_alignment = 2
+
+[node name="ImageSettings" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="PortraitRegion" type="HBoxContainer" parent="ImageSettings"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+text = "Region"
+
+[node name="VSeparator" type="VSeparator" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+
+[node name="XLabel" type="Label" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+tooltip_text = "X coordinate where the image region begins."
+mouse_filter = 1
+text = "X"
+
+[node name="RegionX" type="SpinBox" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+max_value = 9999.0
+suffix = "px"
+
+[node name="YLabel" type="Label" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+tooltip_text = "Y coordinate where the image region begins."
+mouse_filter = 1
+text = "Y"
+
+[node name="RegionY" type="SpinBox" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+max_value = 9999.0
+update_on_text_changed = true
+suffix = "px"
+
+[node name="WLabel" type="Label" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+tooltip_text = "Width of the image region."
+mouse_filter = 1
+text = "Width"
+
+[node name="RegionWidth" type="SpinBox" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+max_value = 9999.0
+suffix = "px"
+
+[node name="HLabel" type="Label" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+tooltip_text = "Height of the image region."
+mouse_filter = 1
+text = "Height"
+
+[node name="RegionHeight" type="SpinBox" parent="ImageSettings/PortraitRegion"]
+layout_mode = 2
+max_value = 9999.0
+suffix = "px"
+
+[node name="---" type="HSeparator" parent="ImageSettings"]
+layout_mode = 2
