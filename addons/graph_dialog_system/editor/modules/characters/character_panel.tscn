@@ -8,7 +8,7 @@
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/character_portrait_tree.gd" id="7_7kmf4"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialog_system/icons/text_editor/image.svg" id="7_60od3"]
 
-[sub_resource type="Image" id="Image_ajdfl"]
+[sub_resource type="Image" id="Image_4hhxa"]
 data = {
 "data": PackedByteArray(255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 93, 93, 41, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0),
 "format": "RGBA8",
@@ -17,8 +17,8 @@ data = {
 "width": 16
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_h1qni"]
-image = SubResource("Image_ajdfl")
+[sub_resource type="ImageTexture" id="ImageTexture_mvfrk"]
+image = SubResource("Image_4hhxa")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f8fk6"]
 
@@ -37,10 +37,15 @@ script = ExtResource("2_8cc8c")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Container" type="VBoxContainer" parent="CharacterSettings"]
+[node name="ScrollContainer" type="ScrollContainer" parent="CharacterSettings"]
 layout_mode = 2
 
-[node name="KeyNameLabel" type="Label" parent="CharacterSettings/Container"]
+[node name="Container" type="VBoxContainer" parent="CharacterSettings/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="KeyNameLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The character key name to reference it is the filename."
@@ -48,39 +53,39 @@ mouse_filter = 1
 theme_type_variation = &"HeaderMedium"
 text = "Name"
 
-[node name="--" type="HSeparator" parent="CharacterSettings/Container"]
+[node name="--" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="DisplayName" type="HBoxContainer" parent="CharacterSettings/Container"]
+[node name="DisplayName" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "The name that will be displayed for this character."
 
-[node name="Label" type="Label" parent="CharacterSettings/Container/DisplayName"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/DisplayName"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Display Name"
 
-[node name="NameDefaultLocaleLabel" type="Label" parent="CharacterSettings/Container/DisplayName"]
+[node name="NameDefaultLocaleLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/DisplayName"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
 text = "(en)"
 
-[node name="NameDefaultLocaleField" type="LineEdit" parent="CharacterSettings/Container/DisplayName"]
+[node name="NameDefaultLocaleField" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/DisplayName"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Insert character name..."
 
-[node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/Container"]
+[node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Translations of the name to display."
 script = ExtResource("2_tpd02")
 useTextBoxes = false
 
-[node name="ExpandButton" type="Button" parent="CharacterSettings/Container/NameTranslationsContainer"]
+[node name="ExpandButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
 layout_mode = 2
 toggle_mode = true
 text = "Translations"
@@ -89,81 +94,81 @@ flat = true
 alignment = 2
 icon_alignment = 2
 
-[node name="TextBoxes" type="VBoxContainer" parent="CharacterSettings/Container/NameTranslationsContainer"]
+[node name="TextBoxes" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
 visible = false
 custom_minimum_size = Vector2(2.08165e-12, 100)
 layout_mode = 2
 
-[node name="---" type="HSeparator" parent="CharacterSettings/Container/NameTranslationsContainer/TextBoxes"]
+[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/TextBoxes"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterSettings/Container/NameTranslationsContainer/TextBoxes"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/TextBoxes"]
 layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Display Name Translations"
 
-[node name="---" type="HSeparator" parent="CharacterSettings/Container"]
+[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="Description" type="HBoxContainer" parent="CharacterSettings/Container"]
+[node name="Description" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "It does nothing. It is for your reference only."
 
-[node name="Label" type="Label" parent="CharacterSettings/Container/Description"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/Description"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "Description"
 
-[node name="DescriptionField" type="TextEdit" parent="CharacterSettings/Container/Description"]
+[node name="DescriptionField" type="TextEdit" parent="CharacterSettings/ScrollContainer/Container/Description"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Character description (optional)..."
 
-[node name="----" type="HSeparator" parent="CharacterSettings/Container"]
+[node name="----" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterSettings/Container"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Text Box Settings"
 
-[node name="TextBox" type="HBoxContainer" parent="CharacterSettings/Container"]
+[node name="TextBox" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "Scene with the text box where the text will be displayed. The root node must be a DialogBox node."
 
-[node name="Label" type="Label" parent="CharacterSettings/Container/TextBox"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/TextBox"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Text Box"
 
-[node name="TextBoxSceneButton" type="Button" parent="CharacterSettings/Container/TextBox"]
+[node name="TextBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/TextBox"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-icon = SubResource("ImageTexture_h1qni")
+icon = SubResource("ImageTexture_mvfrk")
 
-[node name="TextBoxSceneFile" parent="CharacterSettings/Container/TextBox" instance=ExtResource("5_x3nyu")]
+[node name="TextBoxSceneFile" parent="CharacterSettings/ScrollContainer/Container/TextBox" instance=ExtResource("5_x3nyu")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _placeholder_text = "Select a scene..."
 file_filters = PackedStringArray("*.tscn")
 
-[node name="PortraitOnTextBoxToggle" type="CheckButton" parent="CharacterSettings/Container"]
+[node name="PortraitOnTextBoxToggle" type="CheckButton" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Select this option to display the portrait inside the text box. You need to assign a 2D Sprite node in the DialogBox node to display the portrait."
 text = "Portrait on text box"
 
-[node name="-----" type="HSeparator" parent="CharacterSettings/Container"]
+[node name="-----" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="TypingSoundsExpandButton" type="Button" parent="CharacterSettings/Container"]
+[node name="TypingSoundsExpandButton" type="Button" parent="CharacterSettings/ScrollContainer/Container"]
 visible = false
 layout_mode = 2
 text = "Typing Sounds"
@@ -172,53 +177,53 @@ flat = true
 alignment = 0
 icon_alignment = 2
 
-[node name="------" type="HSeparator" parent="CharacterSettings/Container"]
+[node name="------" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 visible = false
 layout_mode = 2
 
-[node name="Portraits" type="VBoxContainer" parent="CharacterSettings/Container"]
+[node name="Portraits" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="TopBar" type="HBoxContainer" parent="CharacterSettings/Container/Portraits"]
+[node name="TopBar" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterSettings/Container/Portraits/TopBar"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderMedium"
 text = "Portraits"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CharacterSettings/Container/Portraits"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
 layout_mode = 2
 
-[node name="PortraitSearchBar" type="LineEdit" parent="CharacterSettings/Container/Portraits/HBoxContainer"]
+[node name="PortraitSearchBar" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/Portraits/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search portraits..."
-right_icon = SubResource("ImageTexture_h1qni")
+right_icon = SubResource("ImageTexture_mvfrk")
 
-[node name="AddPortraitButton" type="Button" parent="CharacterSettings/Container/Portraits/HBoxContainer"]
+[node name="AddPortraitButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
-icon = SubResource("ImageTexture_h1qni")
+icon = SubResource("ImageTexture_mvfrk")
 icon_alignment = 2
 
-[node name="AddFolderButton" type="Button" parent="CharacterSettings/Container/Portraits/HBoxContainer"]
+[node name="AddFolderButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
-icon = SubResource("ImageTexture_h1qni")
+icon = SubResource("ImageTexture_mvfrk")
 icon_alignment = 2
 
-[node name="PortraitsPanel" type="PanelContainer" parent="CharacterSettings/Container/Portraits"]
+[node name="PortraitsPanel" type="PanelContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_f8fk6")
 
-[node name="PortraitTree" type="Tree" parent="CharacterSettings/Container/Portraits/PortraitsPanel"]
+[node name="PortraitTree" type="Tree" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel"]
 unique_name_in_owner = true
 layout_mode = 2
 allow_reselect = true
@@ -227,16 +232,16 @@ hide_root = true
 drop_mode_flags = 3
 script = ExtResource("7_7kmf4")
 
-[node name="PortraitPopupMenu" type="PopupMenu" parent="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree"]
+[node name="PortraitPopupMenu" type="PopupMenu" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree"]
 size = Vector2i(110, 100)
 item_count = 3
 item_0/text = "Rename"
-item_0/icon = SubResource("ImageTexture_h1qni")
+item_0/icon = SubResource("ImageTexture_mvfrk")
 item_1/text = "Duplicate"
-item_1/icon = SubResource("ImageTexture_h1qni")
+item_1/icon = SubResource("ImageTexture_mvfrk")
 item_1/id = 1
 item_2/text = "Remove"
-item_2/icon = SubResource("ImageTexture_h1qni")
+item_2/icon = SubResource("ImageTexture_mvfrk")
 item_2/id = 2
 
 [node name="PortraitSettings" type="MarginContainer" parent="."]
@@ -381,13 +386,13 @@ suffix = "px"
 [node name="---" type="HSeparator" parent="PortraitSettings/Container/ImageSettings"]
 layout_mode = 2
 
-[connection signal="toggled" from="CharacterSettings/Container/NameTranslationsContainer/ExpandButton" to="CharacterSettings/Container/NameTranslationsContainer" method="_on_expand_button_toggled"]
-[connection signal="pressed" from="CharacterSettings/Container/TextBox/TextBoxSceneButton" to="." method="_on_text_box_scene_button_pressed"]
-[connection signal="file_path_changed" from="CharacterSettings/Container/TextBox/TextBoxSceneFile" to="." method="_on_text_box_scene_path_changed"]
-[connection signal="toggled" from="CharacterSettings/Container/PortraitOnTextBoxToggle" to="." method="_on_portrait_text_box_toggled"]
-[connection signal="pressed" from="CharacterSettings/Container/Portraits/HBoxContainer/AddPortraitButton" to="." method="_on_add_portrait_button_pressed"]
-[connection signal="pressed" from="CharacterSettings/Container/Portraits/HBoxContainer/AddFolderButton" to="." method="_on_add_folder_button_pressed"]
-[connection signal="button_clicked" from="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" to="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_item_button_clicked"]
-[connection signal="item_edited" from="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" to="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_item_edited"]
-[connection signal="item_mouse_selected" from="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" to="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_item_mouse_selected"]
-[connection signal="id_pressed" from="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree/PortraitPopupMenu" to="CharacterSettings/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_popup_menu_id_pressed"]
+[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/ExpandButton" to="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer" method="_on_expand_button_toggled"]
+[connection signal="pressed" from="CharacterSettings/ScrollContainer/Container/TextBox/TextBoxSceneButton" to="." method="_on_text_box_scene_button_pressed"]
+[connection signal="file_path_changed" from="CharacterSettings/ScrollContainer/Container/TextBox/TextBoxSceneFile" to="." method="_on_text_box_scene_path_changed"]
+[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/PortraitOnTextBoxToggle" to="." method="_on_portrait_text_box_toggled"]
+[connection signal="pressed" from="CharacterSettings/ScrollContainer/Container/Portraits/HBoxContainer/AddPortraitButton" to="." method="_on_add_portrait_button_pressed"]
+[connection signal="pressed" from="CharacterSettings/ScrollContainer/Container/Portraits/HBoxContainer/AddFolderButton" to="." method="_on_add_folder_button_pressed"]
+[connection signal="button_clicked" from="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree" to="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_item_button_clicked"]
+[connection signal="item_activated" from="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree" to="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_item_activated"]
+[connection signal="item_mouse_selected" from="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree" to="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_item_mouse_selected"]
+[connection signal="id_pressed" from="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree/PortraitPopupMenu" to="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree" method="_on_portrait_popup_menu_id_pressed"]

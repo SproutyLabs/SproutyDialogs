@@ -52,6 +52,7 @@ func _ready() -> void:
 		GDialogsTranslationManager.translation_settings.connect(
 			"default_locale_changed", _on_locales_changed
 		)
+	_portrait_tree.connect("modified", on_modified)
 	_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
@@ -72,8 +73,8 @@ func get_character_data() -> Dictionary:
 			"description": _description_field.text,
 			"text_box": _text_box_scene_file.get_value(),
 			"portrait_on_text_box": _portrait_on_text_box,
-			"typing_sounds": {},
-			"portraits": {}
+			"portraits": {},
+			"typing_sounds": {}
 		}
 	}
 	return data
@@ -183,9 +184,11 @@ func _on_add_portrait_button_pressed() -> void:
 			parent = _portrait_tree.get_selected()
 		else:
 			parent = _portrait_tree.get_selected().get_parent()
-	var item: TreeItem = _portrait_tree.new_portrait("New Portrait", {}, parent)
+	var item: TreeItem = _portrait_tree.new_portrait_item("New Portrait", {}, parent)
 	item.set_editable(0, true)
 	item.select(0)
+	_portrait_tree.call_deferred('edit_selected')
+	on_modified()
 
 
 ## Add a new portrait group to the tree
@@ -200,3 +203,7 @@ func _on_add_folder_button_pressed() -> void:
 	var item: TreeItem = _portrait_tree.new_portrait_group("New Group", parent)
 	item.set_editable(0, true)
 	item.select(0)
+	_portrait_tree.call_deferred('edit_selected')
+	on_modified()
+
+#endregion
