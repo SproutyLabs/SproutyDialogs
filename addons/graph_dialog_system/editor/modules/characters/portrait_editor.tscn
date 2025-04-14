@@ -1,11 +1,33 @@
-[gd_scene load_steps=4 format=3 uid="uid://881twee1nau2"]
+[gd_scene load_steps=6 format=3 uid="uid://881twee1nau2"]
 
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="1_4ou2u"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/portrait_editor.gd" id="1_7iqxq"]
+[ext_resource type="Texture2D" uid="uid://c80u5yueu7wit" path="res://addons/graph_dialog_system/icons/character.svg" id="2_fad05"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialog_system/icons/text_editor/image.svg" id="2_hihgd"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/interactable/collapse-down.svg" id="3_6ncm1"]
 
-[node name="PortraitSettings" type="VBoxContainer"]
+[node name="PortraitEditor" type="VBoxContainer"]
+size_flags_horizontal = 3
 size_flags_vertical = 3
+script = ExtResource("1_7iqxq")
+
+[node name="Title" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Icon" type="TextureRect" parent="Title"]
+custom_minimum_size = Vector2(35, 0)
+layout_mode = 2
+texture = ExtResource("2_fad05")
+expand_mode = 3
+stretch_mode = 3
+
+[node name="PortraitName" type="Label" parent="Title"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Portrait Name"
+
+[node name="--" type="HSeparator" parent="."]
+layout_mode = 2
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2

@@ -32,6 +32,15 @@ signal modified
 @onready var _portrait_tree: Tree = %PortraitTree
 ## Portrait tree search bar
 @onready var _portrait_search_bar: LineEdit = %PortraitSearchBar
+## Portrait empty panel
+@onready var _portrait_empty_panel: Panel = $PortraitSettings/EmptyPanel
+## Portrait settings container
+@onready var _portrait_editor_container: Container = $PortraitSettings/Container
+
+## Portrait settings panel scene
+var _portrait_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/portrait_editor.tscn")
+## Current portrait selected
+var _current_portrait: TreeItem = null
 
 ## Key name of the character (file name)
 var _key_name: String = ""
@@ -53,6 +62,7 @@ func _ready() -> void:
 			"default_locale_changed", _on_locales_changed
 		)
 	_portrait_tree.connect("modified", on_modified)
+	_portrait_tree.connect("portrait_item_selected", _on_portrait_selected)
 	_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
@@ -180,14 +190,19 @@ func _on_add_portrait_button_pressed() -> void:
 	var parent: TreeItem = _portrait_tree.get_root()
 	if _portrait_tree.get_selected():
 		if _portrait_tree.get_selected().get_metadata(0) and \
-			_portrait_tree.get_selected().get_metadata(0).has('group'):
+			_portrait_tree.get_selected().get_metadata(0).has("group"):
 			parent = _portrait_tree.get_selected()
 		else:
 			parent = _portrait_tree.get_selected().get_parent()
-	var item: TreeItem = _portrait_tree.new_portrait_item("New Portrait", {}, parent)
+	var portrait_editor = _portrait_scene.instantiate()
+	add_child(portrait_editor)
+	var item: TreeItem = _portrait_tree.new_portrait_item(
+			"New Portrait", {}, parent, portrait_editor
+		)
+	remove_child(portrait_editor)
 	item.set_editable(0, true)
 	item.select(0)
-	_portrait_tree.call_deferred('edit_selected')
+	_portrait_tree.call_deferred("edit_selected")
 	on_modified()
 
 
@@ -196,19 +211,53 @@ func _on_add_folder_button_pressed() -> void:
 	var parent: TreeItem = _portrait_tree.get_root()
 	if _portrait_tree.get_selected():
 		if _portrait_tree.get_selected().get_metadata(0) and \
-			_portrait_tree.get_selected().get_metadata(0).has('group'):
+			_portrait_tree.get_selected().get_metadata(0).has("group"):
 			parent = _portrait_tree.get_selected()
 		else:
 			parent = _portrait_tree.get_selected().get_parent()
 	var item: TreeItem = _portrait_tree.new_portrait_group("New Group", parent)
 	item.set_editable(0, true)
 	item.select(0)
-	_portrait_tree.call_deferred('edit_selected')
+	_portrait_tree.call_deferred("edit_selected")
 	on_modified()
 
 
 ## Filter the portrait tree items
 func _on_portrait_search_bar_text_changed(new_text: String) -> void:
 	_portrait_tree.filter_branch(_portrait_tree.get_root(), new_text)
+
+
+## Show or hide the portrait settings panel
+func _show_portrait_editor_panel(show: bool) -> void:
+	_portrait_empty_panel.visible = not show
+	_portrait_editor_container.visible = show
+
+
+## Update the portrait settings when a portrait is selected
+func _on_portrait_selected(item: TreeItem) -> void:
+	# Check if the selected item is a portrait
+	if item.get_metadata(0).has("group"):
+		_show_portrait_editor_panel(false)
+	else:
+		_show_portrait_editor_panel(true)
+	_switch_current_portrait(item)
+
+
+## Switch the portrait settings to the portrait selected
+func _switch_current_portrait(item: TreeItem) -> void:
+	if item == _current_portrait:
+		return # No change
+	
+	# Update the current portrait data
+	if _current_portrait and not _current_portrait.get_metadata(0).has("group"):
+		var current_data = _current_portrait.get_meta("portrait_editor").get_portrait_data()
+		_current_portrait.set_metadata(0, current_data)
+
+	# Switch the portrait editor panel
+	if not item.get_metadata(0).has("group"):
+		if _portrait_editor_container.get_child_count() > 0:
+			_portrait_editor_container.remove_child(_portrait_editor_container.get_child(0))
+		_portrait_editor_container.add_child(item.get_meta("portrait_editor"))
+		_current_portrait = item
 
 #endregion

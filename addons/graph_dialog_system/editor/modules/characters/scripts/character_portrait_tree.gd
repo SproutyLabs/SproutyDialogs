@@ -8,6 +8,8 @@ extends Tree
 ## It allows the user to add, remove, rename and duplicate portraits.
 ## -----------------------------------------------------------------------------
 
+## Triggered when the user selects an item
+signal portrait_item_selected(item: TreeItem)
 ## Triggered when something is modified
 signal modified
 
@@ -32,12 +34,13 @@ func on_modified():
 
 
 ## Adds a new portrait item to the tree
-func new_portrait_item(name: String, data: Dictionary, parent_item: TreeItem) -> TreeItem:
+func new_portrait_item(name: String, data: Dictionary, parent_item: TreeItem, portrait_editor: Node) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
 	item.set_icon(0, _portrait_icon)
 	item.set_text(0, name)
 	item.set_metadata(0, data)
 	item.set_meta('item_path', get_item_path(item))
+	item.set_meta('portrait_editor', portrait_editor)
 	item.add_button(0, get_theme_icon('Remove', 'EditorIcons'), 0, false, 'Remove portrait')
 	return item
 
@@ -57,7 +60,8 @@ func duplicate_portrait_item(item: TreeItem) -> TreeItem:
 	var new_item: TreeItem = new_portrait_item(
 		item.get_text(0) + " (copy)",
 		item.get_metadata(0),
-		item.get_parent()
+		item.get_parent(),
+		item.get_meta('portrait_editor')
 		)
 	item.set_editable(0, true)
 	item.select(0)
@@ -170,7 +174,12 @@ func copy_tree_item(item: TreeItem, new_parent: TreeItem) -> TreeItem:
 	if item.get_metadata(0).has('group'):
 		new_item = new_portrait_group(item.get_text(0), new_parent)
 	else:
-		new_item = new_portrait_item(item.get_text(0), item.get_metadata(0), new_parent)
+		new_item = new_portrait_item(
+			item.get_text(0),
+			item.get_metadata(0),
+			new_parent,
+			item.get_meta('portrait_editor')
+			)
 	
 	for child in item.get_children():
 		copy_tree_item(child, new_item)
@@ -179,20 +188,33 @@ func copy_tree_item(item: TreeItem, new_parent: TreeItem) -> TreeItem:
 #endregion
 
 #region === Input Handling =====================================================
+
 ## Called when the user right-clicks on a portrait item
-func _on_portrait_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int) -> void:
+func _on_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
 		_popup_menu.set_item_disabled(1, get_selected().get_metadata(0).has('group'))
 		_popup_menu.popup_on_parent(Rect2(get_global_mouse_position(), Vector2()))
 
 
+## Called when the user selects a portrait item
+func _on_item_selected() -> void:
+	portrait_item_selected.emit(get_selected())
+
+
 ## Called when the user double-clicks on a portrait item
-func _on_portrait_item_activated() -> void:
+func _on_item_activated() -> void:
 	rename_portrait_item(get_selected())
 
 
+## Called when the user edits a portrait item
+func _on_item_edited() -> void:
+	var item := get_selected()
+	if not item.get_metadata(0).has('group'): # Update the portrait name
+		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
+
+
 ## Called when the user selects an item in the popup menu
-func _on_portrait_popup_menu_id_pressed(id: int) -> void:
+func _on_popup_menu_id_pressed(id: int) -> void:
 	match id:
 		0: # Rename
 			rename_portrait_item(get_selected())
@@ -203,7 +225,7 @@ func _on_portrait_popup_menu_id_pressed(id: int) -> void:
 
 
 ## Called when the user clicks on a portrait item button
-func _on_portrait_item_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
+func _on_item_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
 		if id == 0: # Remove button clicked
 			remove_portrait_item(item)
