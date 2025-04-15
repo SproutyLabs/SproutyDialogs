@@ -58,18 +58,18 @@ enum FileType {DIALOG, CHAR}
 ## CSV file container
 @onready var _csv_file_field: MarginContainer = $%CSVFileContainer/FileField
 
-## Graph scene reference
-var _graph_scene := preload("res://addons/graph_dialog_system/editor/modules/workspace/graph.tscn")
-## Character scene reference
-var _char_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/character_editor.tscn")
-
 ## Dialog icons
-var _dialog_icon := get_theme_icon('Script', 'EditorIcons')
+@onready var _dialog_icon := get_theme_icon('Script', 'EditorIcons')
 var _new_dialog_icon := preload("res://addons/graph_dialog_system/icons/add-dialog.svg")
 
 ## Character icons
 var _char_icon := preload("res://addons/graph_dialog_system/icons/character.svg")
 var _new_char_icon := preload("res://addons/graph_dialog_system/icons/add-char.svg")
+
+## Graph scene reference
+var _graph_scene := preload("res://addons/graph_dialog_system/editor/modules/workspace/graph.tscn")
+## Character scene reference
+var _char_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/character_editor.tscn")
 
 ## Current file index
 var _current_file_index: int = -1
