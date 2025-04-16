@@ -1,12 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://881twee1nau2"]
+[gd_scene load_steps=7 format=3 uid="uid://881twee1nau2"]
 
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="1_4ou2u"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/portrait_editor.gd" id="1_7iqxq"]
 [ext_resource type="Texture2D" uid="uid://c80u5yueu7wit" path="res://addons/graph_dialog_system/icons/character.svg" id="2_fad05"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/interactable/collapse-down.svg" id="3_6ncm1"]
-[ext_resource type="Texture2D" uid="uid://dmdfwuf3oh2vu" path="res://addons/graph_dialog_system/icons/text_editor/link.svg" id="5_d3175"]
 
-[sub_resource type="Image" id="Image_mphu3"]
+[sub_resource type="Image" id="Image_knvep"]
 data = {
 "data": PackedByteArray(255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 94, 94, 127, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 94, 94, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 93, 93, 41, 255, 255, 255, 0, 255, 255, 255, 0, 255, 97, 97, 42, 255, 93, 93, 233, 255, 93, 93, 232, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 44, 255, 255, 255, 0, 255, 97, 97, 42, 255, 97, 97, 42, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 96, 96, 45, 255, 93, 93, 235, 255, 94, 94, 234, 255, 95, 95, 43, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 93, 93, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 95, 95, 59, 255, 96, 96, 61, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0),
 "format": "RGBA8",
@@ -15,8 +14,8 @@ data = {
 "width": 16
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_0wl0c"]
-image = SubResource("Image_mphu3")
+[sub_resource type="ImageTexture" id="ImageTexture_78757"]
+image = SubResource("Image_knvep")
 
 [node name="PortraitEditor" type="VBoxContainer"]
 size_flags_horizontal = 3
@@ -50,12 +49,13 @@ layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Portrait Preview"
 
-[node name="Panel" type="Panel" parent="PortraitPreview"]
+[node name="PreviewPanel" type="Panel" parent="PortraitPreview"]
+clip_contents = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Control" type="Control" parent="PortraitPreview/Panel"]
+[node name="Rect" type="Control" parent="PortraitPreview/PreviewPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -70,42 +70,79 @@ grow_horizontal = 2
 grow_vertical = 2
 pivot_offset = Vector2(20, 20)
 
-[node name="ImagePreview" type="Sprite2D" parent="PortraitPreview/Panel/Control"]
+[node name="PreviewContainer" type="Node2D" parent="PortraitPreview/PreviewPanel/Rect"]
 unique_name_in_owner = true
 position = Vector2(20, 20)
-texture = SubResource("ImageTexture_0wl0c")
+
+[node name="ImagePreview" type="Sprite2D" parent="PortraitPreview/PreviewPanel/Rect/PreviewContainer"]
+unique_name_in_owner = true
+
+[node name="PreviewPivot" type="Sprite2D" parent="PortraitPreview/PreviewPanel/Rect"]
+unique_name_in_owner = true
+position = Vector2(20, 20)
+texture = SubResource("ImageTexture_78757")
 
 [node name="SettingsLabel" type="Label" parent="."]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Portrait Settings"
 
-[node name="PortraitImage" type="HBoxContainer" parent="."]
+[node name="PortraitImageSection" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PortraitImage"]
+[node name="ImageField" type="HBoxContainer" parent="PortraitImageSection"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PortraitImageSection/ImageField"]
 layout_mode = 2
 text = "Portrait Image"
 
-[node name="ImageFileField" parent="PortraitImage" instance=ExtResource("1_4ou2u")]
+[node name="ImageFileField" parent="PortraitImageSection/ImageField" instance=ExtResource("1_4ou2u")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 file_filters = PackedStringArray("*.jpg", "*.jpeg", "*.png", "*.svg", "*.webp", "*.bmp", "*.tga", "*.dds", "*.kts", "*.hdr", "*.exr")
 
-[node name="PortraitDisplay" type="HBoxContainer" parent="."]
+[node name="DisplayField" type="HBoxContainer" parent="PortraitImageSection"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PortraitDisplay"]
+[node name="Label" type="Label" parent="PortraitImageSection/DisplayField"]
 layout_mode = 2
 text = "Portrait Display"
 
-[node name="DisplayFileField" parent="PortraitDisplay" instance=ExtResource("1_4ou2u")]
+[node name="DisplayFileField" parent="PortraitImageSection/DisplayField" instance=ExtResource("1_4ou2u")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _placeholder_text = "Select a scene..."
-file_filters = PackedStringArray("*.tscn")
+file_filters = PackedStringArray("*.tscn", "*.scn")
+
+[node name="PortraitScene" type="HBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PortraitScene"]
+layout_mode = 2
+text = "Portrait Scene"
+
+[node name="ToPortraitSceneButton" type="Button" parent="PortraitScene"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+icon = SubResource("ImageTexture_78757")
+
+[node name="SceneFileField" parent="PortraitScene" instance=ExtResource("1_4ou2u")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+_placeholder_text = "Select a scene..."
+file_filters = PackedStringArray("*.tscn", "*.scn")
+
+[node name="SceneAsPortraitToggle" type="CheckButton" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Use a scene as portrait"
 
 [node name="---" type="HSeparator" parent="."]
 layout_mode = 2
@@ -123,6 +160,7 @@ icon_alignment = 2
 
 [node name="ImageSettings" type="ScrollContainer" parent="."]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 horizontal_scroll_mode = 0
@@ -155,7 +193,9 @@ text = "X"
 [node name="XField" type="SpinBox" parent="ImageSettings/Container/PortraitScale"]
 layout_mode = 2
 max_value = 9999.0
+step = 0.01
 value = 1.0
+allow_greater = true
 
 [node name="YLabel" type="Label" parent="ImageSettings/Container/PortraitScale"]
 layout_mode = 2
@@ -166,14 +206,15 @@ text = "Y"
 [node name="YField" type="SpinBox" parent="ImageSettings/Container/PortraitScale"]
 layout_mode = 2
 max_value = 9999.0
+step = 0.01
 value = 1.0
-update_on_text_changed = true
+allow_greater = true
 
 [node name="LockRatioButton" type="Button" parent="ImageSettings/Container/PortraitScale"]
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
-icon = ExtResource("5_d3175")
+icon = SubResource("ImageTexture_78757")
 flat = true
 
 [node name="--" type="HSeparator" parent="ImageSettings/Container"]
@@ -199,7 +240,9 @@ text = "X"
 
 [node name="XField" type="SpinBox" parent="ImageSettings/Container/PortraitOffset"]
 layout_mode = 2
+min_value = -9999.0
 max_value = 9999.0
+step = 0.001
 suffix = "px"
 
 [node name="YLabel" type="Label" parent="ImageSettings/Container/PortraitOffset"]
@@ -210,8 +253,9 @@ text = "Y"
 
 [node name="YField" type="SpinBox" parent="ImageSettings/Container/PortraitOffset"]
 layout_mode = 2
+min_value = -9999.0
 max_value = 9999.0
-update_on_text_changed = true
+step = 0.001
 suffix = "px"
 
 [node name="---" type="HSeparator" parent="ImageSettings/Container"]
@@ -241,6 +285,7 @@ text = "Mirror"
 layout_mode = 2
 
 [node name="RegionToggle" type="CheckButton" parent="ImageSettings/Container"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Enable Region"
 
@@ -281,7 +326,6 @@ text = "y"
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 9999.0
-update_on_text_changed = true
 suffix = "px"
 
 [node name="RegionSize" type="HBoxContainer" parent="ImageSettings/Container/PortraitRegion"]
@@ -311,7 +355,10 @@ size_flags_horizontal = 3
 max_value = 9999.0
 suffix = "px"
 
-[connection signal="file_path_changed" from="PortraitImage/ImageFileField" to="." method="_on_portrait_image_path_changed"]
+[connection signal="file_path_changed" from="PortraitImageSection/ImageField/ImageFileField" to="." method="_on_portrait_image_path_changed"]
+[connection signal="pressed" from="PortraitScene/ToPortraitSceneButton" to="." method="_on_to_portrait_scene_button_pressed"]
+[connection signal="file_path_changed" from="PortraitScene/SceneFileField" to="." method="_on_portrait_scene_path_changed"]
+[connection signal="toggled" from="SceneAsPortraitToggle" to="." method="_on_scene_as_portrait_toggled"]
 [connection signal="toggled" from="ExpandImageSettingsButton" to="." method="_on_expand_image_settings_toggled"]
 [connection signal="value_changed" from="ImageSettings/Container/PortraitScale/XField" to="." method="_on_scale_x_value_changed"]
 [connection signal="value_changed" from="ImageSettings/Container/PortraitScale/YField" to="." method="_on_scale_y_value_changed"]

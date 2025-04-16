@@ -24,9 +24,9 @@ signal modified
 ## Description text input field
 @onready var _description_field: TextEdit = %DescriptionField
 ## Text box scene file field
-@onready var _text_box_scene_file: GDialogsFileField = %TextBoxSceneFile
+@onready var _text_box_scene_field: GDialogsFileField = %TextBoxSceneField
 ## Text box scene button
-@onready var _text_box_scene_button: Button = %TextBoxSceneButton
+@onready var _to_text_box_scene_button: Button = %ToTextBoxSceneButton
 
 ## Portrait tree
 @onready var _portrait_tree: Tree = %PortraitTree
@@ -63,7 +63,7 @@ func _ready() -> void:
 		)
 	_portrait_tree.connect("modified", on_modified)
 	_portrait_tree.connect("portrait_item_selected", _on_portrait_selected)
-	_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
+	_to_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
@@ -81,7 +81,7 @@ func get_character_data() -> Dictionary:
 			"key_name": _key_name,
 			"display_name": {_key_name: get_name_translations()},
 			"description": _description_field.text,
-			"text_box": _text_box_scene_file.get_value(),
+			"text_box": _text_box_scene_field.get_value(),
 			"portrait_on_text_box": _portrait_on_text_box,
 			"portraits": {},
 			"typing_sounds": {}
@@ -103,11 +103,32 @@ func load_character(data: Dictionary, name_data: Dictionary) -> void:
 	_name_translations_container.load_translations_text(name_translations)
 
 	# Text box scene file
-	_text_box_scene_file.set_value(data.text_box)
-	if data.text_box.ends_with(".tscn"):
-		_text_box_scene_button.visible = true
+	_text_box_scene_field.set_value(data.text_box)
+	if check_valid_file(data.text_box, _text_box_scene_field.file_filters):
+		_to_text_box_scene_button.visible = true
 	_portrait_on_text_box = data.portrait_on_text_box
 	%PortraitOnTextBoxToggle.button_pressed = _portrait_on_text_box
+
+
+## Check if the path has valid extension
+func check_valid_file(path: String, extensions: Array) -> bool:
+	if path.is_empty():
+		return false
+	for ext in extensions:
+		if path.ends_with(ext.replace("*", "")):
+			return true
+	return false
+
+
+## Open a scene in the editor
+func open_scene_in_editor(path: String) -> void:
+	if check_valid_file(path, _text_box_scene_field.file_filters):
+		if ResourceLoader.exists(path):
+			EditorInterface.open_scene_from_path(path)
+			await get_tree().process_frame
+			EditorInterface.set_main_screen_editor("2D")
+	else:
+		printerr("[Graph Dialogs] Invalid scene file path.")
 
 
 #region === Character Name Translation =========================================
@@ -151,29 +172,15 @@ func _on_locales_changed() -> void:
 ## Handle the text box scene file path
 func _on_text_box_scene_path_changed(path: String) -> void:
 	if path.is_empty(): # No path selected
-		_text_box_scene_button.visible = false
-	elif path.ends_with(".tscn"):
-		_text_box_scene_button.visible = true # Valid path
+		_to_text_box_scene_button.visible = false
+	elif check_valid_file(path, _text_box_scene_field.file_filters):
+		_to_text_box_scene_button.visible = true # Valid path
 	on_modified()
-
-
-## Open a scene in the editor
-func _open_scene_in_editor(path: String) -> void:
-	if path.is_empty():
-		return
-	# Check if the path is valid
-	if path.ends_with(".tscn"):
-		if ResourceLoader.exists(path):
-			EditorInterface.open_scene_from_path(path)
-			await get_tree().process_frame
-			EditorInterface.set_main_screen_editor("2D")
-	else:
-		printerr("[Graph Dialogs] Invalid scene file path.")
 
 
 ## Handle the text box scene button press
 func _on_text_box_scene_button_pressed() -> void:
-	_open_scene_in_editor(_text_box_scene_file.get_value())
+	open_scene_in_editor(_text_box_scene_field.get_value())
 
 
 ## Handle the text box portrait display toggle
