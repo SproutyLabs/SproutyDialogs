@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cdj77v25htco0"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/utils/dialog_portrait.gd" id="1_vwtls"]
+
+[node name="DefaultPortrait" type="Node2D" node_paths=PackedStringArray("_portrait_display")]
+script = ExtResource("1_vwtls")
+_portrait_display = NodePath("Sprite2D")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]

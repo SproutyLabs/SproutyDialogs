@@ -12,6 +12,9 @@ extends HSplitContainer
 ## Triggered when something is modified
 signal modified
 
+## New scene dialog
+@onready var new_scene_dialog: FileDialog = $NewSceneDialog
+
 ## Label with the key name of the character
 @onready var _key_name_label: Label = %KeyNameLabel
 ## Label with the default locale for display name
@@ -27,6 +30,8 @@ signal modified
 @onready var _text_box_scene_field: GDialogsFileField = %TextBoxSceneField
 ## Text box scene button
 @onready var _to_text_box_scene_button: Button = %ToTextBoxSceneButton
+## Text box new scene button
+@onready var _new_text_box_scene_button: Button = %NewTextBoxSceneButton
 
 ## Portrait tree
 @onready var _portrait_tree: Tree = %PortraitTree
@@ -36,6 +41,9 @@ signal modified
 @onready var _portrait_empty_panel: Panel = $PortraitSettings/EmptyPanel
 ## Portrait settings container
 @onready var _portrait_editor_container: Container = $PortraitSettings/Container
+
+## Default text box scene
+var _default_text_box_scene := preload("res://addons/graph_dialog_system/utils/default_text_box.tscn")
 
 ## Portrait settings panel scene
 var _portrait_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/portrait_editor.tscn")
@@ -64,6 +72,7 @@ func _ready() -> void:
 	_portrait_tree.connect("modified", on_modified)
 	_portrait_tree.connect("portrait_item_selected", _on_portrait_selected)
 	_to_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
+	_new_text_box_scene_button.icon = get_theme_icon("Add", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
@@ -106,6 +115,7 @@ func load_character(data: Dictionary, name_data: Dictionary) -> void:
 	_text_box_scene_field.set_value(data.text_box)
 	if check_valid_file(data.text_box, _text_box_scene_field.file_filters):
 		_to_text_box_scene_button.visible = true
+		_new_text_box_scene_button.visible = false
 	_portrait_on_text_box = data.portrait_on_text_box
 	%PortraitOnTextBoxToggle.button_pressed = _portrait_on_text_box
 
@@ -173,14 +183,45 @@ func _on_locales_changed() -> void:
 func _on_text_box_scene_path_changed(path: String) -> void:
 	if path.is_empty(): # No path selected
 		_to_text_box_scene_button.visible = false
+		_new_text_box_scene_button.visible = true
 	elif check_valid_file(path, _text_box_scene_field.file_filters):
 		_to_text_box_scene_button.visible = true # Valid path
+		_new_text_box_scene_button.visible = false
 	on_modified()
 
 
 ## Handle the text box scene button press
 func _on_text_box_scene_button_pressed() -> void:
 	open_scene_in_editor(_text_box_scene_field.get_value())
+
+
+## Create a new text box scene and open it in the editor
+func _on_new_text_box_scene_pressed() -> void:
+	if not new_scene_dialog.is_connected("file_selected", _on_new_text_box_path_selected):
+		new_scene_dialog.connect("file_selected", _on_new_text_box_path_selected)
+	new_scene_dialog.get_line_edit().text = "new_text_box.tscn"
+	new_scene_dialog.popup_centered()
+
+
+## Create a new text box scene file
+func _on_new_text_box_path_selected(path: String) -> void:
+	var new_scene = _default_text_box_scene.instantiate()
+	new_scene.name = path.get_file().split(".")[0].to_pascal_case()
+
+	# Save the new scene file
+	var packed_scene = PackedScene.new()
+	packed_scene.pack(new_scene)
+	ResourceSaver.save(packed_scene, path)
+	new_scene.queue_free()
+
+	# Set the text box scene path
+	_text_box_scene_field.set_value(path)
+	_to_text_box_scene_button.visible = true
+	_new_text_box_scene_button.visible = false
+
+	# Open the new scene in the editor
+	open_scene_in_editor(path)
+	on_modified()
 
 
 ## Handle the text box portrait display toggle
