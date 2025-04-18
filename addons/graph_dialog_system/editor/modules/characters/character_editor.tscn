@@ -1,12 +1,14 @@
-[gd_scene load_steps=12 format=3 uid="uid://b3dunt76vknsq"]
+[gd_scene load_steps=13 format=3 uid="uid://b3dunt76vknsq"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_mqdqa"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/character_editor.gd" id="2_8cc8c"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/scripts/translations_container.gd" id="2_tpd02"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/interactable/collapse-down.svg" id="3_3q8bw"]
+[ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/graph_dialog_system/theme/expander_subpanel_highlight.tres" id="5_k1upw"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="5_x3nyu"]
 [ext_resource type="PackedScene" uid="uid://881twee1nau2" path="res://addons/graph_dialog_system/editor/modules/characters/portrait_editor.tscn" id="7_4rves"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/character_portrait_tree.gd" id="7_7kmf4"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/graph_dialog_system/theme/empty_panel.tres" id="9_a1fcc"]
 
 [sub_resource type="Image" id="Image_knvep"]
 data = {
@@ -21,8 +23,6 @@ data = {
 image = SubResource("Image_knvep")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f8fk6"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ra27n"]
 
 [node name="CharacterEditor" type="HSplitContainer"]
 anchors_preset = 15
@@ -71,7 +71,8 @@ text = "Display Name"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_colors/font_color = Color(0.698039, 0.698039, 0.698039, 1)
+theme = ExtResource("1_mqdqa")
+theme_type_variation = &"LocaleLabel"
 text = "()"
 
 [node name="NameDefaultLocaleField" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/DisplayName"]
@@ -80,13 +81,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Insert character name..."
 
-[node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
+[node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container" node_paths=PackedStringArray("extra_to_show")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 tooltip_text = "Translations of the name to display."
 script = ExtResource("2_tpd02")
-useTextBoxes = false
+use_text_boxes = false
+extra_to_show = NodePath("Separator")
 
 [node name="ExpandButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
 layout_mode = 2
@@ -97,18 +99,22 @@ flat = true
 alignment = 2
 icon_alignment = 2
 
-[node name="TextBoxes" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
+[node name="Separator" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
 visible = false
-custom_minimum_size = Vector2(2.08165e-12, 100)
 layout_mode = 2
 
-[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/TextBoxes"]
+[node name="Panel" type="ScrollContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
+visible = false
+custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
+theme_override_styles/panel = ExtResource("5_k1upw")
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/TextBoxes"]
+[node name="TextBoxes" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Panel"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
-theme_type_variation = &"HeaderSmall"
-text = "Display Name Translations"
+size_flags_horizontal = 3
 
 [node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
@@ -253,11 +259,11 @@ item_2/id = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="EmptyPanel" type="Panel" parent="PortraitSettings"]
+[node name="NoPortraitPanel" type="Panel" parent="PortraitSettings"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxEmpty_ra27n")
+theme_override_styles/panel = ExtResource("9_a1fcc")
 
-[node name="Label" type="Label" parent="PortraitSettings/EmptyPanel"]
+[node name="Label" type="Label" parent="PortraitSettings/NoPortraitPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -273,8 +279,8 @@ grow_vertical = 2
 text = "No portrait selected."
 
 [node name="Container" type="ScrollContainer" parent="PortraitSettings"]
-visible = false
 layout_mode = 2
+theme_override_styles/panel = ExtResource("9_a1fcc")
 
 [node name="PortraitEditor" parent="PortraitSettings/Container" instance=ExtResource("7_4rves")]
 layout_mode = 2

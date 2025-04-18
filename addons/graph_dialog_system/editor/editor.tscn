@@ -4,11 +4,10 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialog_system/theme/main_theme.tres" id="1_h283m"]
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialog_system/editor/file_manager.tscn" id="1_qbi36"]
 [ext_resource type="PackedScene" uid="uid://d0gf52rcd1hn" path="res://addons/graph_dialog_system/editor/modules/characters/character_panel.tscn" id="3_7mghu"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/graph_dialog_system/theme/empty_panel.tres" id="3_gh31w"]
 [ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/graph_dialog_system/editor/modules/workspace/workspace.tscn" id="4_yuhh0"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/graph_dialog_system/editor/modules/variables/variables_panel.tscn" id="6_4jako"]
 [ext_resource type="PackedScene" uid="uid://pdcicn3rbwbs" path="res://addons/graph_dialog_system/editor/modules/settings/settings_panel.tscn" id="7_xlq8u"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_peilh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lcwba"]
 
@@ -34,7 +33,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxEmpty_peilh")
+theme_override_styles/panel = ExtResource("3_gh31w")
 
 [node name="Container" type="VBoxContainer" parent="FirstSettings"]
 layout_mode = 1

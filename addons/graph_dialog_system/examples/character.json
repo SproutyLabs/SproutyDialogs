@@ -9,9 +9,13 @@
 			}
 		},
 		"key_name": "character",
-		"portraits": {},
-		"text_box": "res://test_scenes/dialog_box.tscn",
 		"portrait_on_text_box": false,
-		"typing_sounds": {}
+		"portraits": {
+
+		},
+		"text_box": "res://test_scenes/dialog_box.tscn",
+		"typing_sounds": {
+
+		}
 	}
 }

@@ -22,6 +22,7 @@ icon = ExtResource("2_8u1nn")
 flat = true
 
 [node name="TextBoxes" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(2.08165e-12, 100)
 layout_mode = 2

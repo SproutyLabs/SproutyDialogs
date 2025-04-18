@@ -26,10 +26,6 @@ extends VBoxContainer
 @onready var _portrait_rotation_section: Container = %PortraitRotation
 ## Portrait offset section
 @onready var _portrait_offset_section: Container = %PortraitOffset
-## Portrait region section
-@onready var _portrait_region_section: Container = %PortraitRegion
-## Portrait region toggle button
-@onready var _portrait_region_toggle: CheckButton = %RegionToggle
 
 ## Portrait image scene template
 var _default_portrait_scene := preload("res://addons/graph_dialog_system/utils/default_portrait.tscn")
@@ -51,7 +47,7 @@ func _ready():
 func get_portrait_data() -> Dictionary:
 	var data = {
 		"portrait_scene": _portrait_file_field.get_value(),
-		"image_settings": {
+		"transform_settings": {
 			"scale": {
 				"x": _portrait_scale_section.get_node("XField").value,
 				"y": _portrait_scale_section.get_node("YField").value,
@@ -62,14 +58,7 @@ func get_portrait_data() -> Dictionary:
 				"y": _portrait_offset_section.get_node("YField").value,
 			},
 			"rotation": _portrait_rotation_section.get_node("RotationField").value,
-			"mirror": _portrait_rotation_section.get_node("MirrorCheckBox").button_pressed,
-			"enable_region": _portrait_region_toggle.button_pressed,
-			"region": {
-				"x": _portrait_region_section.get_node("RegionPosition/XField").value,
-				"y": _portrait_region_section.get_node("RegionPosition/YField").value,
-				"width": _portrait_region_section.get_node("RegionSize/WField").value,
-				"height": _portrait_region_section.get_node("RegionSize/HField").value,
-			}
+			"mirror": _portrait_rotation_section.get_node("MirrorCheckBox").button_pressed
 		},
 		"typing_sound": "",
 	}
@@ -93,12 +82,6 @@ func load_portrait_data(name: String, data: Dictionary) -> void:
 	_portrait_rotation_section.get_node("RotationField").value = data.image_settings.rotation
 	_portrait_rotation_section.get_node("MirrorCheckBox").button_pressed = data.image_settings.mirror
 
-	_portrait_region_section.get_node("RegionPosition/XField").value = data.image_settings.region.x
-	_portrait_region_section.get_node("RegionPosition/YField").value = data.image_settings.region.y
-	_portrait_region_section.get_node("RegionSize/WField").value = data.image_settings.region.width
-	_portrait_region_section.get_node("RegionSize/HField").value = data.image_settings.region.height
-	_portrait_region_toggle.button_pressed = data.image_settings.enable_region
-
 	_update_preview() # Update the preview image with the loaded settings
 
 
@@ -106,7 +89,7 @@ func load_portrait_data(name: String, data: Dictionary) -> void:
 func set_portrait_name(name: String) -> void:
 	_portrait_name.text = name
 
-#region === Preview handlers ===================================================
+#region === Portrait Preview ===================================================
 
 ## Update the preview image with image settings
 func _update_preview() -> void:
@@ -123,13 +106,18 @@ func _update_preview() -> void:
 	if _portrait_rotation_section.get_node("MirrorCheckBox").button_pressed:
 		_preview_container.scale.x = - _preview_container.scale.x
 
-	_image_preview.region_enabled = _portrait_region_section.visible
-	_image_preview.region_rect = Rect2(
-		_portrait_region_section.get_node("RegionPosition/XField").value,
-		_portrait_region_section.get_node("RegionPosition/YField").value,
-		_portrait_region_section.get_node("RegionSize/WField").value,
-		_portrait_region_section.get_node("RegionSize/HField").value
-		)
+
+## Switch the portrait scene in the preview
+func _switch_scene_preview(new_scene: String) -> void:
+	# Switch the preview to the scene file path
+	if _preview_container.get_child_count() > 0:
+		_preview_container.remove_child(_preview_container.get_child(0))
+	var scene = load(new_scene).instantiate()
+	_preview_container.add_child(scene)
+
+#endregion
+
+#region === Portrait Scene =====================================================
 
 ## Update the portrait scene when the path changes
 func _on_portrait_scene_path_changed(path: String) -> void:
@@ -143,10 +131,11 @@ func _on_portrait_scene_path_changed(path: String) -> void:
 		if path.ends_with(".tscn") or path.ends_with(".scn"):
 			_to_portrait_scene_button.visible = true
 			_switch_scene_preview(path)
+			_character_editor.on_modified()
 		else:
 			_portrait_image_path = path
-			if not _new_scene_dialog.is_connected("file_selected", _on_new_portrait_path_selected):
-				_new_scene_dialog.connect("file_selected", _on_new_portrait_path_selected)
+			if not _new_scene_dialog.is_connected("file_selected", _on_new_portrait_from_image):
+				_new_scene_dialog.connect("file_selected", _on_new_portrait_from_image)
 			_new_scene_dialog.get_line_edit().text = "new_portrait.tscn"
 			_new_scene_dialog.popup_centered()
 	else:
@@ -154,34 +143,25 @@ func _on_portrait_scene_path_changed(path: String) -> void:
 
 
 ## Create a new portrait scene file
-func _on_new_portrait_path_selected(path: String) -> void:
+func _on_new_portrait_from_image(scene_path: String) -> void:
 	var new_scene = _default_portrait_scene.instantiate()
-	new_scene.name = path.get_file().split(".")[0].to_pascal_case()
+	new_scene.name = scene_path.get_file().split(".")[0].to_pascal_case()
 	new_scene.set_portrait_image(load(_portrait_image_path))
 
 	# Save the new scene file
 	var packed_scene = PackedScene.new()
 	packed_scene.pack(new_scene)
-	ResourceSaver.save(packed_scene, path)
+	ResourceSaver.save(packed_scene, scene_path)
 	new_scene.queue_free()
 
 	# Set the field and preview to the new scene file
-	_portrait_file_field.set_value(path)
+	_portrait_file_field.set_value(scene_path)
 	_to_portrait_scene_button.visible = true
-	_switch_scene_preview(path)
+	_switch_scene_preview(scene_path)
 
 	# Open the new scene in the editor
-	_character_editor.open_scene_in_editor(path)
-	#on_modified() #TODO
-
-
-## Switch the portrait scene in the preview
-func _switch_scene_preview(new_scene: String) -> void:
-	# Switch the preview to the scene file path
-	if _preview_container.get_child_count() > 0:
-		_preview_container.remove_child(_preview_container.get_child(0))
-	var scene = load(new_scene).instantiate()
-	_preview_container.add_child(scene)
+	_character_editor.open_scene_in_editor(scene_path)
+	_character_editor.on_modified()
 
 
 ## Open the portrait scene in the editor
@@ -190,17 +170,11 @@ func _on_to_portrait_scene_button_pressed() -> void:
 
 #endregion
 
-#region === Image settings =====================================================
+#region === Transform settings =================================================
 
 ## Show or hide the image settings section
 func _on_expand_transform_settings_toggled(toggled_on: bool) -> void:
 	_transform_settings_section.visible = toggled_on
-
-
-## Show or hide the portrait region section
-func _on_enable_region_toggled(toggled_on: bool) -> void:
-	_portrait_region_section.visible = toggled_on
-	_image_preview.region_enabled = toggled_on
 
 
 ## Update the image scale lock ratio
@@ -217,6 +191,7 @@ func _on_scale_x_value_changed(value: float) -> void:
 	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
 		_portrait_scale_section.get_node("YField").value = value
 		_preview_container.scale.y = value
+	_character_editor.on_modified()
 
 ## Update the image scale
 func _on_scale_y_value_changed(value: float) -> void:
@@ -224,21 +199,25 @@ func _on_scale_y_value_changed(value: float) -> void:
 	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
 		_portrait_scale_section.get_node("XField").value = value
 		_preview_container.scale.x = value
+	_character_editor.on_modified()
 
 
 ## Update the image offset position
 func _on_offset_x_value_changed(value: float) -> void:
 	_preview_container.position.x = value + _preview_offset.x
+	_character_editor.on_modified()
 
 
 ## Update the image offset position
 func _on_offset_y_value_changed(value: float) -> void:
 	_preview_container.position.y = value + _preview_offset.y
+	_character_editor.on_modified()
 
 
 ## Update the image rotation
 func _on_rotation_value_changed(value: float) -> void:
 	_preview_container.rotation_degrees = value
+	_character_editor.on_modified()
 
 
 ## Update the image mirroring
@@ -247,25 +226,6 @@ func _on_mirror_check_box_toggled(toggled_on: bool) -> void:
 		_preview_container.scale.x = - abs(_preview_container.scale.x)
 	else:
 		_preview_container.scale.x = abs(_preview_container.scale.x)
-
-
-## Update the image region x coordinate
-func _on_region_x_value_changed(value: float) -> void:
-	_image_preview.region_rect.position.x = value
-
-
-## Update the image region y coordinate
-func _on_region_y_value_changed(value: float) -> void:
-	_image_preview.region_rect.position.y = value
-
-
-## Update the image region width
-func _on_region_w_value_changed(value: float) -> void:
-	_image_preview.region_rect.size.x = value
-
-
-## Update the image region height
-func _on_region_h_value_changed(value: float) -> void:
-	_image_preview.region_rect.size.y = value
+	_character_editor.on_modified()
 
 #endregion

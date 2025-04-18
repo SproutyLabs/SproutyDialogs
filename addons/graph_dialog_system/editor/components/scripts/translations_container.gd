@@ -10,10 +10,11 @@ extends VBoxContainer
 ## -----------------------------------------------------------------------------
 
 ## True if is using text boxes for translation, false if is using line edits
-@export var useTextBoxes: bool = true
+@export var use_text_boxes: bool = true
+@export var extra_to_show: Node = null
 
 ## Text boxes container
-@onready var text_boxes: Container = $TextBoxes
+@onready var text_boxes: Container = %TextBoxes
 
 ## Translation box scene
 var translation_box := preload(
@@ -50,7 +51,7 @@ func set_translation_boxes(locales: Array) -> void:
 	
 	for locale in locales: # Add a box for each locale
 		var box = null
-		if useTextBoxes:
+		if use_text_boxes:
 			box = translation_box.instantiate()
 		else:
 			box = translation_line.instantiate()
@@ -68,4 +69,7 @@ func load_translations_text(dialogs: Dictionary) -> void:
 
 ## Show or collapse the text boxes
 func _on_expand_button_toggled(toggled_on: bool) -> void:
+	text_boxes.get_parent().visible = toggled_on
 	text_boxes.visible = toggled_on
+	if extra_to_show:
+		extra_to_show.visible = toggled_on

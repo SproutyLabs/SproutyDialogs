@@ -10,9 +10,9 @@ extends Tree
 
 ## Triggered when the user selects an item
 signal portrait_item_selected(item: TreeItem)
-## Triggered when something is modified
-signal modified
 
+## Character editor reference
+@onready var _character_editor: Container = find_parent("CharacterEditor")
 ## Portrait tree popup menu
 @onready var _popup_menu: PopupMenu = $PortraitPopupMenu
 
@@ -26,11 +26,6 @@ func _ready() -> void:
 	_popup_menu.set_item_icon(1, get_theme_icon('Duplicate', 'EditorIcons'))
 	_popup_menu.set_item_icon(2, get_theme_icon('Remove', 'EditorIcons'))
 	create_item() # Create the root item
-	
-
-## Emit the modified signal
-func on_modified():
-	modified.emit()
 
 
 ## Adds a new portrait item to the tree
@@ -65,7 +60,7 @@ func duplicate_portrait_item(item: TreeItem) -> TreeItem:
 		)
 	item.set_editable(0, true)
 	item.select(0)
-	on_modified()
+	_character_editor.on_modified()
 	return new_item
 
 
@@ -74,7 +69,7 @@ func remove_portrait_item(item: TreeItem) -> void:
 	if item.get_next_visible(true) and item.get_next_visible(true) != item:
 		item.get_next_visible(true).select(0)
 	item.free()
-	on_modified()
+	_character_editor.on_modified()
 
 
 ## Renames the portrait item
@@ -166,6 +161,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		new_item.move_before(to_item)
 
 	item.free() # Free the original item
+	_character_editor.on_modified()
 
 
 # Create a copy of the item and its children (if is a group)
@@ -211,6 +207,7 @@ func _on_item_edited() -> void:
 	var item := get_selected()
 	if not item.get_metadata(0).has('group'): # Update the portrait name
 		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
+	_character_editor.on_modified()
 
 
 ## Called when the user selects an item in the popup menu

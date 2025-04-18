@@ -38,7 +38,7 @@ signal modified
 ## Portrait tree search bar
 @onready var _portrait_search_bar: LineEdit = %PortraitSearchBar
 ## Portrait empty panel
-@onready var _portrait_empty_panel: Panel = $PortraitSettings/EmptyPanel
+@onready var _portrait_empty_panel: Panel = $PortraitSettings/NoPortraitPanel
 ## Portrait settings container
 @onready var _portrait_editor_container: Container = $PortraitSettings/Container
 
@@ -69,7 +69,6 @@ func _ready() -> void:
 		GDialogsTranslationManager.translation_settings.connect(
 			"default_locale_changed", _on_locales_changed
 		)
-	_portrait_tree.connect("modified", on_modified)
 	_portrait_tree.connect("portrait_item_selected", _on_portrait_selected)
 	_to_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_new_text_box_scene_button.icon = get_theme_icon("Add", "EditorIcons")
