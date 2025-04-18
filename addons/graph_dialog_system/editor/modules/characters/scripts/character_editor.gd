@@ -43,7 +43,7 @@ signal modified
 @onready var _portrait_editor_container: Container = $PortraitSettings/Container
 
 ## Default text box scene
-var _default_text_box_scene := preload("res://addons/graph_dialog_system/utils/default_text_box.tscn")
+var _default_text_box_scene := preload("res://addons/graph_dialog_system/utils/dialog_nodes/default_text_box.tscn")
 
 ## Portrait settings panel scene
 var _portrait_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/portrait_editor.tscn")
@@ -112,26 +112,16 @@ func load_character(data: Dictionary, name_data: Dictionary) -> void:
 
 	# Text box scene file
 	_text_box_scene_field.set_value(data.text_box)
-	if check_valid_file(data.text_box, _text_box_scene_field.file_filters):
+	if GDialogsFileUtils.check_valid_extension(data.text_box, _text_box_scene_field.file_filters):
 		_to_text_box_scene_button.visible = true
 		_new_text_box_scene_button.visible = false
 	_portrait_on_text_box = data.portrait_on_text_box
 	%PortraitOnTextBoxToggle.button_pressed = _portrait_on_text_box
 
 
-## Check if the path has valid extension
-func check_valid_file(path: String, extensions: Array) -> bool:
-	if path.is_empty():
-		return false
-	for ext in extensions:
-		if path.ends_with(ext.replace("*", "")):
-			return true
-	return false
-
-
 ## Open a scene in the editor
 func open_scene_in_editor(path: String) -> void:
-	if check_valid_file(path, _text_box_scene_field.file_filters):
+	if GDialogsFileUtils.check_valid_extension(path, _text_box_scene_field.file_filters):
 		if ResourceLoader.exists(path):
 			EditorInterface.open_scene_from_path(path)
 			await get_tree().process_frame
@@ -183,7 +173,7 @@ func _on_text_box_scene_path_changed(path: String) -> void:
 	if path.is_empty(): # No path selected
 		_to_text_box_scene_button.visible = false
 		_new_text_box_scene_button.visible = true
-	elif check_valid_file(path, _text_box_scene_field.file_filters):
+	elif GDialogsFileUtils.check_valid_extension(path, _text_box_scene_field.file_filters):
 		_to_text_box_scene_button.visible = true # Valid path
 		_new_text_box_scene_button.visible = false
 	on_modified()
@@ -198,6 +188,7 @@ func _on_text_box_scene_button_pressed() -> void:
 func _on_new_text_box_scene_pressed() -> void:
 	if not new_scene_dialog.is_connected("file_selected", _on_new_text_box_path_selected):
 		new_scene_dialog.connect("file_selected", _on_new_text_box_path_selected)
+	new_scene_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("text_box_files"))
 	new_scene_dialog.get_line_edit().text = "new_text_box.tscn"
 	new_scene_dialog.popup_centered()
 
@@ -222,6 +213,9 @@ func _on_new_text_box_path_selected(path: String) -> void:
 	open_scene_in_editor(path)
 	on_modified()
 
+	# Set the recent file path
+	GDialogsFileUtils.set_recent_file_path("text_box_files", path)
+
 
 ## Handle the text box portrait display toggle
 func _on_portrait_text_box_toggled(toggled_on: bool) -> void:
@@ -231,6 +225,12 @@ func _on_portrait_text_box_toggled(toggled_on: bool) -> void:
 #endregion
 
 #region === Portrait Tree ======================================================
+
+## Show or hide the portrait settings panel
+func show_portrait_editor_panel(show: bool) -> void:
+	_portrait_empty_panel.visible = not show
+	_portrait_editor_container.visible = show
+
 
 ## Add a new portrait to the tree
 func _on_add_portrait_button_pressed() -> void:
@@ -274,19 +274,16 @@ func _on_portrait_search_bar_text_changed(new_text: String) -> void:
 	_portrait_tree.filter_branch(_portrait_tree.get_root(), new_text)
 
 
-## Show or hide the portrait settings panel
-func _show_portrait_editor_panel(show: bool) -> void:
-	_portrait_empty_panel.visible = not show
-	_portrait_editor_container.visible = show
-
-
 ## Update the portrait settings when a portrait is selected
 func _on_portrait_selected(item: TreeItem) -> void:
 	# Check if the selected item is a portrait
+	if item == null:
+		return # No item selected
+	
 	if item.get_metadata(0).has("group"):
-		_show_portrait_editor_panel(false)
+		show_portrait_editor_panel(false)
 	else:
-		_show_portrait_editor_panel(true)
+		show_portrait_editor_panel(true)
 	_switch_current_portrait(item)
 
 

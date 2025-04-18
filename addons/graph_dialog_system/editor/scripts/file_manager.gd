@@ -119,17 +119,17 @@ func _ready() -> void:
 
 ## Open a file dialog to select a file to open
 func select_file_to_open() -> void:
-	_open_file_dialog.popup_centered()
+	_on_open_file_pressed()
 
 
 ## Open a file dialog to select where create a new dialog file
 func select_new_dialog_file() -> void:
-	_new_dialog_file_dialog.popup_centered()
+	_on_new_dialog_pressed()
 
 
 ## Open a file dialog to select where create a new character file
 func select_new_character_file() -> void:
-	_new_char_file_dialog.popup_centered()
+	_on_new_char_pressed()
 
 
 #region === New Files ==========================================================
@@ -155,6 +155,7 @@ func new_dialog_file(path: String) -> void:
 	_new_file_item(file_name, path, FileType.DIALOG, data)
 	_editor_main.switch_active_tab(0)
 	_workspace.show_graph_editor()
+	GDialogsFileUtils.set_recent_file_path("dialog_files", path)
 	print("[Graph Dialogs] Dialog file '" + file_name + "' created.")
 
 
@@ -168,9 +169,10 @@ func new_character_file(path: String) -> void:
 				GDialogsTranslationManager.default_locale: ""
 			},
 			"description": "",
-			"dialog_box": "",
+			"text_box": "",
+			"portrait_on_text_box": false,
+			"portraits": {},
 			"typing_sounds": {},
-			"portraits": {}
 		}
 	}
 	# Create a new JSON file and add file to the list
@@ -178,6 +180,7 @@ func new_character_file(path: String) -> void:
 	_new_file_item(file_name, path, FileType.CHAR, data)
 	_editor_main.switch_active_tab(1)
 	_character_editor.show_character_panel()
+	GDialogsFileUtils.set_recent_file_path("character_files", path)
 	print("[Graph Dialogs] Character file '" + file_name + "' created.")
 
 
@@ -250,6 +253,7 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 ## Load data from JSON file
 func load_file(path: String) -> void:
 	if FileAccess.file_exists(path):
+		GDialogsFileUtils.set_recent_file_path("json_files", path)
 		var data = GDialogsJSONFileManager.load_file(path)
 		var file_name: String = path.split('/')[-1]
 		
@@ -603,16 +607,19 @@ func _on_save_file_pressed() -> void:
 
 ## Open file dialog to select a file
 func _on_open_file_pressed() -> void:
+	_open_file_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("json_files"))
 	_open_file_dialog.popup_centered()
 
 
 ## Create new dialog file
 func _on_new_dialog_pressed() -> void:
+	_new_dialog_file_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("dialog_files"))
 	_new_dialog_file_dialog.popup_centered()
 
 
 ## Create new character file
 func _on_new_char_pressed() -> void:
+	_new_char_file_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("character_files"))
 	_new_char_file_dialog.popup_centered()
 
 ## Switch to the selected file when clicked

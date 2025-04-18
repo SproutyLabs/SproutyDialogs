@@ -114,6 +114,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _placeholder_text = "Select an image or scene..."
+_recent_file_type = "portrait_files"
 file_filters = PackedStringArray("*.tscn", "*.scn", "*.jpg", "*.jpeg", "*.png", "*.svg", "*.webp", "*.bmp", "*.tga", "*.dds", "*.kts", "*.hdr", "*.exr")
 
 [node name="---" type="HSeparator" parent="Container/PortraitSettings"]

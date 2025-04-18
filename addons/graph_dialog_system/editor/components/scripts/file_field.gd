@@ -2,17 +2,19 @@
 extends MarginContainer
 class_name GDialogsFileField
 
-## =============================================================================
+## -----------------------------------------------------------------------------
 ##  File Field Component
 ##
 ##  Component that allows the user to select a file from the file system.
-## =============================================================================
+## -----------------------------------------------------------------------------
 
 ## Triggered when the file path is changed.
 signal file_path_changed(path: String)
 
 ## Placeholder text to show when the field is empty.
 @export var _placeholder_text: String = "Select a file..."
+## File type to load the last used path.
+@export var _recent_file_type: String = ""
 ## File extension filters.
 @export var file_filters: PackedStringArray
 
@@ -54,6 +56,7 @@ func set_value(value: String) -> void:
 
 ## Show the file dialog to select a file.
 func _on_open_pressed() -> void:
+	_file_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path(_recent_file_type))
 	_file_dialog.filters = file_filters
 	_file_dialog.popup_centered()
 
@@ -62,6 +65,7 @@ func _on_open_pressed() -> void:
 func _on_file_dialog_selected(path: String) -> void:
 	file_path_changed.emit(path)
 	set_value(path)
+	GDialogsFileUtils.set_recent_file_path(_recent_file_type, path)
 
 
 ## Triggered when the text of the field changes.

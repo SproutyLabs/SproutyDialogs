@@ -1,10 +1,16 @@
 @tool
 extends VBoxContainer
 
+## -----------------------------------------------------------------------------
+## Portrait Editor
+## 
+## This module allows the user to edit a portrait for a character.
+## -----------------------------------------------------------------------------
+
 ## Character editor reference
 @onready var _character_editor: Container = find_parent("CharacterEditor")
 ## Character editor new scene dialog
-@onready var _new_scene_dialog: FileDialog = _character_editor.new_scene_dialog
+@onready var _new_scene_dialog: FileDialog = _character_editor.new_scene_dialog if _character_editor else null
 
 ## Portrait name label
 @onready var _portrait_name: Label = $Title/PortraitName
@@ -28,7 +34,7 @@ extends VBoxContainer
 @onready var _portrait_offset_section: Container = %PortraitOffset
 
 ## Portrait image scene template
-var _default_portrait_scene := preload("res://addons/graph_dialog_system/utils/default_portrait.tscn")
+var _default_portrait_scene := preload("res://addons/graph_dialog_system/utils/dialog_nodes/default_portrait.tscn")
 
 ## Portrait image
 var _portrait_image_path: String = ""
@@ -122,7 +128,7 @@ func _switch_scene_preview(new_scene: String) -> void:
 ## Update the portrait scene when the path changes
 func _on_portrait_scene_path_changed(path: String) -> void:
 	# Check if the path is not empty and has a valid file extension
-	if not _character_editor.check_valid_file(path, _portrait_file_field.file_filters):
+	if not GDialogsFileUtils.check_valid_extension(path, _portrait_file_field.file_filters):
 		_to_portrait_scene_button.visible = false
 		return
 	
@@ -136,6 +142,7 @@ func _on_portrait_scene_path_changed(path: String) -> void:
 			_portrait_image_path = path
 			if not _new_scene_dialog.is_connected("file_selected", _on_new_portrait_from_image):
 				_new_scene_dialog.connect("file_selected", _on_new_portrait_from_image)
+			_new_scene_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("portrait_files"))
 			_new_scene_dialog.get_line_edit().text = "new_portrait.tscn"
 			_new_scene_dialog.popup_centered()
 	else:
@@ -162,6 +169,9 @@ func _on_new_portrait_from_image(scene_path: String) -> void:
 	# Open the new scene in the editor
 	_character_editor.open_scene_in_editor(scene_path)
 	_character_editor.on_modified()
+
+	# Set the recent file path
+	GDialogsFileUtils.set_recent_file_path("portrait_files", scene_path)
 
 
 ## Open the portrait scene in the editor

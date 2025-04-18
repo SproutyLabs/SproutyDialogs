@@ -70,9 +70,11 @@ func remove_portrait_item(item: TreeItem) -> void:
 		item.get_next_visible(true).select(0)
 	item.free()
 	_character_editor.on_modified()
+	# If the tree is empty, hide the portrait editor panel
+	if get_root().get_children().size() == 0:
+		_character_editor.show_portrait_editor_panel(false)
 
-
-## Renames the portrait item
+##	 Renames the portrait item
 func rename_portrait_item(item: TreeItem) -> void:
 	item.set_editable(0, true)
 	call_deferred('edit_selected')

@@ -171,6 +171,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _placeholder_text = "Select a scene..."
+_recent_file_type = "text_box_files"
 file_filters = PackedStringArray("*.tscn")
 
 [node name="PortraitOnTextBoxToggle" type="CheckButton" parent="CharacterSettings/ScrollContainer/Container"]
@@ -279,6 +280,7 @@ grow_vertical = 2
 text = "No portrait selected."
 
 [node name="Container" type="ScrollContainer" parent="PortraitSettings"]
+visible = false
 layout_mode = 2
 theme_override_styles/panel = ExtResource("9_a1fcc")
 
