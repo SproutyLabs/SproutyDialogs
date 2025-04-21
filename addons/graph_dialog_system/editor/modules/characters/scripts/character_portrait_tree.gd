@@ -28,6 +28,36 @@ func _ready() -> void:
 	create_item() # Create the root item
 
 
+## Get the portrait data from the tree
+func get_portraits_data(from: TreeItem = get_root()) -> Dictionary:
+	var data := {}
+	for item in from.get_children():
+		if item.get_metadata(0).has('group'):
+			data[item.get_text(0)] = get_portraits_data(item)
+		else:
+			data[item.get_text(0)] = item.get_meta('portrait_editor').get_portrait_data()
+	return data
+
+
+## Load the portrait data into the tree
+func load_portraits_data(data: Dictionary, parent_item: TreeItem = get_root()) -> void:
+	if not data:
+		return # If the data is empty, do nothing
+	
+	for item in data.keys():
+		if not data[item].has('portrait_scene'):
+			# If the item is a group, create it and load its children
+			var group_item: TreeItem = new_portrait_group(item, parent_item)
+			load_portraits_data(data[item], group_item)
+		else:
+			# If the item is a portrait, create it and load its data
+			var editor = _character_editor.portrait_editor_scene.instantiate()
+			add_child(editor)
+			new_portrait_item(item, data[item], parent_item, editor)
+			editor.load_portrait_data(item, data[item])
+			remove_child(editor)
+
+
 ## Adds a new portrait item to the tree
 func new_portrait_item(name: String, data: Dictionary, parent_item: TreeItem, portrait_editor: Node) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
@@ -74,10 +104,20 @@ func remove_portrait_item(item: TreeItem) -> void:
 	if get_root().get_children().size() == 0:
 		_character_editor.show_portrait_editor_panel(false)
 
-##	 Renames the portrait item
+## Renames the portrait item
 func rename_portrait_item(item: TreeItem) -> void:
 	item.set_editable(0, true)
 	call_deferred('edit_selected')
+
+
+## Check if the name is already in use
+func check_existing_name(name: String, checked_item: TreeItem) -> bool:
+	for item in get_root().get_children():
+		if item == checked_item:
+			continue # Skip the item being checked
+		if item.get_text(0) == name:
+			return true
+	return false
 
 
 ## Get the path of the item in the tree
@@ -207,6 +247,22 @@ func _on_item_activated() -> void:
 ## Called when the user edits a portrait item
 func _on_item_edited() -> void:
 	var item := get_selected()
+	
+	# If the name is empty, set it to "Unnamed"
+	if item.get_text(0).strip_edges() == "":
+		item.set_text(0, "Unnamed")
+		return
+
+	# If the name is already in use, add a suffix to the name
+	if check_existing_name(item.get_text(0), item):
+		var suffix := 1
+		var name := item.get_text(0).strip_edges() + " (" + str(suffix) + ")"
+		# If new the name is already in use, increment the suffix value
+		while check_existing_name(name, item):
+			name = item.get_text(0).strip_edges() + " (" + str(suffix) + ")"
+			suffix += 1
+		item.set_text(0, name)
+	
 	if not item.get_metadata(0).has('group'): # Update the portrait name
 		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
 	_character_editor.on_modified()

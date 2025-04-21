@@ -42,11 +42,12 @@ signal modified
 ## Portrait settings container
 @onready var _portrait_editor_container: Container = $PortraitSettings/Container
 
+## Portrait settings panel scene
+var portrait_editor_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/portrait_editor.tscn")
+
 ## Default text box scene
 var _default_text_box_scene := preload("res://addons/graph_dialog_system/utils/dialog_nodes/default_text_box.tscn")
 
-## Portrait settings panel scene
-var _portrait_scene := preload("res://addons/graph_dialog_system/editor/modules/characters/portrait_editor.tscn")
 ## Current portrait selected
 var _current_portrait: TreeItem = null
 
@@ -91,7 +92,7 @@ func get_character_data() -> Dictionary:
 			"description": _description_field.text,
 			"text_box": _text_box_scene_field.get_value(),
 			"portrait_on_text_box": _portrait_on_text_box,
-			"portraits": {},
+			"portraits": _portrait_tree.get_portraits_data(),
 			"typing_sounds": {}
 		}
 	}
@@ -117,6 +118,9 @@ func load_character(data: Dictionary, name_data: Dictionary) -> void:
 		_new_text_box_scene_button.visible = false
 	_portrait_on_text_box = data.portrait_on_text_box
 	%PortraitOnTextBoxToggle.button_pressed = _portrait_on_text_box
+
+	# Portraits
+	_portrait_tree.load_portraits_data(data.portraits)
 
 
 ## Open a scene in the editor
@@ -241,10 +245,10 @@ func _on_add_portrait_button_pressed() -> void:
 			parent = _portrait_tree.get_selected()
 		else:
 			parent = _portrait_tree.get_selected().get_parent()
-	var portrait_editor = _portrait_scene.instantiate()
+	var portrait_editor = portrait_editor_scene.instantiate()
 	add_child(portrait_editor)
 	var item: TreeItem = _portrait_tree.new_portrait_item(
-			"New Portrait", {}, parent, portrait_editor
+			"New Portrait", portrait_editor.get_portrait_data(), parent, portrait_editor
 		)
 	remove_child(portrait_editor)
 	item.set_editable(0, true)
@@ -277,7 +281,7 @@ func _on_portrait_search_bar_text_changed(new_text: String) -> void:
 ## Update the portrait settings when a portrait is selected
 func _on_portrait_selected(item: TreeItem) -> void:
 	# Check if the selected item is a portrait
-	if item == null:
+	if item == null or item.get_metadata(0) == null:
 		return # No item selected
 	
 	if item.get_metadata(0).has("group"):

@@ -35,6 +35,8 @@ extends VBoxContainer
 
 ## Portrait image scene template
 var _default_portrait_scene := preload("res://addons/graph_dialog_system/utils/dialog_nodes/default_portrait.tscn")
+## Portrait custom script template
+var _portrait_script_template := "res://addons/graph_dialog_system/utils/dialog_nodes/dialog_portrait_template.gd"
 
 ## Portrait image
 var _portrait_image_path: String = ""
@@ -49,7 +51,7 @@ func _ready():
 	_portrait_scale_section.get_node("LockRatioButton").icon = get_theme_icon("Instance", "EditorIcons")
 
 
-## Get the portrait settings from the editor
+## Get the portrait data from the editor
 func get_portrait_data() -> Dictionary:
 	var data = {
 		"portrait_scene": _portrait_file_field.get_value(),
@@ -78,16 +80,17 @@ func load_portrait_data(name: String, data: Dictionary) -> void:
 	_portrait_file_field.set_value(data.portrait_scene)
 
 	# Load image settings
-	_portrait_scale_section.get_node("LockRatioButton").button_pressed = data.image_settings.scale.lock_ratio
-	_portrait_scale_section.get_node("XField").value = data.image_settings.scale.x
-	_portrait_scale_section.get_node("YField").value = data.image_settings.scale.y
+	_portrait_scale_section.get_node("LockRatioButton").button_pressed = data.transform_settings.scale.lock_ratio
+	_portrait_scale_section.get_node("XField").value = data.transform_settings.scale.x
+	_portrait_scale_section.get_node("YField").value = data.transform_settings.scale.y
 
-	_portrait_offset_section.get_node("XField").value = data.image_settings.offset.x
-	_portrait_offset_section.get_node("YField").value = data.image_settings.offset.y
+	_portrait_offset_section.get_node("XField").value = data.transform_settings.offset.x
+	_portrait_offset_section.get_node("YField").value = data.transform_settings.offset.y
 
-	_portrait_rotation_section.get_node("RotationField").value = data.image_settings.rotation
-	_portrait_rotation_section.get_node("MirrorCheckBox").button_pressed = data.image_settings.mirror
-
+	_portrait_rotation_section.get_node("RotationField").value = data.transform_settings.rotation
+	_portrait_rotation_section.get_node("MirrorCheckBox").button_pressed = data.transform_settings.mirror
+	
+	_switch_scene_preview(data.portrait_scene) # Switch the preview to the scene file path
 	_update_preview() # Update the preview image with the loaded settings
 
 
@@ -115,6 +118,9 @@ func _update_preview() -> void:
 
 ## Switch the portrait scene in the preview
 func _switch_scene_preview(new_scene: String) -> void:
+	if not new_scene:
+		return # If the path is empty, do nothing
+	
 	# Switch the preview to the scene file path
 	if _preview_container.get_child_count() > 0:
 		_preview_container.remove_child(_preview_container.get_child(0))
@@ -151,9 +157,16 @@ func _on_portrait_scene_path_changed(path: String) -> void:
 
 ## Create a new portrait scene file
 func _on_new_portrait_from_image(scene_path: String) -> void:
-	var new_scene = _default_portrait_scene.instantiate()
+	var new_scene := _default_portrait_scene.instantiate()
 	new_scene.name = scene_path.get_file().split(".")[0].to_pascal_case()
-	new_scene.set_portrait_image(load(_portrait_image_path))
+	new_scene.get_node("Sprite2D").texture = load(_portrait_image_path)
+
+	# Creates and set a template script for the new scene
+	var script_path := scene_path.get_basename() + ".gd"
+	var script = GDScript.new()
+	script.source_code = FileAccess.get_file_as_string(_portrait_script_template)
+	ResourceSaver.save(script, script_path)
+	new_scene.set_script(load(script_path))
 
 	# Save the new scene file
 	var packed_scene = PackedScene.new()

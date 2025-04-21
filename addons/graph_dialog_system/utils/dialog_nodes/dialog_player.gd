@@ -49,7 +49,7 @@ var _starts_ids: Array[String]
 var _chars_keys: Array[String]
 
 ## Current dialog box to display the dialog.
-var _current_dialog_box: DialogBox
+var _current_dialog_box: DialogTextBox
 ## Next node to process in the dialog tree after a dialogue node.
 var _next_node: String = ""
 

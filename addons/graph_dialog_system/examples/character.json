@@ -11,7 +11,42 @@
 		"key_name": "character",
 		"portrait_on_text_box": false,
 		"portraits": {
-
+			"Bob": {
+				"portrait_scene": "res://test_scenes/portrait_scene.tscn",
+				"transform_settings": {
+					"mirror": false,
+					"offset": {
+						"x": 0,
+						"y": 0
+					},
+					"rotation": 0,
+					"scale": {
+						"lock_ratio": true,
+						"x": 1,
+						"y": 1
+					}
+				},
+				"typing_sound": ""
+			},
+			"New Group": {
+				"aaaa": {
+					"portrait_scene": "",
+					"transform_settings": {
+						"mirror": false,
+						"offset": {
+							"x": 0,
+							"y": 0
+						},
+						"rotation": 0,
+						"scale": {
+							"lock_ratio": true,
+							"x": 1,
+							"y": 1
+						}
+					},
+					"typing_sound": ""
+				}
+			}
 		},
 		"text_box": "res://test_scenes/dialog_box.tscn",
 		"typing_sounds": {
