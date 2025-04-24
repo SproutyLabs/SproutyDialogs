@@ -49,10 +49,19 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PreviewLabel" type="Label" parent="Container/PortraitPreview"]
+[node name="PreviewTopBar" type="HBoxContainer" parent="Container/PortraitPreview"]
 layout_mode = 2
+
+[node name="PreviewLabel" type="Label" parent="Container/PortraitPreview/PreviewTopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme_type_variation = &"HeaderSmall"
 text = "Portrait Preview"
+
+[node name="ReloadSceneButton" type="Button" parent="Container/PortraitPreview/PreviewTopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Reload scene"
 
 [node name="PreviewPanel" type="Panel" parent="Container/PortraitPreview"]
 clip_contents = true
@@ -87,40 +96,69 @@ unique_name_in_owner = true
 position = Vector2(20, 20)
 texture = SubResource("ImageTexture_78757")
 
-[node name="PortraitSettings" type="VBoxContainer" parent="Container"]
+[node name="PortraitSettings" type="ScrollContainer" parent="Container"]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="Label" type="Label" parent="Container/PortraitSettings"]
+[node name="Container" type="VBoxContainer" parent="Container/PortraitSettings"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Container/PortraitSettings/Container"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Portrait Settings"
 
-[node name="PortraitScene" type="HBoxContainer" parent="Container/PortraitSettings"]
+[node name="PortraitScene" type="HBoxContainer" parent="Container/PortraitSettings/Container"]
 layout_mode = 2
 tooltip_text = "You can select an image or a scene as a portrait. If you select an image, a scene will be created where it will be displayed."
 
-[node name="Label" type="Label" parent="Container/PortraitSettings/PortraitScene"]
+[node name="Label" type="Label" parent="Container/PortraitSettings/Container/PortraitScene"]
 layout_mode = 2
-text = "Portrait"
+text = "Scene"
 
-[node name="ToPortraitSceneButton" type="Button" parent="Container/PortraitSettings/PortraitScene"]
+[node name="NewPortraitSceneButton" type="Button" parent="Container/PortraitSettings/Container/PortraitScene"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = SubResource("ImageTexture_78757")
+
+[node name="ToPortraitSceneButton" type="Button" parent="Container/PortraitSettings/Container/PortraitScene"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 icon = SubResource("ImageTexture_78757")
 
-[node name="PortraitFileField" parent="Container/PortraitSettings/PortraitScene" instance=ExtResource("1_4ou2u")]
+[node name="PortraitSceneField" parent="Container/PortraitSettings/Container/PortraitScene" instance=ExtResource("1_4ou2u")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-_placeholder_text = "Select an image or scene..."
+_placeholder_text = "Select a scene..."
 _recent_file_type = "portrait_files"
-file_filters = PackedStringArray("*.tscn", "*.scn", "*.jpg", "*.jpeg", "*.png", "*.svg", "*.webp", "*.bmp", "*.tga", "*.dds", "*.kts", "*.hdr", "*.exr")
+file_filters = PackedStringArray("*.tscn", "*.scn")
 
-[node name="---" type="HSeparator" parent="Container/PortraitSettings"]
+[node name="PortraitProperties" type="VBoxContainer" parent="Container/PortraitSettings/Container"]
 layout_mode = 2
 
-[node name="ExpandTransformSettingsButton" type="Button" parent="Container/PortraitSettings"]
+[node name="---" type="HSeparator" parent="Container/PortraitSettings/Container/PortraitProperties"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/PortraitSettings/Container/PortraitProperties"]
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "Properties"
+
+[node name="ExportedProperties" type="GridContainer" parent="Container/PortraitSettings/Container/PortraitProperties"]
+unique_name_in_owner = true
+layout_mode = 2
+columns = 2
+
+[node name="---" type="HSeparator" parent="Container/PortraitSettings/Container"]
+layout_mode = 2
+
+[node name="ExpandTransformSettingsButton" type="Button" parent="Container/PortraitSettings/Container"]
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -131,129 +169,131 @@ alignment = 0
 clip_text = true
 icon_alignment = 2
 
-[node name="TransformSettings" type="PanelContainer" parent="Container/PortraitSettings"]
+[node name="TransformSettings" type="PanelContainer" parent="Container/PortraitSettings/Container"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 theme_override_styles/panel = ExtResource("5_mmsn6")
 
-[node name="Container" type="VBoxContainer" parent="Container/PortraitSettings/TransformSettings"]
+[node name="Container" type="VBoxContainer" parent="Container/PortraitSettings/Container/TransformSettings"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="-" type="HSeparator" parent="Container/PortraitSettings/TransformSettings/Container"]
+[node name="-" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 layout_mode = 2
 
-[node name="PortraitScale" type="HBoxContainer" parent="Container/PortraitSettings/TransformSettings/Container"]
+[node name="PortraitScale" type="HBoxContainer" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
+[node name="Label" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "Scale"
 
-[node name="XLabel" type="Label" parent="Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
+[node name="XLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 tooltip_text = "X coordinate where the image region begins."
 mouse_filter = 1
 text = "X"
 
-[node name="XField" type="SpinBox" parent="Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
+[node name="XField" type="SpinBox" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 max_value = 9999.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="YLabel" type="Label" parent="Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
+[node name="YLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 tooltip_text = "Y coordinate where the image region begins."
 mouse_filter = 1
 text = "Y"
 
-[node name="YField" type="SpinBox" parent="Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
+[node name="YField" type="SpinBox" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 max_value = 9999.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="LockRatioButton" type="Button" parent="Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
+[node name="LockRatioButton" type="Button" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
 icon = SubResource("ImageTexture_78757")
 flat = true
 
-[node name="--" type="HSeparator" parent="Container/PortraitSettings/TransformSettings/Container"]
+[node name="--" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 layout_mode = 2
 
-[node name="PortraitOffset" type="HBoxContainer" parent="Container/PortraitSettings/TransformSettings/Container"]
+[node name="PortraitOffset" type="HBoxContainer" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="OffsetLabel" type="Label" parent="Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
+[node name="OffsetLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "Offset"
 
-[node name="XLabel" type="Label" parent="Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
+[node name="XLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 tooltip_text = "X coordinate where the image region begins."
 mouse_filter = 1
 text = "X"
 
-[node name="XField" type="SpinBox" parent="Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
+[node name="XField" type="SpinBox" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 min_value = -9999.0
 max_value = 9999.0
 step = 0.001
 suffix = "px"
 
-[node name="YLabel" type="Label" parent="Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
+[node name="YLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 tooltip_text = "Y coordinate where the image region begins."
 mouse_filter = 1
 text = "Y"
 
-[node name="YField" type="SpinBox" parent="Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
+[node name="YField" type="SpinBox" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 min_value = -9999.0
 max_value = 9999.0
 step = 0.001
 suffix = "px"
 
-[node name="---" type="HSeparator" parent="Container/PortraitSettings/TransformSettings/Container"]
+[node name="---" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 layout_mode = 2
 
-[node name="PortraitRotation" type="HBoxContainer" parent="Container/PortraitSettings/TransformSettings/Container"]
+[node name="PortraitRotation" type="HBoxContainer" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="RotationLabel" type="Label" parent="Container/PortraitSettings/TransformSettings/Container/PortraitRotation"]
+[node name="RotationLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 tooltip_text = "Y coordinate where the image region begins."
 mouse_filter = 1
 text = "Rotation"
 
-[node name="RotationField" type="SpinBox" parent="Container/PortraitSettings/TransformSettings/Container/PortraitRotation"]
+[node name="RotationField" type="SpinBox" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 min_value = -360.0
 max_value = 360.0
 suffix = "°"
 
-[node name="MirrorCheckBox" type="CheckBox" parent="Container/PortraitSettings/TransformSettings/Container/PortraitRotation"]
+[node name="MirrorCheckBox" type="CheckBox" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 text = "Mirror"
 
-[connection signal="pressed" from="Container/PortraitSettings/PortraitScene/ToPortraitSceneButton" to="." method="_on_to_portrait_scene_button_pressed"]
-[connection signal="file_path_changed" from="Container/PortraitSettings/PortraitScene/PortraitFileField" to="." method="_on_portrait_scene_path_changed"]
-[connection signal="toggled" from="Container/PortraitSettings/ExpandTransformSettingsButton" to="." method="_on_expand_transform_settings_toggled"]
-[connection signal="value_changed" from="Container/PortraitSettings/TransformSettings/Container/PortraitScale/XField" to="." method="_on_scale_x_value_changed"]
-[connection signal="value_changed" from="Container/PortraitSettings/TransformSettings/Container/PortraitScale/YField" to="." method="_on_scale_y_value_changed"]
-[connection signal="toggled" from="Container/PortraitSettings/TransformSettings/Container/PortraitScale/LockRatioButton" to="." method="_on_scale_lock_ratio_toggled"]
-[connection signal="value_changed" from="Container/PortraitSettings/TransformSettings/Container/PortraitOffset/XField" to="." method="_on_offset_x_value_changed"]
-[connection signal="value_changed" from="Container/PortraitSettings/TransformSettings/Container/PortraitOffset/YField" to="." method="_on_offset_y_value_changed"]
-[connection signal="value_changed" from="Container/PortraitSettings/TransformSettings/Container/PortraitRotation/RotationField" to="." method="_on_rotation_value_changed"]
-[connection signal="toggled" from="Container/PortraitSettings/TransformSettings/Container/PortraitRotation/MirrorCheckBox" to="." method="_on_mirror_check_box_toggled"]
+[connection signal="pressed" from="Container/PortraitPreview/PreviewTopBar/ReloadSceneButton" to="." method="_on_reload_scene_button_pressed"]
+[connection signal="pressed" from="Container/PortraitSettings/Container/PortraitScene/NewPortraitSceneButton" to="." method="_on_new_portrait_scene_button_pressed"]
+[connection signal="pressed" from="Container/PortraitSettings/Container/PortraitScene/ToPortraitSceneButton" to="." method="_on_to_portrait_scene_button_pressed"]
+[connection signal="file_path_changed" from="Container/PortraitSettings/Container/PortraitScene/PortraitSceneField" to="." method="_on_portrait_scene_path_changed"]
+[connection signal="toggled" from="Container/PortraitSettings/Container/ExpandTransformSettingsButton" to="." method="_on_expand_transform_settings_toggled"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale/XField" to="." method="_on_scale_x_value_changed"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale/YField" to="." method="_on_scale_y_value_changed"]
+[connection signal="toggled" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale/LockRatioButton" to="." method="_on_scale_lock_ratio_toggled"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset/XField" to="." method="_on_offset_x_value_changed"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset/YField" to="." method="_on_offset_y_value_changed"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation/RotationField" to="." method="_on_rotation_value_changed"]
+[connection signal="toggled" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation/MirrorCheckBox" to="." method="_on_mirror_check_box_toggled"]

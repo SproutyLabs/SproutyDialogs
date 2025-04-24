@@ -1,8 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://8lqtht8y45xi"]
+[gd_scene load_steps=3 format=3 uid="uid://8lqtht8y45xi"]
 
 [ext_resource type="Texture2D" uid="uid://csrytvflqetvd" path="res://icon.svg" id="1_d2pwl"]
+[ext_resource type="Script" path="res://test_scenes/portrait_scene.gd" id="1_j2kia"]
 
 [node name="PortraitScene" type="Node2D"]
+script = ExtResource("1_j2kia")
+portrait_position = [PackedByteArray()]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0.974017, 0.36818, 5.77569e-07, 1)

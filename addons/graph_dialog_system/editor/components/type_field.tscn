@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://ttg70vui28v"]
+
+[node name="TypeField" type="HBoxContainer"]
+size_flags_horizontal = 3
+
+[node name="TypeOptions" type="OptionButton" parent="."]
+layout_mode = 2
+
+[node name="Field" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="Field"]
+layout_mode = 2
+size_flags_horizontal = 3

@@ -13,6 +13,7 @@
 		"portraits": {
 			"Bob": {
 				"portrait_scene": "res://test_scenes/portrait_scene.tscn",
+				"export_overrides": {},
 				"transform_settings": {
 					"mirror": false,
 					"offset": {
@@ -31,6 +32,7 @@
 			"New Group": {
 				"aaaa": {
 					"portrait_scene": "",
+					"export_overrides": {},
 					"transform_settings": {
 						"mirror": false,
 						"offset": {
@@ -49,8 +51,6 @@
 			}
 		},
 		"text_box": "res://test_scenes/dialog_box.tscn",
-		"typing_sounds": {
-
-		}
+		"typing_sounds": {}
 	}
 }
