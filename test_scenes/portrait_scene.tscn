@@ -5,7 +5,6 @@
 
 [node name="PortraitScene" type="Node2D"]
 script = ExtResource("1_j2kia")
-portrait_position = [PackedByteArray()]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0.974017, 0.36818, 5.77569e-07, 1)

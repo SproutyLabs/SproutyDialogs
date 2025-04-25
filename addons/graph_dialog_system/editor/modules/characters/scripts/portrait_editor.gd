@@ -343,7 +343,8 @@ func new_property_field(property_data: Dictionary, value: Variant) -> Control:
 			field = CheckBox.new()
 			if value != null:
 				field.button_pressed = value
-			field.toggled.connect(_on_property_changed.bind(property_data["name"]))
+			field.toggled.connect(_on_property_changed.bind(
+					property_data["name"], property_data["type"]))
 		
 		TYPE_INT:
 			# If the property is an enum, create an OptionButton
@@ -353,7 +354,8 @@ func new_property_field(property_data: Dictionary, value: Variant) -> Control:
 					field.add_item(option.split(":")[0])
 				if value != null:
 					field.select(value)
-				field.item_selected.connect(_on_property_changed.bind(property_data["name"]))
+				field.item_selected.connect(_on_property_changed.bind(
+						property_data["name"], property_data["type"]))
 			else:
 				field = SpinBox.new()
 				var range_settings = property_data["hint_string"].split(",")
@@ -369,7 +371,8 @@ func new_property_field(property_data: Dictionary, value: Variant) -> Control:
 					field.allow_lesser = true
 				if value != null:
 					field.value = value
-				field.value_changed.connect(_on_property_changed.bind(property_data["name"]))
+				field.value_changed.connect(_on_property_changed.bind(
+						property_data["name"], property_data["type"]))
 		
 		TYPE_FLOAT:
 			field = SpinBox.new()
@@ -386,7 +389,8 @@ func new_property_field(property_data: Dictionary, value: Variant) -> Control:
 				field.allow_lesser = true
 			if value != null:
 				field.value = value
-			field.value_changed.connect(_on_property_changed.bind(property_data["name"]))
+			field.value_changed.connect(_on_property_changed.bind(
+					property_data["name"], property_data["type"]))
 		
 		TYPE_STRING:
 			# If the property is a file path, create a file field
@@ -395,14 +399,16 @@ func new_property_field(property_data: Dictionary, value: Variant) -> Control:
 				field.file_filters = PackedStringArray(property_data["hint_string"].split(","))
 				if value != null:
 					field.ready.connect(func(): field.set_value(value))
-				field.file_path_changed.connect(_on_property_changed.bind(property_data["name"]))
+				field.file_path_changed.connect(
+						_on_property_changed.bind(property_data["name"], property_data["type"]))
 			# If the property is a directory path, create a folder field
 			elif property_data["hint"] == PROPERTY_HINT_DIR:
 				field = load("addons/graph_dialog_system/editor/components/folder_field.tscn").instantiate()
 				field.file_filters = PackedStringArray(property_data["hint_string"].split(","))
 				if value != null:
 					field.ready.connect(func(): field.set_value(value))
-				field.file_path_changed.connect(_on_property_changed.bind(property_data["name"]))
+				field.file_path_changed.connect(
+						_on_property_changed.bind(property_data["name"], property_data["type"]))
 			# If the property is an enum, create an OptionButton
 			elif property_data["hint"] == PROPERTY_HINT_ENUM:
 				field = OptionButton.new()
@@ -412,15 +418,17 @@ func new_property_field(property_data: Dictionary, value: Variant) -> Control:
 					field.add_item(options[-1])
 				if value != null:
 					field.select(options.find(value))
-				field.item_selected.connect(_on_property_changed.bind(property_data["name"]))
+				field.item_selected.connect(
+						_on_property_changed.bind(property_data["name"], property_data["type"]))
 			else: # If the property is only a string, create a LineEdit
 				field = LineEdit.new()
 				if value != null:
 					field.text = value
-				field.text_submitted.connect(_on_property_changed.bind(property_data["name"]))
+				field.text_submitted.connect(
+						_on_property_changed.bind(property_data["name"], property_data["type"]))
 		
 		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
-			var vector_n := int(type_string(typeof(value))[-1])
+			var vector_n := int(type_string(property_data["type"])[-1])
 			var components_names = ["x", "y", "z", "w"]
 			field = HBoxContainer.new()
 			# Create the fields for each component of the vector
@@ -436,19 +444,24 @@ func new_property_field(property_data: Dictionary, value: Variant) -> Control:
 					x_field.value = value[i]
 				field.add_child(x_field)
 				x_field.value_changed.connect(_on_property_changed.bind(
-					property_data["name"] + ":" + components_names[i]))
+						property_data["name"] + ":" + components_names[i], property_data["type"]))
 		
 		TYPE_COLOR:
 			field = ColorPickerButton.new()
 			if value != null:
 				field.color = value
-			field.color_changed.connect(_on_property_changed.bind(property_data["name"]))
+			field.color_changed.connect(
+					_on_property_changed.bind(property_data["name"], property_data["type"]))
 		
 		TYPE_DICTIONARY:
 			pass
 		
 		TYPE_ARRAY:
-			pass
+			field = load("addons/graph_dialog_system/editor/components/array_field.tscn").instantiate()
+			if value != null:
+				field.set_array(value)
+			field.array_changed.connect(
+					_on_property_changed.bind(property_data["name"], property_data["type"]))
 
 		TYPE_OBJECT:
 			field = RichTextLabel.new()
@@ -460,31 +473,32 @@ func new_property_field(property_data: Dictionary, value: Variant) -> Control:
 			field = LineEdit.new()
 			if value != null:
 				field.text = value
-			field.text_submitted.connect(_on_property_changed.bind(property_data["name"]))
+			field.text_submitted.connect(
+					_on_property_changed.bind(property_data["name"], property_data["type"]))
 	
 	return field
 
 
 ## Update the exported properties and the preview scene when the value changes
-func _on_property_changed(value: Variant, property_name: String) -> void:
-	# If the property is a vector, save the value in the correct component
-	if property_name.find(":") != -1:
-		var vector_name = property_name.get_slice(":", 0)
-		var vector_component = property_name.get_slice(":", 1)
+func _on_property_changed(value: Variant, name: String, type: int) -> void:
+	# If is changing a vector component, update the vector with the value
+	if type == TYPE_VECTOR2 or type == TYPE_VECTOR3 or type == TYPE_VECTOR4:
+		var vector_name = name.get_slice(":", 0)
+		var vector_component = name.get_slice(":", 1)
 		var old_vector = _preview_container.get_child(0).get(vector_name)
 		_export_overrides[vector_name][vector_component] = value
 		old_vector[vector_component] = value
 		_preview_container.get_child(0).set(vector_name, old_vector)
 	else:
-		_export_overrides[property_name] = value
-		_preview_container.get_child(0).set(property_name, value)
+		_export_overrides[name] = value
+		_preview_container.get_child(0).set(name, value)
 	
 	# Update the preview scene with the new value
 	if _preview_container.get_child(0).has_method("update_portrait"):
 			_preview_container.get_child(0).update_portrait()
 	_character_editor.on_modified()
 
-	print("[Graph Dialogs] Property " + property_name + " changed to " + str(value))
+	print("[Graph Dialogs] Property " + name + " changed to " + str(value))
 
 
 #endregion

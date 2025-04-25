@@ -12,11 +12,12 @@ extends Node2D
 @export var portrait_mirror: bool
 
 @export var protrait_node: Node
-#@export var portrait_position: Array
+@export var portrait_position: Array
 
 func update_portrait() -> void:
 	# This function is called when the portrait is instantiated or changed.
 	# It should be overridden by subclasses to implement specific behavior.
-	$Sprite2D.texture = load(portrait_image)
+	if portrait_image != "":
+		$Sprite2D.texture = load(portrait_image)
 	$Sprite2D.modulate = portrait_color
 	$Sprite2D.flip_h = portrait_mirror

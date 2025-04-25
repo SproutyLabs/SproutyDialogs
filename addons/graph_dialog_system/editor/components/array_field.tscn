@@ -1,0 +1,25 @@
+[gd_scene load_steps=2 format=3 uid="uid://bet0ba0xkipef"]
+
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/array_field.gd" id="1_xxt5a"]
+
+[node name="ArrayField" type="VBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_xxt5a")
+
+[node name="ArrayCollapseButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_vertical = 0
+toggle_mode = true
+text = "Array (size 0)"
+
+[node name="ElementsContainer" type="VBoxContainer" parent="."]
+visible = false
+layout_mode = 2
+
+[node name="AddButton" type="Button" parent="ElementsContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Add Element"
+
+[connection signal="toggled" from="ArrayCollapseButton" to="." method="_on_array_collapse_button_toggled"]
+[connection signal="pressed" from="ElementsContainer/AddButton" to="." method="_on_add_button_pressed"]
