@@ -47,7 +47,6 @@ func load_exported_properties(scene: Node) -> void:
 	var in_private_group := false
 
 	for prop in property_list:
-		print(prop)
 		if prop["usage"] and PROPERTY_USAGE_EDITOR and not in_private_group:
 			var label := Label.new()
 			label.text = prop["name"].capitalize()
@@ -65,6 +64,11 @@ func load_exported_properties(scene: Node) -> void:
 					prop["type"] = _get_array_types(value)
 				elif prop["type"] == TYPE_DICTIONARY:
 					prop["type"] = _get_dictionary_types(value)
+				
+				_export_overrides[prop["name"]] = {
+					"value": value,
+					"type": prop["type"]
+				}
 
 			# Add the exported property field to the editor
 			var property_field: Control = _new_property_field(prop, value)
@@ -260,13 +264,13 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 			field.fit_content = true
 			field.text = "[color=red]Objects/Resources are not supported.[/color]"
 			field.tooltip_text = "Use @export_file(\"*.extension\") to load the resource instead."
+		
 		_:
 			field = LineEdit.new()
 			if value != null:
 				field.text = value
 			field.text_submitted.connect(
 					_on_property_changed.bind(property_data["name"], type))
-	
 	return field
 
 

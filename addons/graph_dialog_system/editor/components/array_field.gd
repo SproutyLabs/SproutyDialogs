@@ -16,9 +16,9 @@ signal item_removed(index: int, value: Variant, type: Variant)
 ## Collapse button to show/hide the array items
 @onready var _array_collapse_button = $ArrayCollapseButton
 ## Button to add new items to the array
-@onready var _add_button = $ItemsContainer/AddButton
+@onready var _add_button = %ItemsContainer/AddButton
 ## items container
-@onready var _items_container = $ItemsContainer
+@onready var _items_container = %ItemsContainer
 
 ## Array item field scene
 var _item_field := preload("res://addons/graph_dialog_system/editor/components/type_field.tscn")
@@ -26,7 +26,7 @@ var _item_field := preload("res://addons/graph_dialog_system/editor/components/t
 
 func _ready() -> void:
 	_add_button.icon = get_theme_icon("Add", "EditorIcons")
-	_items_container.hide()
+	_items_container.get_parent().hide()
 
 
 ## Get the values of the array items
@@ -118,7 +118,7 @@ func _on_remove_button_pressed(index: int) -> void:
 
 ## Show/hide the array items
 func _on_array_collapse_button_toggled(toggled_on: bool) -> void:
-	_items_container.visible = toggled_on
+	_items_container.get_parent().visible = toggled_on
 	array_collapsed.emit(toggled_on)
 
 

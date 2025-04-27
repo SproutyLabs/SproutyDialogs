@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bet0ba0xkipef"]
+[gd_scene load_steps=3 format=3 uid="uid://bet0ba0xkipef"]
 
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/components/array_field.gd" id="1_xxt5a"]
+[ext_resource type="StyleBox" uid="uid://mg3i3uibymj8" path="res://addons/graph_dialog_system/theme/array_field_panel_highlight.tres" id="2_oux77"]
 
 [node name="ArrayField" type="VBoxContainer"]
 size_flags_horizontal = 3
@@ -12,14 +13,21 @@ size_flags_vertical = 0
 toggle_mode = true
 text = "Array (size 0)"
 
-[node name="ItemsContainer" type="VBoxContainer" parent="."]
-visible = false
+[node name="ScrollContainer" type="PanelContainer" parent="."]
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("2_oux77")
 
-[node name="AddButton" type="Button" parent="ItemsContainer"]
+[node name="ItemsContainer" type="VBoxContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="AddButton" type="Button" parent="ScrollContainer/ItemsContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Add Element"
 
 [connection signal="toggled" from="ArrayCollapseButton" to="." method="_on_array_collapse_button_toggled"]
-[connection signal="pressed" from="ItemsContainer/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="pressed" from="ScrollContainer/ItemsContainer/AddButton" to="." method="_on_add_button_pressed"]

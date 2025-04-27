@@ -42,14 +42,16 @@ var _current_type: Variant = null
 ## Current field in the field
 var _current_field: Variant = null
 
+## Array field scene
+var _array_field := preload("res://addons/graph_dialog_system/editor/components/array_field.tscn")
+
 
 func _ready() -> void:
 	_setup_types_dropdown()
 
-#region === Getters and Setters ================================================
 
 ## Return the current type of the field
-func get_type() -> int:
+func get_type() -> Variant:
 	return _current_type
 
 
@@ -60,16 +62,16 @@ func get_value() -> Variant:
 
 ## Set the type of the field
 func set_type(type: Variant) -> void:
-	var field_type: int = _get_real_type(type)
-	_types_dropdown.selected = _types_dropdown.get_item_index(field_type)
+	_types_dropdown.selected = _types_dropdown.get_item_index(_get_real_type(type))
 	_update_field_type(type)
 
 
 ## Set the value of the field
 func set_value(value: Variant, type: Variant) -> void:
-	set_type(type)
+	var field_type: int = _get_real_type(type)
 	_current_value = value
-	match _types_dropdown.selected:
+	set_type(type)
+	match field_type:
 		TYPE_BOOL:
 			_current_field.button_pressed = value
 		TYPE_INT:
@@ -97,7 +99,6 @@ func set_value(value: Variant, type: Variant) -> void:
 		TYPE_ARRAY:
 			_current_field.set_array(value, type)
 
-#endregion
 
 ## Setup the dropdown menu with types
 func _setup_types_dropdown() -> void:
@@ -191,7 +192,7 @@ func _update_field_type(type: Variant) -> void:
 			pass
 		
 		TYPE_ARRAY:
-			field = load("addons/graph_dialog_system/editor/components/array_field.tscn").instantiate()
+			field = _array_field.instantiate()
 			field.size_flags_horizontal = SIZE_EXPAND_FILL
 			field.array_changed.connect(_on_field_value_changed.bind(type))
 			_field_container.add_child(field)
@@ -232,7 +233,8 @@ func _clear_field() -> void:
 ## Called when the field value is changed
 func _on_field_value_changed(value: Variant, type: Variant, component: String = "") -> void:
 	# If is changing a vector component, update the vector with the value
-	if type == TYPE_VECTOR2 or type == TYPE_VECTOR3 or type == TYPE_VECTOR4:
+	var field_type = _get_real_type(type)
+	if field_type == TYPE_VECTOR2 or field_type == TYPE_VECTOR3 or field_type == TYPE_VECTOR4:
 		match component:
 			"x":
 				_current_value.x = value
