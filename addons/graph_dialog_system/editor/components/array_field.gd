@@ -2,6 +2,13 @@
 class_name GraphDialogsArrayField
 extends VBoxContainer
 
+## -----------------------------------------------------------------------------
+## Array Field Component
+##
+## This component is used to create a field for an array of data.
+## It allows the user to add, remove and modify items in the array.
+## -----------------------------------------------------------------------------
+
 ## Emmited when items in the array are modified
 signal array_changed(array: Array)
 ## Emmited when the array is collapsed/expanded

@@ -5,9 +5,8 @@ extends HBoxContainer
 ## -----------------------------------------------------------------------------
 ## Type Field Component
 ##
-## This component is used to create a field for a specific type of data.
-## It allows the user to select a type from a dropdown menu and then
-## provides a field for that type.
+## This component create and update a field depending on the type especified.
+## It allows the user to select a type and then creates its corresponding field.
 ## -----------------------------------------------------------------------------
 
 ## Emitted when the input value is changed

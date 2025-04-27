@@ -5,6 +5,8 @@ extends VBoxContainer
 ## Portrait Editor
 ## 
 ## This module allows the user to edit a portrait for a character.
+## It provides a preview of the portrait and allows the user to set
+## various properties and settings.
 ## -----------------------------------------------------------------------------
 
 ## Character editor reference
