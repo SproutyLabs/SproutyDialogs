@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://881twee1nau2"]
+[gd_scene load_steps=9 format=3 uid="uid://881twee1nau2"]
 
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialog_system/editor/components/file_field.tscn" id="1_4ou2u"]
 [ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/portrait_editor.gd" id="1_7iqxq"]
 [ext_resource type="Texture2D" uid="uid://c80u5yueu7wit" path="res://addons/graph_dialog_system/icons/character.svg" id="2_fad05"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialog_system/icons/interactable/collapse-down.svg" id="3_6ncm1"]
+[ext_resource type="Script" path="res://addons/graph_dialog_system/editor/modules/characters/scripts/portrait_export_properties.gd" id="4_ljfx6"]
 [ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/graph_dialog_system/theme/expander_subpanel_highlight.tres" id="5_mmsn6"]
 
 [sub_resource type="Image" id="Image_uknwb"]
@@ -141,8 +142,10 @@ _recent_file_type = "portrait_files"
 file_filters = PackedStringArray("*.tscn", "*.scn")
 
 [node name="PortraitProperties" type="VBoxContainer" parent="Container/PortraitSettings/Container"]
+unique_name_in_owner = true
 visible = false
 layout_mode = 2
+script = ExtResource("4_ljfx6")
 
 [node name="---" type="HSeparator" parent="Container/PortraitSettings/Container/PortraitProperties"]
 layout_mode = 2
@@ -152,8 +155,7 @@ layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Properties"
 
-[node name="ExportedProperties" type="GridContainer" parent="Container/PortraitSettings/Container/PortraitProperties"]
-unique_name_in_owner = true
+[node name="ExportedPropertiesGrid" type="GridContainer" parent="Container/PortraitSettings/Container/PortraitProperties"]
 layout_mode = 2
 columns = 2
 

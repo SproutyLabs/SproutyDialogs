@@ -12,14 +12,14 @@ size_flags_vertical = 0
 toggle_mode = true
 text = "Array (size 0)"
 
-[node name="ElementsContainer" type="VBoxContainer" parent="."]
+[node name="ItemsContainer" type="VBoxContainer" parent="."]
 visible = false
 layout_mode = 2
 
-[node name="AddButton" type="Button" parent="ElementsContainer"]
+[node name="AddButton" type="Button" parent="ItemsContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Add Element"
 
 [connection signal="toggled" from="ArrayCollapseButton" to="." method="_on_array_collapse_button_toggled"]
-[connection signal="pressed" from="ElementsContainer/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="pressed" from="ItemsContainer/AddButton" to="." method="_on_add_button_pressed"]

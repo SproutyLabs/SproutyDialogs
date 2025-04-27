@@ -13,7 +13,34 @@
 		"portraits": {
 			"Bob": {
 				"portrait_scene": "res://test_scenes/portrait_scene.tscn",
-				"export_overrides": {},
+				"export_overrides": {
+					"portrait_mirror": {
+						"value": true,
+						"type": 1
+					},
+					"portrait_array": {
+						"value": [
+							"item 0",
+							1,
+							true,
+							[
+								"item 1",
+								2,
+								false
+							]
+						],
+						"type": [
+							4,
+							2,
+							1,
+							[
+								4,
+								2,
+								1
+							]
+						]
+					}
+				},
 				"transform_settings": {
 					"mirror": false,
 					"offset": {

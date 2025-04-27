@@ -12,7 +12,7 @@ extends Node2D
 @export var portrait_mirror: bool
 
 @export var protrait_node: Node
-@export var portrait_position: Array
+@export var portrait_array: Array
 
 func update_portrait() -> void:
 	# This function is called when the portrait is instantiated or changed.
