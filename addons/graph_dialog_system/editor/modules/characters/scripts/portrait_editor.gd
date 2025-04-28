@@ -42,7 +42,7 @@ extends VBoxContainer
 ## Portrait image scene template
 var _default_portrait_scene := preload("res://addons/graph_dialog_system/utils/dialog_nodes/default_portrait.tscn")
 ## Portrait custom script template
-var _portrait_script_template := "res://addons/graph_dialog_system/utils/dialog_nodes/dialog_portrait_template.gd"
+var _portrait_script_template := "res://addons/graph_dialog_system/utils/dialog_nodes/dialog_default_portrait.gd"
 
 # Offset of the preview node position
 var _preview_offset: Vector2 = Vector2(20, 20)
@@ -111,7 +111,7 @@ func load_portrait_data(name: String, data: Dictionary) -> void:
 	_portrait_rotation_section.get_node("RotationField").value = data.transform_settings.rotation
 	_portrait_rotation_section.get_node("MirrorCheckBox").button_pressed = data.transform_settings.mirror
 	
-	_update_preview() # Update the preview image with the loaded settings
+	_update_preview_transform() # Update the preview image with the loaded settings
 
 
 ## Set the portrait name in the editor
@@ -121,7 +121,7 @@ func set_portrait_name(name: String) -> void:
 #region === Portrait Preview ===================================================
 
 ## Update the preview scene with transform settings
-func _update_preview() -> void:
+func _update_preview_transform() -> void:
 	_preview_container.scale = Vector2(
 		_portrait_scale_section.get_node("XField").value,
 		_portrait_scale_section.get_node("YField").value
@@ -138,24 +138,29 @@ func _update_preview() -> void:
 
 ## Switch the portrait scene in the preview
 func _switch_scene_preview(new_scene: String) -> void:
-	if not new_scene:
-		return # If the path is empty, do nothing
-	
-	# Switch the preview to the scene file path
+	# Remove the previous scene from the preview
 	if _preview_container.get_child_count() > 0:
-		_preview_container.remove_child(_preview_container.get_child(0))
+			_preview_container.remove_child(_preview_container.get_child(0))
+	
+	if new_scene == "": # No scene file selected, hide the exported properties
+		_portrait_export_properties.visible = false
+		return
+	
 	var scene = load(new_scene).instantiate()
 	_preview_container.add_child(scene)
 	_portrait_export_properties.load_exported_properties(scene)
+	if _preview_container.get_child(0).has_method("update_portrait"):
+			_preview_container.get_child(0).update_portrait() # Update the portrait preview
 
+
+## Reload the current scene in the preview
 func _on_reload_scene_button_pressed() -> void:
-	# Reload the current scene in the preview
 	if _portrait_scene_field.get_value() != "":
 		_switch_scene_preview(_portrait_scene_field.get_value())
 	else:
 		printerr("[Graph Dialogs] No scene file selected.")
 		return
-	_update_preview()
+	_update_preview_transform()
 
 #endregion
 
@@ -163,13 +168,15 @@ func _on_reload_scene_button_pressed() -> void:
 
 ## Update the portrait scene when the path changes
 func _on_portrait_scene_path_changed(path: String) -> void:
-	# Check if the path is not empty and has a valid file extension
 	if not GDialogsFileUtils.check_valid_extension(path, _portrait_scene_field.file_filters):
 		_to_portrait_scene_button.visible = false
+		_new_portrait_scene_button.visible = true
+		_switch_scene_preview("")
 		return
 	# Load the scene file if exist and set it as the preview
 	if FileAccess.file_exists(path):
 		_to_portrait_scene_button.visible = true
+		_new_portrait_scene_button.visible = false
 		_switch_scene_preview(path)
 		_character_editor.on_modified()
 	else:

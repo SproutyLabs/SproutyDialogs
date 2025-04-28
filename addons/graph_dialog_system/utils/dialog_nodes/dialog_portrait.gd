@@ -6,7 +6,7 @@ extends Node
 ## Portrait base class
 ##
 ## This class is used to handle the behavior of a portrait for a character.
-## It is an abstract class that should be inherited by other classes.
+## It is an abstract class that should be inherited by the portrait controllers.
 ## -----------------------------------------------------------------------------
 
 
