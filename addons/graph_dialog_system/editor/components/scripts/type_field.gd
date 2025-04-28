@@ -263,7 +263,9 @@ func _on_field_value_changed(value: Variant, type: Variant, component: String = 
 				_current_value.z = value
 			"w":
 				_current_value.w = value
+	elif field_type == TYPE_COLOR:
+		_current_value = value.to_html()
 	else:
 		_current_value = value
 	
-	emit_signal("value_changed", value, type)
+	emit_signal("value_changed", _current_value, type)

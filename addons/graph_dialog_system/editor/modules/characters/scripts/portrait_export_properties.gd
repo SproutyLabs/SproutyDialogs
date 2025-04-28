@@ -51,12 +51,23 @@ func load_exported_properties(scene: Node) -> void:
 		visible = false
 		return # If the script has no properties, do nothing
 	
+	_override_exported_properties(scene)
 	_clear_exported_properties()
-	property_list.remove_at(0) # Remove the first property (the script itself)
 	var in_private_group := false
 
 	for prop in property_list:
-		if prop["usage"] and PROPERTY_USAGE_EDITOR and not in_private_group:
+		if prop["usage"] == PROPERTY_USAGE_CATEGORY:
+			continue # Skip the categories, they are not properties
+		
+		elif prop["usage"] == PROPERTY_USAGE_GROUP:
+			# If the group is private, skip the next properties
+			if prop["name"].to_lower() == "private":
+				in_private_group = true
+				continue
+			else: # Until the next group
+				in_private_group = false
+		
+		elif prop["usage"] and PROPERTY_USAGE_EDITOR and not in_private_group:
 			var label := Label.new()
 			label.text = prop["name"].capitalize()
 			_properties_grid.add_child(label)
@@ -84,15 +95,17 @@ func load_exported_properties(scene: Node) -> void:
 			property_field.size_flags_horizontal = SIZE_EXPAND_FILL
 			_properties_grid.add_child(property_field)
 
-		if prop["usage"] and PROPERTY_USAGE_GROUP:
-			# If the group is private, skip the next properties
-			if prop["name"] == "Private":
-				in_private_group = true
-				continue
-			else: # Until the next group
-				in_private_group = false
-
 	visible = true
+
+
+## Overrides the exported properties on a scene and update export overrides
+func _override_exported_properties(scene: Node) -> void:
+	var property_list: Array = scene.script.get_script_property_list()
+	for prop in _export_overrides.keys():
+		if property_list.any(func(p): return p["name"] == prop):
+			scene.set(prop, _export_overrides[prop]["value"])
+		else:
+			_export_overrides.erase(prop)
 
 
 ## Get the types of the dictionary elements
@@ -159,7 +172,7 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 				field = SpinBox.new()
 				var range_settings = property_data["hint_string"].split(",")
 				# If the property is a int between a range, set range values
-				if range_settings.size() > 0:
+				if range_settings.size() > 1:
 					field.min_value = int(range_settings[0])
 					field.max_value = int(range_settings[1])
 					if range_settings.size() > 2:
@@ -177,7 +190,7 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 			field = SpinBox.new()
 			var range_settings = property_data["hint_string"].split(",")
 			# If the property is a float between a range, set range values
-			if range_settings.size() > 0:
+			if range_settings.size() > 1:
 				field.min_value = float(range_settings[0])
 				field.max_value = float(range_settings[1])
 				if range_settings.size() > 2:
@@ -296,14 +309,16 @@ func _on_property_changed(value: Variant, name: String, type: int, field: Varian
 		var vector_component = name.get_slice(":", 1)
 		_export_overrides[name]["value"][vector_component] = value
 		_export_overrides[name]["type"] = type
-		value = _export_overrides[name]["value"]
-	
 	# If is changing an array or dictionary, save the types of its elements
 	elif type == TYPE_ARRAY or type == TYPE_DICTIONARY:
 		_export_overrides[name]["type"] = field.get_items_types()
 		_export_overrides[name]["value"] = value
+	# If is changing a color, save the color value as a hexadecimal string
+	elif type == TYPE_COLOR:
+		_export_overrides[name]["value"] = value.to_html()
+		_export_overrides[name]["type"] = type
 	else:
 		_export_overrides[name]["type"] = type
 		_export_overrides[name]["value"] = value
 	
-	property_changed.emit(name, value)
+	property_changed.emit(name, _export_overrides[name]["value"])
