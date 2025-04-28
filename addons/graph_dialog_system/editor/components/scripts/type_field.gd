@@ -15,9 +15,9 @@ signal value_changed(value: Variant, type: Variant)
 signal type_changed(value: int)
 
 ## Types dropdown menu
-@onready var _types_dropdown = $TypesDropdown
+@onready var _types_dropdown: OptionButton = $TypesDropdown
 ## Field container for the selected type
-@onready var _field_container = $FieldContainer
+@onready var _field_container: HBoxContainer = $FieldContainer
 
 ## Types and their corresponding enumeration from GlobalScope
 var _supported_types = {
@@ -41,8 +41,10 @@ var _current_type: Variant = null
 ## Current field in the field
 var _current_field: Variant = null
 
+## Dictionary field scene
+var _dict_field_path := "res://addons/graph_dialog_system/editor/components/dictionary_field.tscn"
 ## Array field scene
-var _array_field := preload("res://addons/graph_dialog_system/editor/components/array_field.tscn")
+var _array_field_path := "res://addons/graph_dialog_system/editor/components/array_field.tscn"
 
 
 func _ready() -> void:
@@ -94,7 +96,7 @@ func set_value(value: Variant, type: Variant) -> void:
 		TYPE_COLOR:
 			_current_field.color = value
 		TYPE_DICTIONARY:
-			pass
+			_current_field.set_dictionary(value, type)
 		TYPE_ARRAY:
 			_current_field.set_array(value, type)
 
@@ -187,11 +189,14 @@ func _update_field_type(type: Variant) -> void:
 			_current_value = field.color
 		
 		TYPE_DICTIONARY:
+			field = load(_dict_field_path).instantiate()
+			field.size_flags_horizontal = SIZE_EXPAND_FILL
+			field.dictionary_changed.connect(_on_field_value_changed.bind(type))
+			_field_container.add_child(field)
 			_current_value = {}
-			pass
 		
 		TYPE_ARRAY:
-			field = _array_field.instantiate()
+			field = load(_array_field_path).instantiate()
 			field.size_flags_horizontal = SIZE_EXPAND_FILL
 			field.array_changed.connect(_on_field_value_changed.bind(type))
 			_field_container.add_child(field)

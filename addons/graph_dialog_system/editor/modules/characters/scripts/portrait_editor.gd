@@ -293,7 +293,4 @@ func _on_export_property_changed(name: String, value: Variant) -> void:
 			_preview_container.get_child(0).update_portrait()
 	_character_editor.on_modified()
 
-	print("[Graph Dialogs] Property " + name + " changed to " + str(value))
-
-
 #endregion

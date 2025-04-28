@@ -17,11 +17,13 @@ signal property_changed(name: String, value: Variant)
 @onready var _export_overrides := {}
 
 ## File field scene
-var _file_field := preload("res://addons/graph_dialog_system/editor/components/file_field.tscn")
+var _file_field_path := "res://addons/graph_dialog_system/editor/components/file_field.tscn"
 ## Folder field scene
-var _folder_field := preload("res://addons/graph_dialog_system/editor/components/folder_field.tscn")
+var _folder_field_path := "res://addons/graph_dialog_system/editor/components/folder_field.tscn"
+## Dictionary field scene
+var _dict_field_path := "res://addons/graph_dialog_system/editor/components/dictionary_field.tscn"
 ## Array field scene
-var _array_field := preload("res://addons/graph_dialog_system/editor/components/array_field.tscn")
+var _array_field_path := "res://addons/graph_dialog_system/editor/components/array_field.tscn"
 
 
 func _ready():
@@ -192,7 +194,7 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 		TYPE_STRING:
 			# File path string
 			if property_data["hint"] == PROPERTY_HINT_FILE:
-				field = _file_field.instantiate()
+				field = load(_file_field_path).instantiate()
 				field.file_filters = PackedStringArray(
 					property_data["hint_string"].split(",")
 					)
@@ -202,7 +204,7 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 						_on_property_changed.bind(property_data["name"], type))
 			# Directory path string
 			elif property_data["hint"] == PROPERTY_HINT_DIR:
-				field = _folder_field.instantiate()
+				field = load(_folder_field_path).instantiate()
 				field.file_filters = PackedStringArray(
 					property_data["hint_string"].split(",")
 					)
@@ -255,10 +257,15 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 					_on_property_changed.bind(property_data["name"], type))
 		
 		TYPE_DICTIONARY:
-			pass
+			field = load(_dict_field_path).instantiate()
+			if value != null:
+				field.ready.connect(func():
+					field.set_dictionary(value, property_data["type"]))
+			field.dictionary_changed.connect(
+					_on_property_changed.bind(property_data["name"], type, field))
 		
 		TYPE_ARRAY:
-			field = _array_field.instantiate()
+			field = load(_array_field_path).instantiate()
 			if value != null:
 				field.ready.connect(func():
 					field.set_array(value, property_data["type"]))
