@@ -5,8 +5,9 @@ extends HBoxContainer
 ## -----------------------------------------------------------------------------
 ## Type Field Component
 ##
-## This component create and update a field depending on the type especified.
-## It allows the user to select a type and then creates its corresponding field.
+## This component is a mutable field, that update the input field depending on 
+## the type especified by the user. The types are limited to some supported
+## types from the GlobalScope and some custom ones (file path).
 ## -----------------------------------------------------------------------------
 
 ## Emitted when the input value is changed
@@ -31,7 +32,8 @@ var _supported_types = {
 	"Vector4": TYPE_VECTOR4,
 	"Color": TYPE_COLOR,
 	"Dictionary": TYPE_DICTIONARY,
-	"Array": TYPE_ARRAY
+	"Array": TYPE_ARRAY,
+	"File Path": 40 # Custom type for file path
 }
 
 ## Current value in the field
@@ -45,6 +47,8 @@ var _current_field: Variant = null
 var _dict_field_path := "res://addons/graph_dialog_system/editor/components/dictionary_field.tscn"
 ## Array field scene
 var _array_field_path := "res://addons/graph_dialog_system/editor/components/array_field.tscn"
+## File field scene
+var _file_field_path := "res://addons/graph_dialog_system/editor/components/file_field.tscn"
 
 
 func _ready() -> void:
@@ -99,6 +103,8 @@ func set_value(value: Variant, type: Variant) -> void:
 			_current_field.set_dictionary(value, type)
 		TYPE_ARRAY:
 			_current_field.set_array(value, type)
+		40: # File path
+			_current_field.set_value(value)
 
 
 ## Setup the dropdown menu with types
@@ -106,7 +112,10 @@ func _setup_types_dropdown() -> void:
 	_types_dropdown.clear()
 	var index := 0
 	for type in _supported_types.keys():
-		_types_dropdown.add_icon_item(get_theme_icon(type, "EditorIcons"), type)
+		if _supported_types[type] == 40: # Custom type for file path
+			_types_dropdown.add_icon_item(get_theme_icon("FileBrowse", "EditorIcons"), type)
+		else:
+			_types_dropdown.add_icon_item(get_theme_icon(type, "EditorIcons"), type)
 		_types_dropdown.set_item_id(index, _supported_types[type])
 		index += 1
 	_types_dropdown.selected = TYPE_NIL
@@ -201,6 +210,12 @@ func _update_field_type(type: Variant) -> void:
 			field.array_changed.connect(_on_field_value_changed.bind(type))
 			_field_container.add_child(field)
 			_current_value = []
+		40: # File path
+			field = load(_file_field_path).instantiate()
+			field.size_flags_horizontal = SIZE_EXPAND_FILL
+			field.file_path_changed.connect(_on_field_value_changed.bind(type))
+			_field_container.add_child(field)
+			_current_value = ""
 		_:
 			field = LineEdit.new()
 			field.text = "<null>"

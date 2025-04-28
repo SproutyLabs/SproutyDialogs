@@ -5,7 +5,7 @@ extends VBoxContainer
 ## -----------------------------------------------------------------------------
 ## Dictionary Field Component
 ##
-## This component is used to create a field for a dictionary of data.
+## This component is used to create a field for display a dictionary.
 ## It allows the user to add, remove and modify items in the dictionary.
 ## -----------------------------------------------------------------------------
 
