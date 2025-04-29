@@ -1,0 +1,60 @@
+[gd_scene load_steps=6 format=3 uid="uid://hxn726na6i6v"]
+
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_0q2mk"]
+[ext_resource type="Texture2D" uid="uid://v2lbmduypj25" path="res://addons/graph_dialogs/icons/nodes/comment.svg" id="3_g6856"]
+[ext_resource type="Script" path="res://addons/graph_dialogs/nodes/scripts/comment_node.gd" id="5_achcx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42b30"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.154876, 0.154876, 0.154876, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cjfsv"]
+content_margin_left = 18.0
+content_margin_top = 12.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+bg_color = Color(0.154876, 0.154876, 0.154876, 1)
+border_color = Color(0.325, 0.325, 0.325, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="CommentNode" type="GraphNode"]
+custom_minimum_size = Vector2(200, 0)
+offset_right = 9.0
+offset_bottom = 55.0
+theme = ExtResource("1_0q2mk")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_42b30")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_cjfsv")
+resizable = true
+title = "Comment Node"
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = false
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("5_achcx")
+node_type = ""
+node_color = Color(0.154876, 0.154876, 0.154876, 1)
+node_icon = ExtResource("3_g6856")
+
+[node name="TextInput" type="TextEdit" parent="."]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+size_flags_vertical = 3
+
+[connection signal="text_changed" from="TextInput" to="." method="_on_input_text_changed"]

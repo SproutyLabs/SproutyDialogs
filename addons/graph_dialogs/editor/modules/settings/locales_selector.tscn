@@ -1,0 +1,120 @@
+[gd_scene load_steps=2 format=3 uid="uid://secb1eoygm27"]
+
+[ext_resource type="Script" path="res://addons/graph_dialogs/editor/modules/settings/scripts/locales_selector.gd" id="1_ic1ok"]
+
+[node name="LocalesSelector" type="VBoxContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_ic1ok")
+
+[node name="TopBar" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeaderSmall"
+text = "Locales"
+
+[node name="AddButton" type="Button" parent="TopBar"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "New +"
+
+[node name="Panel" type="Panel" parent="."]
+custom_minimum_size = Vector2(0, 250)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Container" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="Panel/Container"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="Panel/Container/Header"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Code"
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="Panel/Container/Header"]
+layout_mode = 2
+
+[node name="TypeLabel" type="Label" parent="Panel/Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Language"
+horizontal_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="Panel/Container/Header"]
+layout_mode = 2
+
+[node name="ValueLabel" type="Label" parent="Panel/Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Country"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Panel/Container/Header"]
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="Panel/Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/Container"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="LocalesContainer" type="VBoxContainer" parent="Panel/Container/ScrollContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Panel/Container/ScrollContainer/LocalesContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Add some locales!"
+horizontal_alignment = 1
+
+[node name="SaveButton" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Save Locales"
+alignment = 2
+
+[node name="ConfirmSaveLocales" type="AcceptDialog" parent="."]
+auto_translate_mode = 1
+title = "Please Confirm..."
+initial_position = 4
+size = Vector2i(600, 184)
+dialog_text = "Some locales have been removed, so their respective texts in the CSV translation files will be removed when saving the dialog files.
+
+Do you want to save the changes anyway?"
+dialog_autowrap = true
+
+[connection signal="pressed" from="TopBar/AddButton" to="." method="_on_add_locale_pressed"]
+[connection signal="pressed" from="SaveButton" to="." method="_on_save_locales_pressed"]
+[connection signal="canceled" from="ConfirmSaveLocales" to="." method="_on_confirm_save_canceled"]
+[connection signal="custom_action" from="ConfirmSaveLocales" to="." method="_on_confirm_save_action"]

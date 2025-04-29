@@ -1,0 +1,143 @@
+[gd_scene load_steps=11 format=3 uid="uid://chmw64xy0cmck"]
+
+[ext_resource type="Script" path="res://addons/graph_dialogs/editor/scripts/editor.gd" id="1_gu2d1"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_h283m"]
+[ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialogs/editor/file_manager.tscn" id="1_qbi36"]
+[ext_resource type="PackedScene" uid="uid://d0gf52rcd1hn" path="res://addons/graph_dialogs/editor/modules/characters/character_panel.tscn" id="3_7mghu"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/graph_dialogs/theme/empty_panel.tres" id="3_gh31w"]
+[ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/graph_dialogs/editor/modules/workspace/workspace.tscn" id="4_yuhh0"]
+[ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/graph_dialogs/editor/modules/variables/variables_panel.tscn" id="6_4jako"]
+[ext_resource type="PackedScene" uid="uid://pdcicn3rbwbs" path="res://addons/graph_dialogs/editor/modules/settings/settings_panel.tscn" id="7_xlq8u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_lcwba"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_22uar"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme = ExtResource("1_h283m")
+script = ExtResource("1_gu2d1")
+
+[node name="FirstSettings" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("3_gh31w")
+
+[node name="Container" type="VBoxContainer" parent="FirstSettings"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -144.0
+offset_top = -20.0
+offset_right = 144.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="FirstSettings/Container"]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxEmpty_lcwba")
+bbcode_enabled = true
+text = "[center][wave][[color=orange] Welcome! [/color]]
+\\(^-^)/
+"
+fit_content = true
+
+[node name="Label" type="Label" parent="FirstSettings/Container"]
+layout_mode = 2
+text = "
+Select a folder to CSV translation files"
+
+[node name="Button" type="Button" parent="FirstSettings/Container"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Select a folder"
+
+[node name="OpenFolderDialog" type="FileDialog" parent="FirstSettings"]
+auto_translate_mode = 1
+title = "Open a Directory"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Select Current Folder"
+file_mode = 2
+
+[node name="MainContainer" type="HSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="FileManager" parent="MainContainer" node_paths=PackedStringArray("_editor_main", "_workspace", "_character_editor") instance=ExtResource("1_qbi36")]
+unique_name_in_owner = true
+layout_mode = 2
+_editor_main = NodePath("../..")
+_workspace = NodePath("../TabContainer/Dialogue/Workspace")
+_character_editor = NodePath("../TabContainer/Characters/CharacterEditor")
+
+[node name="TabContainer" type="TabContainer" parent="MainContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/tabbar_background = SubResource("StyleBoxEmpty_22uar")
+current_tab = 1
+
+[node name="Dialogue" type="TabBar" parent="MainContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Workspace" parent="MainContainer/TabContainer/Dialogue" node_paths=PackedStringArray("_editor_main", "_file_manager") instance=ExtResource("4_yuhh0")]
+unique_name_in_owner = true
+layout_mode = 1
+_editor_main = NodePath("../../../..")
+_file_manager = NodePath("../../../FileManager")
+
+[node name="Characters" type="TabBar" parent="MainContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="CharacterEditor" parent="MainContainer/TabContainer/Characters" node_paths=PackedStringArray("_file_manager") instance=ExtResource("3_7mghu")]
+unique_name_in_owner = true
+layout_mode = 1
+_file_manager = NodePath("../../../FileManager")
+
+[node name="Variables" type="TabBar" parent="MainContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="VariablesPanel" parent="MainContainer/TabContainer/Variables" instance=ExtResource("6_4jako")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="Settings" type="TabBar" parent="MainContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="SettingsPanel" parent="MainContainer/TabContainer/Settings" instance=ExtResource("7_xlq8u")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[connection signal="pressed" from="FirstSettings/Container/Button" to="." method="_on_select_csv_folder_pressed"]
+[connection signal="dir_selected" from="FirstSettings/OpenFolderDialog" to="." method="_on_csv_folder_selected"]
+[connection signal="tab_selected" from="MainContainer/TabContainer" to="." method="_on_tab_selected"]

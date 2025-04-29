@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dnlyp0304l3xs"
+
+[deps]
+
+files=["res://addons/graph_dialogs/examples/translations/character_names.en.translation", "res://addons/graph_dialogs/examples/translations/character_names.es.translation", "res://addons/graph_dialogs/examples/translations/character_names.ja.translation"]
+
+source_file="res://addons/graph_dialogs/examples/translations/character_names.csv"
+dest_files=["res://addons/graph_dialogs/examples/translations/character_names.en.translation", "res://addons/graph_dialogs/examples/translations/character_names.es.translation", "res://addons/graph_dialogs/examples/translations/character_names.ja.translation"]
+
+[params]
+
+compress=true
+delimiter=0

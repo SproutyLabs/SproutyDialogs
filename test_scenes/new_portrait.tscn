@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://c8inxvjvpf7kb"]
-
-[ext_resource type="Script" path="res://test_scenes/new_portrait.gd" id="1_21ui7"]
-
-[node name="NewPortrait" type="Node2D"]
-script = ExtResource("1_21ui7")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]

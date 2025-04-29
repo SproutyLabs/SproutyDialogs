@@ -1,0 +1,67 @@
+[gd_scene load_steps=3 format=3 uid="uid://wl8xuktm0hrq"]
+
+[ext_resource type="Script" path="res://addons/graph_dialogs/utils/dialog_nodes/dialog_text_box.gd" id="1_eholg"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialogs/icons/interactable/collapse-down.svg" id="2_7fxrt"]
+
+[node name="DialogBox" type="Panel" node_paths=PackedStringArray("name_display", "dialog_display", "continue_indicator")]
+custom_minimum_size = Vector2(600, 150)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -75.0
+offset_right = 300.0
+offset_bottom = 75.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+script = ExtResource("1_eholg")
+name_display = NodePath("MarginContainer/VBoxContainer/Name")
+dialog_display = NodePath("MarginContainer/VBoxContainer/Dialog")
+continue_indicator = NodePath("MarginContainer/VBoxContainer/Arrow")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="Name" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "Name"
+fit_content = true
+scroll_active = false
+
+[node name="Dialog" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Dialog text"
+scroll_following = true
+
+[node name="Arrow" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+texture = ExtResource("2_7fxrt")
+expand_mode = 2
+stretch_mode = 5
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="meta_clicked" from="MarginContainer/VBoxContainer/Dialog" to="." method="_on_dialog_meta_clicked"]

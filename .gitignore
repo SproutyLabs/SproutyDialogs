@@ -1,8 +1,8 @@
 # Project-specific ignores
-test-scenes/
+tests/
 addons/**
-!addons/graph_dialog_system/
-!addons/graph_dialog_system/**
+!addons/graph_dialogs/
+!addons/graph_dialogs/**
 
 # Godot 4+ specific ignores
 .godot/

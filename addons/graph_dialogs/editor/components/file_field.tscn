@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3 uid="uid://bxwvdcjc16ytf"]
+
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_2lkpj"]
+[ext_resource type="Script" path="res://addons/graph_dialogs/editor/components/scripts/file_field.gd" id="2_5xq0f"]
+[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialogs/icons/text_editor/image.svg" id="3_nixrx"]
+
+[node name="FileField" type="MarginContainer"]
+offset_right = 314.0
+offset_bottom = 40.0
+theme = ExtResource("1_2lkpj")
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+script = ExtResource("2_5xq0f")
+
+[node name="HBox" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 2
+
+[node name="Field" type="LineEdit" parent="HBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+placeholder_text = "Select a file..."
+
+[node name="OpenButton" type="Button" parent="HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_nixrx")
+flat = true
+
+[node name="ClearButton" type="Button" parent="HBox"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_nixrx")
+flat = true
+
+[node name="OpenFileDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+file_mode = 0
+
+[connection signal="text_changed" from="HBox/Field" to="." method="_on_field_text_changed"]
+[connection signal="text_submitted" from="HBox/Field" to="." method="_on_file_dialog_selected"]
