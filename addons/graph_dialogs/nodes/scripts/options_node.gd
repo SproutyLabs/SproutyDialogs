@@ -32,7 +32,7 @@ func get_data() -> Dictionary:
 		}
 	}
 	for child in get_children():
-		if child is OptionContainer:
+		if child is GraphDialogsOptionContainer:
 			dict[name.to_snake_case()]["options"][child.name.to_snake_case()] = {
 				"id": child.option_index,
 				"dialog_key": child.dialog_key

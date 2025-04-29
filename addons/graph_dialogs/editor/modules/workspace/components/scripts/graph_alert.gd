@@ -1,5 +1,5 @@
 @tool
-class_name GDialogsAlert
+class_name GraphDialogsAlert
 extends MarginContainer
 
 ## ------------------------------------------------------------------

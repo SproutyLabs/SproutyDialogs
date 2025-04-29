@@ -48,11 +48,11 @@ func _set_locale_list() -> void:
 		if child is MarginContainer:
 			child.queue_free()
 	
-	if GDialogsTranslationManager.locales.is_empty():
+	if GraphDialogsTranslationManager.locales.is_empty():
 		$"%LocalesContainer" / Label.visible = true
 		return
 	
-	for locale in GDialogsTranslationManager.locales:
+	for locale in GraphDialogsTranslationManager.locales:
 		# Load saved locales in the list
 		var new_locale = _new_locale()
 		new_locale.load_locale(locale)
@@ -74,9 +74,9 @@ func _on_locale_removed(locale_code: String) -> void:
 ## Save the locales selected.
 func _save_locales() -> void:
 	# Save locales in translation settings
-	GDialogsTranslationManager.locales = _current_locales
-	GDialogsTranslationManager.save_translation_setting("locales", _current_locales)
-	GDialogsTranslationManager.collect_translations()
+	GraphDialogsTranslationManager.locales = _current_locales
+	GraphDialogsTranslationManager.save_translation_setting("locales", _current_locales)
+	GraphDialogsTranslationManager.collect_translations()
 	locales_changed.emit()
 	_current_locales = []
 	$SaveButton.text = "Save Locales"
@@ -95,7 +95,7 @@ func _on_save_locales_pressed() -> void:
 		_current_locales.append(locale)
 	
 	# If a locale has been removed, show confirmation alert
-	for locale in GDialogsTranslationManager.locales:
+	for locale in GraphDialogsTranslationManager.locales:
 		if not _current_locales.has(locale):
 			_confirm_panel.popup_centered()
 			return

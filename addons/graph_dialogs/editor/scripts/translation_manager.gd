@@ -1,4 +1,4 @@
-class_name GDialogsTranslationManager
+class_name GraphDialogsTranslationManager
 extends Resource
 
 ## -----------------------------------------------------------------------------
@@ -50,14 +50,14 @@ static func save_all_translation_settings() -> void:
 			"locales": locales
 		}
 	}
-	GDialogsJSONFileManager.save_file(data, DATA_PATH)
+	GraphDialogsJSONFileManager.save_file(data, DATA_PATH)
 
 
 ## Save a specific translation setting in the settings data
 static func save_translation_setting(key: String, value: Variant) -> void:
-	var data = GDialogsJSONFileManager.load_file(DATA_PATH)
+	var data = GraphDialogsJSONFileManager.load_file(DATA_PATH)
 	data.translation_settings[key] = value
-	GDialogsJSONFileManager.save_file(data, DATA_PATH)
+	GraphDialogsJSONFileManager.save_file(data, DATA_PATH)
 
 
 ## Load translation settings from settings data
@@ -67,7 +67,7 @@ static func load_translation_settings() -> void:
 		save_all_translation_settings()
 		return
 	
-	var data = GDialogsJSONFileManager.load_file(DATA_PATH)
+	var data = GraphDialogsJSONFileManager.load_file(DATA_PATH)
 	csv_files_path = data.translation_settings.csv_files_path
 	char_names_csv_path = data.translation_settings.char_names_csv_path
 	default_locale = data.translation_settings.default_locale
@@ -102,7 +102,7 @@ static func new_csv_template_file(name: String) -> String:
 	var header = ["key"]
 	for locale in locales:
 		header.append(locale)
-	GDialogsCSVFileManager.save_file(header, [], path)
+	GraphDialogsCSVFileManager.save_file(header, [], path)
 	return path
 
 

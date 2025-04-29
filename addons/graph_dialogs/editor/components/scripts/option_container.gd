@@ -1,5 +1,5 @@
 @tool
-class_name OptionContainer
+class_name GraphDialogsOptionContainer
 extends VBoxContainer
 
 ## -----------------------------------------------------------------------------

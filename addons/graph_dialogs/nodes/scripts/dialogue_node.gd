@@ -23,12 +23,12 @@ var default_locale: String = ""
 
 
 func _ready():
-	super()
+	super ()
 	_set_translation_text_boxes()
-	GDialogsTranslationManager.translation_settings.connect(
+	GraphDialogsTranslationManager.translation_settings.connect(
 			"locales_changed", _on_locales_changed
 		)
-	GDialogsTranslationManager.translation_settings.connect(
+	GraphDialogsTranslationManager.translation_settings.connect(
 			"default_locale_changed", _on_locales_changed
 		)
 
@@ -85,11 +85,11 @@ func get_dialog_translation_key() -> String:
 
 ## Set translation text boxes
 func _set_translation_text_boxes() -> void:
-	default_locale = GDialogsTranslationManager.default_locale
+	default_locale = GraphDialogsTranslationManager.default_locale
 	%DefaultLocaleLabel.text = "(" + default_locale + ")"
 	default_text_box.set_text("")
 	translation_boxes.set_translation_boxes(
-			GDialogsTranslationManager.locales.filter(
+			GraphDialogsTranslationManager.locales.filter(
 				func(locale): return locale != default_locale
 			)
 		)

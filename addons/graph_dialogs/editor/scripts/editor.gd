@@ -59,7 +59,7 @@ func _on_tab_selected(tab: int):
 
 ## Show the first settings screen
 func _show_first_settings():
-	if GDialogsTranslationManager.csv_files_path.is_empty():
+	if GraphDialogsTranslationManager.csv_files_path.is_empty():
 		first_settings.visible = true
 		main_container.visible = false
 	else:
@@ -74,16 +74,16 @@ func _on_select_csv_folder_pressed() -> void:
 
 ## Set a folder path for CSV files
 func _on_csv_folder_selected(path: String) -> void:
-	GDialogsTranslationManager.csv_files_path = path
+	GraphDialogsTranslationManager.csv_files_path = path
 	
 	# Set the path of the CSV file for character names
-	GDialogsTranslationManager.char_names_csv_path = (
-		path + "/" + GDialogsTranslationManager.DEFAULT_CHAR_NAMES_CSV
+	GraphDialogsTranslationManager.char_names_csv_path = (
+		path + "/" + GraphDialogsTranslationManager.DEFAULT_CHAR_NAMES_CSV
 		)
 	# Create the CSV file for character names
-	if not FileAccess.file_exists(GDialogsTranslationManager.char_names_csv_path):
-		GDialogsTranslationManager.new_csv_template_file(
-			GDialogsTranslationManager.DEFAULT_CHAR_NAMES_CSV
+	if not FileAccess.file_exists(GraphDialogsTranslationManager.char_names_csv_path):
+		GraphDialogsTranslationManager.new_csv_template_file(
+			GraphDialogsTranslationManager.DEFAULT_CHAR_NAMES_CSV
 			)
 	first_settings.visible = false
 	main_container.visible = true

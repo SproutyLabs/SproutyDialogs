@@ -1,5 +1,5 @@
 @tool
-class_name GDialogsFileUtils
+class_name GraphDialogsFileUtils
 extends Node
 
 ## -----------------------------------------------------------------------------

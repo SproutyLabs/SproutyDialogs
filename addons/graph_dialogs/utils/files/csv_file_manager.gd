@@ -1,4 +1,4 @@
-class_name GDialogsCSVFileManager
+class_name GraphDialogsCSVFileManager
 extends RefCounted
 
 ## ------------------------------------------------------------------

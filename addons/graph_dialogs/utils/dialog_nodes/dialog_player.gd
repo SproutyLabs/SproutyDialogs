@@ -216,7 +216,7 @@ func _load_dialog_data(path: String) -> void:
 		dialog_file = ""
 		return
 	
-	var data = GDialogsJSONFileManager.load_file(path)
+	var data = GraphDialogsJSONFileManager.load_file(path)
 	# If JSON does not contains dialog data
 	if not data.has("dialog_data"):
 		printerr("[DialogPlayer] Dialog file " + path + "has an invalid format.")

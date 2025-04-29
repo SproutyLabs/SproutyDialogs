@@ -22,7 +22,7 @@ extends VBoxContainer
 @onready var _image_preview: Sprite2D = %ImagePreview
 
 ## Portrait scene path field
-@onready var _portrait_scene_field: GDialogsFileField = %PortraitSceneField
+@onready var _portrait_scene_field: GraphDialogsFileField = %PortraitSceneField
 ## Button to go to the portrait scene
 @onready var _to_portrait_scene_button: Button = %ToPortraitSceneButton
 ## Button to create a new portrait scene
@@ -91,7 +91,7 @@ func load_portrait_data(name: String, data: Dictionary) -> void:
 	_portrait_export_properties.set_export_overrides(data.export_overrides)
 
 	# Check if the scene file is valid and set the preview
-	if GDialogsFileUtils.check_valid_extension(
+	if GraphDialogsFileUtils.check_valid_extension(
 			data.portrait_scene, _portrait_scene_field.file_filters):
 		_to_portrait_scene_button.visible = true
 		_new_portrait_scene_button.visible = false
@@ -168,7 +168,7 @@ func _on_reload_scene_button_pressed() -> void:
 
 ## Update the portrait scene when the path changes
 func _on_portrait_scene_path_changed(path: String) -> void:
-	if not GDialogsFileUtils.check_valid_extension(path, _portrait_scene_field.file_filters):
+	if not GraphDialogsFileUtils.check_valid_extension(path, _portrait_scene_field.file_filters):
 		_to_portrait_scene_button.visible = false
 		_new_portrait_scene_button.visible = true
 		_switch_scene_preview("")
@@ -187,7 +187,7 @@ func _on_portrait_scene_path_changed(path: String) -> void:
 func _on_new_portrait_scene_button_pressed() -> void:
 	if not _new_scene_dialog.is_connected("file_selected", _new_portrait_scene):
 		_new_scene_dialog.connect("file_selected", _new_portrait_scene)
-	_new_scene_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("portrait_files"))
+	_new_scene_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("portrait_files"))
 	_new_scene_dialog.get_line_edit().text = "new_portrait.tscn"
 	_new_scene_dialog.popup_centered()
 
@@ -220,7 +220,7 @@ func _new_portrait_scene(scene_path: String) -> void:
 	_character_editor.on_modified()
 
 	# Set the recent file path
-	GDialogsFileUtils.set_recent_file_path("portrait_files", scene_path)
+	GraphDialogsFileUtils.set_recent_file_path("portrait_files", scene_path)
 
 
 ## Open the portrait scene in the editor

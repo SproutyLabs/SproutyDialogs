@@ -137,7 +137,7 @@ func select_new_character_file() -> void:
 ## Create a new dialog file
 func new_dialog_file(path: String) -> void:
 	var file_name := path.split('/')[-1]
-	var csv_path = GDialogsTranslationManager.new_csv_template_file(file_name)
+	var csv_path = GraphDialogsTranslationManager.new_csv_template_file(file_name)
 	if csv_path.is_empty(): return
 	
 	# Set csv file path from the dialog data
@@ -151,11 +151,11 @@ func new_dialog_file(path: String) -> void:
 		}
 	}
 	# Create a new JSON file and add file to the list
-	GDialogsJSONFileManager.save_file(data, path)
+	GraphDialogsJSONFileManager.save_file(data, path)
 	_new_file_item(file_name, path, FileType.DIALOG, data)
 	_editor_main.switch_active_tab(0)
 	_workspace.show_graph_editor()
-	GDialogsFileUtils.set_recent_file_path("dialog_files", path)
+	GraphDialogsFileUtils.set_recent_file_path("dialog_files", path)
 	print("[Graph Dialogs] Dialog file '" + file_name + "' created.")
 
 
@@ -166,7 +166,7 @@ func new_character_file(path: String) -> void:
 		"character_data": {
 			"key_name": file_name.split('.json')[0],
 			"display_name": {
-				GDialogsTranslationManager.default_locale: ""
+				GraphDialogsTranslationManager.default_locale: ""
 			},
 			"description": "",
 			"text_box": "",
@@ -176,11 +176,11 @@ func new_character_file(path: String) -> void:
 		}
 	}
 	# Create a new JSON file and add file to the list
-	GDialogsJSONFileManager.save_file(data, path)
+	GraphDialogsJSONFileManager.save_file(data, path)
 	_new_file_item(file_name, path, FileType.CHAR, data)
 	_editor_main.switch_active_tab(1)
 	_character_editor.show_character_panel()
-	GDialogsFileUtils.set_recent_file_path("character_files", path)
+	GraphDialogsFileUtils.set_recent_file_path("character_files", path)
 	print("[Graph Dialogs] Character file '" + file_name + "' created.")
 
 
@@ -253,8 +253,8 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 ## Load data from JSON file
 func load_file(path: String) -> void:
 	if FileAccess.file_exists(path):
-		GDialogsFileUtils.set_recent_file_path("json_files", path)
-		var data = GDialogsJSONFileManager.load_file(path)
+		GraphDialogsFileUtils.set_recent_file_path("json_files", path)
+		var data = GraphDialogsJSONFileManager.load_file(path)
 		var file_name: String = path.split('/')[-1]
 		
 		if data.has("dialog_data"): # Load a dialog
@@ -299,7 +299,7 @@ func save_file(index: int = _current_file_index, path: String = "") -> void:
 	
 	# Save file on the given path
 	var save_path = file_metadata["file_path"] if path.is_empty() else path
-	GDialogsJSONFileManager.save_file(data, save_path)
+	GraphDialogsJSONFileManager.save_file(data, save_path)
 	_file_list.set_item_metadata(index, file_metadata)
 	_set_file_as_modified(index, false)
 	print("[Graph Dialogs] File '" + file_metadata["file_name"] + "' saved.")
@@ -491,7 +491,7 @@ func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 			row.append(dialogs[dialog_key][locale])
 		content.append(row)
 	
-	GDialogsCSVFileManager.save_file(header, content, path)
+	GraphDialogsCSVFileManager.save_file(header, content, path)
 
 
 ## Load all dialogs from a CSV file to a dictionary.
@@ -504,7 +504,7 @@ func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 ##   ...
 ## }
 func load_dialogs_from_csv(path: String) -> Dictionary:
-	var data := GDialogsCSVFileManager.load_file(path)
+	var data := GraphDialogsCSVFileManager.load_file(path)
 	if data.is_empty(): # If there is no data, an error occurred
 		printerr("[Graph Dialogs] Cannot load dialogs from CSV file.")
 		return {}
@@ -525,8 +525,8 @@ func load_dialogs_from_csv(path: String) -> Dictionary:
 
 ## Save character name translations on CSV file
 func save_character_names_on_csv(name_data: Dictionary) -> void:
-	var path = GDialogsTranslationManager.char_names_csv_path
-	var csv_file = GDialogsCSVFileManager.load_file(path)
+	var path = GraphDialogsTranslationManager.char_names_csv_path
+	var csv_file = GraphDialogsCSVFileManager.load_file(path)
 	var header = csv_file[0]
 	var key_name = name_data.keys()[0]
 
@@ -546,7 +546,7 @@ func save_character_names_on_csv(name_data: Dictionary) -> void:
 			row.append(name_data[key_name].values()[i])
 			header.append(name_data[key_name].keys()[i])
 
-	GDialogsCSVFileManager.update_row(path, header, row)
+	GraphDialogsCSVFileManager.update_row(path, header, row)
 
 
 ## Load character name translations from a CSV file to a dictionary.
@@ -559,8 +559,8 @@ func save_character_names_on_csv(name_data: Dictionary) -> void:
 ##    }
 ## }
 func load_character_names_from_csv(key_name: String) -> Dictionary:
-	var path = GDialogsTranslationManager.char_names_csv_path
-	var data := GDialogsCSVFileManager.load_file(path)
+	var path = GraphDialogsTranslationManager.char_names_csv_path
+	var data := GraphDialogsCSVFileManager.load_file(path)
 	if data.is_empty():
 		printerr("[Graph Dialogs] Cannot load character names from CSV file.")
 		return {}
@@ -607,19 +607,19 @@ func _on_save_file_pressed() -> void:
 
 ## Open file dialog to select a file
 func _on_open_file_pressed() -> void:
-	_open_file_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("json_files"))
+	_open_file_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("json_files"))
 	_open_file_dialog.popup_centered()
 
 
 ## Create new dialog file
 func _on_new_dialog_pressed() -> void:
-	_new_dialog_file_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("dialog_files"))
+	_new_dialog_file_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("dialog_files"))
 	_new_dialog_file_dialog.popup_centered()
 
 
 ## Create new character file
 func _on_new_char_pressed() -> void:
-	_new_char_file_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("character_files"))
+	_new_char_file_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("character_files"))
 	_new_char_file_dialog.popup_centered()
 
 ## Switch to the selected file when clicked

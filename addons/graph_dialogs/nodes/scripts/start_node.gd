@@ -19,7 +19,7 @@ var input_error_style := preload("res://addons/graph_dialogs/theme/input_text_er
 ## Flag to check if the error alert is displaying
 var displaying_error: bool = false
 ## Error alert to show when the ID input is empty
-var id_error_alert: GDialogsAlert
+var id_error_alert: GraphDialogsAlert
 
 
 func _ready():

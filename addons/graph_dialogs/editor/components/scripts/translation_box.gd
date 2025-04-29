@@ -1,5 +1,5 @@
 @tool
-class_name GDialogsTranslationBox
+class_name GraphDialogsTranslationBox
 extends Container
 
 ## -----------------------------------------------------------------------------

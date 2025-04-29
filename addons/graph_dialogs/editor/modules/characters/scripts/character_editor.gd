@@ -27,7 +27,7 @@ signal modified
 ## Description text input field
 @onready var _description_field: TextEdit = %DescriptionField
 ## Text box scene file field
-@onready var _text_box_scene_field: GDialogsFileField = %TextBoxSceneField
+@onready var _text_box_scene_field: GraphDialogsFileField = %TextBoxSceneField
 ## Text box scene button
 @onready var _to_text_box_scene_button: Button = %ToTextBoxSceneButton
 ## Text box new scene button
@@ -62,12 +62,12 @@ var _portrait_on_text_box: bool = false
 
 func _ready() -> void:
 	_set_translation_text_boxes()
-	if GDialogsTranslationManager.translation_settings:
+	if GraphDialogsTranslationManager.translation_settings:
 		# Connect to the translation settings signals
-		GDialogsTranslationManager.translation_settings.connect(
+		GraphDialogsTranslationManager.translation_settings.connect(
 			"locales_changed", _on_locales_changed
 		)
-		GDialogsTranslationManager.translation_settings.connect(
+		GraphDialogsTranslationManager.translation_settings.connect(
 			"default_locale_changed", _on_locales_changed
 		)
 	_portrait_tree.connect("portrait_item_selected", _on_portrait_selected)
@@ -113,7 +113,7 @@ func load_character(data: Dictionary, name_data: Dictionary) -> void:
 
 	# Text box scene file
 	_text_box_scene_field.set_value(data.text_box)
-	if GDialogsFileUtils.check_valid_extension(data.text_box, _text_box_scene_field.file_filters):
+	if GraphDialogsFileUtils.check_valid_extension(data.text_box, _text_box_scene_field.file_filters):
 		_to_text_box_scene_button.visible = true
 		_new_text_box_scene_button.visible = false
 	_portrait_on_text_box = data.portrait_on_text_box
@@ -125,7 +125,7 @@ func load_character(data: Dictionary, name_data: Dictionary) -> void:
 
 ## Open a scene in the editor
 func open_scene_in_editor(path: String) -> void:
-	if GDialogsFileUtils.check_valid_extension(path, _text_box_scene_field.file_filters):
+	if GraphDialogsFileUtils.check_valid_extension(path, _text_box_scene_field.file_filters):
 		if ResourceLoader.exists(path):
 			EditorInterface.open_scene_from_path(path)
 			await get_tree().process_frame
@@ -152,11 +152,11 @@ func load_name_translations(translations: Dictionary) -> void:
 
 ## Set character name translations text boxes
 func _set_translation_text_boxes() -> void:
-	_default_locale = GDialogsTranslationManager.default_locale
+	_default_locale = GraphDialogsTranslationManager.default_locale
 	_name_default_locale_label.text = "(" + _default_locale + ")"
 	_name_default_locale_field.text = ""
 	_name_translations_container.set_translation_boxes(
-			GDialogsTranslationManager.locales.filter(
+			GraphDialogsTranslationManager.locales.filter(
 				func(locale): return locale != _default_locale
 			)
 		)
@@ -177,7 +177,7 @@ func _on_text_box_scene_path_changed(path: String) -> void:
 	if path.is_empty(): # No path selected
 		_to_text_box_scene_button.visible = false
 		_new_text_box_scene_button.visible = true
-	elif GDialogsFileUtils.check_valid_extension(path, _text_box_scene_field.file_filters):
+	elif GraphDialogsFileUtils.check_valid_extension(path, _text_box_scene_field.file_filters):
 		_to_text_box_scene_button.visible = true # Valid path
 		_new_text_box_scene_button.visible = false
 	on_modified()
@@ -192,7 +192,7 @@ func _on_text_box_scene_button_pressed() -> void:
 func _on_new_text_box_scene_pressed() -> void:
 	if not new_scene_dialog.is_connected("file_selected", _on_new_text_box_path_selected):
 		new_scene_dialog.connect("file_selected", _on_new_text_box_path_selected)
-	new_scene_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path("text_box_files"))
+	new_scene_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("text_box_files"))
 	new_scene_dialog.get_line_edit().text = "new_text_box.tscn"
 	new_scene_dialog.popup_centered()
 
@@ -218,7 +218,7 @@ func _on_new_text_box_path_selected(path: String) -> void:
 	on_modified()
 
 	# Set the recent file path
-	GDialogsFileUtils.set_recent_file_path("text_box_files", path)
+	GraphDialogsFileUtils.set_recent_file_path("text_box_files", path)
 
 
 ## Handle the text box portrait display toggle

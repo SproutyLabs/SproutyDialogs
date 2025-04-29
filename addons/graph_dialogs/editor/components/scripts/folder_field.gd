@@ -1,12 +1,12 @@
 @tool
+class_name GraphDialogsFolderField
 extends MarginContainer
-class_name GDialogsFolderField
 
-## =============================================================================
+## -----------------------------------------------------------------------------
 ##  Folder Field Component
 ##
 ##  Component that allows the user to select a folder from the file system.
-## =============================================================================
+## -----------------------------------------------------------------------------
 
 ## Triggered when the folder path is changed.
 signal folder_path_changed(path: String)

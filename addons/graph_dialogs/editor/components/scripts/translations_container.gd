@@ -34,7 +34,7 @@ func _ready():
 func get_translations_text() -> Dictionary:
 	var dialogs = {}
 	for box in text_boxes.get_children():
-		if box is GDialogsTranslationBox:
+		if box is GraphDialogsTranslationBox:
 			dialogs[box.get_locale()] = box.get_text()
 	return dialogs
 
@@ -42,7 +42,7 @@ func get_translations_text() -> Dictionary:
 ## Set input text boxes for each locale
 func set_translation_boxes(locales: Array) -> void:
 	for box in text_boxes.get_children():
-		if box is GDialogsTranslationBox:
+		if box is GraphDialogsTranslationBox:
 			box.queue_free() # Clear boxes
 	
 	if locales.is_empty():
@@ -63,7 +63,7 @@ func set_translation_boxes(locales: Array) -> void:
 ## Load dialog translations text
 func load_translations_text(dialogs: Dictionary) -> void:
 	for box in text_boxes.get_children():
-		if box is GDialogsTranslationBox and dialogs.has(box.get_locale()):
+		if box is GraphDialogsTranslationBox and dialogs.has(box.get_locale()):
 			box.set_text(dialogs[box.get_locale()])
 
 

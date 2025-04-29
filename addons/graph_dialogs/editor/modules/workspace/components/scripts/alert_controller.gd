@@ -31,7 +31,7 @@ func is_error_alert_active() -> bool:
 
 
 ## Add a new alert and show it
-func show_alert(text: String, type: String) -> GDialogsAlert:
+func show_alert(text: String, type: String) -> GraphDialogsAlert:
 	match type:
 		"ERROR":
 			var alert = error_template.instantiate()
@@ -48,12 +48,12 @@ func show_alert(text: String, type: String) -> GDialogsAlert:
 
 
 ## Hide and destroy a given alert
-func hide_alert(alert: GDialogsAlert) -> void:
+func hide_alert(alert: GraphDialogsAlert) -> void:
 	if not alert: return
 	alert.hide_alert()
 
 
 ## Focus an alert doing an animation
-func focus_alert(alert: GDialogsAlert) -> void:
+func focus_alert(alert: GraphDialogsAlert) -> void:
 	if not alert: return
 	alert._play_focus_animation()

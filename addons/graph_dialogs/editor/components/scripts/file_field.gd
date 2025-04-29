@@ -1,6 +1,6 @@
 @tool
+class_name GraphDialogsFileField
 extends MarginContainer
-class_name GDialogsFileField
 
 ## -----------------------------------------------------------------------------
 ##  File Field Component
@@ -56,7 +56,7 @@ func set_value(value: String) -> void:
 
 ## Show the file dialog to select a file.
 func _on_open_pressed() -> void:
-	_file_dialog.set_current_dir(GDialogsFileUtils.get_recent_file_path(_recent_file_type))
+	_file_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path(_recent_file_type))
 	_file_dialog.filters = file_filters
 	_file_dialog.popup_centered()
 
@@ -65,7 +65,7 @@ func _on_open_pressed() -> void:
 func _on_file_dialog_selected(path: String) -> void:
 	file_path_changed.emit(path)
 	set_value(path)
-	GDialogsFileUtils.set_recent_file_path(_recent_file_type, path)
+	GraphDialogsFileUtils.set_recent_file_path(_recent_file_type, path)
 
 
 ## Triggered when the text of the field changes.

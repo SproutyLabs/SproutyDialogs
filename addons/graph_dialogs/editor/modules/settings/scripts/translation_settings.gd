@@ -30,8 +30,8 @@ signal testing_locale_changed
 
 func _ready() -> void:
 	# Load the translation settings from the translation manager
-	GDialogsTranslationManager.translation_settings = self
-	GDialogsTranslationManager.load_translation_settings()
+	GraphDialogsTranslationManager.translation_settings = self
+	GraphDialogsTranslationManager.load_translation_settings()
 
 	# Connect signals
 	locales_selector.connect("locales_changed", _on_locales_changed)
@@ -46,32 +46,32 @@ func _ready() -> void:
 ## Load the locales available in the project on a dropdown
 func _set_locales_on_dropdown(dropdown: OptionButton, default: bool) -> void:
 	dropdown.clear()
-	var locales = GDialogsTranslationManager.locales
+	var locales = GraphDialogsTranslationManager.locales
 	
 	if locales.is_empty():
 		dropdown.add_item("(no one)")
 	
 	for index in locales.size():
 		dropdown.add_item(locales[index])
-		if default and locales[index] == GDialogsTranslationManager.default_locale \
-				or not default and locales[index] == GDialogsTranslationManager.testing_locale:
+		if default and locales[index] == GraphDialogsTranslationManager.default_locale \
+				or not default and locales[index] == GraphDialogsTranslationManager.testing_locale:
 			dropdown.select(index)
 
 
 ## Select the default locale from the dropdown
 func _on_default_locale_selected(index: int) -> void:
-	GDialogsTranslationManager.default_locale = default_locale_dropdown.get_item_text(index)
-	GDialogsTranslationManager.save_translation_setting(
-		"default_locale", GDialogsTranslationManager.default_locale
+	GraphDialogsTranslationManager.default_locale = default_locale_dropdown.get_item_text(index)
+	GraphDialogsTranslationManager.save_translation_setting(
+		"default_locale", GraphDialogsTranslationManager.default_locale
 		)
 	default_locale_changed.emit()
 
 
 ## Select the testing locale from the dropdown
 func _on_testing_locale_selected(index: int) -> void:
-	GDialogsTranslationManager.testing_locale = testing_locale_dropdown.get_item_text(index)
-	GDialogsTranslationManager.save_translation_setting(
-		"testing_locale", GDialogsTranslationManager.testing_locale
+	GraphDialogsTranslationManager.testing_locale = testing_locale_dropdown.get_item_text(index)
+	GraphDialogsTranslationManager.save_translation_setting(
+		"testing_locale", GraphDialogsTranslationManager.testing_locale
 		)
 	testing_locale_changed.emit()
 
@@ -83,10 +83,10 @@ func _on_locales_changed() -> void:
 	_set_locales_on_dropdown(testing_locale_dropdown, false)
 	
 	# If the default or testing locales are removed, select the first locale
-	var new_locales = GDialogsTranslationManager.locales
-	if not new_locales.has(GDialogsTranslationManager.default_locale):
+	var new_locales = GraphDialogsTranslationManager.locales
+	if not new_locales.has(GraphDialogsTranslationManager.default_locale):
 		_on_default_locale_selected(0)
-	if not new_locales.has(GDialogsTranslationManager.testing_locale):
+	if not new_locales.has(GraphDialogsTranslationManager.testing_locale):
 		_on_testing_locale_selected(0)
 	
 	locales_changed.emit()
@@ -98,7 +98,7 @@ func _on_csv_files_path_changed(path: String) -> void:
 	if path.is_empty() or not DirAccess.dir_exists_absolute(path):
 		printerr("[Graph Dialogs] Please select a folder for CSV translation files.")
 		return
-	GDialogsTranslationManager.csv_files_path = path
+	GraphDialogsTranslationManager.csv_files_path = path
 
 
 ## Set the path to the CSV with character names translations
@@ -112,12 +112,12 @@ func _on_char_names_csv_path_changed(path: String) -> void:
 		printerr("[Graph Dialogs] Character names file must be a CSV.")
 		return
 	# Check if the path is inside the CSV folder
-	if not path.begins_with(GDialogsTranslationManager.csv_files_path):
+	if not path.begins_with(GraphDialogsTranslationManager.csv_files_path):
 		printerr("[Graph Dialogs] Character names CSV file must be inside the CSV files folder.")
 		return
-	GDialogsTranslationManager.char_names_csv_path = path
+	GraphDialogsTranslationManager.char_names_csv_path = path
 
 
 ## Collect the translations from the CSV files
 func _on_collect_translations_pressed() -> void:
-	GDialogsTranslationManager.collect_translations()
+	GraphDialogsTranslationManager.collect_translations()
