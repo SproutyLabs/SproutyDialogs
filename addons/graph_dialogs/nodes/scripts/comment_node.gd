@@ -14,11 +14,10 @@ extends BaseNode
 
 
 func _ready():
-	super()
+	super ()
 
 
 func get_data() -> Dictionary:
-	# Get node data on dict
 	var dict := {}
 	
 	dict[name.to_snake_case()] = {
@@ -34,7 +33,6 @@ func get_data() -> Dictionary:
 
 
 func set_data(dict: Dictionary) -> void:
-	# Set node data from dict
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	comment_text = dict["comment_text"]

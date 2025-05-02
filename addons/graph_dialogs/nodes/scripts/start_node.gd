@@ -1,4 +1,5 @@
 @tool
+class_name StartNode
 extends BaseNode
 
 ## -----------------------------------------------------------------------------
@@ -26,9 +27,9 @@ func _ready():
 	super ()
 	start_node = self # Assign as start dialog node
 
+#region === Overridden Methods =================================================
 
 func get_data() -> Dictionary:
-	# Get node data on dict
 	var dict := {}
 	var connections: Array = get_parent().get_node_connections(name)
 	
@@ -47,7 +48,6 @@ func get_data() -> Dictionary:
 
 
 func set_data(dict: Dictionary) -> void:
-	# Set node data from dict
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	start_id = dict["start_id"]
@@ -57,6 +57,12 @@ func set_data(dict: Dictionary) -> void:
 	position_offset.x = dict["offset"]["x"]
 	position_offset.y = dict["offset"]["y"]
 
+
+func process_node(node_data: Dictionary) -> void:
+	# Processes the next node connected to the start node
+	continue_to_node.emit(node_data.to_node[0])
+
+#endregion
 
 ## Return the dialog ID
 func get_start_id() -> String:

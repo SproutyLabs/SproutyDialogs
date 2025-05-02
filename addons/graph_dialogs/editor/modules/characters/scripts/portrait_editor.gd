@@ -40,9 +40,9 @@ extends VBoxContainer
 @onready var _portrait_offset_section: Container = %PortraitOffset
 
 ## Portrait image scene template
-var _default_portrait_scene := preload("res://addons/graph_dialogs/utils/dialog_nodes/default_portrait.tscn")
+var _default_portrait_scene := preload("res://addons/graph_dialogs/objects/defaults/default_portrait.tscn")
 ## Portrait custom script template
-var _portrait_script_template := "res://addons/graph_dialogs/utils/dialog_nodes/dialog_default_portrait.gd"
+var _portrait_script_template := "res://addons/graph_dialogs/objects/defaults/default_portrait.gd"
 
 # Offset of the preview node position
 var _preview_offset: Vector2 = Vector2(20, 20)

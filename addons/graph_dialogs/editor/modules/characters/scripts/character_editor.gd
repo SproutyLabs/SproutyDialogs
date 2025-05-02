@@ -46,7 +46,7 @@ signal modified
 var portrait_editor_scene := preload("res://addons/graph_dialogs/editor/modules/characters/portrait_editor.tscn")
 
 ## Default text box scene
-var _default_text_box_scene := preload("res://addons/graph_dialogs/utils/dialog_nodes/default_text_box.tscn")
+var _default_text_box_scene := preload("res://addons/graph_dialogs/objects/defaults/default_dialog_box.tscn")
 
 ## Current portrait selected
 var _current_portrait: TreeItem = null

@@ -16,6 +16,9 @@ signal dialog_started(id: String)
 ## Signal emitted when the dialog is ended.
 signal dialog_ended
 
+## Path to the nodes folder.
+const NODES_PATH = "res://addons/graph_dialogs/nodes/scripts/"
+
 ## Play the dialog when the node is ready.
 @export var play_on_ready: bool
 
@@ -36,6 +39,9 @@ var start_id: String:
 		_portrait_displays = _create_characters_dict()
 		notify_property_list_changed()
 
+## Dictionary to store the nodes references by node type.
+var _nodes_references: Dictionary
+
 ## Dictionary to store the portrait display nodes by character.
 var _portrait_displays: Dictionary
 ## Dictionary to store the dialog box nodes by character.
@@ -49,30 +55,70 @@ var _starts_ids: Array[String]
 var _chars_keys: Array[String]
 
 ## Current dialog box to display the dialog.
-var _current_dialog_box: DialogTextBox
+var _current_dialog_box: DialogBox
 ## Next node to process in the dialog tree after a dialogue node.
 var _next_node: String = ""
 
 ## Flag to control if the dialog is running.
 var _is_running: bool = false
 
+
 func _ready() -> void:
-	# Connect process node method on each node parser
-	for node in NodesReferences.nodes:
-		if NodesReferences.nodes[node].parser != null:
-			NodesReferences.nodes[node].parser.connect(
+	# Get the nodes references by node type
+	_nodes_references = _get_nodes_references(NODES_PATH)
+	
+	# Connect process node method on each node
+	for node in _nodes_references.keys():
+		if _nodes_references[node] != null:
+			_nodes_references[node].connect(
 				"continue_to_node", _process_node
 			)
-	# Connect dialogue process method on each dialogue node parser
-	NodesReferences.nodes.dialogue_node.parser.connect(
+	# Connect dialogue process method on each dialogue node
+	_nodes_references["dialogue_node"].connect(
 		"dialogue_processed", _on_dialogue_processed
 	)
+
 	if not Engine.is_editor_hint():
 		# If is running in game mode, load dialog data
 		_load_dialog_data(dialog_file)
 		if play_on_ready:
 			await get_tree().create_timer(0.1).timeout
 			start(start_id)
+
+
+## Get the nodes class references from the nodes folder
+func _get_nodes_references(path: String) -> Dictionary:
+	var nodes_dict = {}
+	var nodes_scripts = DirAccess.get_files_at(NODES_PATH)
+	for node in nodes_scripts:
+		if node.ends_with(".gd"):
+			var node_name = node.replace(".gd", "")
+			var script = load(NODES_PATH + node)
+			if script == null:
+				printerr("[Graph Dialogs] Cannot load node script '" + NODES_PATH + node + "'")
+				continue
+			nodes_dict[node_name] = script.new()
+	return nodes_dict
+
+
+## Load dialog data from dialog file
+func _load_dialog_data(path: String) -> void:
+	# Check if dialog file exists
+	if path.is_empty(): return
+	if not FileAccess.file_exists(path):
+		printerr("[Graph Dialogs] Dialog file '" + path + "' does not exist.")
+		dialog_file = ""
+		return
+	
+	var data = GraphDialogsJSONFileManager.load_file(path)
+	# If JSON does not contains dialog data
+	if not data.has("dialog_data"):
+		printerr("[Graph Dialogs] Dialog file " + path + "has an invalid format.")
+		dialog_file = ""
+		return
+	# Load dialog nodes data
+	_nodes_data = data["dialog_data"]["nodes_data"]
+
 
 #region === Editor properties ==================================================
 
@@ -177,11 +223,13 @@ func _create_characters_dict() -> Dictionary:
 	return dict
 #endregion
 
+#region === Process nodes ======================================================
+
 ## Start processing a dialog tree by ID
 func start(id: String = start_id) -> void:
 	# Check if the dialog with given id exists
 	if not _starts_ids.has(id):
-		printerr("[DialogPlayer] Cannot find '" + id + "' ID on dialog file.")
+		printerr("[Graph Dialogs] Cannot find '" + id + "' ID on dialog file.")
 		return
 	
 	_is_running = true
@@ -207,25 +255,6 @@ func is_running() -> bool:
 	return _is_running
 
 
-## Load dialog data from dialog file
-func _load_dialog_data(path: String) -> void:
-	# Check if dialog file exists
-	if path.is_empty(): return
-	if not FileAccess.file_exists(path):
-		printerr("[DialogPlayer] Dialog file '" + path + "' does not exist.")
-		dialog_file = ""
-		return
-	
-	var data = GraphDialogsJSONFileManager.load_file(path)
-	# If JSON does not contains dialog data
-	if not data.has("dialog_data"):
-		printerr("[DialogPlayer] Dialog file " + path + "has an invalid format.")
-		dialog_file = ""
-		return
-	# Load dialog nodes data
-	_nodes_data = data["dialog_data"]["nodes_data"]
-
-
 ## Process the next node on dialog tree
 func _process_node(node_name: String) -> void:
 	# Check if the dialog is running
@@ -236,7 +265,7 @@ func _process_node(node_name: String) -> void:
 		return
 	# Get the node type to process
 	var node_type = node_name.split("node")[0] + "node"
-	NodesReferences.nodes[node_type].parser.process_node(
+	_nodes_references[node_type].process_node(
 		_nodes_data["DIALOG_" + start_id][node_name]
 		)
 
@@ -262,3 +291,5 @@ func _on_dialogue_processed(char: String, dialog: String, next_node: String) -> 
 ## Continue to the next node in the dialog tree
 func _on_continue_dialog() -> void:
 	_process_node(_next_node)
+
+#endregion

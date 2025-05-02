@@ -1,6 +1,6 @@
 @tool
 @icon("res://addons/graph_dialogs/icons/icon.svg")
-class_name DialogTextBox
+class_name DialogBox
 extends Panel
 
 ## -----------------------------------------------------------------------------

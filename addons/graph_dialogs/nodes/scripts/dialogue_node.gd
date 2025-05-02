@@ -1,4 +1,5 @@
 @tool
+class_name DialogueNode
 extends BaseNode
 
 ## -----------------------------------------------------------------------------
@@ -7,6 +8,9 @@ extends BaseNode
 ## Node to display dialogues in the dialog system.
 ## Allows to set dialog text and translations for different characters.
 ## -----------------------------------------------------------------------------
+
+## Emitted when the dialogue node was processed.
+signal dialogue_processed(character: String, dialog: String, next_node: String)
 
 ## Character dropdown selector
 @onready var char_selector: OptionButton = %CharacterSelect
@@ -32,9 +36,9 @@ func _ready():
 			"default_locale_changed", _on_locales_changed
 		)
 
+#region === Overridden Methods =================================================
 
 func get_data() -> Dictionary:
-	# Get node data on dict
 	var dict := {}
 	var connections: Array = get_parent().get_node_connections(name)
 	
@@ -54,7 +58,6 @@ func get_data() -> Dictionary:
 
 
 func set_data(dict: Dictionary) -> void:
-	# Set node data from dict
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	char_key = dict["char_key"]
@@ -62,6 +65,13 @@ func set_data(dict: Dictionary) -> void:
 	position_offset.x = dict["offset"]["x"]
 	position_offset.y = dict["offset"]["y"]
 
+
+func process_node(node_data: Dictionary) -> void:
+	var character = node_data["char_key"]
+	var dialog = tr(node_data["dialog_key"])
+	dialogue_processed.emit(character, dialog, node_data["to_node"][0])
+
+#endregion
 
 ## Load dialog and translations
 func load_dialogs(dialogs: Dictionary) -> void:

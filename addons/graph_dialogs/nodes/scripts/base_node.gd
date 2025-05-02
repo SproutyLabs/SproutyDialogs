@@ -5,8 +5,12 @@ extends GraphNode
 ## -----------------------------------------------------------------------------
 ## Base Node
 ##
-## It provides the basic structure to create custom nodes for the graph editor.
+## It provides the basic implementation to every node for the dialog system.
 ## -----------------------------------------------------------------------------
+
+## Emitted when the node is processed to continue with the next node
+## in the dialog tree. (When the dialog is running)
+signal continue_to_node(to_node: String)
 
 ## Node color to display on the node titlebar.
 @export_color_no_alpha var node_color: Color
@@ -31,19 +35,36 @@ func _ready():
 	node_type = name.to_snake_case().split("_node_")[0] + "_node"
 	if graph_editor: # Check if the node is in the graph editor
 		graph_editor.connect("nodes_loaded", _load_output_connections)
-	set_node_titlebar()
+	_set_node_titlebar()
 
 
 ## Get the node data as a dictionary.
+## This method should be overridden in each node.
 func get_data() -> Dictionary:
 	# Abstract method to implement in child nodes
 	return {}
 
 
 ## Set the node data from a dictionary.
+## This method should be overridden in each node.
 func set_data(dict: Dictionary) -> void:
 	# Abstract method to implement in child nodes
 	pass
+
+
+## Handle the node processing when the dialog is running.
+## It should ends calling the signal [code]"continue_to_node"[/code]
+## to process the next node in the dialog tree.
+## It should be overridden in each node.
+func process_node(node_data: Dictionary) -> void:
+	# Abstract method to implement in the child nodes
+	pass
+
+
+## Get the start node id of the dialog tree.
+func get_start_id() -> String:
+	if start_node == null: return ""
+	else: return start_node.get_start_id()
 
 
 ## Load the output connections of the node.
@@ -55,14 +76,8 @@ func _load_output_connections() -> void:
 		graph_editor.get_node(output_node).start_node = start_node
 
 
-## Get the start node id of the dialog tree.
-func get_start_id() -> String:
-	if start_node == null: return ""
-	else: return start_node.get_start_id()
-
-
 ## Set the node titlebar with the node type icon and remove button.
-func set_node_titlebar():
+func _set_node_titlebar():
 	var node_titlebar = get_titlebar_hbox()
 	
 	if not has_theme_stylebox_override("titlebar"):

@@ -13,6 +13,9 @@ signal modified
 ## Triggered when all the nodes are loaded
 signal nodes_loaded
 
+## Path to the nodes folder.
+const NODES_PATH = "res://addons/graph_dialogs/nodes/"
+
 ## Text editor reference
 @export var text_editor: Panel
 
@@ -22,7 +25,7 @@ signal nodes_loaded
 @onready var _add_node_menu: PopupMenu = $AddNodeMenu
 
 ## Nodes references
-var _nodes_ref: Dictionary = NodesReferences.nodes
+var _nodes_references: Dictionary
 ## Nodes type count
 var _nodes_type_count: Dictionary = {}
 
@@ -36,8 +39,8 @@ var _cursor_pos: Vector2 = Vector2.ZERO
 
 
 func _ready():
-	# Initialize nodes count array
-	for node in _nodes_ref:
+	_nodes_references = _get_nodes_references(NODES_PATH)
+	for node in _nodes_references: # Initialize nodes count array
 		_nodes_type_count[node] = 0
 	set_add_node_menu()
 
@@ -93,7 +96,7 @@ func load_nodes_data(data: Dictionary, dialogs: Dictionary) -> void:
 			_nodes_type_count[node_data["node_type"]] += 1
 
 			# Create node and set data
-			var new_node = _nodes_ref[node_data["node_type"]]["scene"].instantiate()
+			var new_node = _nodes_references[node_data["node_type"]].instantiate()
 			new_node.title += ' #' + str(node_data["node_index"])
 			new_node.name = node_name
 			add_child(new_node, true)
@@ -105,6 +108,18 @@ func load_nodes_data(data: Dictionary, dialogs: Dictionary) -> void:
 			
 	# When all the nodes are loaded, notify the nodes to connect each other
 	nodes_loaded.emit()
+
+
+## Get the nodes scene references from the nodes folder
+func _get_nodes_references(path: String) -> Dictionary:
+	var nodes_dict = {}
+	var nodes_scenes = DirAccess.get_files_at(NODES_PATH)
+	for node in nodes_scenes:
+		if node.ends_with(".tscn"):
+			var node_name = node.replace(".tscn", "")
+			nodes_dict[node_name] = load(NODES_PATH + node)
+	return nodes_dict
+
 #endregion
 
 #region === Add and Delete Nodes ===============================================
@@ -113,8 +128,8 @@ func load_nodes_data(data: Dictionary, dialogs: Dictionary) -> void:
 func set_add_node_menu() -> void:
 	_add_node_menu.clear()
 	var index = 0
-	for node in _nodes_ref:
-		var node_aux = _nodes_ref[node]["scene"].instantiate()
+	for node in _nodes_references:
+		var node_aux = _nodes_references[node].instantiate()
 		_add_node_menu.add_icon_item(node_aux.node_icon, node_aux.name.capitalize(), index)
 		_add_node_menu.set_item_metadata(index, node)
 		node_aux.queue_free()
@@ -132,7 +147,7 @@ func show_add_node_menu(pos: Vector2) -> void:
 func add_new_node(node_type: String) -> void:
 	# Create a new node of the given type
 	_nodes_type_count[node_type] += 1
-	var new_node = _nodes_ref[node_type]["scene"].instantiate()
+	var new_node = _nodes_references[node_type].instantiate()
 	new_node.name += "_" + str(_nodes_type_count[node_type])
 	new_node.title += ' #' + str(_nodes_type_count[node_type])
 	new_node.node_index = _nodes_type_count[node_type]
