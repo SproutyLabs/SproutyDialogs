@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://drygyfwdd5j1m"]
 
-[ext_resource type="Script" path="res://addons/graph_dialogs/editor/modules/workspace/components/scripts/graph_alert.gd" id="1_wjx5u"]
+[ext_resource type="Script" uid="uid://clcj3f1236il2" path="res://addons/graph_dialogs/editor/modules/workspace/components/scripts/graph_alert.gd" id="1_wjx5u"]
 [ext_resource type="StyleBox" uid="uid://50yen5gdsdd2" path="res://addons/graph_dialogs/theme/error_alert.tres" id="2_pabyh"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialogs/icons/text_editor/image.svg" id="3_e6tbe"]
 

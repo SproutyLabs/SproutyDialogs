@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://wl8xuktm0hrq"]
 
-[ext_resource type="Script" path="res://addons/graph_dialogs/objects/dialog_box.gd" id="1_eholg"]
+[ext_resource type="Script" uid="uid://d1inu3rk7uoom" path="res://addons/graph_dialogs/objects/dialog_box.gd" id="1_eholg"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialogs/icons/interactable/collapse-down.svg" id="2_7fxrt"]
 
 [node name="DialogBox" type="Panel" node_paths=PackedStringArray("name_display", "dialog_display", "continue_indicator")]

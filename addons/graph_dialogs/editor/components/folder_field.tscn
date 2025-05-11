@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bceidtkw07484"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_c0j14"]
-[ext_resource type="Script" path="res://addons/graph_dialogs/editor/components/scripts/folder_field.gd" id="2_h5a0n"]
+[ext_resource type="Script" uid="uid://cuuu33wht8c48" path="res://addons/graph_dialogs/editor/components/scripts/folder_field.gd" id="2_h5a0n"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialogs/icons/text_editor/image.svg" id="3_0me6k"]
 
 [node name="FolderField" type="MarginContainer"]

@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cs6visnc0puc3"]
 
-[ext_resource type="Script" path="res://addons/graph_dialogs/editor/components/scripts/translation_box.gd" id="1_6gyal"]
+[ext_resource type="Script" uid="uid://cqjqe1p3pc3kw" path="res://addons/graph_dialogs/editor/components/scripts/translation_box.gd" id="1_6gyal"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialogs/editor/components/dialog_text_box.tscn" id="1_iud00"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="2_aj56n"]
 

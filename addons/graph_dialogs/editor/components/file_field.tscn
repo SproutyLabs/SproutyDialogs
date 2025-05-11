@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bxwvdcjc16ytf"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_2lkpj"]
-[ext_resource type="Script" path="res://addons/graph_dialogs/editor/components/scripts/file_field.gd" id="2_5xq0f"]
+[ext_resource type="Script" uid="uid://be4vttmudn7ln" path="res://addons/graph_dialogs/editor/components/scripts/file_field.gd" id="2_5xq0f"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialogs/icons/text_editor/image.svg" id="3_nixrx"]
 
 [node name="FileField" type="MarginContainer"]

@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://c4n8spnub6rl2"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_sdbh8"]
-[ext_resource type="Script" path="res://addons/graph_dialogs/nodes/scripts/wait_node.gd" id="5_w2kpx"]
+[ext_resource type="Script" uid="uid://df36b060lsrjk" path="res://addons/graph_dialogs/nodes/scripts/wait_node.gd" id="5_w2kpx"]
 [ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/graph_dialogs/icons/nodes/wait.svg" id="6_hj7a4"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvgs0"]

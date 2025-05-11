@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://cr20rw0unyne0"]
 
-[ext_resource type="Script" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/graph.gd" id="1_cndaf"]
+[ext_resource type="Script" uid="uid://bfc8p7wros8wt" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/graph.gd" id="1_cndaf"]
 [ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialogs/icons/nodes/play.svg" id="2_g3u5t"]
 [ext_resource type="Texture2D" uid="uid://v2lbmduypj25" path="res://addons/graph_dialogs/icons/nodes/comment.svg" id="3_3qp17"]
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialogs/icons/nodes/dialogue.svg" id="4_8d82p"]
@@ -9,7 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/graph_dialogs/icons/nodes/set-variable.svg" id="7_d84v1"]
 [ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/graph_dialogs/icons/nodes/signal.svg" id="8_x24dq"]
 [ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/graph_dialogs/icons/nodes/wait.svg" id="9_pqpbi"]
-[ext_resource type="Script" path="res://addons/graph_dialogs/editor/modules/workspace/components/scripts/alert_controller.gd" id="10_difpe"]
+[ext_resource type="Script" uid="uid://deaop0eyxlumt" path="res://addons/graph_dialogs/editor/modules/workspace/components/scripts/alert_controller.gd" id="10_difpe"]
 
 [node name="Graph" type="GraphEdit" node_paths=PackedStringArray("_add_node_menu", "_alerts")]
 anchors_preset = 15

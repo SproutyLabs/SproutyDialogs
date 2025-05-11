@@ -1,6 +1,6 @@
 [gd_scene load_steps=11 format=3 uid="uid://chmw64xy0cmck"]
 
-[ext_resource type="Script" path="res://addons/graph_dialogs/editor/scripts/editor.gd" id="1_gu2d1"]
+[ext_resource type="Script" uid="uid://cqis4e6pcwteo" path="res://addons/graph_dialogs/editor/scripts/editor.gd" id="1_gu2d1"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_h283m"]
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/graph_dialogs/editor/file_manager.tscn" id="1_qbi36"]
 [ext_resource type="PackedScene" uid="uid://d0gf52rcd1hn" path="res://addons/graph_dialogs/editor/modules/characters/character_panel.tscn" id="3_7mghu"]

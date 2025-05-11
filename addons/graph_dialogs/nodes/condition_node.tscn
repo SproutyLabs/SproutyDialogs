@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_8k3p6"]
 [ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/graph_dialogs/icons/nodes/condition.svg" id="3_7frl5"]
 [ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialogs/icons/variable_types/String.svg" id="5_5hpwr"]
-[ext_resource type="Script" path="res://addons/graph_dialogs/nodes/scripts/condition_node.gd" id="5_swe6e"]
+[ext_resource type="Script" uid="uid://d1s7kmoh1qgr0" path="res://addons/graph_dialogs/nodes/scripts/condition_node.gd" id="5_swe6e"]
 [ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialogs/icons/variable_types/int.svg" id="6_ug6l5"]
 [ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialogs/icons/variable_types/float.svg" id="7_gelaf"]
 [ext_resource type="PackedScene" uid="uid://m1gd4uysgciu" path="res://addons/graph_dialogs/editor/components/variable_input_field.tscn" id="8_aiasw"]
