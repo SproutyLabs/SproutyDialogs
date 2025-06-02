@@ -10,10 +10,10 @@ extends Node
 
 ## Last used paths for file dialogs
 static var recent_file_paths: Dictionary = {
-	"json_files": "res://",
-	"dialog_files": "res://",
-	"csv_dialog_files": "res://",
+	"graph_dialogs_files": "res://",
+	"dialogue_files": "res://",
 	"character_files": "res://",
+	"csv_dialog_files": "res://",
 	"text_box_files": "res://",
 	"portrait_files": "res://",
 }

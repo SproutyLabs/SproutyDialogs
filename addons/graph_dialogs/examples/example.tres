@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="GraphDialogsDialogueData" load_steps=2 format=3 uid="uid://e155ctdlpnxk"]
+
+[ext_resource type="Script" uid="uid://cbjdca3iwlx36" path="res://addons/graph_dialogs/resources/dialogue_data.gd" id="1_o8wl1"]
+
+[resource]
+script = ExtResource("1_o8wl1")
+graph_data = {
+"DIALOG_EXAMPLE": {
+"start_node_1": {
+"node_index": 1,
+"node_type": "start_node",
+"offset": {
+"x": 80.0,
+"y": 300.0
+},
+"start_id": "EXAMPLE",
+"to_node": ["dialogue_node_1"]
+}
+},
+"DIALOG_LOREM": {
+"start_node_2": {
+"node_index": 2,
+"node_type": "start_node",
+"offset": {
+"x": 60.0,
+"y": 700.0
+},
+"start_id": "LOREM",
+"to_node": ["dialogue_node_3"]
+}
+},
+"unplugged_nodes": {
+"dialogue_node_2": {
+"char_key": "",
+"dialog_key": "NODE_2",
+"node_index": 2,
+"node_type": "dialogue_node",
+"offset": {
+"x": 1300.0,
+"y": 260.0
+},
+"to_node": ["END"]
+}
+}
+}
+characters = Array[String](["Alice", "Bob", "Charlie"])
+csv_file_path = "res://addons/graph_dialogs/examples/translations/example.csv"

@@ -136,58 +136,39 @@ func select_new_character_file() -> void:
 
 ## Create a new dialog file
 func new_dialog_file(path: String) -> void:
-	var file_name := path.split('/')[-1]
-	var csv_path = GraphDialogsTranslationManager.new_csv_template_file(file_name)
-	if csv_path.is_empty(): return
-	
 	# Set csv file path from the dialog data
+	var csv_path = GraphDialogsTranslationManager.new_csv_template_file(path.get_file())
+	if csv_path.is_empty(): return
 	_csv_file_field.set_value(csv_path)
 	show_csv_container()
-	
-	var data := {
-		"dialog_data": {
-			"csv_file_path": csv_path,
-			"nodes_data": {}
-		}
-	}
-	# Create a new JSON file and add file to the list
-	GraphDialogsJSONFileManager.save_file(data, path)
-	_new_file_item(file_name, path, FileType.DIALOG, data)
-	_editor_main.switch_active_tab(0)
-	_workspace.show_graph_editor()
+
+	# Create a new dialogue data resource
+	var resource = GraphDialogsDialogueData.new()
+	resource.csv_file_path = csv_path
+	ResourceSaver.save(resource, path)
+	_new_file_item(path, resource)
+
 	GraphDialogsFileUtils.set_recent_file_path("dialog_files", path)
-	print("[Graph Dialogs] Dialog file '" + file_name + "' created.")
+	print("[Graph Dialogs] Dialog file '" + path.get_file() + "' created.")
 
 
 ## Create a new character file
 func new_character_file(path: String) -> void:
-	var file_name: String = path.split('/')[-1]
-	var data = {
-		"character_data": {
-			"key_name": file_name.split('.json')[0],
-			"display_name": {
-				GraphDialogsTranslationManager.default_locale: ""
-			},
-			"description": "",
-			"text_box": "",
-			"portrait_on_text_box": false,
-			"portraits": {},
-			"typing_sounds": {},
-		}
-	}
-	# Create a new JSON file and add file to the list
-	GraphDialogsJSONFileManager.save_file(data, path)
-	_new_file_item(file_name, path, FileType.CHAR, data)
-	_editor_main.switch_active_tab(1)
-	_character_editor.show_character_panel()
+	# Create a new character data resource
+	var resource = GraphDialogsCharacterData.new()
+	resource.key_name = path.get_file().get_basename()
+	ResourceSaver.save(resource, path)
+	_new_file_item(path, resource)
+
 	GraphDialogsFileUtils.set_recent_file_path("character_files", path)
-	print("[Graph Dialogs] Character file '" + file_name + "' created.")
+	print("[Graph Dialogs] Character file '" + path.get_file() + "' created.")
 
 
 ## Create a new file item on the file list
-func _new_file_item(file_name: String, path: String, type: FileType, data: Dictionary) -> void:
+func _new_file_item(path: String, data: Resource) -> void:
+	var file_name := path.get_file()
 	var item_index: int = _file_list.item_count
-	
+
 	# Check if the file is already loaded
 	for index in range(_file_list.item_count):
 		if _file_list.get_item_metadata(index)["file_path"] == path:
@@ -198,52 +179,62 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 	var metadata := {
 		'file_name': file_name,
 		'file_path': path,
-		'file_type': type,
 		'data': data,
 		'modified': false
 		}
 
-	match type:
-		# Add file item by type
-		FileType.DIALOG:
-			# Create a graph and load the nodes data
-			var graph = _graph_scene.instantiate()
-			add_child(graph)
-			graph.set_meta("file_index", item_index)
-			graph.modified.connect(_on_data_modified)
-			graph.text_editor = _workspace.text_editor
-			var csv_path = data["dialog_data"]["csv_file_path"]
-			var dialogs = load_dialogs_from_csv(csv_path)
-			graph.load_nodes_data(data, dialogs)
-			graph.name = "Graph"
-			remove_child(graph)
-			metadata['graph'] = graph # Add graph to metadata
+	if data is GraphDialogsDialogueData:
+		# Create a graph and load the nodes data
+		var graph = _graph_scene.instantiate()
+		add_child(graph)
+		graph.set_meta("file_index", item_index)
+		graph.modified.connect(_on_data_modified)
+		graph.text_editor = _workspace.text_editor
+
+		# Load the graph data and dialogs
+		var dialogs = load_dialogs_from_csv(data.csv_file_path)
+		graph.load_nodes_data(data.graph_data, dialogs)
+		graph.name = "Graph"
+		remove_child(graph)
+
+		metadata['graph'] = graph # Add graph to metadata
+		
+		# Add item to the file list
+		_file_list.add_item(file_name, _dialog_icon)
+		_file_list.set_item_metadata(item_index, metadata)
+		_dialogs_count += 1
+
+		_switch_selected_file(item_index)
+		_editor_main.switch_active_tab(0)
+		_workspace.show_graph_editor()
 			
-			# Add item to the file list
-			_file_list.add_item(file_name, _dialog_icon)
-			_file_list.set_item_metadata(item_index, metadata)
-			_dialogs_count += 1
-			
-		FileType.CHAR:
-			# Load character data in a new a character panel
-			var character_editor = _char_scene.instantiate()
-			add_child(character_editor)
-			data = data.character_data
-			character_editor.set_meta("file_index", item_index)
-			character_editor.modified.connect(_on_data_modified)
-			var name_data = load_character_names_from_csv(data.key_name)
-			character_editor.load_character(data, name_data)
-			character_editor.name = "CharacterEditor"
-			remove_child(character_editor)
+	elif data is GraphDialogsCharacterData:
+		# Load character data in a new a character panel
+		var character_editor = _char_scene.instantiate()
+		add_child(character_editor)
+		character_editor.set_meta("file_index", item_index)
+		character_editor.modified.connect(_on_data_modified)
+		
+		var name_data = load_character_names_from_csv(data.key_name)
+		character_editor.load_character(data, name_data)
+		character_editor.name = "CharacterEditor"
+		remove_child(character_editor)
 
-			metadata['char_panel'] = character_editor # Add character panel to metadata
+		# Add character panel to metadata
+		metadata['char_editor'] = character_editor
 
-			# Add item to the file list
-			_file_list.add_item(file_name, _char_icon)
-			_file_list.set_item_metadata(item_index, metadata)
-			_characters_count += 1
+		# Add item to the file list
+		_file_list.add_item(file_name, _char_icon)
+		_file_list.set_item_metadata(item_index, metadata)
+		_characters_count += 1
 
-	_switch_selected_file(item_index)
+		_switch_selected_file(item_index)
+		_editor_main.switch_active_tab(1)
+		_character_editor.show_character_panel()
+	else:
+		printerr("[Graph Dialogs] File " + file_name + " has an invalid format.")
+		return
+
 	_save_file_button.disabled = false
 
 #endregion
@@ -253,21 +244,15 @@ func _new_file_item(file_name: String, path: String, type: FileType, data: Dicti
 ## Load data from JSON file
 func load_file(path: String) -> void:
 	if FileAccess.file_exists(path):
-		GraphDialogsFileUtils.set_recent_file_path("json_files", path)
-		var data = GraphDialogsJSONFileManager.load_file(path)
-		var file_name: String = path.split('/')[-1]
+		var resource = load(path)
+		_new_file_item(path, resource)
+
+		if resource is GraphDialogsDialogueData:
+			GraphDialogsFileUtils.set_recent_file_path("dialogue_files", path)
+		elif resource is GraphDialogsCharacterData:
+			GraphDialogsFileUtils.set_recent_file_path("character_files", path)
 		
-		if data.has("dialog_data"): # Load a dialog
-			_new_file_item(file_name, path, FileType.DIALOG, data)
-			_editor_main.switch_active_tab(0)
-			_workspace.show_graph_editor()
-		
-		elif data.has("character_data"): # Load a character
-			_new_file_item(file_name, path, FileType.CHAR, data)
-			_editor_main.switch_active_tab(1)
-			_character_editor.show_character_panel()
-		else:
-			printerr("[Graph Dialogs] File " + path + "has an invalid format.")
+		GraphDialogsFileUtils.set_recent_file_path("graph_dialogs_files", path)
 	else:
 		printerr("[Graph Dialogs] File " + path + "does not exist.")
 
@@ -275,37 +260,38 @@ func load_file(path: String) -> void:
 ## Save data to JSON file
 func save_file(index: int = _current_file_index, path: String = "") -> void:
 	var file_metadata = _file_list.get_item_metadata(index)
-	var data = file_metadata["data"]
+	var data = file_metadata.data
 	
-	match file_metadata["file_type"]:
-		FileType.DIALOG: # Save dialog data
+	if data is GraphDialogsDialogueData:
 			# If there is some error not solved on graph, cannot save
-			if file_metadata["graph"].alerts.is_error_alert_active():
+			if file_metadata.graph.alerts.is_error_alert_active():
 				printerr("[Graph Dialogs] Cannot save, please fix the errors.")
 				return
-			# Get nodes data from the graph
+			# Get data from the graph and update it 
 			var graph_data = file_metadata["graph"].get_nodes_data()
-			data["dialog_data"]["nodes_data"] = graph_data["nodes_data"]
+			data.graph_data = graph_data["nodes_data"]
 			file_metadata["data"] = data
-			# Save dialogs on csv file
-			save_dialogs_on_csv(graph_data["dialogs"], data["dialog_data"]["csv_file_path"])
+			# Save the CSV file with the dialogs
+			save_dialogs_on_csv(graph_data["dialogs"], data.csv_file_path)
 
-		FileType.CHAR: # Save character data
-			# Get character data from the editor
-			data = file_metadata["char_panel"].get_character_data()
-			file_metadata["data"] = data
-			# Save character names on csv file
-			save_character_names_on_csv(data["character_data"]["display_name"])
+	elif data is GraphDialogsCharacterData:
+		# Get character data from the editor
+		data = file_metadata["char_editor"].get_character_data()
+		file_metadata["data"] = data
+		# Save character names on csv file
+		save_character_names_on_csv(data.display_name)
 	
 	# Save file on the given path
 	var save_path = file_metadata["file_path"] if path.is_empty() else path
-	GraphDialogsJSONFileManager.save_file(data, save_path)
+	ResourceSaver.save(file_metadata["data"], save_path)
 	_file_list.set_item_metadata(index, file_metadata)
 	_set_file_as_modified(index, false)
-	print("[Graph Dialogs] File '" + file_metadata["file_name"] + "' saved.")
+
+	print("[Graph Dialogs] File '" + file_metadata.file_name + "' saved.")
 #endregion
 
 #region === Close Files ========================================================
+
 
 ## Close an open file
 func close_file(index: int = _current_file_index) -> void:
@@ -314,31 +300,31 @@ func close_file(index: int = _current_file_index) -> void:
 	index = wrapi(index, 0, _file_list.item_count)
 	var metadata := _file_list.get_item_metadata(index)
 
+	# If the file to be closed is unsaved, alert user before close
 	if metadata["modified"] and not index in _closing_queue:
-		# If the file to be closed is unsaved, alert user before close
 		_closing_queue.append(index)
 		_confirm_close_dialog.popup_centered()
 		return
-	
+
+	# If the file to be closed is being edited
 	if index == _current_file_index:
-		# If the file to be closed is being edited
 		_csv_file_field.set_value("")
+		# If there are no open files to switch to them
 		if _file_list.item_count == 1:
-			# If there are no open files to switch to them
 			_current_file_index = -1
+		# If the file to close is the first one, switch to second one
 		elif index == 0:
-			# If the file to close is the first one, switch to second one
 			_switch_selected_file(1)
 			_current_file_index = 0
 		else: # If not the first file, switch to the previous file
 			_switch_selected_file(index - 1)
 	
 	# Free the cached graph or character panel
-	if metadata["file_type"] == FileType.DIALOG:
+	if metadata.data is GraphDialogsDialogueData:
 		metadata["graph"].queue_free()
 		_dialogs_count -= 1
-	elif metadata["file_type"] == FileType.CHAR:
-		metadata["char_panel"].queue_free()
+	elif metadata.data is GraphDialogsCharacterData:
+		metadata["char_editor"].queue_free()
 		_characters_count -= 1
 	
 	# Show start panel if there are no dialogs open
@@ -385,15 +371,13 @@ func switch_to_file_on_tab(tab: int) -> void:
 	var to_file := -1
 
 	match tab:
-		0:
-			# Switched to the graph dialog tab
+		0: # Switched to the graph dialog tab
 			var current_graph = _workspace.get_current_graph()
 			if current_graph and current_graph.has_meta("file_index"):
 				to_file = current_graph.get_meta("file_index")
 			else: # No graph loaded
 				return
-		1:
-			# Switched to the character editor tab
+		1: # Switched to the character editor tab
 			var current_panel = _character_editor.get_current_character_panel()
 			if current_panel and current_panel.has_meta("file_index"):
 				to_file = current_panel.get_meta("file_index")
@@ -405,6 +389,7 @@ func switch_to_file_on_tab(tab: int) -> void:
 	_current_file_index = to_file
 	_file_list.select(_current_file_index)
 
+
 ## Switch to a selected file
 func _switch_selected_file(file_index: int) -> void:
 	if _file_list.item_count == 0 or file_index > _file_list.item_count:
@@ -412,27 +397,25 @@ func _switch_selected_file(file_index: int) -> void:
 	var new_metadata := _file_list.get_item_metadata(file_index)
 	
 	if _current_file_index > -1: # Update metadata on current file
-		var current_metadata := _file_list.get_item_metadata(_current_file_index)
+		var cur_metadata := _file_list.get_item_metadata(_current_file_index)
 		
-		if current_metadata["file_type"] == FileType.DIALOG:
-			current_metadata.data.dialog_data.nodes_data = \
-					current_metadata["graph"].get_nodes_data()
+		if cur_metadata.data is GraphDialogsDialogueData:
+			cur_metadata.data.graph_data = cur_metadata["graph"].get_nodes_data()
 		
-		elif current_metadata["file_type"] == FileType.CHAR:
-			current_metadata.data.character_data = \
-					current_metadata["char_panel"].get_character_data()
+		elif cur_metadata.data is GraphDialogsCharacterData:
+			cur_metadata.data = cur_metadata["char_editor"].get_character_data()
 		
-		_file_list.set_item_metadata(_current_file_index, current_metadata)
+		_file_list.set_item_metadata(_current_file_index, cur_metadata)
 	
 	# Switch view to the new file
-	if new_metadata["file_type"] == FileType.DIALOG:
+	if new_metadata.data is GraphDialogsDialogueData:
 		# Switch current graph and change tab view
 		_workspace.switch_current_graph(new_metadata["graph"])
-		_csv_file_field.set_value(new_metadata["data"]["dialog_data"]["csv_file_path"])
+		_csv_file_field.set_value(new_metadata.data.csv_file_path)
 		_editor_main.switch_active_tab(0)
 	
-	elif new_metadata["file_type"] == FileType.CHAR:
-		_character_editor.switch_current_character_panel(new_metadata["char_panel"])
+	elif new_metadata.data is GraphDialogsCharacterData:
+		_character_editor.switch_current_character_panel(new_metadata["char_editor"])
 		_editor_main.switch_active_tab(1)
 	_current_file_index = file_index
 	_file_list.select(file_index)
@@ -473,7 +456,7 @@ func _filter_file_list(search_text: String) -> void:
 ## Set CSV file path to the current data file
 func set_csv_file_to_dialog(path: String) -> void:
 	var metadata := _file_list.get_item_metadata(_current_file_index)
-	metadata["data"]["dialog_data"]["csv_file_path"] = path
+	metadata.data.csv_file_path = path
 	_file_list.set_item_metadata(_current_file_index, metadata)
 	_csv_file_field.set_value(path)
 	
@@ -607,13 +590,13 @@ func _on_save_file_pressed() -> void:
 
 ## Open file dialog to select a file
 func _on_open_file_pressed() -> void:
-	_open_file_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("json_files"))
+	_open_file_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("graph_dialogs_files"))
 	_open_file_dialog.popup_centered()
 
 
 ## Create new dialog file
 func _on_new_dialog_pressed() -> void:
-	_new_dialog_file_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("dialog_files"))
+	_new_dialog_file_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("dialogue_files"))
 	_new_dialog_file_dialog.popup_centered()
 
 

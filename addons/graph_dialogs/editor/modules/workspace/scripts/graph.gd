@@ -89,10 +89,10 @@ func get_nodes_data() -> Dictionary:
 
 ## Load nodes data from a dictionary
 func load_nodes_data(data: Dictionary, dialogs: Dictionary) -> void:
-	for node_group in data["dialog_data"]["nodes_data"]:
-		for node_name in data["dialog_data"]["nodes_data"][node_group]:
+	for dialogue_branch in data.keys():
+		for node_name in data[dialogue_branch].keys():
 			# Get node data
-			var node_data = data.dialog_data.nodes_data.get(node_group).get(node_name)
+			var node_data = data[dialogue_branch][node_name]
 			_nodes_type_count[node_data["node_type"]] += 1
 
 			# Create node and set data

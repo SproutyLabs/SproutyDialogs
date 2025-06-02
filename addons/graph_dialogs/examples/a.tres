@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="GraphDialogsCharacterData" load_steps=2 format=3 uid="uid://4w2bho11pd8g"]
+
+[ext_resource type="Script" uid="uid://kwoapf8il7ee" path="res://addons/graph_dialogs/resources/character_data.gd" id="1_s4y4v"]
+
+[resource]
+script = ExtResource("1_s4y4v")
+key_name = "a"
+display_name = {
+"a": {
+"en": "aaaa",
+"es": "aaa",
+"ja": "aaaa"
+}
+}
+description = ""
+text_box = ""
+portrait_on_text_box = false
+portraits = {}
+typing_sounds = {}

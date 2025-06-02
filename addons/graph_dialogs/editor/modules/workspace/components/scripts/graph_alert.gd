@@ -15,7 +15,7 @@ extends MarginContainer
 func _ready() -> void:
 	# Set alert icon based on alert type
 	if alert_type == "ERROR":
-		$Panel/Container/Icon.icon = get_theme_icon("Close", "EditorIcons")
+		$Panel/Container/Icon.texture = get_theme_icon("Close", "EditorIcons")
 	
 	# Hide alert outside the view
 	position.x = size.x

@@ -84,23 +84,20 @@ func on_modified():
 
 
 ## Get the character data from the editor
-func get_character_data() -> Dictionary:
-	var data = {
-		"character_data": {
-			"key_name": _key_name,
-			"display_name": {_key_name: get_name_translations()},
-			"description": _description_field.text,
-			"text_box": _text_box_scene_field.get_value(),
-			"portrait_on_text_box": _portrait_on_text_box,
-			"portraits": _portrait_tree.get_portraits_data(),
-			"typing_sounds": {}
-		}
-	}
+func get_character_data() -> GraphDialogsCharacterData:
+	var data = GraphDialogsCharacterData.new()
+	data.key_name = _key_name
+	data.display_name = {_key_name: get_name_translations()}
+	data.description = _description_field.text
+	data.text_box = _text_box_scene_field.get_value()
+	data.portrait_on_text_box = _portrait_on_text_box
+	data.portraits = _portrait_tree.get_portraits_data()
+	data.typing_sounds = {} # Typing sounds are not implemented yet
 	return data
 
 
 ## Load the character data into the editor
-func load_character(data: Dictionary, name_data: Dictionary) -> void:
+func load_character(data: GraphDialogsCharacterData, name_data: Dictionary) -> void:
 	_key_name = data.key_name
 	_key_name_label.text = _key_name.to_pascal_case()
 	var name_translations = name_data[_key_name]
