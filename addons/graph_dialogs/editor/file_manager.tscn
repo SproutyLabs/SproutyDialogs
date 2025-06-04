@@ -1,13 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://dpscdg0f7o6ft"]
+[gd_scene load_steps=14 format=3 uid="uid://dpscdg0f7o6ft"]
 
 [ext_resource type="Script" uid="uid://cv23xnc0v5l0t" path="res://addons/graph_dialogs/editor/scripts/file_manager.gd" id="1_3v21c"]
+[ext_resource type="Script" uid="uid://xuu4omf67pq3" path="res://addons/graph_dialogs/editor/scripts/side_bar_controller.gd" id="1_avlcx"]
 [ext_resource type="Texture2D" uid="uid://dv53yhmd7k3d5" path="res://addons/graph_dialogs/icons/add-dialog.svg" id="2_fjick"]
 [ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/graph_dialogs/icons/add-char.svg" id="3_ljhu2"]
+[ext_resource type="Script" uid="uid://dlco4x1xmoek0" path="res://addons/graph_dialogs/editor/scripts/file_list_manager.gd" id="4_r5dun"]
+[ext_resource type="Script" uid="uid://ba6do7yv0u8qy" path="res://addons/graph_dialogs/editor/scripts/csv_files_manager.gd" id="5_7gkst"]
 [ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/graph_dialogs/icons/interactable/collapse-left.svg" id="8_72tq1"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialogs/editor/components/file_field.tscn" id="8_wehoa"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialogs/icons/interactable/collapse-right.svg" id="9_xltsg"]
 
-[sub_resource type="Image" id="Image_1mdri"]
+[sub_resource type="Image" id="Image_avlcx"]
 data = {
 "data": PackedByteArray(255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 42, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 93, 93, 41, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 92, 92, 0, 255, 92, 92, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 93, 93, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0),
 "format": "RGBA8",
@@ -16,113 +19,188 @@ data = {
 "width": 16
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_r5dun"]
-image = SubResource("Image_1mdri")
+[sub_resource type="ImageTexture" id="ImageTexture_avlcx"]
+image = SubResource("Image_avlcx")
 
-[node name="FileManager" type="VSplitContainer"]
+[sub_resource type="Image" id="Image_nmrbu"]
+data = {
+"data": PackedByteArray(255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 42, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 93, 93, 41, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 92, 92, 0, 255, 92, 92, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 93, 93, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0),
+"format": "RGBA8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_i2w2p"]
+image = SubResource("Image_nmrbu")
+
+[node name="SideBar" type="VSplitContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 collapsed = true
-script = ExtResource("1_3v21c")
+script = ExtResource("1_avlcx")
 
-[node name="SideBarContainer" type="MarginContainer" parent="."]
+[node name="ContentContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Container" type="VBoxContainer" parent="SideBarContainer"]
+[node name="Container" type="VBoxContainer" parent="ContentContainer"]
 layout_mode = 2
 
-[node name="FileOptions" type="HBoxContainer" parent="SideBarContainer/Container"]
+[node name="FileManager" type="VBoxContainer" parent="ContentContainer/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+script = ExtResource("1_3v21c")
+
+[node name="FileOptions" type="HBoxContainer" parent="ContentContainer/Container/FileManager"]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 6
 
-[node name="NewDialogButton" type="Button" parent="SideBarContainer/Container/FileOptions"]
+[node name="NewDialogButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
 icon = ExtResource("2_fjick")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="SideBarContainer/Container/FileOptions"]
+[node name="VSeparator" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions"]
 layout_mode = 2
 
-[node name="NewCharButton" type="Button" parent="SideBarContainer/Container/FileOptions"]
+[node name="NewCharButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
 icon = ExtResource("3_ljhu2")
 flat = true
 
-[node name="VSeparator2" type="VSeparator" parent="SideBarContainer/Container/FileOptions"]
+[node name="VSeparator2" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions"]
 layout_mode = 2
 
-[node name="OpenFileButton" type="Button" parent="SideBarContainer/Container/FileOptions"]
+[node name="OpenFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
-icon = SubResource("ImageTexture_r5dun")
+icon = SubResource("ImageTexture_avlcx")
 flat = true
 
-[node name="VSeparator3" type="VSeparator" parent="SideBarContainer/Container/FileOptions"]
+[node name="VSeparator3" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions"]
 layout_mode = 2
 
-[node name="SaveFileButton" type="Button" parent="SideBarContainer/Container/FileOptions"]
+[node name="SaveFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
 disabled = true
-icon = SubResource("ImageTexture_r5dun")
+icon = SubResource("ImageTexture_avlcx")
 flat = true
 
-[node name="FileDisplay" type="VBoxContainer" parent="SideBarContainer/Container"]
+[node name="FileList" type="VBoxContainer" parent="ContentContainer/Container/FileManager"]
 layout_mode = 2
 size_flags_vertical = 3
+script = ExtResource("4_r5dun")
 
-[node name="FileSearch" type="LineEdit" parent="SideBarContainer/Container/FileDisplay"]
-unique_name_in_owner = true
+[node name="FileSearch" type="LineEdit" parent="ContentContainer/Container/FileManager/FileList"]
 layout_mode = 2
 placeholder_text = "Search files..."
-right_icon = SubResource("ImageTexture_r5dun")
+right_icon = SubResource("ImageTexture_i2w2p")
 caret_blink = true
 caret_blink_interval = 0.5
 
-[node name="FileList" type="ItemList" parent="SideBarContainer/Container/FileDisplay"]
-unique_name_in_owner = true
+[node name="FileItemList" type="ItemList" parent="ContentContainer/Container/FileManager/FileList"]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 same_column_width = true
 
-[node name="FilteredList" type="ItemList" parent="SideBarContainer/Container/FileDisplay"]
-unique_name_in_owner = true
+[node name="FilteredList" type="ItemList" parent="ContentContainer/Container/FileManager/FileList"]
 visible = false
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
 same_column_width = true
 
-[node name="CSVFileContainer" type="VBoxContainer" parent="SideBarContainer/Container"]
+[node name="CSVFileField" type="VBoxContainer" parent="ContentContainer/Container/FileManager"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+script = ExtResource("5_7gkst")
 
-[node name="Label" type="Label" parent="SideBarContainer/Container/CSVFileContainer"]
+[node name="Label" type="Label" parent="ContentContainer/Container/FileManager/CSVFileField"]
 layout_mode = 2
 text = "CSV Translations File"
 
-[node name="FileField" parent="SideBarContainer/Container/CSVFileContainer" instance=ExtResource("8_wehoa")]
+[node name="FileField" parent="ContentContainer/Container/FileManager/CSVFileField" instance=ExtResource("8_wehoa")]
 layout_mode = 2
 _recent_file_type = "csv_dialog_files"
 file_filters = PackedStringArray("*.csv")
 
-[node name="BottomContainer" type="HBoxContainer" parent="SideBarContainer/Container"]
+[node name="PopupDialogs" type="Node" parent="ContentContainer/Container/FileManager"]
+
+[node name="FileMenu" type="PopupMenu" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+unique_name_in_owner = true
+size = Vector2i(108, 120)
+item_count = 5
+item_0/text = "Save"
+item_0/icon = SubResource("ImageTexture_i2w2p")
+item_0/id = 0
+item_1/text = "Save As..."
+item_1/icon = SubResource("ImageTexture_i2w2p")
+item_1/id = 1
+item_2/id = 4
+item_2/separator = true
+item_3/text = "Close"
+item_3/icon = SubResource("ImageTexture_i2w2p")
+item_3/id = 2
+item_4/text = "Close All"
+item_4/icon = SubResource("ImageTexture_i2w2p")
+item_4/id = 3
+
+[node name="ConfirmCloseFiles" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+unique_name_in_owner = true
+title = "Please Confirm..."
+initial_position = 4
+size = Vector2i(336, 106)
+dialog_text = "The file/s contains unsaved changes. 
+Are you sure you want to close this file/s?"
+
+[node name="NewDialog" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+title = "New Dialog"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Create File"
+filters = PackedStringArray("*.tres", "*.res")
+
+[node name="NewChar" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+auto_translate_mode = 1
+title = "New Character"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Create File"
+filters = PackedStringArray("*.tres", "*.res")
+
+[node name="OpenFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Open"
+file_mode = 0
+filters = PackedStringArray("*.tres", "*.res")
+
+[node name="SaveFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+auto_translate_mode = 1
+initial_position = 4
+size = Vector2i(600, 400)
+filters = PackedStringArray("*.tres", "*.res")
+
+[node name="BottomContainer" type="HBoxContainer" parent="ContentContainer/Container"]
 layout_mode = 2
 
-[node name="Version" type="Label" parent="SideBarContainer/Container/BottomContainer"]
+[node name="Version" type="Label" parent="ContentContainer/Container/BottomContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.619608, 0.611765, 0.568627, 1)
@@ -130,7 +208,7 @@ text = "v0.0.1
 "
 vertical_alignment = 1
 
-[node name="CloseButton" type="Button" parent="SideBarContainer/Container/BottomContainer"]
+[node name="CloseButton" type="Button" parent="ContentContainer/Container/BottomContainer"]
 layout_mode = 2
 icon = ExtResource("8_72tq1")
 flat = true
@@ -150,73 +228,6 @@ vertical_icon_alignment = 2
 [node name="VSeparator" type="VSeparator" parent="ExpandBar"]
 layout_mode = 2
 
-[node name="PopupWindows" type="Node" parent="."]
-
-[node name="FileMenu" type="PopupMenu" parent="PopupWindows"]
-size = Vector2i(108, 120)
-item_count = 5
-item_0/text = "Save"
-item_0/icon = SubResource("ImageTexture_r5dun")
-item_0/id = 0
-item_1/text = "Save As..."
-item_1/icon = SubResource("ImageTexture_r5dun")
-item_1/id = 1
-item_2/id = 4
-item_2/separator = true
-item_3/text = "Close"
-item_3/icon = SubResource("ImageTexture_r5dun")
-item_3/id = 2
-item_4/text = "Close All"
-item_4/icon = SubResource("ImageTexture_r5dun")
-item_4/id = 3
-
-[node name="ConfirmCloseFiles" type="AcceptDialog" parent="PopupWindows"]
-title = "Please Confirm..."
-initial_position = 4
-size = Vector2i(336, 106)
-dialog_text = "The file/s contains unsaved changes. 
-Are you sure you want to close this file/s?"
-
-[node name="NewDialog" type="FileDialog" parent="PopupWindows"]
-title = "New Dialog"
-initial_position = 4
-size = Vector2i(600, 400)
-ok_button_text = "Create File"
-filters = PackedStringArray("*.tres", "*.res")
-
-[node name="NewChar" type="FileDialog" parent="PopupWindows"]
-auto_translate_mode = 1
-title = "New Character"
-initial_position = 4
-size = Vector2i(600, 400)
-ok_button_text = "Create File"
-filters = PackedStringArray("*.tres", "*.res")
-
-[node name="OpenFile" type="FileDialog" parent="PopupWindows"]
-auto_translate_mode = 1
-title = "Open a File"
-initial_position = 4
-size = Vector2i(600, 400)
-ok_button_text = "Open"
-file_mode = 0
-filters = PackedStringArray("*.tres", "*.res")
-
-[node name="SaveFile" type="FileDialog" parent="PopupWindows"]
-auto_translate_mode = 1
-initial_position = 4
-size = Vector2i(600, 400)
-filters = PackedStringArray("*.tres", "*.res")
-
-[connection signal="focus_exited" from="SideBarContainer/Container/FileDisplay/FileSearch" to="." method="_on_file_search_focus_exited"]
-[connection signal="text_changed" from="SideBarContainer/Container/FileDisplay/FileSearch" to="." method="_on_file_search_text_changed"]
-[connection signal="empty_clicked" from="SideBarContainer/Container/FileDisplay/FileList" to="." method="_on_empty_clicked"]
-[connection signal="item_clicked" from="SideBarContainer/Container/FileDisplay/FileList" to="." method="_on_item_clicked"]
-[connection signal="item_selected" from="SideBarContainer/Container/FileDisplay/FileList" to="." method="_on_file_selected"]
-[connection signal="empty_clicked" from="SideBarContainer/Container/FileDisplay/FilteredList" to="." method="_on_empty_clicked"]
-[connection signal="item_clicked" from="SideBarContainer/Container/FileDisplay/FilteredList" to="." method="_on_item_clicked"]
-[connection signal="item_selected" from="SideBarContainer/Container/FileDisplay/FilteredList" to="." method="_on_file_selected"]
-[connection signal="pressed" from="SideBarContainer/Container/BottomContainer/CloseButton" to="." method="_on_close_button_pressed"]
+[connection signal="focus_exited" from="ContentContainer/Container/FileManager/FileList/FileSearch" to="." method="_on_file_search_focus_exited"]
+[connection signal="pressed" from="ContentContainer/Container/BottomContainer/CloseButton" to="." method="_on_close_button_pressed"]
 [connection signal="pressed" from="ExpandBar/ExpandButton" to="." method="_on_expand_button_pressed"]
-[connection signal="id_pressed" from="PopupWindows/FileMenu" to="." method="_on_file_menu_pressed"]
-[connection signal="canceled" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_closing_canceled"]
-[connection signal="custom_action" from="PopupWindows/ConfirmCloseFiles" to="." method="_on_confirm_closing_action"]

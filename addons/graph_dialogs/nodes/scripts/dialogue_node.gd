@@ -36,6 +36,7 @@ func _ready():
 			"default_locale_changed", _on_locales_changed
 		)
 
+
 #region === Overridden Methods =================================================
 
 func get_data() -> Dictionary:
@@ -72,6 +73,7 @@ func process_node(node_data: Dictionary) -> void:
 	dialogue_processed.emit(character, dialog, node_data["to_node"][0])
 
 #endregion
+
 
 ## Load dialog and translations
 func load_dialogs(dialogs: Dictionary) -> void:

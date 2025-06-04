@@ -1,33 +1,41 @@
 @tool
-extends HSplitContainer
+extends Control
 
 ## -----------------------------------------------------------------------------
 ## Workspace controller
 ##
-## This script handles the workspace, the main UI of the editor. It contains the
-## graph editor, the text editor, and the start panel.
+## This script handles the workspace, the main view of the editor. It contains
+## the graph editor and the text editor for dialogues.
 ## -----------------------------------------------------------------------------
 
-## Editor main reference
-@export var _editor_main: Control
-## File manager reference
-@export var _file_manager: Container
+## Emitted when the graph editor is visible
+signal graph_editor_visible(visible: bool)
+## Emitted when the new dialog file button is pressed
+signal new_dialog_file_pressed
+## Emitted when the open dialog file button is pressed
+signal open_dialog_file_pressed
 
-## Graph editor reference
+## Start panel reference
+@onready var _start_panel: Panel = $StartPanel
+## Graph editor container reference
 @onready var _graph_editor: Panel = $GraphEditor
-## Empty panel reference
-@onready var _empty_panel: Panel = $EmptyPanel
 ## Text editor reference
-@onready var text_editor: Panel = $TextEditor
+@onready var _text_editor: Panel = $TextEditor
+
+## New dialog button reference (from start panel)
+@onready var _new_dialog_button: Button = %NewDialogButton
+## Open dialog button reference (from start panel)
+@onready var _open_dialog_button: Button = %OpenDialogButton
 
 
 func _ready() -> void:
+	_new_dialog_button.pressed.connect(new_dialog_file_pressed.emit)
+	_open_dialog_button.pressed.connect(open_dialog_file_pressed.emit)
+	
+	_new_dialog_button.icon = get_theme_icon("Add", "EditorIcons")
+	_open_dialog_button.icon = get_theme_icon("Folder", "EditorIcons")
 	show_start_panel()
-	%NewDialogButton.icon = get_theme_icon("Add", "EditorIcons")
-	%OpenDialogButton.icon = get_theme_icon("Folder", "EditorIcons")
 
-
-#region === Graph Editor =======================================================
 
 ## Get the current graph on editor
 func get_current_graph() -> GraphEdit:
@@ -41,36 +49,21 @@ func switch_current_graph(new_graph: GraphEdit) -> void:
 	# Remove old graph and switch to the new one
 	if _graph_editor.get_child_count() > 0:
 		_graph_editor.remove_child(_graph_editor.get_child(0))
+	new_graph.text_editor = _text_editor
 	_graph_editor.add_child(new_graph)
+	show_graph_editor()
 
-#endregion
-
-#region === UI Panel Handling ==================================================
 
 ## Show the start panel instead of graph editor
 func show_start_panel() -> void:
-	if _file_manager:
-		_file_manager.hide_csv_container()
 	_graph_editor.visible = false
-	text_editor.visible = false
-	_empty_panel.visible = true
+	_text_editor.visible = false
+	_start_panel.visible = true
+	graph_editor_visible.emit(false)
 
 
 ## Show the graph editor
 func show_graph_editor() -> void:
-	if _file_manager:
-		_file_manager.show_csv_container()
 	_graph_editor.visible = true
-	_empty_panel.visible = false
-#endregion
-
-#region === Start panel Handling ===============================================
-
-## Show dialog to open a dialog file
-func _on_open_dialog_file_pressed() -> void:
-	_file_manager.select_file_to_open()
-
-## Show dialog to create a new dialog file
-func _on_new_dialog_file_pressed() -> void:
-	_file_manager.select_new_dialog_file()
-#endregion
+	_start_panel.visible = false
+	graph_editor_visible.emit(true)

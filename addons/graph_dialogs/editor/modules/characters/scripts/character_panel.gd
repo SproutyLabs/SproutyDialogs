@@ -7,51 +7,54 @@ extends PanelContainer
 ## Handles the tab panel for the character editor.
 ## ---------------------------------------------------------------------------
 
-## File manager reference
-@export var _file_manager: Container
+## Emitted when the new character file button is pressed
+signal new_character_file_pressed
+## Emitted when the open character file button is pressed
+signal open_character_file_pressed
+
+## Start panel reference
+@onready var _start_panel: Control = $StartPanel
+## Character editor container reference
+@onready var _character_editor: Control = $CharacterEditor
+
+## New character button reference (from start panel)
+@onready var _new_character_button: Button = %NewCharacterButton
+## Open character button reference (from start panel)
+@onready var _open_character_button: Button = %OpenCharacterButton
+
 
 func _ready() -> void:
+	_new_character_button.pressed.connect(new_character_file_pressed.emit)
+	_open_character_button.pressed.connect(open_character_file_pressed.emit)
+
+	_new_character_button.icon = get_theme_icon("Add", "EditorIcons")
+	_open_character_button.icon = get_theme_icon("Folder", "EditorIcons")
 	show_start_panel()
-	%NewCharacterButton.icon = get_theme_icon("Add", "EditorIcons")
-	%OpenCharacterButton.icon = get_theme_icon("Folder", "EditorIcons")
 
 
 ## Get the current character editor panel
-func get_current_character_panel() -> Container:
+func get_current_character_editor() -> Container:
 	if get_child_count() > 1:
 		return get_child(1)
 	return null
 
 
 ## Switch the current character editor panel
-func switch_current_character_panel(new_panel: Container) -> void:
+func switch_current_character_editor(new_panel: Container) -> void:
 	# Remove old panel and switch to the new one
 	if get_child_count() > 1:
 		remove_child(get_child(1))
 	add_child(new_panel)
+	show_character_editor()
 
-
-#region === UI Panel Handling ==================================================
 
 ## Show the start panel instead of character panel
 func show_start_panel() -> void:
-	$CharacterEditor.visible = false
-	$EmptyPanel.visible = true
+	_character_editor.visible = false
+	_start_panel.visible = true
 
 
 ## Show the character panel
-func show_character_panel() -> void:
-	$CharacterEditor.visible = true
-	$EmptyPanel.visible = false
-#endregion
-
-#region === Start panel Handling ===============================================
-
-## Show dialog to open a dialog file
-func _on_open_character_file_pressed() -> void:
-	_file_manager.select_file_to_open()
-
-## Show dialog to create a new dialog file
-func _on_new_character_file_pressed() -> void:
-	_file_manager.select_new_character_file()
-#endregion
+func show_character_editor() -> void:
+	_character_editor.visible = true
+	_start_panel.visible = false

@@ -2,19 +2,33 @@
 extends Control
 
 ## -----------------------------------------------------------------------------
-## Graph dialog system editor
+## Main editor controller
 ##
-## This script handles the editor UI.
+## This script handles the editor view and the interaction between the
+## different modules of the plugin.
 ## -----------------------------------------------------------------------------
 
-## File manager container on side bar
-@onready var file_manager: SplitContainer = %FileManager
-## First settings panel
-@onready var first_settings: Panel = $FirstSettings
+## Side bar reference
+@onready var side_bar: Control = %SideBar
+## File manager reference
+@onready var file_manager: Control = side_bar.file_manager
+
+## Workspace reference
+@onready var workspace: Control = %Workspace
+## Character panel reference
+@onready var character_panel: Control = %CharacterPanel
+## Variable panel reference
+@onready var variables_panel: Control = %VariablesPanel
+## Settings panel reference
+@onready var settings_panel: Control = %SettingsPanel
+
 ## Main container with the tabs
 @onready var main_container: HSplitContainer = $MainContainer
 ## Tab container with modules
 @onready var tab_container: TabContainer = %TabContainer
+
+## First settings panel
+@onready var first_settings: Panel = $FirstSettings
 
 ## Tab icons
 @onready var tab_icons: Array[Texture2D] = [
@@ -26,6 +40,22 @@ extends Control
 
 
 func _ready():
+	# Connect signals to modules
+	file_manager.all_dialog_files_closed.connect(workspace.show_start_panel)
+	file_manager.all_character_files_closed.connect(character_panel.show_start_panel)
+	file_manager.request_to_switch_tab.connect(switch_active_tab)
+	file_manager.request_to_switch_graph.connect(workspace.switch_current_graph)
+	file_manager.request_to_switch_character.connect(
+			character_panel.switch_current_character_editor)
+	
+	workspace.graph_editor_visible.connect(side_bar.csv_path_field_visible)
+	workspace.new_dialog_file_pressed.connect(file_manager.on_new_dialog_pressed)
+	workspace.open_dialog_file_pressed.connect(file_manager.on_open_file_pressed)
+
+	character_panel.new_character_file_pressed.connect(
+			file_manager.on_new_character_pressed)
+	character_panel.open_character_file_pressed.connect(
+			file_manager.on_open_file_pressed)
 	_show_first_settings()
 	set_tabs_icons()
 
@@ -45,16 +75,19 @@ func switch_active_tab(tab: int):
 func _on_tab_selected(tab: int):
 	match tab:
 		0: # Graph dialog tab
-			if file_manager:
-				file_manager.show_csv_container()
-				file_manager.switch_to_file_on_tab(tab)
+			if side_bar:
+				side_bar.csv_path_field_visible(true)
+				file_manager.switch_to_file_on_tab(
+						tab, workspace.get_current_graph())
 		1: # Character tab
 			if file_manager:
-				file_manager.hide_csv_container()
-				file_manager.switch_to_file_on_tab(tab)
-		2: # Variable tab
+				side_bar.csv_path_field_visible(false)
+				file_manager.switch_to_file_on_tab(
+						tab, character_panel.get_current_character_editor())
+		_: # Other tabs
 			if file_manager:
-				file_manager.hide_csv_container()
+				side_bar.csv_path_field_visible(false)
+				pass
 
 
 ## Show the first settings screen

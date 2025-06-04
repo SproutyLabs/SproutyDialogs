@@ -13,14 +13,8 @@ extends HBoxContainer
 ## Expand button
 @onready var expand_button = $ExpandButton
 
-## Text editor panel
-var text_editor: Panel
-
 
 func _ready():
-	# Find the Graph and get the text editor reference
-	var graph = find_parent("Graph")
-	if graph: text_editor = graph.text_editor
 	expand_button.icon = get_theme_icon("DistractionFree", "EditorIcons")
 
 
@@ -36,4 +30,4 @@ func set_text(text: String) -> void:
 
 ## Open the text editor window
 func _on_expand_button_pressed() -> void:
-	text_editor.show_text_editor(text_box)
+	find_parent("Graph").text_editor.show_text_editor(text_box)
