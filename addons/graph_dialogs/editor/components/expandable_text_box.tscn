@@ -1,9 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://b2yssuibgdpbd"]
+[gd_scene load_steps=5 format=3 uid="uid://cpvp6sfoxqigr"]
 
-[ext_resource type="Script" uid="uid://bi31btvl5vh6n" path="res://addons/graph_dialogs/editor/components/scripts/option_container.gd" id="1_csyed"]
-[ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialogs/editor/components/translations_container.tscn" id="2_6k3ms"]
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="2_ynjo5"]
-[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialogs/editor/components/expandable_text_box.tscn" id="3_5qfnu"]
+[ext_resource type="Script" uid="uid://qx800jrfowgk" path="res://addons/graph_dialogs/editor/components/scripts/expandable_text_box.gd" id="1_ytunx"]
+[ext_resource type="CodeHighlighter" uid="uid://dfy2njb4ljtel" path="res://addons/graph_dialogs/editor/modules/workspace/code_highlighter.tres" id="2_p55sv"]
 
 [sub_resource type="Image" id="Image_2de2f"]
 data = {
@@ -17,34 +15,22 @@ data = {
 [sub_resource type="ImageTexture" id="ImageTexture_i2w2p"]
 image = SubResource("Image_2de2f")
 
-[node name="OptionContainer" type="VBoxContainer"]
-script = ExtResource("1_csyed")
+[node name="ExpandableTextBox" type="HBoxContainer"]
+offset_right = 40.0
+offset_bottom = 40.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_ytunx")
 
-[node name="HSeparator" type="HSeparator" parent="."]
-layout_mode = 2
-
-[node name="OptionHeader" type="HBoxContainer" parent="."]
-layout_mode = 2
-
-[node name="OptionLabel" type="Label" parent="OptionHeader"]
-layout_mode = 2
-text = "Option #1"
-
-[node name="LanguageLabel" type="Label" parent="OptionHeader"]
+[node name="TextEdit" type="TextEdit" parent="."]
+custom_minimum_size = Vector2(150, 50)
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("2_ynjo5")
-theme_type_variation = &"LocaleLabel"
-text = "(En)"
+placeholder_text = "Insert text..."
+wrap_mode = 1
+syntax_highlighter = ExtResource("2_p55sv")
+highlight_all_occurrences = true
 
-[node name="RemoveButton" type="Button" parent="OptionHeader"]
-visible = false
+[node name="ExpandButton" type="Button" parent="."]
 layout_mode = 2
 icon = SubResource("ImageTexture_i2w2p")
-flat = true
-
-[node name="ExpandableTextBox" parent="." instance=ExtResource("3_5qfnu")]
-layout_mode = 2
-
-[node name="TranslationsContainer" parent="." instance=ExtResource("2_6k3ms")]
-layout_mode = 2

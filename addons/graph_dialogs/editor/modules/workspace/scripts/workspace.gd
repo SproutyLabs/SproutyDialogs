@@ -49,7 +49,8 @@ func switch_current_graph(new_graph: GraphEdit) -> void:
 	# Remove old graph and switch to the new one
 	if _graph_editor.get_child_count() > 0:
 		_graph_editor.remove_child(_graph_editor.get_child(0))
-	new_graph.text_editor = _text_editor
+	# Asign text editor reference to the new graph
+	new_graph.open_text_editor.connect(_text_editor.show_text_editor)
 	_graph_editor.add_child(new_graph)
 	show_graph_editor()
 

@@ -11,13 +11,13 @@ extends Control
 
 ## Emitted when all dialog files have been closed
 signal all_dialog_files_closed
-## Emited when all character files have been closed
+## Emitted when all character files have been closed
 signal all_character_files_closed
-## Emited when requesting to switch current graph in the workspace
+## Emitted when requesting to switch current graph in the workspace
 signal request_to_switch_graph(graph: GraphEdit)
-## Emited when requesting to switch current character in the character editor
+## Emitted when requesting to switch current character in the character editor
 signal request_to_switch_character(char_editor: Control)
-## Emited when requesting to switch to a specific tab
+## Emitted when requesting to switch to a specific tab
 signal request_to_switch_tab(tab: int)
 
 ## New dialog button

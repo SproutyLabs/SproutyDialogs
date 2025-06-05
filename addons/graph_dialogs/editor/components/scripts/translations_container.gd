@@ -9,6 +9,9 @@ extends VBoxContainer
 ## the dialog translations text on a dict.
 ## -----------------------------------------------------------------------------
 
+## Emitted when pressing the expand button of a text box to open the text editor
+signal open_text_editor(text_box: TextEdit)
+
 ## True if is using text boxes for translation, false if is using line edits
 @export var use_text_boxes: bool = true
 @export var extra_to_show: Node = null
@@ -57,6 +60,7 @@ func set_translation_boxes(locales: Array) -> void:
 			box = translation_line.instantiate()
 		text_boxes.add_child(box)
 		box.set_locale(locale)
+		box.open_text_editor.connect(open_text_editor.emit)
 	self.visible = true
 
 

@@ -28,6 +28,12 @@ var default_locale: String = ""
 
 func _ready():
 	super ()
+	# Connect signal to open text editor from graph
+	translation_boxes.open_text_editor.connect(get_parent().open_text_editor.emit)
+	default_text_box.open_text_editor.connect(
+			get_parent().open_text_editor.emit.bind(default_text_box.text_box)
+		)
+	
 	_set_translation_text_boxes()
 	GraphDialogsTranslationManager.translation_settings.connect(
 			"locales_changed", _on_locales_changed

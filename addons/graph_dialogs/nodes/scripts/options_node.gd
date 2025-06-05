@@ -11,10 +11,14 @@ extends BaseNode
 ## Option container template
 @onready var option_scene := preload("res://addons/graph_dialogs/editor/components/option_container.tscn")
 
+@onready var option_container: GraphDialogsOptionContainer = $OptionContainer
 
 func _ready():
 	super ()
 	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
+	if option_container: # Connect signals for the first option container
+		option_container.open_text_editor.connect(get_parent().open_text_editor.emit)
+		option_container.option_removed.connect(_on_option_removed)
 
 
 #region === Overridden Methods =================================================
@@ -72,6 +76,7 @@ func _on_add_option_button_pressed() -> void:
 	
 	# Add slot to connect the option
 	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
+	new_option.open_text_editor.connect(get_parent().open_text_editor.emit)
 	new_option.option_removed.connect(_on_option_removed)
 	new_option.connect("resized", _on_resized)
 

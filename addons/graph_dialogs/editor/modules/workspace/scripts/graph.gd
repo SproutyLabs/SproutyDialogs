@@ -12,12 +12,11 @@ extends GraphEdit
 signal modified
 ## Triggered when all the nodes are loaded
 signal nodes_loaded
+## Emitted when a expand button to open the text editor is pressed
+signal open_text_editor(text_box: TextEdit)
 
 ## Path to the nodes folder.
 const NODES_PATH = "res://addons/graph_dialogs/nodes/"
-
-## Text editor reference
-@export var text_editor: Panel
 
 ## Alerts container
 @onready var alerts: VBoxContainer = $Alerts

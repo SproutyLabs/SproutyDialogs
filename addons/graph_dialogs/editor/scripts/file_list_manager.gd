@@ -13,7 +13,7 @@ extends VBoxContainer
 signal file_selected(metadata: Dictionary)
 ## Emitted when a file is closed.
 signal file_closed(metadata: Dictionary)
-## Emited when requesting to save a file.
+## Emitted when requesting to save a file.
 signal request_save_file(index: int)
 ## Emitted when requesting to save a file as.
 signal request_save_file_as()

@@ -11,6 +11,9 @@ extends Container
 ## Needs a text box child node that can be a LineEdit or a TextEdit.
 ## -----------------------------------------------------------------------------
 
+## Emitted when pressing the expand button to open the text editor
+signal open_text_editor(text_box: TextEdit)
+
 ## Language label of the translation
 @onready var language_label: Label = $Header/LanguageLabel
 ## Locale code label of the translation
@@ -20,6 +23,10 @@ extends Container
 
 ## Locale code of the translation
 var locale_code: String = ""
+
+func _ready():
+	if not text_box is LineEdit:
+		text_box.open_text_editor.connect(open_text_editor.emit.bind(text_box.text_box))
 
 ## Get the text from the text box
 func get_text() -> String:

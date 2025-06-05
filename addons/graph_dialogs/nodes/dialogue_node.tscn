@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialogs/icons/nodes/dialogue.svg" id="4_hljjc"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialogs/editor/components/translations_container.tscn" id="5_kt63k"]
 [ext_resource type="Script" uid="uid://bbxvuya7njed5" path="res://addons/graph_dialogs/nodes/scripts/dialogue_node.gd" id="5_v7cqa"]
-[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialogs/editor/components/dialog_text_box.tscn" id="6_2llfw"]
+[ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/graph_dialogs/editor/components/expandable_text_box.tscn" id="6_2llfw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lcatj"]
 content_margin_left = 5.0
