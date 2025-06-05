@@ -40,8 +40,8 @@ signal request_to_switch_tab(tab: int)
 
 ## File list manager
 @onready var _file_list: Control = $FileList
-## CSV file manager
-@onready var _csv_file_manager: Control = $CSVFileField
+## CSV file path field
+@onready var _csv_file_field: Control = $CSVFileField/FileField
 
 ## Icons for new dialog and character buttons
 var _new_dialog_icon := preload("res://addons/graph_dialogs/icons/add-dialog.svg")
@@ -64,11 +64,12 @@ func _ready() -> void:
 	new_dialog_file_dialog.file_selected.connect(new_dialog_file)
 	new_char_file_dialog.file_selected.connect(new_character_file)
 
-	_csv_file_manager.csv_file_path_changed.connect(_set_csv_file_to_dialog)
 	_file_list.file_selected.connect(switch_to_selected_file)
 	_file_list.file_closed.connect(_on_file_closed)
 	_file_list.request_save_file.connect(save_file)
 	_file_list.request_save_file_as.connect(save_file_dialog.popup_centered)
+
+	_csv_file_field.file_path_changed.connect(_on_csv_file_path_changed)
 
 	# Set icons for buttons
 	_open_file_button.icon = get_theme_icon("Folder", "EditorIcons")
@@ -76,7 +77,7 @@ func _ready() -> void:
 	_new_dialog_button.icon = _new_dialog_icon
 	_new_char_button.icon = _new_char_icon
 	
-	_csv_file_manager.hide() # Hide CSV file manager by default
+	_csv_file_field.get_parent().hide() # Hide CSV file field by default
 	_save_file_button.disabled = true # Disable save button
 
 
@@ -87,8 +88,8 @@ func new_dialog_file(path: String) -> void:
 	# Set csv file path from the dialog data
 	var csv_path = GraphDialogsTranslationManager.new_csv_template_file(path.get_file())
 	if csv_path.is_empty(): return
-	_csv_file_manager.set_csv_path_on_field(csv_path)
-	_csv_file_manager.show()
+	_csv_file_field.set_value(csv_path)
+	_csv_file_field.get_parent().show()
 
 	# Create a new dialogue data resource
 	var resource = GraphDialogsDialogueData.new()
@@ -109,7 +110,7 @@ func _new_graph_from_resource(resource: GraphDialogsDialogueData) -> GraphEdit:
 	var graph = _graph_scene.instantiate()
 	add_child(graph)
 	graph.modified.connect(_on_data_modified)
-	var dialogs = _csv_file_manager.load_dialogs_from_csv(resource.csv_file_path)
+	var dialogs = GraphDialogsCSVFileManager.load_dialogs_from_csv(resource.csv_file_path)
 	graph.load_nodes_data(resource.graph_data, dialogs)
 	graph.name = "Graph"
 	remove_child(graph)
@@ -137,7 +138,7 @@ func _new_character_from_resource(resource: GraphDialogsCharacterData) -> Contro
 	var char_editor = _char_scene.instantiate()
 	add_child(char_editor)
 	char_editor.modified.connect(_on_data_modified)
-	var name_data = _csv_file_manager.load_character_names_from_csv(resource.key_name)
+	var name_data = GraphDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
 	char_editor.load_character(resource, name_data)
 	char_editor.name = "CharacterEditor"
 	remove_child(char_editor)
@@ -185,14 +186,14 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 			file_metadata["data"] = data
 
 			# Save the CSV file with the dialogs
-			_csv_file_manager.save_dialogs_on_csv(graph_data["dialogs"], data.csv_file_path)
+			GraphDialogsCSVFileManager.save_dialogs_on_csv(graph_data["dialogs"], data.csv_file_path)
 
 	elif data is GraphDialogsCharacterData:
 		data = file_metadata["cache_node"].get_character_data()
 		file_metadata["data"] = data
 
 		# Save character names on csv file
-		_csv_file_manager.save_character_names_on_csv(data.display_name)
+		GraphDialogsCSVFileManager.save_character_names_on_csv(data.display_name)
 	
 	# Save file on the given path
 	var save_path = file_metadata["file_path"] if path.is_empty() else path
@@ -229,7 +230,7 @@ func on_new_character_pressed() -> void:
 func switch_to_selected_file(file_metadata: Dictionary) -> void:
 	if file_metadata.data is GraphDialogsDialogueData:
 		request_to_switch_graph.emit(file_metadata["cache_node"])
-		set_csv_path_value(file_metadata.data.csv_file_path)
+		_csv_file_field.set_value(file_metadata.data.csv_file_path)
 		request_to_switch_tab.emit(0)
 	
 	elif file_metadata.data is GraphDialogsCharacterData:
@@ -252,25 +253,12 @@ func switch_to_file_on_tab(tab: int, current_content: Node) -> void:
 	_file_list.set_current_index(to_file)
 
 
-# Update the CSV file path in the current file metadata
-func set_csv_path_value(path: String) -> void:
-	_csv_file_manager.set_csv_path_on_field(path)
-
-
-## Update the CSV file path to the current dialog file
-func _set_csv_file_to_dialog(path: String) -> void:
-	_file_list.set_resource_metadata(
-		_file_list.get_current_index(),
-		"csv_file_path", path
-	)
-
-
 ## Handle when a file is closed
 func _on_file_closed(metadata: Dictionary) -> void:
 	# Show start panel if there are no dialogs open
 	if _file_list.get_dialogs_count() == 0:
 		all_dialog_files_closed.emit()
-		set_csv_path_value("")
+		_csv_file_field.set_value("") # Clear CSV file path field
 	
 	# Show start panel if there are no characters open
 	if _file_list.get_characters_count() == 0:
@@ -284,3 +272,12 @@ func _on_file_closed(metadata: Dictionary) -> void:
 ## Set the current file as modified
 func _on_data_modified() -> void:
 	_file_list.set_file_as_modified(_file_list.get_current_index(), true)
+
+
+## Update the CSV file path to the current dialog file
+func _on_csv_file_path_changed(path: String) -> void:
+	_csv_file_field.set_value(path)
+	_file_list.set_resource_metadata(
+		_file_list.get_current_index(),
+		"csv_file_path", path
+	)
