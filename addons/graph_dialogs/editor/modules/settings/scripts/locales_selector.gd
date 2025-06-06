@@ -29,7 +29,24 @@ func _ready() -> void:
 	_confirm_panel.add_button('Discard Changes', true, 'discard_changes')
 	_confirm_panel.add_cancel_button('Cancel')
 	$SaveButton.icon = get_theme_icon("Save", "EditorIcons")
-	_set_locale_list()
+
+
+## Set the locale list loading the saved locales.
+func set_locale_list() -> void:
+	for child in _locales_container.get_children():
+		if child is MarginContainer:
+			child.queue_free()
+	
+	var locales = ProjectSettings.get_setting("graph_dialogs/translation/locales")
+	
+	if locales == null or locales.is_empty():
+		$"%LocalesContainer" / Label.visible = true
+		return
+	
+	for locale in locales:
+		# Load saved locales in the list
+		var new_locale = _new_locale()
+		new_locale.load_locale(locale)
 
 
 ## Add a new locale field to the list.
@@ -40,22 +57,6 @@ func _new_locale() -> Node:
 	_locales_container.add_child(new_locale)
 	$"%LocalesContainer" / Label.visible = false
 	return new_locale
-
-
-## Set the locale list loading the saved locales.
-func _set_locale_list() -> void:
-	for child in _locales_container.get_children():
-		if child is MarginContainer:
-			child.queue_free()
-	
-	if GraphDialogsTranslationManager.locales.is_empty():
-		$"%LocalesContainer" / Label.visible = true
-		return
-	
-	for locale in GraphDialogsTranslationManager.locales:
-		# Load saved locales in the list
-		var new_locale = _new_locale()
-		new_locale.load_locale(locale)
 
 
 ## Add a new locale field when the add button is pressed.
@@ -74,9 +75,9 @@ func _on_locale_removed(locale_code: String) -> void:
 ## Save the locales selected.
 func _save_locales() -> void:
 	# Save locales in translation settings
-	GraphDialogsTranslationManager.locales = _current_locales
-	GraphDialogsTranslationManager.save_translation_setting("locales", _current_locales)
+	ProjectSettings.set_setting("graph_dialogs/translation/locales", _current_locales)
 	GraphDialogsTranslationManager.collect_translations()
+	ProjectSettings.save()
 	locales_changed.emit()
 	_current_locales = []
 	$SaveButton.text = "Save Locales"
@@ -95,7 +96,7 @@ func _on_save_locales_pressed() -> void:
 		_current_locales.append(locale)
 	
 	# If a locale has been removed, show confirmation alert
-	for locale in GraphDialogsTranslationManager.locales:
+	for locale in ProjectSettings.get_setting("graph_dialogs/translation/locales"):
 		if not _current_locales.has(locale):
 			_confirm_panel.popup_centered()
 			return
@@ -113,7 +114,7 @@ func _on_confirm_save_action(action) -> void:
 		"discard_changes":
 			$SaveButton.text = "Save Locales"
 			_current_locales = []
-			_set_locale_list()
+			set_locale_list()
 
 
 ## When save is canceled, clear the locales for save.

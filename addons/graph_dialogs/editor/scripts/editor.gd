@@ -56,7 +56,7 @@ func _ready():
 			file_manager.on_new_character_pressed)
 	character_panel.open_character_file_pressed.connect(
 			file_manager.on_open_file_pressed)
-	_show_first_settings()
+	#_show_first_settings()
 	set_tabs_icons()
 
 
