@@ -73,7 +73,6 @@ func load_translations_text(dialogs: Dictionary) -> void:
 
 ## Show or collapse the text boxes
 func _on_expand_button_toggled(toggled_on: bool) -> void:
-	text_boxes.get_parent().visible = toggled_on
 	text_boxes.visible = toggled_on
 	if extra_to_show:
 		extra_to_show.visible = toggled_on

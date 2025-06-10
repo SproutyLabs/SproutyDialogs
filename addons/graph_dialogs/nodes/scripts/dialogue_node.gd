@@ -33,14 +33,7 @@ func _ready():
 	default_text_box.open_text_editor.connect(
 			get_parent().open_text_editor.emit.bind(default_text_box.text_box)
 		)
-	
 	_set_translation_text_boxes()
-	GraphDialogsTranslationManager.translation_settings.connect(
-			"locales_changed", _on_locales_changed
-		)
-	GraphDialogsTranslationManager.translation_settings.connect(
-			"default_locale_changed", _on_locales_changed
-		)
 
 
 #region === Overridden Methods =================================================
@@ -56,10 +49,7 @@ func get_data() -> Dictionary:
 		"dialog_key": get_dialog_translation_key(),
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
-		"offset": {
-			"x": position_offset.x,
-			"y": position_offset.y
-		}
+		"offset": position_offset
 	}
 	return dict
 
@@ -69,8 +59,7 @@ func set_data(dict: Dictionary) -> void:
 	node_index = dict["node_index"]
 	char_key = dict["char_key"]
 	to_node = dict["to_node"]
-	position_offset.x = dict["offset"]["x"]
-	position_offset.y = dict["offset"]["y"]
+	position_offset = dict["offset"]
 
 
 func process_node(node_data: Dictionary) -> void:
@@ -103,18 +92,24 @@ func get_dialog_translation_key() -> String:
 
 ## Set translation text boxes
 func _set_translation_text_boxes() -> void:
-	default_locale = GraphDialogsTranslationManager.default_locale
+	default_locale = ProjectSettings.get_setting("graph_dialogs/translation/default_locale")
 	%DefaultLocaleLabel.text = "(" + default_locale + ")"
 	default_text_box.set_text("")
 	translation_boxes.set_translation_boxes(
-			GraphDialogsTranslationManager.locales.filter(
+			ProjectSettings.get_setting("graph_dialogs/translation/locales").filter(
 				func(locale): return locale != default_locale
 			)
 		)
 
 
 ## Update the locale text boxes
-func _on_locales_changed() -> void:
+func on_locales_changed() -> void:
 	var dialogs = get_dialogs_text()
 	_set_translation_text_boxes()
 	load_dialogs(dialogs)
+
+
+## Handle the translation enabled setting change
+func on_translation_enabled_changed(enabled: bool) -> void:
+	%DefaultLocaleLabel.visible = enabled
+	translation_boxes.visible = enabled

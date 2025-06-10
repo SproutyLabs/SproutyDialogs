@@ -90,6 +90,7 @@ layout_mode = 2
 selected = 0
 item_count = 1
 popup/item_0/text = "(No one)"
+popup/item_0/id = 0
 
 [node name="DialogContainer" type="VBoxContainer" parent="."]
 layout_mode = 2

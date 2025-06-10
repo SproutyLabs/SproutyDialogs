@@ -14,6 +14,10 @@ signal modified
 signal nodes_loaded
 ## Emitted when a expand button to open the text editor is pressed
 signal open_text_editor(text_box: TextEdit)
+## Emitted when the locales are changed
+signal locales_changed
+## Emitted when the translation enabled state is changed
+signal translation_enabled_changed(enabled: bool)
 
 ## Path to the nodes folder.
 const NODES_PATH = "res://addons/graph_dialogs/nodes/"
@@ -54,9 +58,35 @@ func _input(_event):
 func on_modified():
 	modified.emit()
 
+## Notify the nodes that the locales have changed
+func on_locales_changed():
+	locales_changed.emit()
+
+## Notify the nodes that the translation enabled state has changed
+func on_translation_enabled_changed(enabled: bool):
+	translation_enabled_changed.emit(enabled)
+
+
+# Create a new node of a given type
+func _new_node(node_type: String, node_index: int, node_offset: Vector2) -> GraphNode:
+	_nodes_type_count[node_type] += 1
+	var new_node = _nodes_references[node_type].instantiate()
+	new_node.name = node_type + "_" + str(node_index)
+	new_node.title += ' #' + str(node_index)
+	new_node.position_offset = node_offset
+	add_child(new_node, true)
+	on_modified()
+
+	# Connect translation signals
+	if node_type == "dialogue_node":
+		locales_changed.connect(new_node.on_locales_changed)
+		translation_enabled_changed.connect(new_node.on_translation_enabled_changed)
+	if node_type == "option_node":
+		pass # TODO: Connect option node signals if needed
+	return new_node
+
 
 #region === Get and Load Nodes Data ============================================
-
 ## Get nodes data in a dictionary
 func get_nodes_data() -> Dictionary:
 	var dict := {
@@ -92,13 +122,13 @@ func load_nodes_data(data: Dictionary, dialogs: Dictionary) -> void:
 		for node_name in data[dialogue_branch].keys():
 			# Get node data
 			var node_data = data[dialogue_branch][node_name]
-			_nodes_type_count[node_data["node_type"]] += 1
 
 			# Create node and set data
-			var new_node = _nodes_references[node_data["node_type"]].instantiate()
-			new_node.title += ' #' + str(node_data["node_index"])
-			new_node.name = node_name
-			add_child(new_node, true)
+			var new_node = _new_node(
+				node_data["node_type"],
+				node_data["node_index"],
+				node_data["offset"]
+			)
 			new_node.set_data(node_data)
 			
 			# Load dialogs on dialogue nodes
@@ -144,16 +174,8 @@ func show_add_node_menu(pos: Vector2) -> void:
 
 ## Add a new node to the graph
 func add_new_node(node_type: String) -> void:
-	# Create a new node of the given type
-	_nodes_type_count[node_type] += 1
-	var new_node = _nodes_references[node_type].instantiate()
-	new_node.name += "_" + str(_nodes_type_count[node_type])
-	new_node.title += ' #' + str(_nodes_type_count[node_type])
-	new_node.node_index = _nodes_type_count[node_type]
-	new_node.position_offset = _cursor_pos
+	var new_node = _new_node(node_type, _nodes_type_count[node_type], _cursor_pos)
 	new_node.selected = true
-	add_child(new_node, true)
-	on_modified()
 	
 	# Connect to a previous node if requested
 	if _request_port > -1 and new_node.is_slot_enabled_left(0):

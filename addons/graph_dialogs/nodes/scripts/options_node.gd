@@ -32,10 +32,7 @@ func get_data() -> Dictionary:
 		"node_index": node_index,
 		"options": {},
 		"to_node": [] if connections.size() > 0 else ["END"],
-		"offset": {
-			"x": position_offset.x,
-			"y": position_offset.y
-		}
+		"offset": position_offset
 	}
 	for child in get_children():
 		if child is GraphDialogsOptionContainer:
@@ -54,8 +51,7 @@ func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
-	position_offset.x = dict["offset"]["x"]
-	position_offset.y = dict["offset"]["y"]
+	position_offset = dict["offset"]
 
 
 func process_node(node_data: Dictionary) -> void:

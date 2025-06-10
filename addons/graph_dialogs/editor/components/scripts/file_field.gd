@@ -54,6 +54,13 @@ func set_value(value: String) -> void:
 	_path_field.text = value
 
 
+## Disable the field for editing.
+func disable_field(disable: bool) -> void:
+	_path_field.editable = not disable
+	_open_button.disabled = disable
+	_clear_button.disabled = disable
+
+
 ## Show the file dialog to select a file.
 func _on_open_pressed() -> void:
 	_file_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path(_recent_file_type))

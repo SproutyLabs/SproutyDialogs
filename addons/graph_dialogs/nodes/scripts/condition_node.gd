@@ -35,10 +35,7 @@ func get_data() -> Dictionary:
 		"operator": operator_selector.selected,
 		"var_value": value_input.get_value(),
 		"to_node": [] if connections.size() > 0 else ["END"],
-		"offset": {
-			"x": position_offset.x,
-			"y": position_offset.y
-		}
+		"offset": position_offset
 	}
 	if dict["to_node"][0] != "END":
 		for connection in connections:
@@ -63,8 +60,7 @@ func set_data(dict: Dictionary) -> void:
 	value_input.set_value(dict["var_value"])
 	
 	to_node = dict["to_node"]
-	position_offset.x = dict["offset"]["x"]
-	position_offset.y = dict["offset"]["y"]
+	position_offset = dict["offset"]
 
 
 func process_node(node_data: Dictionary) -> void:

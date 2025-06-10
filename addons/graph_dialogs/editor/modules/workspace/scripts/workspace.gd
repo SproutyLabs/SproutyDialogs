@@ -68,3 +68,16 @@ func show_graph_editor() -> void:
 	_graph_editor.visible = true
 	_start_panel.visible = false
 	graph_editor_visible.emit(true)
+
+
+## Update the character editor to reflect the new locales
+func on_locales_changed() -> void:
+	var current_editor = get_current_graph()
+	if current_editor: current_editor.on_locales_changed()
+
+
+## Update the character names translation setting
+func on_translation_enabled_changed(enabled: bool) -> void:
+	var current_editor = get_current_graph()
+	if current_editor:
+		current_editor.on_translation_enabled_changed(enabled)

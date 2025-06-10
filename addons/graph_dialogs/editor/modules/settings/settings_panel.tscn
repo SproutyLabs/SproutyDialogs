@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://pdcicn3rbwbs"]
+[gd_scene load_steps=4 format=3 uid="uid://pdcicn3rbwbs"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_r0mi1"]
 [ext_resource type="PackedScene" uid="uid://bk5rchg4mt0js" path="res://addons/graph_dialogs/editor/modules/settings/translation_settings.tscn" id="2_g62sc"]
+[ext_resource type="Script" uid="uid://cmlad7vuvr5on" path="res://addons/graph_dialogs/editor/modules/settings/scripts/settings_panel.gd" id="2_yfqmm"]
 
 [node name="SettingsPanel" type="TabContainer"]
 anchors_preset = 15
@@ -11,6 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_r0mi1")
 current_tab = 1
+script = ExtResource("2_yfqmm")
 
 [node name="General" type="TabBar" parent="."]
 visible = false

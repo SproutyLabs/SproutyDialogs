@@ -35,7 +35,23 @@ extends Resource
 @export var characters: Array[String] = []
 ## The path to the CSV file that contains the translated dialogue.
 @export var csv_file_path: String = ""
-
+## A dictionary containing the dialogues for each dialogue ID.
+## This dictionary is structured as follows:
+## [codeblock]
+## {
+##   "dialogue_id_1": {
+##     "dialogue_key_1": "Translated text for dialogue key 1",
+##     "dialogue_key_2": "Translated text for dialogue key 2",
+##     ...
+##   },
+##   "dialogue_id_2": {
+##     "dialogue_key_1": "Translated text for dialogue key 1",
+##     "dialogue_key_2": "Translated text for dialogue key 2",
+##     ...
+##   },
+##   ...
+## }[/codeblock]
+@export var dialogs: Dictionary = {}
 
 ## Returns a list of the dialogue IDs from the graph data.
 func get_dialogue_ids() -> Array[String]:

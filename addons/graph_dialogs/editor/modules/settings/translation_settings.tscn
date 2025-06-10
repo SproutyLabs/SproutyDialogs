@@ -16,72 +16,97 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_dnk3v")
 
-[node name="CSVFiles" type="MarginContainer" parent="."]
+[node name="TranslationSettings" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Container" type="VBoxContainer" parent="CSVFiles"]
+[node name="Container" type="VBoxContainer" parent="TranslationSettings"]
 layout_mode = 2
 
-[node name="UseTranslationToggle" type="CheckButton" parent="CSVFiles/Container"]
+[node name="UseTranslationToggle" type="CheckButton" parent="TranslationSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable/disable translations for dialogues."
 text = "Use translation"
 icon = ExtResource("2_2wqnh")
 
-[node name="--" type="HSeparator" parent="CSVFiles/Container"]
+[node name="--" type="HSeparator" parent="TranslationSettings/Container"]
 layout_mode = 2
 
-[node name="UseCSVFilesToggle" type="CheckButton" parent="CSVFiles/Container"]
+[node name="UseCSVFilesToggle" type="CheckButton" parent="TranslationSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for translations. Otherwise, translations will be saved in the dialog file or in the character file for character names."
+disabled = true
 text = "Use CSV files for translation"
 icon = ExtResource("2_qeqd1")
 
-[node name="CSVFolder" type="HBoxContainer" parent="CSVFiles/Container"]
+[node name="CSVFolderWarning" type="RichTextLabel" parent="TranslationSettings/Container"]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
-tooltip_text = "Directory path of the CSV translation files."
+bbcode_enabled = true
+text = "[color=tomato]Please select a valid directory for the CSV files."
+fit_content = true
 
-[node name="Label" type="Label" parent="CSVFiles/Container/CSVFolder"]
+[node name="CSVFolder" type="HBoxContainer" parent="TranslationSettings/Container"]
 layout_mode = 2
-text = "CSV Files Folder"
+tooltip_text = "Path to the directory of the CSV translation files. This directory must contain all the CSV files used for the dialogs. It is necessary to collect all translations in godot."
 
-[node name="CSVFolderField" parent="CSVFiles/Container/CSVFolder" instance=ExtResource("4_01lks")]
+[node name="Label" type="Label" parent="TranslationSettings/Container/CSVFolder"]
+layout_mode = 2
+text = "CSV Files Path"
+
+[node name="CSVFolderField" parent="TranslationSettings/Container/CSVFolder" instance=ExtResource("4_01lks")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="---" type="HSeparator" parent="CSVFiles/Container"]
+[node name="---" type="HSeparator" parent="TranslationSettings/Container"]
 layout_mode = 2
 
-[node name="TranslateNamesToggle" type="CheckButton" parent="CSVFiles/Container"]
+[node name="TranslateNamesToggle" type="CheckButton" parent="TranslationSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable translation for the character names."
+disabled = true
 text = "Translate character names"
 icon = ExtResource("3_rjao7")
 
-[node name="CharCSVFile" type="HBoxContainer" parent="CSVFiles/Container"]
+[node name="UseCSVForNamesToggle" type="CheckButton" parent="TranslationSettings/Container"]
+unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Path to the CSV file with the translations of the character names."
+tooltip_text = "Enable translation for the character names."
+disabled = true
+text = "Use a CSV file for character names"
 
-[node name="Label" type="Label" parent="CSVFiles/Container/CharCSVFile"]
+[node name="CharCSVWarning" type="RichTextLabel" parent="TranslationSettings/Container"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=tomato]Please select a valid CSV file for character name translation [i](It must be inside the CSV file directory)."
+fit_content = true
+
+[node name="CharCSVFile" type="HBoxContainer" parent="TranslationSettings/Container"]
+layout_mode = 2
+tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV file directory."
+
+[node name="Label" type="Label" parent="TranslationSettings/Container/CharCSVFile"]
 layout_mode = 2
 text = "Character Names CSV"
 
-[node name="CharNamesCSVField" parent="CSVFiles/Container/CharCSVFile" instance=ExtResource("4_erkog")]
+[node name="CharNamesCSVField" parent="TranslationSettings/Container/CharCSVFile" instance=ExtResource("4_erkog")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _placeholder_text = "Select a CSV file..."
 file_filters = PackedStringArray("*.csv")
 
-[node name="----" type="HSeparator" parent="CSVFiles/Container"]
+[node name="----" type="HSeparator" parent="TranslationSettings/Container"]
 layout_mode = 2
 
-[node name="CollectTranslations" type="Button" parent="CSVFiles/Container"]
+[node name="CollectTranslations" type="Button" parent="TranslationSettings/Container"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Collect Translations"
@@ -110,6 +135,10 @@ text = "Default Locale"
 [node name="OptionButton" type="OptionButton" parent="LocalesSettings/Container/DefaultLocale"]
 layout_mode = 2
 size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "en"
+popup/item_0/id = 0
 
 [node name="TestingLocale" type="HBoxContainer" parent="LocalesSettings/Container"]
 unique_name_in_owner = true
@@ -122,6 +151,10 @@ text = "Testing Locale"
 [node name="OptionButton" type="OptionButton" parent="LocalesSettings/Container/TestingLocale"]
 layout_mode = 2
 size_flags_horizontal = 3
+selected = 0
+item_count = 1
+popup/item_0/text = "en"
+popup/item_0/id = 0
 
 [node name="HSeparator" type="HSeparator" parent="LocalesSettings/Container"]
 layout_mode = 2
@@ -131,6 +164,6 @@ size_flags_horizontal = 3
 unique_name_in_owner = true
 layout_mode = 2
 
-[connection signal="pressed" from="CSVFiles/Container/CollectTranslations" to="." method="_on_collect_translations_pressed"]
+[connection signal="pressed" from="TranslationSettings/Container/CollectTranslations" to="." method="_on_collect_translations_pressed"]
 [connection signal="item_selected" from="LocalesSettings/Container/DefaultLocale/OptionButton" to="." method="_on_default_locale_selected"]
 [connection signal="item_selected" from="LocalesSettings/Container/TestingLocale/OptionButton" to="." method="_on_testing_locale_selected"]

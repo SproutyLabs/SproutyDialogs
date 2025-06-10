@@ -61,21 +61,15 @@ var _portrait_on_text_box: bool = false
 
 
 func _ready() -> void:
-	_set_translation_text_boxes()
-	if GraphDialogsTranslationManager.translation_settings:
-		# Connect to the translation settings signals
-		GraphDialogsTranslationManager.translation_settings.connect(
-			"locales_changed", _on_locales_changed
-		)
-		GraphDialogsTranslationManager.translation_settings.connect(
-			"default_locale_changed", _on_locales_changed
-		)
 	_portrait_tree.connect("portrait_item_selected", _on_portrait_selected)
 	_to_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_new_text_box_scene_button.icon = get_theme_icon("Add", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
+
+	_set_translation_text_boxes()
+	_update_translations_state()
 
 
 ## Emit the modified signal
@@ -87,7 +81,7 @@ func on_modified():
 func get_character_data() -> GraphDialogsCharacterData:
 	var data = GraphDialogsCharacterData.new()
 	data.key_name = _key_name
-	data.display_name = {_key_name: get_name_translations()}
+	data.display_name = {_key_name: _get_name_translations()}
 	data.description = _description_field.text
 	data.text_box = _text_box_scene_field.get_value()
 	data.portrait_on_text_box = _portrait_on_text_box
@@ -100,13 +94,12 @@ func get_character_data() -> GraphDialogsCharacterData:
 func load_character(data: GraphDialogsCharacterData, name_data: Dictionary) -> void:
 	_key_name = data.key_name
 	_key_name_label.text = _key_name.to_pascal_case()
-	var name_translations = name_data[_key_name]
 	_description_field.text = data.description
 
 	# Character name and its translations
 	_set_translation_text_boxes()
-	_name_default_locale_field.text = name_translations[_default_locale]
-	_name_translations_container.load_translations_text(name_translations)
+	_load_name_translations(name_data[_key_name])
+	_update_translations_state()
 
 	# Text box scene file
 	_text_box_scene_field.set_value(data.text_box)
@@ -133,8 +126,33 @@ func open_scene_in_editor(path: String) -> void:
 
 #region === Character Name Translation =========================================
 
+## Update name translations text boxes when locales change
+func on_locales_changed() -> void:
+	var translations = _get_name_translations()
+	_set_translation_text_boxes()
+	_load_name_translations(translations)
+
+
+## Handle the translation enabled change
+func on_translation_enabled_changed(enabled: bool) -> void:
+	if enabled: on_locales_changed()
+	_name_default_locale_label.visible = enabled
+	_name_translations_container.visible = enabled
+
+
+## Update the translations state based on project settings
+func _update_translations_state() -> void:
+	if ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled") \
+		and ProjectSettings.get_setting("graph_dialogs/translation/translate_character_names"):
+		_name_translations_container.visible = true
+		_name_default_locale_label.visible = true
+	else:
+		_name_default_locale_label.visible = false
+		_name_translations_container.visible = false
+
+
 ## Get character name translations
-func get_name_translations() -> Dictionary:
+func _get_name_translations() -> Dictionary:
 	var translations = {}
 	translations[_default_locale] = _name_default_locale_field.text
 	translations.merge(_name_translations_container.get_translations_text())
@@ -142,32 +160,25 @@ func get_name_translations() -> Dictionary:
 
 
 ## Load character name translations
-func load_name_translations(translations: Dictionary) -> void:
-	_name_default_locale_field = translations[_default_locale]
+func _load_name_translations(translations: Dictionary) -> void:
+	_name_default_locale_field.text = translations[_default_locale]
 	_name_translations_container.load_translations_text(translations)
 
 
 ## Set character name translations text boxes
 func _set_translation_text_boxes() -> void:
-	_default_locale = GraphDialogsTranslationManager.default_locale
+	_default_locale = ProjectSettings.get_setting("graph_dialogs/translation/default_locale")
 	_name_default_locale_label.text = "(" + _default_locale + ")"
 	_name_default_locale_field.text = ""
 	_name_translations_container.set_translation_boxes(
-			GraphDialogsTranslationManager.locales.filter(
+			ProjectSettings.get_setting("graph_dialogs/translation/locales").filter(
 				func(locale): return locale != _default_locale
 			)
 		)
 
-
-## Update name translations text boxes when locales change
-func _on_locales_changed() -> void:
-	var translations = get_name_translations()
-	_set_translation_text_boxes()
-	load_name_translations(translations)
-
 #endregion
 
-#region === Text box ===========================================================
+#region === Dialog Text box ====================================================
 
 ## Handle the text box scene file path
 func _on_text_box_scene_path_changed(path: String) -> void:

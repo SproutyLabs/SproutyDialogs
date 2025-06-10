@@ -58,3 +58,16 @@ func show_start_panel() -> void:
 func show_character_editor() -> void:
 	_character_editor.visible = true
 	_start_panel.visible = false
+
+
+## Update the character editor to reflect the new locales
+func on_locales_changed() -> void:
+	var current_editor = get_current_character_editor()
+	if current_editor: current_editor.on_locales_changed()
+
+
+## Update the character names translation setting
+func on_translation_enabled_changed(enabled: bool) -> void:
+	var current_editor = get_current_character_editor()
+	if current_editor:
+		current_editor.on_translation_enabled_changed(enabled)

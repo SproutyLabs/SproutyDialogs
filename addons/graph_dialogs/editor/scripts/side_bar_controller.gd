@@ -19,7 +19,10 @@ func _ready():
 ## Show or hide the CSV file path field
 func csv_path_field_visible(visible: bool) -> void:
 	if _csv_file_field:
-		_csv_file_field.visible = visible
+		_csv_file_field.visible = (visible
+			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled")
+			and ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv")
+		)
 
 
 ## Collapse the file manager

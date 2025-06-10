@@ -16,7 +16,8 @@ static func save_file(header: Array, data: Array, file_path: String) -> void:
 	var file := FileAccess.open(file_path, FileAccess.WRITE)
 	
 	if file == null: # Check if file is opened successfully
-		printerr("[CSVFileManager] %s" % [FileAccess.get_open_error()])
+		printerr("[Graph Dialogs] Cannot save file. Open file error: %s"
+				% [FileAccess.get_open_error()])
 		return
 	# Store header in csv file
 	file.store_csv_line(PackedStringArray(header), ",")
@@ -43,7 +44,8 @@ static func load_file(file_path: String) -> Array:
 		var file := FileAccess.open(file_path, FileAccess.READ)
 
 		if file == null: # Check if file is opened successfully
-			printerr("[CSVFileManager] %s" % [FileAccess.get_open_error()])
+			printerr("[Graph Dialogs] Cannot load file. Open file error: %s"
+					% [FileAccess.get_open_error()])
 			return []
 		# Read each line from the file
 		var data := []
@@ -55,7 +57,7 @@ static func load_file(file_path: String) -> Array:
 		file.close()
 		return data
 	else: # File does not exist at the given path
-		printerr("[CSVFileManager] Cannot open non-existing file at %s"
+		printerr("[Graph Dialogs] Cannot open non-existing file at %s"
 		% [file_path])
 		return []
 	return []
@@ -95,6 +97,22 @@ static func update_row(file_path: String, header: Array, row: Array) -> void:
 
 
 #region === Dialogs translations ===============================================
+
+## Create a new CSV template file
+static func new_csv_template_file(name: String) -> String:
+	var csv_files_path: String = ProjectSettings.get_setting("graph_dialogs/translation/csv_files_path")
+	print("[Graph Dialogs] Creating new CSV template file at %s" % [csv_files_path])
+	if csv_files_path.is_empty():
+		printerr("[Graph Dialogs] Cannot create file, need a directory path to CSV translation files."
+				+" Please set 'CSV files path' in Settings > Translation.")
+		return ""
+	var path = csv_files_path + "/" + name.split(".")[0] + ".csv"
+	var header = ["key"]
+	for locale in ProjectSettings.get_setting("graph_dialogs/translation/locales"):
+		header.append(locale)
+	save_file(header, [], path)
+	return path
+
 
 ## Save all graph dialogs on CSV file
 static func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
@@ -146,7 +164,7 @@ static func load_dialogs_from_csv(path: String) -> Dictionary:
 
 ## Save character name translations on CSV file
 static func save_character_names_on_csv(name_data: Dictionary) -> void:
-	var path = GraphDialogsTranslationManager.char_names_csv_path
+	var path: String = ProjectSettings.get_setting("graph_dialogs/translation/character_names_csv")
 	var csv_file = load_file(path)
 	var header = csv_file[0]
 	var key_name = name_data.keys()[0]
@@ -180,7 +198,7 @@ static func save_character_names_on_csv(name_data: Dictionary) -> void:
 ##    }
 ## }
 static func load_character_names_from_csv(key_name: String) -> Dictionary:
-	var path = GraphDialogsTranslationManager.char_names_csv_path
+	var path: String = ProjectSettings.get_setting("graph_dialogs/translation/character_names_csv")
 	var data := load_file(path)
 	if data.is_empty():
 		printerr("[Graph Dialogs] Cannot load character names from CSV file.")

@@ -11,6 +11,62 @@ graph_data = {
 "es": "Hola",
 "ja": "Konnichiwa"
 },
+"EXAMPLE_2": {
+"en": "Hi",
+"es": "Holaaa",
+"ja": "Konnichiwa"
+},
+"LOREM_3": {
+"en": "Lorem ipsum dolor sit amet",
+"es": "[wave][color=orange]Lorem ipsum dolor sit amet[/color], consectetur adipiscing elit, [color=red]sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit[/color] anim id est laborum.",
+"ja": "Lorem ipsum dolor sit amet"
+}
+},
+"nodes_data": {
+"DIALOG_EXAMPLE": {
+"dialogue_node_1": {
+"char_key": "",
+"dialog_key": "EXAMPLE_1",
+"node_index": 1,
+"node_type": "dialogue_node",
+"offset": Vector2(580, 200),
+"to_node": ["dialogue_node_2"]
+},
+"dialogue_node_2": {
+"char_key": "",
+"dialog_key": "EXAMPLE_2",
+"node_index": 2,
+"node_type": "dialogue_node",
+"offset": Vector2(1300, 260),
+"to_node": ["END"]
+},
+"start_node_1": {
+"node_index": 1,
+"node_type": "start_node",
+"offset": Vector2(80, 300),
+"start_id": "EXAMPLE",
+"to_node": ["dialogue_node_1"]
+}
+},
+"DIALOG_LOREM": {
+"start_node_2": {
+"node_index": 2,
+"node_type": "start_node",
+"offset": Vector2(60, 700),
+"start_id": "LOREM",
+"to_node": ["dialogue_node_3"]
+}
+}
+}
+}
+characters = Array[String](["Alice", "Bob", "Charlie"])
+csv_file_path = "res://addons/graph_dialogs/examples/translations/example.csv"
+dialogs = {
+"EXAMPLE_1": {
+"en": "Hello",
+"es": "Hola",
+"ja": "Konnichiwa"
+},
 "LOREM_3": {
 "en": "Lorem ipsum dolor sit amet",
 "es": "[wave][color=orange]Lorem ipsum dolor sit amet[/color], consectetur adipiscing elit, [color=red]sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit[/color] anim id est laborum.",
@@ -21,46 +77,4 @@ graph_data = {
 "es": "Holaaa",
 "ja": "Konnichiwa"
 }
-},
-"nodes_data": {
-"DIALOG_EXAMPLE": {
-"start_node_1": {
-"node_index": 1,
-"node_type": "start_node",
-"offset": {
-"x": 80.0,
-"y": 300.0
-},
-"start_id": "EXAMPLE",
-"to_node": ["dialogue_node_1"]
 }
-},
-"DIALOG_LOREM": {
-"start_node_2": {
-"node_index": 2,
-"node_type": "start_node",
-"offset": {
-"x": 60.0,
-"y": 700.0
-},
-"start_id": "LOREM",
-"to_node": ["dialogue_node_3"]
-}
-},
-"unplugged_nodes": {
-"dialogue_node_2": {
-"char_key": "",
-"dialog_key": "NODE_2",
-"node_index": 2,
-"node_type": "dialogue_node",
-"offset": {
-"x": 1300.0,
-"y": 260.0
-},
-"to_node": ["END"]
-}
-}
-}
-}
-characters = Array[String](["Alice", "Bob", "Charlie"])
-csv_file_path = "res://addons/graph_dialogs/examples/translations/example.csv"

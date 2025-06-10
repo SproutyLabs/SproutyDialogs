@@ -44,6 +44,13 @@ func set_value(value: String) -> void:
 	_path_field.text = value
 
 
+## Disable the field for editing.
+func disable_field(disable: bool) -> void:
+	_path_field.editable = not disable
+	_open_button.disabled = disable
+	_clear_button.disabled = disable
+
+
 ## Show the folder dialog to select a folder.
 func _on_open_pressed() -> void:
 	_folder_dialog.popup_centered()

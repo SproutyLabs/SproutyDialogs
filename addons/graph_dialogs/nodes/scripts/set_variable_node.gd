@@ -36,10 +36,7 @@ func get_data() -> Dictionary:
 		"var_value": value_input.get_value(),
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
-		"offset": {
-			"x": position_offset.x,
-			"y": position_offset.y
-		}
+		"offset": position_offset
 	}
 	return dict
 
@@ -58,8 +55,7 @@ func set_data(dict: Dictionary) -> void:
 	value_input.set_value(dict["var_value"])
 	
 	to_node = dict["to_node"]
-	position_offset.x = dict["offset"]["x"]
-	position_offset.y = dict["offset"]["y"]
+	position_offset = dict["offset"]
 
 
 func process_node(node_data: Dictionary) -> void:

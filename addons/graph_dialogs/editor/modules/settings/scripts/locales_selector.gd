@@ -76,7 +76,6 @@ func _on_locale_removed(locale_code: String) -> void:
 func _save_locales() -> void:
 	# Save locales in translation settings
 	ProjectSettings.set_setting("graph_dialogs/translation/locales", _current_locales)
-	GraphDialogsTranslationManager.collect_translations()
 	ProjectSettings.save()
 	locales_changed.emit()
 	_current_locales = []
