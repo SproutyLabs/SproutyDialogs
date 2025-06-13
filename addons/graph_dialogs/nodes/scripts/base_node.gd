@@ -17,12 +17,16 @@ signal continue_to_node(to_node: String)
 ## Icon to display on the node titlebar.
 @export var node_icon: Texture2D
 
-## Graph Editor where the node is placed.
+## Graph Editor reference.
 @onready var graph_editor: GraphEdit = get_parent() as GraphEdit
-## Start node of the dialog tree.
-@onready var start_node: BaseNode = null
+
+## Name of the start node in the dialog tree where the node belongs.
+## Used to find the start node in the graph editor on load.
+var start_node_name: String = ""
+## Start node of the dialog tree where the node belongs.
+var start_node: BaseNode = null
 ## Array to store the output nodes connections.
-@onready var to_node: Array = []
+var to_node: Array = []
 
 ## Node type name.
 var node_type: String = ""
@@ -34,9 +38,11 @@ func _ready():
 	# Set node type based on the node name
 	node_type = name.to_snake_case().split("_node_")[0] + "_node"
 	if graph_editor: # Check if the node is in the graph editor
-		graph_editor.connect("nodes_loaded", _load_output_connections)
-	_set_node_titlebar()
+		graph_editor.nodes_loaded.connect(_load_connections)
+		_set_node_titlebar()
 
+
+#region === Overrides ==========================================================
 
 ## Get the node data as a dictionary.
 ## This method should be overridden in each node.
@@ -60,6 +66,8 @@ func process_node(node_data: Dictionary) -> void:
 	# Abstract method to implement in the child nodes
 	pass
 
+#endregion
+
 
 ## Get the start node id of the dialog tree.
 func get_start_id() -> String:
@@ -67,13 +75,16 @@ func get_start_id() -> String:
 	else: return start_node.get_start_id()
 
 
-## Load the output connections of the node.
-func _load_output_connections() -> void:
+## Load the connections of the node.
+func _load_connections() -> void:
+	if start_node_name != "": # Set start node reference
+		start_node = graph_editor.get_node(start_node_name)
+	
+	 # Connect each output node
 	for output_node in to_node:
 		if output_node == "END":
 			continue
 		graph_editor.connect_node(name, to_node.find(output_node), output_node, 0)
-		graph_editor.get_node(output_node).start_node = start_node
 
 
 ## Set the node titlebar with the node type icon and remove button.
@@ -101,8 +112,7 @@ func _set_node_titlebar():
 	var remove_button = TextureButton.new()
 	remove_button.texture_normal = get_theme_icon('Remove', 'EditorIcons')
 	remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	if graph_editor: # Check if the node is in the graph editor
-		remove_button.connect("pressed", graph_editor.delete_node.bind(self))
+	remove_button.pressed.connect(graph_editor.delete_node.bind(self))
 	node_titlebar.add_child(remove_button)
 
 

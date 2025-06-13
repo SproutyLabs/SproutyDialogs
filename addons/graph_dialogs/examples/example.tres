@@ -5,24 +5,6 @@
 [resource]
 script = ExtResource("1_o8wl1")
 graph_data = {
-"dialogs": {
-"EXAMPLE_1": {
-"en": "Hello",
-"es": "Hola",
-"ja": "Konnichiwa"
-},
-"EXAMPLE_2": {
-"en": "Hi",
-"es": "Holaaa",
-"ja": "Konnichiwa"
-},
-"LOREM_3": {
-"en": "Lorem ipsum dolor sit amet",
-"es": "[wave][color=orange]Lorem ipsum dolor sit amet[/color], consectetur adipiscing elit, [color=red]sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit[/color] anim id est laborum.",
-"ja": "Lorem ipsum dolor sit amet"
-}
-},
-"nodes_data": {
 "DIALOG_EXAMPLE": {
 "dialogue_node_1": {
 "char_key": "",
@@ -49,6 +31,14 @@ graph_data = {
 }
 },
 "DIALOG_LOREM": {
+"dialogue_node_3": {
+"char_key": "",
+"dialog_key": "LOREM_3",
+"node_index": 3,
+"node_type": "dialogue_node",
+"offset": Vector2(560, 780),
+"to_node": ["END"]
+},
 "start_node_2": {
 "node_index": 2,
 "node_type": "start_node",
@@ -58,23 +48,22 @@ graph_data = {
 }
 }
 }
-}
-characters = Array[String](["Alice", "Bob", "Charlie"])
-csv_file_path = "res://addons/graph_dialogs/examples/translations/example.csv"
 dialogs = {
 "EXAMPLE_1": {
 "en": "Hello",
 "es": "Hola",
 "ja": "Konnichiwa"
 },
+"EXAMPLE_2": {
+"en": "Hi",
+"es": "Holaaa",
+"ja": "Konnichiwa"
+},
 "LOREM_3": {
 "en": "Lorem ipsum dolor sit amet",
 "es": "[wave][color=orange]Lorem ipsum dolor sit amet[/color], consectetur adipiscing elit, [color=red]sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit[/color] anim id est laborum.",
 "ja": "Lorem ipsum dolor sit amet"
-},
-"NODE_2": {
-"en": "Hi",
-"es": "Holaaa",
-"ja": "Konnichiwa"
 }
 }
+characters = {}
+csv_file_path = "res://addons/graph_dialogs/examples/translations/example.csv"

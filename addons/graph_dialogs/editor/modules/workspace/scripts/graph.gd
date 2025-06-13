@@ -97,31 +97,37 @@ func get_nodes_data() -> Dictionary:
 		if child is BaseNode:
 			# Get dialogs texts from dialogue nodes
 			if child.node_type == "dialogue_node":
-				dict["dialogs"][child.get_dialog_translation_key()] = child.get_dialogs_text()
+				dict.dialogs[child.get_dialog_translation_key()] = child.get_dialogs_text()
 			
+			# Start nodes define dialogs trees
 			if child.node_type == "start_node":
-				# Start nodes define dialogs trees
-				dict["nodes_data"]["DIALOG_" + child.get_start_id()] = {}
-				dict["nodes_data"]["DIALOG_" + child.get_start_id()].merge(child.get_data())
+				if not dict.nodes_data.has("DIALOG_" + child.get_start_id()):
+					dict.nodes_data["DIALOG_" + child.get_start_id()] = {}
+				dict.nodes_data["DIALOG_" + child.get_start_id()].merge(child.get_data())
+			# Nodes without connection do not have a dialog tree associated
 			elif child.start_node == null:
-				# Nodes without connection do not have a dialog tree associated
-				if not dict["nodes_data"].has("unplugged_nodes"):
-					dict["nodes_data"]["unplugged_nodes"] = {}
-				dict["nodes_data"]["unplugged_nodes"].merge(child.get_data())
-			else:
-				# Any other node belongs to a dialog tree
-				if not dict["nodes_data"].has("DIALOG_" + child.get_start_id()):
-					dict["nodes_data"]["DIALOG_" + child.get_start_id()] = {}
-				dict["nodes_data"]["DIALOG_" + child.get_start_id()].merge(child.get_data())
+				if not dict.nodes_data.has("unplugged_nodes"):
+					dict.nodes_data["unplugged_nodes"] = {}
+				dict.nodes_data["unplugged_nodes"].merge(child.get_data())
+			else: # Any other node belongs to a dialog tree
+				if not dict.nodes_data.has("DIALOG_" + child.get_start_id()):
+					dict.nodes_data["DIALOG_" + child.get_start_id()] = {}
+				dict.nodes_data["DIALOG_" + child.get_start_id()].merge(child.get_data())
 	return dict
 
 
 ## Load nodes data from a dictionary
 func load_nodes_data(data: Dictionary, dialogs: Dictionary) -> void:
-	for dialogue_branch in data.keys():
-		for node_name in data[dialogue_branch].keys():
-			# Get node data
-			var node_data = data[dialogue_branch][node_name]
+	for dialogue_id in data.keys():
+		# Find the start node for the current dialogue
+		var current_start_node = ""
+		for node_name in data[dialogue_id].keys():
+			if data[dialogue_id][node_name]["node_type"] == "start_node":
+				current_start_node = node_name
+				break
+		# Load nodes for the current dialogue
+		for node_name in data[dialogue_id].keys():
+			var node_data = data[dialogue_id][node_name]
 
 			# Create node and set data
 			var new_node = _new_node(
@@ -130,6 +136,7 @@ func load_nodes_data(data: Dictionary, dialogs: Dictionary) -> void:
 				node_data["offset"]
 			)
 			new_node.set_data(node_data)
+			new_node.start_node_name = current_start_node
 			
 			# Load dialogs on dialogue nodes
 			if node_data["node_type"] == "dialogue_node":
@@ -291,4 +298,5 @@ func _on_connection_to_empty(from_node: String, from_port: int, release_position
 	_request_node = from_node
 	_request_port = from_port
 	show_add_node_menu(release_position)
+
 #endregion
