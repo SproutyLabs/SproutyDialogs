@@ -58,9 +58,11 @@ func _input(_event):
 func on_modified():
 	modified.emit()
 
+
 ## Notify the nodes that the locales have changed
 func on_locales_changed():
 	locales_changed.emit()
+
 
 ## Notify the nodes that the translation enabled state has changed
 func on_translation_enabled_changed(enabled: bool):

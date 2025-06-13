@@ -30,7 +30,7 @@ corner_radius_top_right = 5
 [node name="DialogueNode" type="GraphNode"]
 custom_minimum_size = Vector2(250, 0)
 offset_right = 250.0
-offset_bottom = 342.0
+offset_bottom = 405.0
 size_flags_vertical = 3
 theme = ExtResource("1_05qy5")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_lcatj")
@@ -73,6 +73,15 @@ slot/3/right_type = 0
 slot/3/right_color = Color(1, 1, 1, 1)
 slot/3/right_icon = null
 slot/3/draw_stylebox = true
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color(1, 1, 1, 1)
+slot/4/left_icon = null
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color(1, 1, 1, 1)
+slot/4/right_icon = null
+slot/4/draw_stylebox = true
 script = ExtResource("5_v7cqa")
 node_color = Color(0.827451, 0.27451, 0.262745, 1)
 node_icon = ExtResource("4_hljjc")
@@ -85,6 +94,21 @@ layout_mode = 2
 text = "Character"
 
 [node name="CharacterSelect" type="OptionButton" parent="CharacterContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+selected = 0
+item_count = 1
+popup/item_0/text = "(No one)"
+popup/item_0/id = 0
+
+[node name="PortraitContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="PortraitLabel" type="Label" parent="PortraitContainer"]
+layout_mode = 2
+text = "Character"
+
+[node name="PortraitSelect" type="OptionButton" parent="PortraitContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 selected = 0

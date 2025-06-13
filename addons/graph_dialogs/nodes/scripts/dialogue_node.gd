@@ -13,26 +13,29 @@ extends BaseNode
 signal dialogue_processed(character: String, dialog: String, next_node: String)
 
 ## Character dropdown selector
-@onready var char_selector: OptionButton = %CharacterSelect
+@onready var _char_selector: OptionButton = %CharacterSelect
+## Portrait dropdown selector
+@onready var _portrait_selector: OptionButton = %PortraitSelect
 ## Text box for dialog in default locale
-@onready var default_text_box: HBoxContainer = %DefaultTextBox
+@onready var _default_text_box: HBoxContainer = %DefaultTextBox
 ## Text boxes container for translations
-@onready var translation_boxes: VBoxContainer = %Translations
+@onready var _translation_boxes: VBoxContainer = %Translations
 
 ## Character key
-@onready var char_key: String = char_selector.get_item_text(char_selector.selected)
+@onready var _char_key: String = _char_selector.get_item_text(_char_selector.selected)
 
 ## Default locale for dialog text
-var default_locale: String = ""
+var _default_locale: String = ""
 
 
 func _ready():
 	super ()
 	# Connect signal to open text editor from graph
-	translation_boxes.open_text_editor.connect(get_parent().open_text_editor.emit)
-	default_text_box.open_text_editor.connect(
-			get_parent().open_text_editor.emit.bind(default_text_box.text_box)
+	_translation_boxes.open_text_editor.connect(get_parent().open_text_editor.emit)
+	_default_text_box.open_text_editor.connect(
+			get_parent().open_text_editor.emit.bind(_default_text_box.text_box)
 		)
+	_set_characters_dropdown()
 	_set_translation_text_boxes()
 
 
@@ -57,7 +60,7 @@ func get_data() -> Dictionary:
 func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
-	char_key = dict["char_key"]
+	_char_key = dict["char_key"]
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
 
@@ -72,32 +75,33 @@ func process_node(node_data: Dictionary) -> void:
 
 ## Load dialog and translations
 func load_dialogs(dialogs: Dictionary) -> void:
-	default_text_box.set_text(dialogs[default_locale])
-	translation_boxes.load_translations_text(dialogs)
+	_default_text_box.set_text(dialogs[_default_locale])
+	_translation_boxes.load_translations_text(dialogs)
 
 
 ## Get dialog text and its translations
 func get_dialogs_text() -> Dictionary:
 	var dialogs = {}
-	dialogs[default_locale] = default_text_box.get_text()
-	dialogs.merge(translation_boxes.get_translations_text())
+	dialogs[_default_locale] = _default_text_box.get_text()
+	dialogs.merge(_translation_boxes.get_translations_text())
 	return dialogs
 
 
 ## Create the dialog key for translation reference in the CSV file
 func get_dialog_translation_key() -> String:
+	print("get_dialog_translation_key: ", _char_key, " ", _default_locale)
 	if start_node != null: return get_start_id() + "_" + str(node_index)
 	else: return "DIALOG_NODE_" + str(node_index)
 
 
 ## Set translation text boxes
 func _set_translation_text_boxes() -> void:
-	default_locale = ProjectSettings.get_setting("graph_dialogs/translation/default_locale")
-	%DefaultLocaleLabel.text = "(" + default_locale + ")"
-	default_text_box.set_text("")
-	translation_boxes.set_translation_boxes(
+	_default_locale = ProjectSettings.get_setting("graph_dialogs/translation/default_locale")
+	%DefaultLocaleLabel.text = "(" + _default_locale + ")"
+	_default_text_box.set_text("")
+	_translation_boxes.set_translation_boxes(
 			ProjectSettings.get_setting("graph_dialogs/translation/locales").filter(
-				func(locale): return locale != default_locale
+				func(locale): return locale != _default_locale
 			)
 		)
 
@@ -112,4 +116,21 @@ func on_locales_changed() -> void:
 ## Handle the translation enabled setting change
 func on_translation_enabled_changed(enabled: bool) -> void:
 	%DefaultLocaleLabel.visible = enabled
-	translation_boxes.visible = enabled
+	_translation_boxes.visible = enabled
+
+
+## Set the character dropdown options from project settings
+func _set_characters_dropdown() -> void:
+	if not ProjectSettings.has_setting("graph_dialogs/references/characters"):
+		return
+	_char_selector = %CharacterSelect
+	var characters = ProjectSettings.get_setting("graph_dialogs/references/characters")
+	_char_selector.clear()
+	_char_selector.add_item("(no one)")
+	for character in characters:
+		_char_selector.add_item(character)
+
+
+## Set the portrait dropdown options based on character selection
+func _set_portrait_dropdown(character: String) -> void:
+	pass
