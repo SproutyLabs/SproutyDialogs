@@ -69,6 +69,13 @@ func on_translation_enabled_changed(enabled: bool):
 	translation_enabled_changed.emit(enabled)
 
 
+## Notify all dialogue nodes that the character references have changed
+func on_character_references_changed():
+	for child in get_children():
+		if child is BaseNode and child.node_type == "dialogue_node":
+			child.on_character_references_changed()
+
+
 # Create a new node of a given type
 func _new_node(node_type: String, node_index: int, node_offset: Vector2) -> GraphNode:
 	_nodes_type_count[node_type] += 1

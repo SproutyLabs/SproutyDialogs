@@ -106,7 +106,7 @@ layout_mode = 2
 
 [node name="PortraitLabel" type="Label" parent="PortraitContainer"]
 layout_mode = 2
-text = "Character"
+text = "Portrait"
 
 [node name="PortraitSelect" type="OptionButton" parent="PortraitContainer"]
 unique_name_in_owner = true

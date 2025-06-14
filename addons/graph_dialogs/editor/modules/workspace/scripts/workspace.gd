@@ -81,3 +81,9 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 	var current_editor = get_current_graph()
 	if current_editor:
 		current_editor.on_translation_enabled_changed(enabled)
+
+## Update the character references when they change
+func on_character_references_changed() -> void:
+	var current_editor = get_current_graph()
+	if current_editor:
+		current_editor.on_character_references_changed()

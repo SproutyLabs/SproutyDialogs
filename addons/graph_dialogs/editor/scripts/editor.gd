@@ -46,6 +46,8 @@ func _ready():
 	file_manager.request_to_switch_graph.connect(workspace.switch_current_graph)
 	file_manager.request_to_switch_character.connect(
 			character_panel.switch_current_character_editor)
+	file_manager.character_references_changed.connect(
+			workspace.on_character_references_changed)
 	
 	# Workspace signals
 	workspace.graph_editor_visible.connect(side_bar.csv_path_field_visible)

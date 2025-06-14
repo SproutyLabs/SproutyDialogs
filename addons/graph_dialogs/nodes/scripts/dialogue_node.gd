@@ -13,16 +13,16 @@ extends BaseNode
 signal dialogue_processed(character: String, dialog: String, next_node: String)
 
 ## Character dropdown selector
-@onready var _char_selector: OptionButton = %CharacterSelect
+@onready var _character_dropdown: OptionButton = %CharacterSelect
 ## Portrait dropdown selector
-@onready var _portrait_selector: OptionButton = %PortraitSelect
+@onready var _portrait_dropdown: OptionButton = %PortraitSelect
 ## Text box for dialog in default locale
 @onready var _default_text_box: HBoxContainer = %DefaultTextBox
 ## Text boxes container for translations
 @onready var _translation_boxes: VBoxContainer = %Translations
 
 ## Character key
-@onready var _char_key: String = _char_selector.get_item_text(_char_selector.selected)
+@onready var _char_key: String = _character_dropdown.get_item_text(_character_dropdown.selected)
 
 ## Default locale for dialog text
 var _default_locale: String = ""
@@ -119,16 +119,28 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 	_translation_boxes.visible = enabled
 
 
+## Handle the character references change
+func on_character_references_changed() -> void:
+	var selected_item = _character_dropdown.get_item_text(_character_dropdown.selected)
+	var items = _set_characters_dropdown()
+
+	if items.has(selected_item): # If the selected item is in the list, select it
+		_character_dropdown.select(items.index_of(selected_item))
+	else: # Select the first item if the selected item is not found
+		_character_dropdown.select(0)
+
+
 ## Set the character dropdown options from project settings
-func _set_characters_dropdown() -> void:
+func _set_characters_dropdown() -> Array:
 	if not ProjectSettings.has_setting("graph_dialogs/references/characters"):
-		return
-	_char_selector = %CharacterSelect
-	var characters = ProjectSettings.get_setting("graph_dialogs/references/characters")
-	_char_selector.clear()
-	_char_selector.add_item("(no one)")
+		return []
+	_character_dropdown = %CharacterSelect
+	var characters = ProjectSettings.get_setting("graph_dialogs/references/characters").keys()
+	_character_dropdown.clear()
+	characters.insert(0, "(No one)")
 	for character in characters:
-		_char_selector.add_item(character)
+		_character_dropdown.add_item(character.capitalize() if character != "(No one)" else character)
+	return characters
 
 
 ## Set the portrait dropdown options based on character selection
