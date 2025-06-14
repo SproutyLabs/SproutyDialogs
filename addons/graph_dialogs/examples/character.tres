@@ -63,7 +63,7 @@ portraits = {
 },
 "typing_sound": ""
 },
-"New Group": {
+"group": {
 "aaaa": {
 "export_overrides": {
 "portrait_image": {
@@ -90,6 +90,26 @@ portraits = {
 }
 },
 "typing_sound": ""
+},
+"group 2": {
+"bbbb": {
+"export_overrides": {},
+"portrait_scene": "",
+"transform_settings": {
+"mirror": false,
+"offset": {
+"x": 0.0,
+"y": 0.0
+},
+"rotation": 0.0,
+"scale": {
+"lock_ratio": true,
+"x": 1.0,
+"y": 1.0
+}
+},
+"typing_sound": ""
+}
 }
 }
 }

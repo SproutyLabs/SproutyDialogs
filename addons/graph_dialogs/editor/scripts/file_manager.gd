@@ -84,10 +84,6 @@ func _ready() -> void:
 	_csv_file_field.get_parent().hide() # Hide CSV file field by default
 	_save_file_button.disabled = true # Disable save button
 
-	# Check that UID works correctly
-	var x = load(ResourceUID.get_id_path(ProjectSettings.get_setting("graph_dialogs/references/dialogs")["example"]))
-	print("\nExample dialog resource loaded: ", x.graph_data)
-
 
 #region === New Files ==========================================================
 
@@ -190,6 +186,7 @@ func load_file(path: String) -> void:
 ## Save data to resource file
 func save_file(index: int = _file_list.get_current_index(), path: String = "") -> void:
 	var file_metadata = _file_list.get_item_metadata(index)
+	var save_path = file_metadata["file_path"] if path.is_empty() else path
 	var data = file_metadata.data
 	
 	if data is GraphDialogsDialogueData:
@@ -207,7 +204,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
 			GraphDialogsCSVFileManager.save_dialogs_on_csv(graph_data["dialogs"], data.csv_file_path)
 			
-		_save_file_reference(path, "dialogs")
+		_save_file_reference(save_path, "dialogs")
 
 	elif data is GraphDialogsCharacterData:
 		data = file_metadata["cache_node"].get_character_data()
@@ -220,12 +217,10 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
 			GraphDialogsCSVFileManager.save_character_names_on_csv(data.display_name)
 		
-		_save_file_reference(path, "characters")
+		_save_file_reference(save_path, "characters")
 	
 	# Save file on the given path
-	var save_path = file_metadata["file_path"] if path.is_empty() else path
 	ResourceSaver.save(file_metadata["data"], save_path)
-
 	_file_list.set_item_metadata(index, file_metadata)
 	_file_list.set_file_as_modified(index, false)
 

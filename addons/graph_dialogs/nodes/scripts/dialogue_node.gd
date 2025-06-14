@@ -21,9 +21,6 @@ signal dialogue_processed(character: String, dialog: String, next_node: String)
 ## Text boxes container for translations
 @onready var _translation_boxes: VBoxContainer = %Translations
 
-## Character key
-@onready var _char_key: String = _character_dropdown.get_item_text(_character_dropdown.selected)
-
 ## Default locale for dialog text
 var _default_locale: String = ""
 
@@ -35,6 +32,7 @@ func _ready():
 	_default_text_box.open_text_editor.connect(
 			get_parent().open_text_editor.emit.bind(_default_text_box.text_box)
 		)
+	_character_dropdown.item_selected.connect(_set_portrait_dropdown)
 	_set_characters_dropdown()
 	_set_translation_text_boxes()
 
@@ -44,12 +42,16 @@ func _ready():
 func get_data() -> Dictionary:
 	var dict := {}
 	var connections: Array = get_parent().get_node_connections(name)
+
+	var character = _character_dropdown.get_item_metadata(_character_dropdown.selected)
+	var portrait = _portrait_dropdown.get_item_text(_portrait_dropdown.selected)
 	
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
-		"char_key": "",
 		"dialog_key": get_dialog_translation_key(),
+		"character": character.key_name if character is GraphDialogsCharacterData else "",
+		"portrait": portrait if portrait != "(No one)" else "",
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
 		"offset": position_offset
@@ -60,9 +62,16 @@ func get_data() -> Dictionary:
 func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
-	_char_key = dict["char_key"]
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
+
+	# Set character and portrait dropdowns
+	var char_index = _find_dropdown_item(_character_dropdown, dict["character"])
+	var portrait_index = _find_dropdown_item(_portrait_dropdown, dict["portrait"])
+
+	_character_dropdown.select(char_index if char_index != -1 else 0)
+	_set_portrait_dropdown(_character_dropdown.selected)
+	_portrait_dropdown.select(portrait_index if portrait_index != -1 else 0)
 
 
 func process_node(node_data: Dictionary) -> void:
@@ -89,7 +98,6 @@ func get_dialogs_text() -> Dictionary:
 
 ## Create the dialog key for translation reference in the CSV file
 func get_dialog_translation_key() -> String:
-	print("get_dialog_translation_key: ", _char_key, " ", _default_locale)
 	if start_node != null: return get_start_id() + "_" + str(node_index)
 	else: return "DIALOG_NODE_" + str(node_index)
 
@@ -125,24 +133,76 @@ func on_character_references_changed() -> void:
 	var items = _set_characters_dropdown()
 
 	if items.has(selected_item): # If the selected item is in the list, select it
-		_character_dropdown.select(items.index_of(selected_item))
+		_character_dropdown.select(items.find(selected_item))
 	else: # Select the first item if the selected item is not found
 		_character_dropdown.select(0)
 
+
+#region === Dropdowns ==========================================================
 
 ## Set the character dropdown options from project settings
 func _set_characters_dropdown() -> Array:
 	if not ProjectSettings.has_setting("graph_dialogs/references/characters"):
 		return []
-	_character_dropdown = %CharacterSelect
-	var characters = ProjectSettings.get_setting("graph_dialogs/references/characters").keys()
-	_character_dropdown.clear()
+	var char_references = ProjectSettings.get_setting("graph_dialogs/references/characters")
+	var characters = char_references.keys()
 	characters.insert(0, "(No one)")
+	_character_dropdown.clear()
+
 	for character in characters:
-		_character_dropdown.add_item(character.capitalize() if character != "(No one)" else character)
+		if character == "(No one)": # Special case for no character selected
+			_character_dropdown.add_item(character)
+			continue
+		
+		_character_dropdown.add_item(character.capitalize())
+		# Set character resource as metadata for the character item
+		_character_dropdown.set_item_metadata(
+			_character_dropdown.get_item_count() - 1,
+			load(ResourceUID.get_id_path(char_references[character]))
+		)
 	return characters
 
 
 ## Set the portrait dropdown options based on character selection
-func _set_portrait_dropdown(character: String) -> void:
-	pass
+func _set_portrait_dropdown(character_item: int) -> void:
+	var character = _character_dropdown.get_item_metadata(character_item)
+	_portrait_dropdown.clear()
+	if not character is GraphDialogsCharacterData:
+		_portrait_dropdown.add_item("(No one)")
+		return
+	
+	var portraits = character.portraits
+	if portraits.size() == 0:
+		_portrait_dropdown.add_item("(No one)")
+		return
+
+	var portrait_list = _get_portrait_list(portraits)
+	for portrait in portrait_list:
+		_portrait_dropdown.add_item(portrait)
+
+
+## Get the list of portrait paths from the portrait dictionary
+func _get_portrait_list(portrait_dict: Dictionary) -> Array:
+	var portrait_list = []
+
+	for portrait in portrait_dict.keys():
+		if portrait_dict[portrait].has("portrait_scene"):
+			portrait_list.append(portrait)
+		else:
+			portrait_list.append_array(
+					_get_portrait_list(portrait_dict[portrait]).map(
+						func(p): return portrait + "/" + p
+					)
+				)
+
+	return portrait_list
+
+
+## Find the index of the dropdown item by its text
+func _find_dropdown_item(dropdown: OptionButton, item: String) -> int:
+	for i in range(dropdown.get_item_count()):
+		if dropdown.get_item_text(i).to_lower() == item.to_lower():
+			return i
+	return -1
+
+#endregion
