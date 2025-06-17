@@ -95,38 +95,57 @@ func _new_node(node_type: String, node_index: int, node_offset: Vector2) -> Grap
 	return new_node
 
 
-#region === Get and Load Nodes Data ============================================
-## Get nodes data in a dictionary
-func get_nodes_data() -> Dictionary:
+## Get the nodes scene references from the nodes folder
+func _get_nodes_references(path: String) -> Dictionary:
+	var nodes_dict = {}
+	var nodes_scenes = DirAccess.get_files_at(NODES_PATH)
+	for node in nodes_scenes:
+		if node.ends_with(".tscn"):
+			var node_name = node.replace(".tscn", "")
+			nodes_dict[node_name] = load(NODES_PATH + node)
+	return nodes_dict
+
+
+#region === Graph Data =========================================================
+## Get graph data in a dictionary
+func get_graph_data() -> Dictionary:
 	var dict := {
 		"nodes_data": {},
-		"dialogs": {}
+		"dialogs": {},
+		"characters": {}
 	}
 	for child in get_children():
 		if child is BaseNode:
-			# Get dialogs texts from dialogue nodes
+			var start_id = child.get_start_id()
+
+			# Get dialogs and characters from dialogue nodes
 			if child.node_type == "dialogue_node":
 				dict.dialogs[child.get_dialog_translation_key()] = child.get_dialogs_text()
+				var character = child.get_character_name()
+				if not dict.characters.has(start_id):
+					dict.characters[start_id] = []
+				if character != "" and not dict.characters[start_id].has(character):
+						dict.characters[start_id].append(character)
 			
 			# Start nodes define dialogs trees
 			if child.node_type == "start_node":
-				if not dict.nodes_data.has("DIALOG_" + child.get_start_id()):
-					dict.nodes_data["DIALOG_" + child.get_start_id()] = {}
-				dict.nodes_data["DIALOG_" + child.get_start_id()].merge(child.get_data())
+				if not dict.nodes_data.has(start_id):
+					dict.nodes_data[start_id] = {}
+				dict.nodes_data[start_id].merge(child.get_data())
 			# Nodes without connection do not have a dialog tree associated
 			elif child.start_node == null:
 				if not dict.nodes_data.has("unplugged_nodes"):
 					dict.nodes_data["unplugged_nodes"] = {}
 				dict.nodes_data["unplugged_nodes"].merge(child.get_data())
 			else: # Any other node belongs to a dialog tree
-				if not dict.nodes_data.has("DIALOG_" + child.get_start_id()):
-					dict.nodes_data["DIALOG_" + child.get_start_id()] = {}
-				dict.nodes_data["DIALOG_" + child.get_start_id()].merge(child.get_data())
+				if not dict.nodes_data.has(start_id):
+					dict.nodes_data[start_id] = {}
+				dict.nodes_data[start_id].merge(child.get_data())
 	return dict
 
 
-## Load nodes data from a dictionary
-func load_nodes_data(data: Dictionary, dialogs: Dictionary) -> void:
+## Load graph data from a dictionary
+func load_graph_data(data: Dictionary, dialogs: Dictionary) -> void:
 	for dialogue_id in data.keys():
 		# Find the start node for the current dialogue
 		var current_start_node = ""
@@ -153,17 +172,6 @@ func load_nodes_data(data: Dictionary, dialogs: Dictionary) -> void:
 			
 	# When all the nodes are loaded, notify the nodes to connect each other
 	nodes_loaded.emit()
-
-
-## Get the nodes scene references from the nodes folder
-func _get_nodes_references(path: String) -> Dictionary:
-	var nodes_dict = {}
-	var nodes_scenes = DirAccess.get_files_at(NODES_PATH)
-	for node in nodes_scenes:
-		if node.ends_with(".tscn"):
-			var node_name = node.replace(".tscn", "")
-			nodes_dict[node_name] = load(NODES_PATH + node)
-	return nodes_dict
 
 #endregion
 

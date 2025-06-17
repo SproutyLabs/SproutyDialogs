@@ -53,9 +53,9 @@ extends Resource
 @export var csv_file_path: String = ""
 
 
-## Returns a list of the dialogue IDs from the graph data.
-func get_dialogue_id() -> Array[String]:
+## Returns a list of the start IDs from the graph data.
+func get_start_ids() -> Array[String]:
 	var dialogue_ids: Array[String] = []
 	for dialogue_id in graph_data.keys():
-		dialogue_ids.append(dialogue_id)
+		dialogue_ids.append(dialogue_id.replace("DIALOG_", ""))
 	return dialogue_ids

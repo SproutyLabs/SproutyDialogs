@@ -37,7 +37,7 @@ var node_index: int = 0
 func _ready():
 	# Set node type based on the node name
 	node_type = name.to_snake_case().split("_node_")[0] + "_node"
-	if graph_editor: # Check if the node is in the graph editor
+	if graph_editor is GraphEdit: # Check if the node is in the graph editor
 		graph_editor.nodes_loaded.connect(_load_connections)
 		_set_node_titlebar()
 

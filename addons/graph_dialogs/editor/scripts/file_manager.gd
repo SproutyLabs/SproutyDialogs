@@ -121,7 +121,7 @@ func _new_graph_from_resource(resource: GraphDialogsDialogueData) -> GraphEdit:
 	if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
 		and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
 		dialogs = GraphDialogsCSVFileManager.load_dialogs_from_csv(resource.csv_file_path)
-	graph.load_nodes_data(resource.graph_data, dialogs)
+	graph.load_graph_data(resource.graph_data, dialogs)
 	graph.name = "Graph"
 	remove_child(graph)
 	return graph
@@ -194,9 +194,10 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		if file_metadata.cache_node.alerts.is_error_alert_active():
 			printerr("[Graph Dialogs] Cannot save, please fix the errors.")
 			return
-		var graph_data = file_metadata["cache_node"].get_nodes_data()
+		var graph_data = file_metadata["cache_node"].get_graph_data()
 		data.graph_data = graph_data["nodes_data"]
 		data.dialogs = graph_data["dialogs"]
+		data.characters = graph_data["characters"]
 		file_metadata["data"] = data
 
 		# Save the CSV file with the dialogs

@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_o8wl1")
 graph_data = {
-"DIALOG_EXAMPLE": {
+"EXAMPLE": {
 "dialogue_node_1": {
 "character": "character",
 "dialog_key": "EXAMPLE_1",
@@ -32,7 +32,7 @@ graph_data = {
 "to_node": ["dialogue_node_1"]
 }
 },
-"DIALOG_LOREM": {
+"LOREM": {
 "dialogue_node_3": {
 "character": "",
 "dialog_key": "LOREM_3",
@@ -68,5 +68,8 @@ dialogs = {
 "ja": "Lorem ipsum dolor sit amet"
 }
 }
-characters = {}
+characters = {
+"EXAMPLE": ["character"],
+"LOREM": []
+}
 csv_file_path = "res://addons/graph_dialogs/examples/translations/example.csv"

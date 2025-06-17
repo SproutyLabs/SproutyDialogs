@@ -10,8 +10,12 @@ extends BaseNode
 ## -----------------------------------------------------------------------------
 
 ## Emitted when the dialogue node was processed.
-signal dialogue_processed(character: String, dialog: String, next_node: String)
-
+signal dialogue_processed(
+	character: String,
+	portrait: String,
+	dialog: String,
+	next_node: String
+)
 ## Character dropdown selector
 @onready var _character_dropdown: OptionButton = %CharacterSelect
 ## Portrait dropdown selector
@@ -28,9 +32,10 @@ var _default_locale: String = ""
 func _ready():
 	super ()
 	# Connect signal to open text editor from graph
-	_translation_boxes.open_text_editor.connect(get_parent().open_text_editor.emit)
-	_default_text_box.open_text_editor.connect(
-			get_parent().open_text_editor.emit.bind(_default_text_box.text_box)
+	if graph_editor is GraphEdit:
+		_translation_boxes.open_text_editor.connect(graph_editor.open_text_editor.emit)
+		_default_text_box.open_text_editor.connect(
+			graph_editor.open_text_editor.emit.bind(_default_text_box.text_box)
 		)
 	_character_dropdown.item_selected.connect(_set_portrait_dropdown)
 	_set_characters_dropdown()
@@ -41,7 +46,7 @@ func _ready():
 
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = get_parent().get_node_connections(name)
+	var connections: Array = graph_editor.get_node_connections(name)
 
 	var character = _character_dropdown.get_item_metadata(_character_dropdown.selected)
 	var portrait = _portrait_dropdown.get_item_text(_portrait_dropdown.selected)
@@ -50,7 +55,7 @@ func get_data() -> Dictionary:
 		"node_type": node_type,
 		"node_index": node_index,
 		"dialog_key": get_dialog_translation_key(),
-		"character": character.key_name if character is GraphDialogsCharacterData else "",
+		"character": get_character_name(),
 		"portrait": portrait if portrait != "(No one)" else "",
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
@@ -75,17 +80,12 @@ func set_data(dict: Dictionary) -> void:
 
 
 func process_node(node_data: Dictionary) -> void:
-	var character = node_data["char_key"]
+	var character = node_data["character"]
+	var portrait = node_data["portrait"]
 	var dialog = tr(node_data["dialog_key"])
-	dialogue_processed.emit(character, dialog, node_data["to_node"][0])
+	dialogue_processed.emit(character, portrait, dialog, node_data["to_node"][0])
 
 #endregion
-
-
-## Load dialog and translations
-func load_dialogs(dialogs: Dictionary) -> void:
-	_default_text_box.set_text(dialogs[_default_locale])
-	_translation_boxes.load_translations_text(dialogs)
 
 
 ## Get dialog text and its translations
@@ -102,16 +102,19 @@ func get_dialog_translation_key() -> String:
 	else: return "DIALOG_NODE_" + str(node_index)
 
 
-## Set translation text boxes
-func _set_translation_text_boxes() -> void:
-	_default_locale = ProjectSettings.get_setting("graph_dialogs/translation/default_locale")
-	%DefaultLocaleLabel.text = "(" + _default_locale + ")"
-	_default_text_box.set_text("")
-	_translation_boxes.set_translation_boxes(
-			ProjectSettings.get_setting("graph_dialogs/translation/locales").filter(
-				func(locale): return locale != _default_locale
-			)
-		)
+## Get the selected character key name
+func get_character_name() -> String:
+	var character = _character_dropdown.get_item_metadata(_character_dropdown.selected)
+	if character is GraphDialogsCharacterData:
+		return character.key_name
+	else:
+		return ""
+
+
+## Load dialog and translations
+func load_dialogs(dialogs: Dictionary) -> void:
+	_default_text_box.set_text(dialogs[_default_locale])
+	_translation_boxes.load_translations_text(dialogs)
 
 
 ## Update the locale text boxes
@@ -136,6 +139,18 @@ func on_character_references_changed() -> void:
 		_character_dropdown.select(items.find(selected_item))
 	else: # Select the first item if the selected item is not found
 		_character_dropdown.select(0)
+
+
+## Set translation text boxes
+func _set_translation_text_boxes() -> void:
+	_default_locale = ProjectSettings.get_setting("graph_dialogs/translation/default_locale")
+	%DefaultLocaleLabel.text = "(" + _default_locale + ")"
+	_default_text_box.set_text("")
+	_translation_boxes.set_translation_boxes(
+			ProjectSettings.get_setting("graph_dialogs/translation/locales").filter(
+				func(locale): return locale != _default_locale
+			)
+		)
 
 
 #region === Dropdowns ==========================================================
