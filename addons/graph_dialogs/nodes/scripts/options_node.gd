@@ -53,12 +53,6 @@ func set_data(dict: Dictionary) -> void:
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
 
-
-func process_node(node_data: Dictionary) -> void:
-	# TODO: Process the node
-	print("Processing options node...")
-	continue_to_node.emit(node_data.to_node[0])
-
 #endregion
 
 ## Add a new option

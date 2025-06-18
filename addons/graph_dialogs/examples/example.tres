@@ -16,12 +16,12 @@ graph_data = {
 "to_node": ["dialogue_node_2"]
 },
 "dialogue_node_2": {
-"character": "",
+"character": "character",
 "dialog_key": "EXAMPLE_2",
 "node_index": 2,
 "node_type": "dialogue_node",
 "offset": Vector2(1300, 260),
-"portrait": "",
+"portrait": "Bob",
 "to_node": ["END"]
 },
 "start_node_1": {
@@ -38,7 +38,7 @@ graph_data = {
 "dialog_key": "LOREM_3",
 "node_index": 3,
 "node_type": "dialogue_node",
-"offset": Vector2(560, 780),
+"offset": Vector2(540, 900),
 "portrait": "",
 "to_node": ["END"]
 },

@@ -8,10 +8,6 @@ extends GraphNode
 ## It provides the basic implementation to every node for the dialog system.
 ## -----------------------------------------------------------------------------
 
-## Emitted when the node is processed to continue with the next node
-## in the dialog tree. (When the dialog is running)
-signal continue_to_node(to_node: String)
-
 ## Node color to display on the node titlebar.
 @export_color_no_alpha var node_color: Color
 ## Icon to display on the node titlebar.
@@ -42,8 +38,6 @@ func _ready():
 		_set_node_titlebar()
 
 
-#region === Overrides ==========================================================
-
 ## Get the node data as a dictionary.
 ## This method should be overridden in each node.
 func get_data() -> Dictionary:
@@ -56,17 +50,6 @@ func get_data() -> Dictionary:
 func set_data(dict: Dictionary) -> void:
 	# Abstract method to implement in child nodes
 	pass
-
-
-## Handle the node processing when the dialog is running.
-## It should ends calling the signal [code]"continue_to_node"[/code]
-## to process the next node in the dialog tree.
-## It should be overridden in each node.
-func process_node(node_data: Dictionary) -> void:
-	# Abstract method to implement in the child nodes
-	pass
-
-#endregion
 
 
 ## Get the start node id of the dialog tree.

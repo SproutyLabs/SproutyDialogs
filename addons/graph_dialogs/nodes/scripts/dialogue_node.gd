@@ -9,13 +9,6 @@ extends BaseNode
 ## Allows to set dialog text and translations for different characters.
 ## -----------------------------------------------------------------------------
 
-## Emitted when the dialogue node was processed.
-signal dialogue_processed(
-	character: String,
-	portrait: String,
-	dialog: String,
-	next_node: String
-)
 ## Character dropdown selector
 @onready var _character_dropdown: OptionButton = %CharacterSelect
 ## Portrait dropdown selector
@@ -77,13 +70,6 @@ func set_data(dict: Dictionary) -> void:
 	_character_dropdown.select(char_index if char_index != -1 else 0)
 	_set_portrait_dropdown(_character_dropdown.selected)
 	_portrait_dropdown.select(portrait_index if portrait_index != -1 else 0)
-
-
-func process_node(node_data: Dictionary) -> void:
-	var character = node_data["character"]
-	var portrait = node_data["portrait"]
-	var dialog = tr(node_data["dialog_key"])
-	dialogue_processed.emit(character, portrait, dialog, node_data["to_node"][0])
 
 #endregion
 

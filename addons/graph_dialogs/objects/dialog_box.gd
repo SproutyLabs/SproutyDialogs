@@ -38,7 +38,7 @@ signal meta_clicked(meta: String)
 @export var continue_indicator: Control
 
 ## Timer to control the typing speed of the dialog.
-@onready var type_timer: Timer = Timer.new()
+var type_timer: Timer
 
 ## Flag to control if the dialog is completed.
 var _display_completed: bool = false
@@ -51,12 +51,16 @@ var _current_sentence: int = 0
 var _dialog_player: DialogPlayer
 
 
-func _ready() -> void:
+func _enter_tree() -> void:
 	# Set up timer to control the typing speed of the dialog
+	type_timer = Timer.new()
 	add_child(type_timer)
 	type_timer.wait_time = type_time
-	type_timer.connect("timeout", _on_type_timer_timeout)
+	type_timer.timeout.connect(_on_type_timer_timeout)
+	hide()
 
+
+func _ready() -> void:
 	# Connect meta clicked signal to handle meta tags
 	if not dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
 		dialog_display.connect("meta_clicked", _on_dialog_meta_clicked)
@@ -64,7 +68,6 @@ func _ready() -> void:
 	# Set up dialog box settings
 	dialog_display.bbcode_enabled = true
 	continue_indicator.visible = false
-	hide()
 
 
 func _input(event: InputEvent) -> void:

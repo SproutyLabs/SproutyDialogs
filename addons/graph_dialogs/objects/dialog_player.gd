@@ -4,21 +4,17 @@ class_name DialogPlayer
 extends Node
 
 ## -----------------------------------------------------------------------------
-## Dialog Player to play dialogues from a JSON Dialog file.
+## Dialog Player
 ##
-## It reads the dialog file and processes the dialog tree to play the dialogues.
+## It reads a dialog file and processes the dialog tree to play the dialogues.
 ## The dialog tree is composed of nodes that represent dialogues and actions.
 ## The player processes the nodes and plays the dialogues in the dialog boxes.
 ## -----------------------------------------------------------------------------
 
 ## Signal emitted when the dialog is started.
-signal dialog_started(id: String)
+signal dialog_started(start_id: String)
 ## Signal emitted when the dialog is ended.
 signal dialog_ended
-
-## Path to the nodes folder.
-const NODES_PATH = "res://addons/graph_dialogs/nodes/scripts/"
-
 
 ## Dialog Data resource to play.
 @export var dialog_data: GraphDialogsDialogueData:
@@ -42,57 +38,37 @@ var start_id: String:
 
 ## Array to store the start IDs of the dialogues.
 var _starts_ids: Array[String] = []
+
 ## Dictionary to store the portrait display nodes by character.
 var _portrait_displays: Dictionary = {}
 ## Dictionary to store the dialog box nodes by character.
 var _dialog_boxes: Dictionary = {}
-
-## Dictionary to store the nodes references by node type.
-var _nodes_references: Dictionary
 
 ## Current dialog box to display the dialog.
 var _current_dialog_box: DialogBox
 ## Next node to process in the dialog tree after a dialogue node.
 var _next_node: String = ""
 
+## Dialog parser instance to process the dialog nodes.
+var _dialog_parser: DialogParser
+
 ## Flag to control if the dialog is running.
 var _is_running: bool = false
 
 
-func _ready() -> void:
-	# Get the nodes references by node type
-	_nodes_references = _get_nodes_references(NODES_PATH)
+func _enter_tree() -> void:
+	# Initialize dialog parser
+	_dialog_parser = DialogParser.new()
+	add_child(_dialog_parser)
 	
-	# Connect process node method on each node
-	for node in _nodes_references.keys():
-		if _nodes_references[node] != null:
-			_nodes_references[node].connect(
-				"continue_to_node", _process_node
-			)
-	# Connect dialogue process method on each dialogue node
-	_nodes_references["dialogue_node"].connect(
-		"dialogue_processed", _on_dialogue_processed
-	)
+	_dialog_parser.continue_to_node.connect(_process_node)
+	_dialog_parser.dialogue_processed.connect(_on_dialogue_processed)
 
+
+func _ready() -> void:
+	# Play the dialog on ready if the property is set
 	if not Engine.is_editor_hint():
-		if play_on_ready:
-			await get_tree().create_timer(0.1).timeout
-			start(start_id)
-
-
-## Get the nodes class references from the nodes folder
-func _get_nodes_references(path: String) -> Dictionary:
-	var nodes_dict = {}
-	var nodes_scripts = DirAccess.get_files_at(NODES_PATH)
-	for node in nodes_scripts:
-		if node.ends_with(".gd"):
-			var node_name = node.replace(".gd", "")
-			var script = load(NODES_PATH + node)
-			if script == null:
-				printerr("[Graph Dialogs] Cannot load node script '" + NODES_PATH + node + "'")
-				continue
-			nodes_dict[node_name] = script.new()
-	return nodes_dict
+		if play_on_ready: start()
 
 
 #region === Editor properties ==================================================
@@ -175,19 +151,19 @@ func _set(property: StringName, value: Variant) -> bool:
 #region === Process nodes ======================================================
 
 ## Start processing a dialog tree by ID
-func start(id: String = start_id) -> void:
+func start(dialog_id: String = start_id) -> void:
 	# Check if the dialog with given id exists
-	if not _starts_ids.has(id):
-		printerr("[Graph Dialogs] Cannot find '" + id + "' ID on dialog file.")
+	if not _starts_ids.has(dialog_id):
+		printerr("[Graph Dialogs] Cannot find '" + dialog_id + "' ID on dialog file.")
 		return
 	
-	_is_running = true
-	# Search for start node
-	for node in dialog_data.graph_data[id]:
-		 # Start processing from start node
+	# Search for start node and start processing from there
+	for node in dialog_data.graph_data[dialog_id]:
 		if node.contains("start_node"):
-			_process_node(dialog_data.graph_data[id][node]["to_node"][0])
-			dialog_started.emit(id)
+			print("[Graph Dialogs] Starting dialog with ID: " + dialog_id)
+			_is_running = true
+			_process_node(node)
+			dialog_started.emit(dialog_id)
 			break
 
 
@@ -204,15 +180,14 @@ func is_running() -> bool:
 
 ## Process the next node on dialog tree
 func _process_node(node_name: String) -> void:
-	# Check if the dialog is running
 	if not _is_running: return
 	# Check if the node is the end node
 	if node_name == 'END':
 		stop()
 		return
 	# Get the node type to process
-	var node_type = node_name.split("node")[0] + "node"
-	_nodes_references[node_type].process_node(
+	var node_type = node_name.split("_node_")[0] + "_node"
+	_dialog_parser.node_processors[node_type].call(
 		dialog_data.graph_data[start_id][node_name]
 		)
 
