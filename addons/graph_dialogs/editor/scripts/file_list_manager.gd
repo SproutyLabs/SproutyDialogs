@@ -247,7 +247,7 @@ func _update_file_metadata(index: int) -> void:
 	var metadata := _file_list.get_item_metadata(index)
 	
 	if metadata.data is GraphDialogsDialogueData:
-		metadata.data.graph_data = metadata["cache_node"].get_nodes_data()
+		metadata.data.graph_data = metadata["cache_node"].get_graph_data()
 	
 	elif metadata.data is GraphDialogsCharacterData:
 		metadata.data = metadata["cache_node"].get_character_data()

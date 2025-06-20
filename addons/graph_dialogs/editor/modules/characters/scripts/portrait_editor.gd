@@ -57,34 +57,33 @@ func _ready():
 	_to_portrait_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_portrait_scale_section.get_node("LockRatioButton").icon = get_theme_icon("Instance", "EditorIcons")
 	
-	_portrait_export_properties.connect("property_changed", _on_export_property_changed)
+	_portrait_export_properties.property_changed.connect(_on_export_property_changed)
 
 
 ## Get the portrait data from the editor
-func get_portrait_data() -> Dictionary:
-	var data = {
-		"portrait_scene": _portrait_scene_field.get_value(),
-		"export_overrides": _portrait_export_properties.get_export_overrides(),
-		"transform_settings": {
-			"scale": {
-				"x": _portrait_scale_section.get_node("XField").value,
-				"y": _portrait_scale_section.get_node("YField").value,
-				"lock_ratio": _portrait_scale_section.get_node("LockRatioButton").button_pressed,
-			},
-			"offset": {
-				"x": _portrait_offset_section.get_node("XField").value,
-				"y": _portrait_offset_section.get_node("YField").value,
-			},
-			"rotation": _portrait_rotation_section.get_node("RotationField").value,
-			"mirror": _portrait_rotation_section.get_node("MirrorCheckBox").button_pressed
-		},
-		"typing_sound": "",
+func get_portrait_data() -> GraphDialogsPortraitData:
+	var data = GraphDialogsPortraitData.new()
+	data.portrait_scene = _portrait_scene_field.get_value()
+	data.export_overrides = _portrait_export_properties.get_export_overrides()
+	data.transform_settings = {
+		"scale": Vector2(
+			_portrait_scale_section.get_node("XField").value,
+			_portrait_scale_section.get_node("YField").value
+		),
+		"scale_lock_ratio": _portrait_scale_section.get_node("LockRatioButton").button_pressed,
+		"offset": Vector2(
+			_portrait_offset_section.get_node("XField").value,
+			_portrait_offset_section.get_node("YField").value
+		),
+		"rotation": _portrait_rotation_section.get_node("RotationField").value,
+		"mirror": _portrait_rotation_section.get_node("MirrorCheckBox").button_pressed
 	}
+	data.typing_sound = {} # Typing sound is not implemented yet
 	return data
 
 
 ## Load the portrait settings into the editor
-func load_portrait_data(name: String, data: Dictionary) -> void:
+func load_portrait_data(name: String, data: GraphDialogsPortraitData) -> void:
 	# Load the portrait settings from the given data
 	set_portrait_name(name)
 	_portrait_scene_field.set_value(data.portrait_scene)
@@ -101,7 +100,7 @@ func load_portrait_data(name: String, data: Dictionary) -> void:
 		_new_portrait_scene_button.visible = true
 
 	# Load image settings
-	_portrait_scale_section.get_node("LockRatioButton").button_pressed = data.transform_settings.scale.lock_ratio
+	_portrait_scale_section.get_node("LockRatioButton").button_pressed = data.transform_settings.scale_lock_ratio
 	_portrait_scale_section.get_node("XField").value = data.transform_settings.scale.x
 	_portrait_scale_section.get_node("YField").value = data.transform_settings.scale.y
 

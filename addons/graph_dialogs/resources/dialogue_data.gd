@@ -5,7 +5,7 @@ extends Resource
 ## -----------------------------------------------------------------------------
 ## Dialogue Data Resource
 ## 
-## This resource is used to store dialogue data for the graph editor.
+## This resource is used to store dialogue data from the graph editor.
 ## -----------------------------------------------------------------------------
 
 ## The dialogue data from the graph editor.

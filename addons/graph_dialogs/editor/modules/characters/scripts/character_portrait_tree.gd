@@ -15,6 +15,8 @@ signal portrait_item_selected(item: TreeItem)
 @onready var _character_editor: Container = find_parent("CharacterEditor")
 ## Portrait tree popup menu
 @onready var _popup_menu: PopupMenu = $PortraitPopupMenu
+## Confirmation dialog for removing a portrait group
+@onready var _remove_group_dialog: ConfirmationDialog = $RemoveGroupDialog
 
 ## Icon of the character portrait
 var _portrait_icon: Texture2D = preload("res://addons/graph_dialogs/icons/character.svg")
@@ -22,9 +24,9 @@ var _portrait_icon: Texture2D = preload("res://addons/graph_dialogs/icons/charac
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	_popup_menu.set_item_icon(0, get_theme_icon('Rename', 'EditorIcons'))
-	_popup_menu.set_item_icon(1, get_theme_icon('Duplicate', 'EditorIcons'))
-	_popup_menu.set_item_icon(2, get_theme_icon('Remove', 'EditorIcons'))
+	_popup_menu.set_item_icon(0, get_theme_icon("Rename", "EditorIcons"))
+	_popup_menu.set_item_icon(1, get_theme_icon("Duplicate", "EditorIcons"))
+	_popup_menu.set_item_icon(2, get_theme_icon("Remove", "EditorIcons"))
 	create_item() # Create the root item
 
 
@@ -32,10 +34,10 @@ func _ready() -> void:
 func get_portraits_data(from: TreeItem = get_root()) -> Dictionary:
 	var data := {}
 	for item in from.get_children():
-		if item.get_metadata(0).has('group'):
+		if item.get_metadata(0).has("group"):
 			data[item.get_text(0)] = get_portraits_data(item)
 		else:
-			data[item.get_text(0)] = item.get_meta('portrait_editor').get_portrait_data()
+			data[item.get_text(0)] = item.get_meta("portrait_editor").get_portrait_data()
 	return data
 
 
@@ -45,38 +47,40 @@ func load_portraits_data(data: Dictionary, parent_item: TreeItem = get_root()) -
 		return # If the data is empty, do nothing
 	
 	for item in data.keys():
-		if not data[item].has('portrait_scene'):
-			# If the item is a group, create it and load its children
-			var group_item: TreeItem = new_portrait_group(item, parent_item)
-			load_portraits_data(data[item], group_item)
-		else:
+		if data[item] is GraphDialogsPortraitData:
 			# If the item is a portrait, create it and load its data
 			var editor = _character_editor.portrait_editor_scene.instantiate()
 			add_child(editor)
 			new_portrait_item(item, data[item], parent_item, editor)
 			editor.load_portrait_data(item, data[item])
 			remove_child(editor)
+		else:
+			# If the item is a group, create it and load its children
+			var group_item: TreeItem = new_portrait_group(item, parent_item)
+			load_portraits_data(data[item], group_item)
 
 
 ## Adds a new portrait item to the tree
-func new_portrait_item(name: String, data: Dictionary, parent_item: TreeItem, portrait_editor: Node) -> TreeItem:
+func new_portrait_item(name: String, data: GraphDialogsPortraitData,
+		parent_item: TreeItem, portrait_editor: Node) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
 	item.set_icon(0, _portrait_icon)
 	item.set_text(0, name)
-	item.set_metadata(0, data)
-	item.set_meta('item_path', get_item_path(item))
-	item.set_meta('portrait_editor', portrait_editor)
-	item.add_button(0, get_theme_icon('Remove', 'EditorIcons'), 0, false, 'Remove portrait')
+	item.set_metadata(0, {"portrait": data})
+	item.set_meta("item_path", get_item_path(item))
+	item.set_meta("portrait_editor", portrait_editor)
+	item.add_button(0, get_theme_icon("Remove", "EditorIcons"), 0, false, "Remove portrait")
 	return item
 
 
 ## Adds a new portrait group to the tree
 func new_portrait_group(group_name := "Group", parent_item: TreeItem = get_root()) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
-	item.set_icon(0, get_theme_icon('Folder', 'EditorIcons'))
+	item.set_icon(0, get_theme_icon("Folder", "EditorIcons"))
 	item.set_text(0, group_name)
-	item.set_metadata(0, {'group': true})
-	item.set_meta('item_path', get_item_path(item))
+	item.set_metadata(0, {"group": true})
+	item.set_meta("item_path", get_item_path(item))
+	item.add_button(0, get_theme_icon("Remove", "EditorIcons"), 1, false, "Remove Group")
 	return item
 
 
@@ -86,7 +90,7 @@ func duplicate_portrait_item(item: TreeItem) -> TreeItem:
 		item.get_text(0) + " (copy)",
 		item.get_metadata(0),
 		item.get_parent(),
-		item.get_meta('portrait_editor')
+		item.get_meta("portrait_editor")
 		)
 	item.set_editable(0, true)
 	item.select(0)
@@ -104,10 +108,18 @@ func remove_portrait_item(item: TreeItem) -> void:
 	if get_root().get_children().size() == 0:
 		_character_editor.show_portrait_editor_panel(false)
 
+
+## Removes the portrait group and all its children from the tree
+func remove_portrait_group(item: TreeItem) -> void:
+	for child in item.get_children():
+		child.free()
+	remove_portrait_item(item) # Remove the group item itself
+
+
 ## Renames the portrait item
 func rename_portrait_item(item: TreeItem) -> void:
 	item.set_editable(0, true)
-	call_deferred('edit_selected')
+	call_deferred("edit_selected")
 
 
 ## Check if the name is already in use
@@ -139,7 +151,7 @@ func filter_branch(parent: TreeItem, filter: String) -> bool:
 		var filter_in_group = false
 
 		# If the item is a group, check if any of its children match the filter
-		if item.get_metadata(0).has('group') and not match_filter:
+		if item.get_metadata(0).has("group") and not match_filter:
 			filter_in_group = filter_branch(item, filter)
 		
 		item.visible = match_filter or filter.is_empty() or filter_in_group
@@ -191,12 +203,12 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	var drop_section := get_drop_section_at_position(at_position)
 	var parent := to_item.get_parent()
 
-	if to_item.get_metadata(0).has('group') and drop_section == 1:
+	if to_item.get_metadata(0).has("group") and drop_section == 1:
 		parent = to_item
 
 	var new_item := copy_tree_item(item, parent)
 	
-	if !to_item.get_metadata(0).has('group') and drop_section == 1:
+	if !to_item.get_metadata(0).has("group") and drop_section == 1:
 		new_item.move_after(to_item)
 
 	if drop_section == -1:
@@ -209,14 +221,14 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 # Create a copy of the item and its children (if is a group)
 func copy_tree_item(item: TreeItem, new_parent: TreeItem) -> TreeItem:
 	var new_item: TreeItem = null
-	if item.get_metadata(0).has('group'):
+	if item.get_metadata(0).has("group"):
 		new_item = new_portrait_group(item.get_text(0), new_parent)
 	else:
 		new_item = new_portrait_item(
 			item.get_text(0),
 			item.get_metadata(0),
 			new_parent,
-			item.get_meta('portrait_editor')
+			item.get_meta("portrait_editor")
 			)
 	
 	for child in item.get_children():
@@ -230,7 +242,7 @@ func copy_tree_item(item: TreeItem, new_parent: TreeItem) -> TreeItem:
 ## Called when the user right-clicks on a portrait item
 func _on_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		_popup_menu.set_item_disabled(1, get_selected().get_metadata(0).has('group'))
+		_popup_menu.set_item_disabled(1, get_selected().get_metadata(0).has("group"))
 		_popup_menu.popup_on_parent(Rect2(get_global_mouse_position(), Vector2()))
 
 
@@ -263,7 +275,7 @@ func _on_item_edited() -> void:
 			suffix += 1
 		item.set_text(0, name)
 	
-	if not item.get_metadata(0).has('group'): # Update the portrait name
+	if not item.get_metadata(0).has("group"): # Update the portrait name
 		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
 	_character_editor.on_modified()
 
@@ -282,7 +294,13 @@ func _on_popup_menu_id_pressed(id: int) -> void:
 ## Called when the user clicks on a portrait item button
 func _on_item_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
-		if id == 0: # Remove button clicked
+		if id == 0: # Remove item button clicked
 			remove_portrait_item(item)
-
+		if id == 1: # Remove group button clicked
+			if item.get_children().size() > 0:
+				# If the group has children, show a confirmation dialog
+				_remove_group_dialog.confirmed.connect(remove_portrait_group.bind(item))
+				_remove_group_dialog.popup_centered()
+			else:
+				remove_portrait_item(item)
 #endregion

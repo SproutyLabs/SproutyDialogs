@@ -61,7 +61,7 @@ var _portrait_on_text_box: bool = false
 
 
 func _ready() -> void:
-	_portrait_tree.connect("portrait_item_selected", _on_portrait_selected)
+	_portrait_tree.portrait_item_selected.connect(_on_portrait_selected)
 	_to_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_new_text_box_scene_button.icon = get_theme_icon("Add", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
@@ -307,7 +307,7 @@ func _switch_current_portrait(item: TreeItem) -> void:
 	# Update the current portrait data
 	if _current_portrait and not _current_portrait.get_metadata(0).has("group"):
 		var current_data = _current_portrait.get_meta("portrait_editor").get_portrait_data()
-		_current_portrait.set_metadata(0, current_data)
+		_current_portrait.set_metadata(0, {"portrait": current_data})
 
 	# Switch the portrait editor panel
 	if not item.get_metadata(0).has("group"):

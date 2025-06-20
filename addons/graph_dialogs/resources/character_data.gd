@@ -5,7 +5,7 @@ extends Resource
 ## -----------------------------------------------------------------------------
 ## Character Data Resource
 ## 
-## This resource is used to store character data for the dialogue graph editor.
+## This resource is used to store character data.
 ## -----------------------------------------------------------------------------
 
 ## Character identifier.
@@ -33,18 +33,15 @@ extends Resource
 ## node that will hold the portrait as a parent of the portrait scene.
 @export var portrait_on_text_box: bool = false
 ## Character's portraits.
-## This is a dictionary where each key is the portrait path in the form of a string
-## and its value is a dictionary containing the portrait data.
+## This is a dictionary where each key is a portrait name or a group of portraits
+## and its value is a dictionary containing the portrait data or more portraits.
 ## The dictionary structure is as follows:
 ## [codeblock]
 ## {
-##   "portrait_1": {
-##     "path": "res://path/to/portrait_1.png",
-##     ...
-##   },
-##   "portrait_2": {
-##     "path": "res://path/to/portrait_2.png",
-##     ...
+##   "portrait_1": GraphDialogsPortraitData (SubResource)
+##   "portrait_group": {
+##  	 "portrait_2": GraphDialogsPortraitData (SubResource)
+##  	 ...
 ##   },
 ##   ...
 ## }[/codeblock]

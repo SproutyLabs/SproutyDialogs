@@ -73,7 +73,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_mqdqa")
 theme_type_variation = &"LocaleLabel"
-text = "(en)"
+text = "(es)"
 
 [node name="NameDefaultLocaleField" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/DisplayName"]
 unique_name_in_owner = true
@@ -255,6 +255,13 @@ item_1/id = 1
 item_2/text = "Remove"
 item_2/icon = SubResource("ImageTexture_rpbmd")
 item_2/id = 2
+
+[node name="RemoveGroupDialog" type="ConfirmationDialog" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree"]
+initial_position = 4
+size = Vector2i(367, 106)
+ok_button_text = "Confirm"
+dialog_text = "Are you sure you want to remove this group? 
+All portraits inside will be removed."
 
 [node name="PortraitSettings" type="MarginContainer" parent="."]
 layout_mode = 2
