@@ -9,10 +9,10 @@ extends Resource
 ## -----------------------------------------------------------------------------
 
 ## Portrait scene path.
-## This is the path to the scene that will be used as the character's portrait.
+## This is the UID of the scene that will be used as the character's portrait.
 ## The scene should contain a root node that extends [class DialogPortrait]
 ## to can integrate with the dialog system.
-@export var portrait_scene: String = ""
+@export var portrait_scene: int = -1
 ## Portrait exported overrides properties.
 ## This is a dictionary where each key is the property name to override
 ## and its value is the new value for that property.

@@ -83,7 +83,9 @@ func get_character_data() -> GraphDialogsCharacterData:
 	data.key_name = _key_name
 	data.display_name = {_key_name: _get_name_translations()}
 	data.description = _description_field.text
-	data.text_box = _text_box_scene_field.get_value()
+	data.text_box = ResourceSaver.get_resource_id_for_path(_text_box_scene_field.get_value()) if \
+		GraphDialogsFileUtils.check_valid_extension(_text_box_scene_field.get_value(),
+			_text_box_scene_field.file_filters) else -1
 	data.portrait_on_text_box = _portrait_on_text_box
 	data.portraits = _portrait_tree.get_portraits_data()
 	data.typing_sounds = {} # Typing sounds are not implemented yet
@@ -102,8 +104,18 @@ func load_character(data: GraphDialogsCharacterData, name_data: Dictionary) -> v
 	_update_translations_state()
 
 	# Text box scene file
-	_text_box_scene_field.set_value(data.text_box)
-	if GraphDialogsFileUtils.check_valid_extension(data.text_box, _text_box_scene_field.file_filters):
+	if data.text_box == -1:
+		_text_box_scene_field.set_value("")
+		_to_text_box_scene_button.visible = false
+		_new_text_box_scene_button.visible = true
+	else: # If the text box scene is set, load it
+		if not ResourceLoader.exists(ResourceUID.get_id_path(data.text_box)):
+			printerr("[Graph Dialogs] Text box scene file not found: ", data.text_box)
+			return
+		_text_box_scene_field.set_value(ResourceUID.get_id_path(data.text_box))
+	
+	if GraphDialogsFileUtils.check_valid_extension(
+			_text_box_scene_field.get_value(), _text_box_scene_field.file_filters):
 		_to_text_box_scene_button.visible = true
 		_new_text_box_scene_button.visible = false
 	_portrait_on_text_box = data.portrait_on_text_box

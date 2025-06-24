@@ -63,7 +63,9 @@ func _ready():
 ## Get the portrait data from the editor
 func get_portrait_data() -> GraphDialogsPortraitData:
 	var data = GraphDialogsPortraitData.new()
-	data.portrait_scene = _portrait_scene_field.get_value()
+	data.portrait_scene = ResourceSaver.get_resource_id_for_path(_portrait_scene_field.get_value()) if \
+		GraphDialogsFileUtils.check_valid_extension(_portrait_scene_field.get_value(),
+			_portrait_scene_field.file_filters) else -1
 	data.export_overrides = _portrait_export_properties.get_export_overrides()
 	data.transform_settings = {
 		"scale": Vector2(
@@ -84,20 +86,31 @@ func get_portrait_data() -> GraphDialogsPortraitData:
 
 ## Load the portrait settings into the editor
 func load_portrait_data(name: String, data: GraphDialogsPortraitData) -> void:
-	# Load the portrait settings from the given data
 	set_portrait_name(name)
-	_portrait_scene_field.set_value(data.portrait_scene)
-	_portrait_export_properties.set_export_overrides(data.export_overrides)
+
+	# Set the portrait scene
+	if data.portrait_scene == -1:
+		_portrait_scene_field.set_value("")
+		_to_portrait_scene_button.visible = false
+		_new_portrait_scene_button.visible = true
+		_switch_scene_preview("")
+	else: # If the text box scene is set, load it
+		if not ResourceLoader.exists(ResourceUID.get_id_path(data.portrait_scene)):
+			printerr("[Graph Dialogs] Portrait scene file not found: ", data.portrait_scene)
+			return
+		_portrait_scene_field.set_value(ResourceUID.get_id_path(data.portrait_scene))
 
 	# Check if the scene file is valid and set the preview
 	if GraphDialogsFileUtils.check_valid_extension(
-			data.portrait_scene, _portrait_scene_field.file_filters):
+			_portrait_scene_field.get_value(), _portrait_scene_field.file_filters):
 		_to_portrait_scene_button.visible = true
 		_new_portrait_scene_button.visible = false
-		_switch_scene_preview(data.portrait_scene)
+		_switch_scene_preview(_portrait_scene_field.get_value())
 	else:
 		_to_portrait_scene_button.visible = false
 		_new_portrait_scene_button.visible = true
+
+	_portrait_export_properties.set_export_overrides(data.export_overrides)
 
 	# Load image settings
 	_portrait_scale_section.get_node("LockRatioButton").button_pressed = data.transform_settings.scale_lock_ratio

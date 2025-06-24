@@ -5,7 +5,7 @@
 
 [sub_resource type="Resource" id="Resource_tubb5"]
 script = ExtResource("1_tubb5")
-portrait_scene = "res://tests/portrait_scene.tscn"
+portrait_scene = 2339945795865533910
 export_overrides = {
 "portrait_array": {
 "type": [4, 2, 1, [4, 2, 1]],
@@ -47,7 +47,7 @@ typing_sound = {}
 
 [sub_resource type="Resource" id="Resource_j8c63"]
 script = ExtResource("1_tubb5")
-portrait_scene = "res://tests/new_portrait.tscn"
+portrait_scene = 7106419741507541197
 export_overrides = {
 "portrait_image": {
 "type": 4,
@@ -78,7 +78,7 @@ display_name = {
 }
 }
 description = "Insert character description here."
-text_box = "res://tests/dialog_box.tscn"
+text_box = 7899502739341092155
 portrait_on_text_box = false
 portraits = {
 "Bob": SubResource("Resource_tubb5"),
