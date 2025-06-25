@@ -9,20 +9,16 @@ extends Control
 ## It allows creating, opening, saving and switching between dialog and character files.
 ## -----------------------------------------------------------------------------
 
-## Emitted when dialog references have changed
-signal dialog_references_changed
-## Emitted when character references have changed
-signal character_references_changed
-## Emitted when all dialog files have been closed
-signal all_dialog_files_closed
-## Emitted when all character files have been closed
-signal all_character_files_closed
 ## Emitted when requesting to switch current graph in the workspace
 signal request_to_switch_graph(graph: GraphEdit)
 ## Emitted when requesting to switch current character in the character editor
 signal request_to_switch_character(char_editor: Control)
 ## Emitted when requesting to switch to a specific tab
 signal request_to_switch_tab(tab: int)
+## Emitted when all dialog files have been closed
+signal all_dialog_files_closed
+## Emitted when all character files have been closed
+signal all_character_files_closed
 
 ## New dialog button
 @onready var _new_dialog_button: Button = %NewDialogButton
@@ -92,7 +88,6 @@ func new_dialog_file(path: String) -> void:
 	# Create a new dialogue data resource
 	var resource = GraphDialogsDialogueData.new()
 	ResourceSaver.save(resource, path)
-	_save_file_reference(path, "dialogs")
 
 	# Set a csv file if translation is enabled
 	if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
@@ -121,7 +116,7 @@ func _new_graph_from_resource(resource: GraphDialogsDialogueData) -> GraphEdit:
 	if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
 		and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
 		dialogs = GraphDialogsCSVFileManager.load_dialogs_from_csv(resource.csv_file_path)
-	graph.load_graph_data(resource.graph_data, dialogs)
+	graph.load_graph_data(resource.graph_data, dialogs, resource.characters)
 	graph.name = "Graph"
 	remove_child(graph)
 	return graph
@@ -133,7 +128,6 @@ func new_character_file(path: String) -> void:
 	var resource = GraphDialogsCharacterData.new()
 	resource.key_name = path.get_file().get_basename()
 	ResourceSaver.save(resource, path)
-	_save_file_reference(path, "characters")
 
 	var char_editor = _new_character_from_resource(resource)
 	_file_list.new_file_item(path, resource, char_editor)
@@ -167,14 +161,12 @@ func load_file(path: String) -> void:
 			GraphDialogsFileUtils.set_recent_file_path("dialogue_files", path)
 			var graph = _new_graph_from_resource(resource)
 			_file_list.new_file_item(path, resource, graph)
-			_save_file_reference(path, "dialogs")
 			request_to_switch_tab.emit(0)
 		
 		elif resource is GraphDialogsCharacterData:
 			GraphDialogsFileUtils.set_recent_file_path("character_files", path)
 			var char_editor = _new_character_from_resource(resource)
 			_file_list.new_file_item(path, resource, char_editor)
-			_save_file_reference(path, "characters")
 			request_to_switch_tab.emit(1)
 
 		_save_file_button.disabled = false
@@ -194,18 +186,16 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		if file_metadata.cache_node.alerts.is_error_alert_active():
 			printerr("[Graph Dialogs] Cannot save, please fix the errors.")
 			return
-		var graph_data = file_metadata["cache_node"].get_graph_data()
-		data.graph_data = graph_data["nodes_data"]
-		data.dialogs = graph_data["dialogs"]
-		data.characters = graph_data["characters"]
+		var graph_editor_data = file_metadata["cache_node"].get_graph_data()
+		data.graph_data = graph_editor_data["nodes_data"]
+		data.dialogs = graph_editor_data["dialogs"]
+		data.characters = graph_editor_data["characters"]
 		file_metadata["data"] = data
 
 		# Save the CSV file with the dialogs
 		if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
 			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
-			GraphDialogsCSVFileManager.save_dialogs_on_csv(graph_data["dialogs"], data.csv_file_path)
-			
-		_save_file_reference(save_path, "dialogs")
+			GraphDialogsCSVFileManager.save_dialogs_on_csv(graph_editor_data["dialogs"], data.csv_file_path)
 
 	elif data is GraphDialogsCharacterData:
 		data = file_metadata["cache_node"].get_character_data()
@@ -217,8 +207,6 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 			and ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
 			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
 			GraphDialogsCSVFileManager.save_character_names_on_csv(data.display_name)
-		
-		_save_file_reference(save_path, "characters")
 	
 	# Save file on the given path
 	ResourceSaver.save(file_metadata["data"], save_path)
@@ -227,20 +215,6 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 
 	print("[Graph Dialogs] File '" + file_metadata.file_name + "' saved.")
 
-
-# Save the reference to the resource in the project settings
-func _save_file_reference(path: String, file_type: String) -> void:
-	var dict = {}
-	if ProjectSettings.has_setting("graph_dialogs/references/" + file_type):
-		dict = ProjectSettings.get_setting("graph_dialogs/references/" + file_type)
-	dict[path.get_file().get_basename()] = ResourceSaver.get_resource_id_for_path(path, true)
-	ProjectSettings.set_setting("graph_dialogs/references/" + file_type, dict)
-	ProjectSettings.save()
-
-	if file_type == "characters":
-		character_references_changed.emit()
-	elif file_type == "dialogs":
-		dialog_references_changed.emit()
 #endregion
 
 #region === File options buttons ===============================================

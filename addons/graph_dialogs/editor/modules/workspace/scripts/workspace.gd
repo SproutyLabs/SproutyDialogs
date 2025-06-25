@@ -14,6 +14,8 @@ signal graph_editor_visible(visible: bool)
 signal new_dialog_file_pressed
 ## Emitted when the open dialog file button is pressed
 signal open_dialog_file_pressed
+## Emitted when is requesting to open a character file
+signal open_character_file_request(path: String)
 
 ## Start panel reference
 @onready var _start_panel: Panel = $StartPanel
@@ -52,6 +54,7 @@ func switch_current_graph(new_graph: GraphEdit) -> void:
 	# Asign text editor reference to the new graph
 	if not new_graph.is_connected("open_text_editor", _text_editor.show_text_editor):
 		new_graph.open_text_editor.connect(_text_editor.show_text_editor)
+		new_graph.open_character_file_request.connect(open_character_file_request.emit)
 	_graph_editor.add_child(new_graph)
 	show_graph_editor()
 
@@ -82,9 +85,3 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 	var current_editor = get_current_graph()
 	if current_editor:
 		current_editor.on_translation_enabled_changed(enabled)
-
-## Update the character references when they change
-func on_character_references_changed() -> void:
-	var current_editor = get_current_graph()
-	if current_editor:
-		current_editor.on_character_references_changed()

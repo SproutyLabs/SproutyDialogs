@@ -39,13 +39,18 @@ extends Resource
 ## }[/codeblock]
 @export var dialogs: Dictionary = {}
 ## A dictionary containing the characters for each dialogue ID.
-## This is a dictionary where each key is the diaglogue ID 
-## and its value is a list of character names.
+## This is a dictionary where each key is the dialogue ID 
+## and its value is a dictionary of the characters with their UIDs.
 ## This dictionary is structured as follows:
 ## [codeblock]
 ## {
-##   "dialogue_id_1": ["Character 1", "Character 2"],
-##   "dialogue_id_2": ["Character 3", "Character 4"],
+##   "dialogue_id_1": {
+##     "Character 1": UID of the character resource,
+##     "Character 2": UID of the character resource,
+##     ...
+##   },
+##   "dialogue_id_2": { ... },
+##   "dialogue_id_3": { ... },
 ##   ...
 ## }[/codeblock]
 @export var characters: Dictionary = {}

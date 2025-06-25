@@ -12,6 +12,8 @@ extends GraphEdit
 signal modified
 ## Triggered when all the nodes are loaded
 signal nodes_loaded
+## Emitted when is requesting to open a character file
+signal open_character_file_request(path: String)
 ## Emitted when a expand button to open the text editor is pressed
 signal open_text_editor(text_box: TextEdit)
 ## Emitted when the locales are changed
@@ -69,13 +71,6 @@ func on_translation_enabled_changed(enabled: bool):
 	translation_enabled_changed.emit(enabled)
 
 
-## Notify all dialogue nodes that the character references have changed
-func on_character_references_changed():
-	for child in get_children():
-		if child is BaseNode and child.node_type == "dialogue_node":
-			child.on_character_references_changed()
-
-
 # Create a new node of a given type
 func _new_node(node_type: String, node_index: int, node_offset: Vector2) -> GraphNode:
 	_nodes_type_count[node_type] += 1
@@ -123,9 +118,11 @@ func get_graph_data() -> Dictionary:
 				dict.dialogs[child.get_dialog_translation_key()] = child.get_dialogs_text()
 				var character = child.get_character_name()
 				if not dict.characters.has(start_id):
-					dict.characters[start_id] = []
+					dict.characters[start_id] = {}
+				# Add character to the reference dictionary
 				if character != "" and not dict.characters[start_id].has(character):
-						dict.characters[start_id].append(character)
+						dict.characters[start_id][character] = \
+							ResourceSaver.get_resource_id_for_path(child.get_character_path())
 			
 			# Start nodes define dialogs trees
 			if child.node_type == "start_node":
@@ -145,7 +142,7 @@ func get_graph_data() -> Dictionary:
 
 
 ## Load graph data from a dictionary
-func load_graph_data(data: Dictionary, dialogs: Dictionary) -> void:
+func load_graph_data(data: Dictionary, dialogs: Dictionary, characters: Dictionary) -> void:
 	for dialogue_id in data.keys():
 		# Find the start node for the current dialogue
 		var current_start_node = ""
@@ -166,10 +163,16 @@ func load_graph_data(data: Dictionary, dialogs: Dictionary) -> void:
 			new_node.set_data(node_data)
 			new_node.start_node_name = current_start_node
 			
-			# Load dialogs on dialogue nodes
+			# Load dialogs and characters on dialogue nodes
 			if node_data["node_type"] == "dialogue_node":
 				new_node.load_dialogs(dialogs[node_data["dialog_key"]])
-			
+				var character_name = node_data["character"]
+				if character_name != "":
+					var character_uid = characters[dialogue_id][character_name]
+					if character_uid != -1:
+						new_node.load_character(ResourceUID.get_id_path(character_uid))
+						new_node.load_portrait(node_data["portrait"])
+	
 	# When all the nodes are loaded, notify the nodes to connect each other
 	nodes_loaded.emit()
 
