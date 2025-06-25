@@ -33,6 +33,10 @@ const NODES_PATH = "res://addons/graph_dialogs/nodes/"
 var _nodes_references: Dictionary
 ## Nodes type count
 var _nodes_type_count: Dictionary = {}
+## Selected nodes
+var _selected_nodes: Array[GraphNode] = []
+## Nodes copied to clipboard
+var _copied_nodes: Array[GraphNode] = []
 
 ## Requested connection node
 var _request_node: String = ""
@@ -44,7 +48,15 @@ var _cursor_pos: Vector2 = Vector2.ZERO
 
 
 func _init() -> void:
+	node_selected.connect(_on_node_selected)
+	node_deselected.connect(_on_node_deselected)
+
+	copy_nodes_request.connect(_on_copy_nodes)
+	cut_nodes_request.connect(_on_cut_nodes)
+	paste_nodes_request.connect(_on_paste_nodes)
+	duplicate_nodes_request.connect(_on_duplicate_nodes)
 	delete_nodes_request.connect(_on_delete_nodes_request)
+
 	connection_request.connect(_on_connection_request)
 	connection_to_empty.connect(_on_connection_to_empty)
 	popup_request.connect(_on_right_click)
@@ -86,7 +98,6 @@ func _new_node(node_type: String, node_index: int, node_offset: Vector2) -> Grap
 	new_node.title += ' #' + str(node_index)
 	new_node.position_offset = node_offset
 	add_child(new_node, true)
-	on_modified()
 
 	# Connect translation signals
 	if node_type == "dialogue_node":
@@ -185,7 +196,7 @@ func load_graph_data(data: Dictionary, dialogs: Dictionary, characters: Dictiona
 
 #endregion
 
-#region === Add and Delete Nodes ===============================================
+#region === PopupMenu ==========================================================
 
 ## Set nodes list on popup node menu
 func set_add_node_menu() -> void:
@@ -206,10 +217,26 @@ func show_add_node_menu(pos: Vector2) -> void:
 	_cursor_pos = (pos + scroll_offset) / zoom
 
 
+## Add node from pop-up menu
+func _on_add_node_menu_selected(id: int) -> void:
+	var node_type = _add_node_menu.get_item_metadata(id)
+	add_new_node(node_type)
+
+
+## Show add node pop-up menu on right click
+func _on_right_click(pos: Vector2) -> void:
+	show_add_node_menu(pos)
+
+#endregion
+
+
+#region === Nodes Operations ===================================================
+
 ## Add a new node to the graph
 func add_new_node(node_type: String) -> void:
 	var new_node = _new_node(node_type, _nodes_type_count[node_type], _cursor_pos)
 	new_node.selected = true
+	on_modified()
 	
 	# Connect to a previous node if requested
 	if _request_port > -1 and new_node.is_slot_enabled_left(0):
@@ -236,15 +263,17 @@ func delete_node(node: GraphNode) -> void:
 	on_modified()
 
 
-## Show add node pop-up menu on right click
-func _on_right_click(pos: Vector2) -> void:
-	show_add_node_menu(pos)
-
-
-## Add node from pop-up menu
-func _on_add_node_menu_selected(id: int) -> void:
-	var node_type = _add_node_menu.get_item_metadata(id)
-	add_new_node(node_type)
+## Create a copy of a node from the graph
+func copy_node(node: GraphNode) -> GraphNode:
+	var new_node = _new_node(node.node_type, _nodes_type_count[node.node_type], node.position_offset)
+	new_node.set_data(node.get_data()[node.name.to_snake_case()])
+	remove_child(new_node)
+	
+	if node.node_type == "dialogue_node":
+		new_node.load_dialogs(node.get_dialogs_text())
+		new_node.load_character(node.get_character_path())
+		new_node.load_portrait(node.get_portrait())
+	return new_node
 
 
 ## Delete selected nodes
@@ -252,6 +281,63 @@ func _on_delete_nodes_request(nodes: Array[StringName]):
 	for child in get_children():
 		for node_name in nodes: # Remove selected nodes
 			if child.name == node_name: delete_node(child)
+
+
+## Duplicate selected nodes
+func _on_duplicate_nodes() -> void:
+	print("Duplicating nodes: ", _selected_nodes.size())
+	if _selected_nodes.size() == 0:
+		return
+	for node in _selected_nodes:
+		var new_node = copy_node(node)
+		new_node.position_offset += Vector2(20, 20) # Offset duplicated nodes
+		add_child(new_node, true)
+		new_node.selected = true
+	on_modified()
+
+
+## Copy selected nodes
+func _on_copy_nodes() -> void:
+	print("Copying nodes: ", _selected_nodes.size())
+	for node in _selected_nodes:
+		if node in _copied_nodes:
+			continue # Skip if the node is already copied
+		var new_node = copy_node(node)
+		_copied_nodes.append(new_node)
+
+
+## Cut selected nodes
+func _on_cut_nodes() -> void:
+	print("Cutting nodes: ", _selected_nodes.size())
+	if _selected_nodes.size() == 0:
+		return
+	
+	_on_copy_nodes()
+	for node in _selected_nodes:
+		delete_node(node)
+	_selected_nodes.clear()
+	on_modified()
+
+
+## Paste copied nodes
+func _on_paste_nodes() -> void:
+	print("Pasting nodes: ", _copied_nodes.size())
+	if _copied_nodes.size() == 0:
+		return
+	
+	# Get the center point of the nodes
+	var center_pos = Vector2.ZERO
+	for node in _copied_nodes:
+		center_pos += node.position_offset
+	center_pos /= _copied_nodes.size()
+	
+	for node in _copied_nodes:
+		node.position_offset -= Vector2(node.size.x / 2, node.size.y / 2)
+		node.position_offset -= center_pos # Center the nodes
+		node.position_offset += ((get_local_mouse_position() + scroll_offset) / zoom)
+		add_child(node, true)
+	_copied_nodes.clear()
+	on_modified()
 
 
 ## Check if graph do not have nodes
@@ -267,6 +353,19 @@ func clear_graph() -> void:
 	for child in get_children():
 		if child is BaseNode:
 			child.queue_free()
+
+
+## Called when a node is selected
+func _on_node_selected(node: GraphNode) -> void:
+	if node in _selected_nodes:
+		return # Skip if the node is already selected
+	_selected_nodes.append(node)
+
+
+## Called when a node is deselected
+func _on_node_deselected(node: GraphNode) -> void:
+	_selected_nodes.erase(node)
+
 #endregion
 
 #region === Nodes Connection ===================================================

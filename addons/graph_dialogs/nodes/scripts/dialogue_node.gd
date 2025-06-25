@@ -50,14 +50,13 @@ func _ready():
 func get_data() -> Dictionary:
 	var dict := {}
 	var connections: Array = graph_editor.get_node_connections(name)
-	var portrait = _portrait_dropdown.get_item_text(_portrait_dropdown.selected)
 	
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
 		"dialog_key": get_dialog_translation_key(),
 		"character": get_character_name(),
-		"portrait": portrait if portrait != "(No one)" else "",
+		"portrait": get_portrait(),
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
 		"offset": position_offset
@@ -86,6 +85,15 @@ func get_character_name() -> String:
 		return _character_data.key_name
 	else:
 		return ""
+
+
+## Get the selected portrait
+func get_portrait() -> String:
+	var portrait = _portrait_dropdown.get_item_text(_portrait_dropdown.selected)
+	if portrait == "(No one)":
+		return ""
+	else:
+		return portrait
 
 
 ## Load the character data from the file field
