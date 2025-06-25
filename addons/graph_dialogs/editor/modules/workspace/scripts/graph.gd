@@ -43,6 +43,13 @@ var _request_port: int = -1
 var _cursor_pos: Vector2 = Vector2.ZERO
 
 
+func _init() -> void:
+	delete_nodes_request.connect(_on_delete_nodes_request)
+	connection_request.connect(_on_connection_request)
+	connection_to_empty.connect(_on_connection_to_empty)
+	popup_request.connect(_on_right_click)
+
+
 func _ready():
 	_nodes_references = _get_nodes_references(NODES_PATH)
 	for node in _nodes_references: # Initialize nodes count array
