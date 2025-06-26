@@ -33,10 +33,15 @@ const NODES_PATH = "res://addons/graph_dialogs/nodes/"
 var _nodes_references: Dictionary
 ## Nodes type count
 var _nodes_type_count: Dictionary = {}
+
 ## Selected nodes
 var _selected_nodes: Array[GraphNode] = []
 ## Nodes copied to clipboard
-var _copied_nodes: Array[GraphNode] = []
+var _nodes_copy: Array[GraphNode] = []
+## Copied nodes references
+var _copied_nodes: Dictionary = {}
+## Copied connections references
+var _copied_connections: Dictionary = {}
 
 ## Requested connection node
 var _request_node: String = ""
@@ -196,7 +201,7 @@ func load_graph_data(data: Dictionary, dialogs: Dictionary, characters: Dictiona
 
 #endregion
 
-#region === PopupMenu ==========================================================
+#region === Popup Menu =========================================================
 
 ## Set nodes list on popup node menu
 func set_add_node_menu() -> void:
@@ -229,12 +234,11 @@ func _on_right_click(pos: Vector2) -> void:
 
 #endregion
 
-
 #region === Nodes Operations ===================================================
 
 ## Add a new node to the graph
 func add_new_node(node_type: String) -> void:
-	var new_node = _new_node(node_type, _nodes_type_count[node_type], _cursor_pos)
+	var new_node = _new_node(node_type, _nodes_type_count[node_type] + 1, _cursor_pos)
 	new_node.selected = true
 	on_modified()
 	
@@ -259,15 +263,20 @@ func delete_node(node: GraphNode) -> void:
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
 	_nodes_type_count[node.node_type] -= 1
-	node.queue_free() # Remove node
+	_selected_nodes.erase(node)
+	node.queue_free()
 	on_modified()
 
 
 ## Create a copy of a node from the graph
 func copy_node(node: GraphNode) -> GraphNode:
-	var new_node = _new_node(node.node_type, _nodes_type_count[node.node_type], node.position_offset)
+	var new_node = _new_node(node.node_type,
+			_nodes_type_count[node.node_type] + 1, node.position_offset)
 	new_node.set_data(node.get_data()[node.name.to_snake_case()])
 	remove_child(new_node)
+
+	_copied_connections[new_node.name] = get_node_connections(node.name)
+	_copied_nodes[new_node.name] = node # Store the copied node reference
 	
 	if node.node_type == "dialogue_node":
 		new_node.load_dialogs(node.get_dialogs_text())
@@ -285,59 +294,108 @@ func _on_delete_nodes_request(nodes: Array[StringName]):
 
 ## Duplicate selected nodes
 func _on_duplicate_nodes() -> void:
-	print("Duplicating nodes: ", _selected_nodes.size())
 	if _selected_nodes.size() == 0:
 		return
-	for node in _selected_nodes:
+	var _duplicate_nodes = _selected_nodes.duplicate()
+	for node in _duplicate_nodes:
 		var new_node = copy_node(node)
-		new_node.position_offset += Vector2(20, 20) # Offset duplicated nodes
+		_nodes_type_count[node.node_type] += 1
+		new_node.position_offset += Vector2(20, 20) # Offset duplicated nodes}
 		add_child(new_node, true)
 		new_node.selected = true
+		node.selected = false
+	_reconnect_nodes_copy()
+	_copied_nodes.clear()
+	_nodes_copy.clear()
 	on_modified()
 
 
 ## Copy selected nodes
 func _on_copy_nodes() -> void:
-	print("Copying nodes: ", _selected_nodes.size())
+	_copied_connections.clear()
+	_copied_nodes.clear()
+	_nodes_copy.clear()
+
+	if _selected_nodes.size() == 0:
+		return
 	for node in _selected_nodes:
-		if node in _copied_nodes:
-			continue # Skip if the node is already copied
 		var new_node = copy_node(node)
-		_copied_nodes.append(new_node)
+		_nodes_copy.append(new_node)
 
 
 ## Cut selected nodes
 func _on_cut_nodes() -> void:
-	print("Cutting nodes: ", _selected_nodes.size())
+	_copied_connections.clear()
+	_copied_nodes.clear()
+	_nodes_copy.clear()
+	
 	if _selected_nodes.size() == 0:
 		return
-	
-	_on_copy_nodes()
+
 	for node in _selected_nodes:
-		delete_node(node)
+		_copied_connections[node.name] = get_node_connections(node.name)
+		_copied_nodes[node.name] = node
+		_nodes_copy.append(node)
+		remove_child(node)
+		_nodes_type_count[node.node_type] -= 1
 	_selected_nodes.clear()
 	on_modified()
 
 
 ## Paste copied nodes
 func _on_paste_nodes() -> void:
-	print("Pasting nodes: ", _copied_nodes.size())
-	if _copied_nodes.size() == 0:
+	if _nodes_copy.size() == 0:
 		return
 	
 	# Get the center point of the nodes
 	var center_pos = Vector2.ZERO
-	for node in _copied_nodes:
+	for node in _nodes_copy:
 		center_pos += node.position_offset
-	center_pos /= _copied_nodes.size()
+	center_pos /= _nodes_copy.size()
 	
-	for node in _copied_nodes:
+	for node in _nodes_copy:
 		node.position_offset -= Vector2(node.size.x / 2, node.size.y / 2)
 		node.position_offset -= center_pos # Center the nodes
 		node.position_offset += ((get_local_mouse_position() + scroll_offset) / zoom)
+
+		_nodes_type_count[node.node_type] += 1
+		if find_child(node.name) != null: # Rename the node if it already exists
+			node.name = node.node_type + "_" + str(_nodes_type_count[node.node_type])
+		
+		_copied_nodes[node.name].selected = false # Deselect original nodes
 		add_child(node, true)
+		node.selected = true
+	
+	_reconnect_nodes_copy()
 	_copied_nodes.clear()
+	_nodes_copy.clear()
 	on_modified()
+
+
+## Reconnect nodes after a paste operation
+func _reconnect_nodes_copy() -> void:
+	var _names_references: Dictionary = {}
+	for node in _copied_nodes:
+		_names_references[_copied_nodes[node].name] = node
+	
+	for node in _copied_connections:
+		for connection in _copied_connections[node]:
+			if _names_references.has(connection["to_node"]):
+				connect_node(_names_references[connection["from_node"]], connection["from_port"],
+					_names_references[connection["to_node"]], connection["to_port"])
+	_copied_connections.clear()
+
+
+## Called when a node is selected
+func _on_node_selected(node: GraphNode) -> void:
+	if _selected_nodes.has(node):
+		return # Skip if the node is already selected
+	_selected_nodes.append(node)
+
+
+## Called when a node is deselected
+func _on_node_deselected(node: GraphNode) -> void:
+	_selected_nodes.erase(node)
 
 
 ## Check if graph do not have nodes
@@ -353,18 +411,6 @@ func clear_graph() -> void:
 	for child in get_children():
 		if child is BaseNode:
 			child.queue_free()
-
-
-## Called when a node is selected
-func _on_node_selected(node: GraphNode) -> void:
-	if node in _selected_nodes:
-		return # Skip if the node is already selected
-	_selected_nodes.append(node)
-
-
-## Called when a node is deselected
-func _on_node_deselected(node: GraphNode) -> void:
-	_selected_nodes.erase(node)
 
 #endregion
 
