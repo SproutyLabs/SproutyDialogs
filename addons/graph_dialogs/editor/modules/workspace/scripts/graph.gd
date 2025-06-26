@@ -96,8 +96,10 @@ func on_translation_enabled_changed(enabled: bool):
 
 
 # Create a new node of a given type
-func _new_node(node_type: String, node_index: int, node_offset: Vector2) -> GraphNode:
-	_nodes_type_count[node_type] += 1
+func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_count: bool = true) -> GraphNode:
+	if add_to_count:
+		_nodes_type_count[node_type] += 1
+	print("Creating node: ", node_type, ", count: ", _nodes_type_count[node_type])
 	var new_node = _nodes_references[node_type].instantiate()
 	new_node.name = node_type + "_" + str(node_index)
 	new_node.title += ' #' + str(node_index)
@@ -270,8 +272,12 @@ func delete_node(node: GraphNode) -> void:
 
 ## Create a copy of a node from the graph
 func copy_node(node: GraphNode) -> GraphNode:
-	var new_node = _new_node(node.node_type,
-			_nodes_type_count[node.node_type] + 1, node.position_offset)
+	var new_node = _new_node(
+		node.node_type,
+		_nodes_type_count[node.node_type] + (1 * _copied_nodes.size()) + 1,
+		node.position_offset,
+		false # Do not add to count here, it will be added later
+	)
 	new_node.set_data(node.get_data()[node.name.to_snake_case()])
 	remove_child(new_node)
 
@@ -300,6 +306,7 @@ func _on_duplicate_nodes() -> void:
 	for node in _duplicate_nodes:
 		var new_node = copy_node(node)
 		_nodes_type_count[node.node_type] += 1
+		print("Duplicated node: ", node.node_type, ", count: ", _nodes_type_count[node.node_type])
 		new_node.position_offset += Vector2(20, 20) # Offset duplicated nodes}
 		add_child(new_node, true)
 		new_node.selected = true
@@ -338,6 +345,7 @@ func _on_cut_nodes() -> void:
 		_nodes_copy.append(node)
 		remove_child(node)
 		_nodes_type_count[node.node_type] -= 1
+		print("Cut node: ", node.node_type, ", count: ", _nodes_type_count[node.node_type])
 	_selected_nodes.clear()
 	on_modified()
 
@@ -358,11 +366,9 @@ func _on_paste_nodes() -> void:
 		node.position_offset -= center_pos # Center the nodes
 		node.position_offset += ((get_local_mouse_position() + scroll_offset) / zoom)
 
-		_nodes_type_count[node.node_type] += 1
-		if find_child(node.name) != null: # Rename the node if it already exists
-			node.name = node.node_type + "_" + str(_nodes_type_count[node.node_type])
-		
 		_copied_nodes[node.name].selected = false # Deselect original nodes
+		_nodes_type_count[node.node_type] += 1
+		_rename_if_exists(node)
 		add_child(node, true)
 		node.selected = true
 	
@@ -370,6 +376,13 @@ func _on_paste_nodes() -> void:
 	_copied_nodes.clear()
 	_nodes_copy.clear()
 	on_modified()
+
+
+## Rename the node if it already exists
+func _rename_if_exists(node: GraphNode) -> void:
+	if get_node(NodePath(node.name)) != null:
+		node.name = node.node_type + "_" + str(_nodes_type_count[node.node_type])
+		node.title = node.title.split("#")[0] + "#" + str(_nodes_type_count[node.node_type])
 
 
 ## Reconnect nodes after a paste operation
