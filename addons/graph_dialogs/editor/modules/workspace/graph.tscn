@@ -50,6 +50,25 @@ item_7/text = "Wait Node"
 item_7/icon = ExtResource("9_pqpbi")
 item_7/id = 7
 
+[node name="NodeActionsMenu" type="PopupMenu" parent="."]
+size = Vector2i(166, 174)
+prefer_native_menu = true
+item_count = 7
+item_0/text = "Add node"
+item_0/id = 0
+item_1/id = 6
+item_1/separator = true
+item_2/text = "Remove"
+item_2/id = 1
+item_3/text = "Duplicate"
+item_3/id = 2
+item_4/text = "Copy"
+item_4/id = 3
+item_5/text = "Cut"
+item_5/id = 4
+item_6/text = "Paste"
+item_6/id = 5
+
 [node name="Alerts" type="VBoxContainer" parent="."]
 visible = false
 custom_minimum_size = Vector2(0, 60)
@@ -63,5 +82,3 @@ offset_bottom = -68.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("10_difpe")
-
-[connection signal="id_pressed" from="AddNodeMenu" to="." method="_on_add_node_menu_selected"]

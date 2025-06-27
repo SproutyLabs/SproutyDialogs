@@ -28,6 +28,8 @@ const NODES_PATH = "res://addons/graph_dialogs/nodes/"
 @onready var alerts: VBoxContainer = $Alerts
 ## Add node pop-up menu
 @onready var _add_node_menu: PopupMenu = $AddNodeMenu
+## Node actions pop-up menu
+@onready var _node_actions_menu: PopupMenu = $NodeActionsMenu
 
 ## Nodes references
 var _nodes_references: Dictionary
@@ -40,6 +42,8 @@ var _selected_nodes: Array[GraphNode] = []
 var _nodes_copy: Array[GraphNode] = []
 ## Copied nodes references
 var _copied_nodes: Dictionary = {}
+## Copied names references
+var _copied_names: Dictionary = {}
 ## Copied connections references
 var _copied_connections: Dictionary = {}
 
@@ -68,9 +72,13 @@ func _init() -> void:
 
 
 func _ready():
+	_add_node_menu.id_pressed.connect(_on_add_node_menu_selected)
+	_node_actions_menu.id_pressed.connect(_on_node_actions_menu_selected)
+
 	_nodes_references = _get_nodes_references(NODES_PATH)
 	for node in _nodes_references: # Initialize nodes count array
 		_nodes_type_count[node] = 0
+	set_node_actions_menu()
 	set_add_node_menu()
 
 
@@ -99,7 +107,6 @@ func on_translation_enabled_changed(enabled: bool):
 func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_count: bool = true) -> GraphNode:
 	if add_to_count:
 		_nodes_type_count[node_type] += 1
-	print("Creating node: ", node_type, ", count: ", _nodes_type_count[node_type])
 	var new_node = _nodes_references[node_type].instantiate()
 	new_node.name = node_type + "_" + str(node_index)
 	new_node.title += ' #' + str(node_index)
@@ -203,7 +210,7 @@ func load_graph_data(data: Dictionary, dialogs: Dictionary, characters: Dictiona
 
 #endregion
 
-#region === Popup Menu =========================================================
+#region === Popup Menus ========================================================
 
 ## Set nodes list on popup node menu
 func set_add_node_menu() -> void:
@@ -217,10 +224,39 @@ func set_add_node_menu() -> void:
 		index += 1
 
 
-## Show add node pop-up menu
-func show_add_node_menu(pos: Vector2) -> void:
+## Set icons on node actions menu
+func set_node_actions_menu(has_selection: bool = false, paste_enabled: bool = false) -> void:
+	_node_actions_menu.clear()
+	_node_actions_menu.add_icon_item(get_theme_icon("Add", "EditorIcons"), "Add Node", 0)
+	_node_actions_menu.add_separator()
+	if has_selection:
+		_node_actions_menu.add_icon_item(get_theme_icon("Remove", "EditorIcons"),
+			"Remove Nodes" if _selected_nodes.size() > 1 else "Remove Node", 1)
+		_node_actions_menu.add_icon_item(get_theme_icon("Duplicate", "EditorIcons"),
+			"Duplicate Nodes" if _selected_nodes.size() > 1 else "Duplicate Node", 2)
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionCopy", "EditorIcons"),
+			"Copy Nodes" if _selected_nodes.size() > 1 else "Copy Node", 3)
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionCut", "EditorIcons"),
+			"Cut Nodes" if _selected_nodes.size() > 1 else "Cut Node", 4)
+	if paste_enabled:
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionPaste", "EditorIcons"),
+			"Paste Nodes" if _nodes_copy.size() > 1 else "Paste Node", 5)
+	_node_actions_menu.size.y = 0 # Reset the height to fit the items
+
+
+## Rename the node actions menu items based on the number of selected nodes
+func _rename_node_actions(plural: bool) -> void:
+	_node_actions_menu.set_item_text(2, "Remove Nodes" if plural else "Remove Node")
+	_node_actions_menu.set_item_text(3, "Duplicate Nodes" if plural else "Duplicate Node")
+	_node_actions_menu.set_item_text(4, "Copy Nodes" if plural else "Copy Node")
+	_node_actions_menu.set_item_text(5, "Cut Nodes" if plural else "Cut Node")
+	_node_actions_menu.set_item_text(6, "Paste Nodes" if plural else "Paste Node")
+
+
+## Show a pop-up menu at a given position
+func _show_popup_menu(menu: PopupMenu, pos: Vector2) -> void:
 	var pop_pos := pos + global_position + Vector2(get_window().position)
-	_add_node_menu.popup(Rect2(pop_pos.x, pop_pos.y, _add_node_menu.size.x, _add_node_menu.size.y))
+	menu.popup(Rect2(pop_pos.x, pop_pos.y, _add_node_menu.size.x, _add_node_menu.size.y))
 	_cursor_pos = (pos + scroll_offset) / zoom
 
 
@@ -230,9 +266,41 @@ func _on_add_node_menu_selected(id: int) -> void:
 	add_new_node(node_type)
 
 
+## Handle node actions from the pop-up menu
+func _on_node_actions_menu_selected(id: int) -> void:
+	match id:
+		0: # Add Node
+			_show_popup_menu(_add_node_menu, get_local_mouse_position())
+		1: # Delete Node
+			var selected_nodes = _selected_nodes.duplicate()
+			for node in selected_nodes:
+				delete_node(node)
+		2: # Duplicate Node
+			_on_duplicate_nodes()
+		3: # Copy Node
+			_on_copy_nodes()
+		4: # Cut Node
+			_on_cut_nodes()
+		5: # Paste Node
+			_on_paste_nodes()
+
+
 ## Show add node pop-up menu on right click
 func _on_right_click(pos: Vector2) -> void:
-	show_add_node_menu(pos)
+	# Show node actions menu if nodes are selected
+	if _selected_nodes.size() > 0:
+		if _nodes_copy.size() > 0:
+			set_node_actions_menu(true, true)
+			_show_popup_menu(_node_actions_menu, pos)
+		else:
+			set_node_actions_menu(true, false)
+			_show_popup_menu(_node_actions_menu, pos)
+	# Show only paste option if nodes are copied but no nodes are selected
+	elif _nodes_copy.size() > 0:
+		set_node_actions_menu(false, true)
+		_show_popup_menu(_node_actions_menu, pos)
+	else: # Show add node menu if no nodes are selected
+		_show_popup_menu(_add_node_menu, pos)
 
 #endregion
 
@@ -283,6 +351,7 @@ func copy_node(node: GraphNode) -> GraphNode:
 
 	_copied_connections[new_node.name] = get_node_connections(node.name)
 	_copied_nodes[new_node.name] = node # Store the copied node reference
+	_copied_names[node.name] = new_node.name # Store the copied name reference
 	
 	if node.node_type == "dialogue_node":
 		new_node.load_dialogs(node.get_dialogs_text())
@@ -306,8 +375,7 @@ func _on_duplicate_nodes() -> void:
 	for node in _duplicate_nodes:
 		var new_node = copy_node(node)
 		_nodes_type_count[node.node_type] += 1
-		print("Duplicated node: ", node.node_type, ", count: ", _nodes_type_count[node.node_type])
-		new_node.position_offset += Vector2(20, 20) # Offset duplicated nodes}
+		new_node.position_offset += Vector2(20, 20) # Offset duplicated nodes
 		add_child(new_node, true)
 		new_node.selected = true
 		node.selected = false
@@ -320,6 +388,7 @@ func _on_duplicate_nodes() -> void:
 ## Copy selected nodes
 func _on_copy_nodes() -> void:
 	_copied_connections.clear()
+	_copied_names.clear()
 	_copied_nodes.clear()
 	_nodes_copy.clear()
 
@@ -333,6 +402,7 @@ func _on_copy_nodes() -> void:
 ## Cut selected nodes
 func _on_cut_nodes() -> void:
 	_copied_connections.clear()
+	_copied_names.clear()
 	_copied_nodes.clear()
 	_nodes_copy.clear()
 	
@@ -341,11 +411,11 @@ func _on_cut_nodes() -> void:
 
 	for node in _selected_nodes:
 		_copied_connections[node.name] = get_node_connections(node.name)
+		_copied_names[node.name] = node.name
 		_copied_nodes[node.name] = node
 		_nodes_copy.append(node)
 		remove_child(node)
 		_nodes_type_count[node.node_type] -= 1
-		print("Cut node: ", node.node_type, ", count: ", _nodes_type_count[node.node_type])
 	_selected_nodes.clear()
 	on_modified()
 
@@ -366,13 +436,17 @@ func _on_paste_nodes() -> void:
 		node.position_offset -= center_pos # Center the nodes
 		node.position_offset += ((get_local_mouse_position() + scroll_offset) / zoom)
 
-		_copied_nodes[node.name].selected = false # Deselect original nodes
+		if _copied_nodes[node.name]: # Deselect original nodes
+			_copied_nodes[node.name].selected = false
+		
 		_nodes_type_count[node.node_type] += 1
 		_rename_if_exists(node)
 		add_child(node, true)
 		node.selected = true
 	
 	_reconnect_nodes_copy()
+	_copied_connections.clear()
+	_copied_names.clear()
 	_copied_nodes.clear()
 	_nodes_copy.clear()
 	on_modified()
@@ -380,22 +454,18 @@ func _on_paste_nodes() -> void:
 
 ## Rename the node if it already exists
 func _rename_if_exists(node: GraphNode) -> void:
-	if get_node(NodePath(node.name)) != null:
+	if get_node_or_null(NodePath(node.name)) != null:
 		node.name = node.node_type + "_" + str(_nodes_type_count[node.node_type])
 		node.title = node.title.split("#")[0] + "#" + str(_nodes_type_count[node.node_type])
 
 
 ## Reconnect nodes after a paste operation
 func _reconnect_nodes_copy() -> void:
-	var _names_references: Dictionary = {}
-	for node in _copied_nodes:
-		_names_references[_copied_nodes[node].name] = node
-	
 	for node in _copied_connections:
 		for connection in _copied_connections[node]:
-			if _names_references.has(connection["to_node"]):
-				connect_node(_names_references[connection["from_node"]], connection["from_port"],
-					_names_references[connection["to_node"]], connection["to_port"])
+			if _copied_names.has(connection["to_node"]):
+				connect_node(_copied_names[connection["from_node"]], connection["from_port"],
+					_copied_names[connection["to_node"]], connection["to_port"])
 	_copied_connections.clear()
 
 
@@ -482,6 +552,6 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 func _on_connection_to_empty(from_node: String, from_port: int, release_position: Vector2):
 	_request_node = from_node
 	_request_port = from_port
-	show_add_node_menu(release_position)
+	_show_popup_menu(_add_node_menu, release_position)
 
 #endregion
