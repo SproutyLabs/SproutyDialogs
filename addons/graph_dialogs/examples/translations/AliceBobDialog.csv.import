@@ -1,0 +1,15 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://7mjcvke8casv"
+valid=false
+
+[deps]
+
+source_file="res://addons/graph_dialogs/examples/translations/AliceBobDialog.csv"
+
+[params]
+
+compress=true
+delimiter=0

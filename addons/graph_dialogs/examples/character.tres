@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GraphDialogsCharacterData" load_steps=6 format=3 uid="uid://bklp3dcx7dkww"]
+[gd_resource type="Resource" script_class="GraphDialogsCharacterData" load_steps=5 format=3 uid="uid://bklp3dcx7dkww"]
 
 [ext_resource type="Script" uid="uid://kwoapf8il7ee" path="res://addons/graph_dialogs/resources/character_data.gd" id="1_fmkru"]
 [ext_resource type="Script" uid="uid://ygs6blymsjbh" path="res://addons/graph_dialogs/resources/portrait_data.gd" id="1_tubb5"]
@@ -47,29 +47,31 @@ typing_sound = {}
 
 [sub_resource type="Resource" id="Resource_j8c63"]
 script = ExtResource("1_tubb5")
-portrait_scene = 7106419741507541197
+portrait_scene = 2339945795865533910
 export_overrides = {
+"portrait_array": {
+"type": [],
+"value": []
+},
+"portrait_color": {
+"type": 20,
+"value": Color(1, 1, 1, 1)
+},
+"portrait_dict": {
+"type": {},
+"value": {}
+},
 "portrait_image": {
 "type": 4,
-"value": "res://icon.svg"
-}
-}
-transform_settings = {
-"mirror": false,
-"offset": Vector2(0, 0),
-"rotation": 0.0,
-"scale": Vector2(1, 1),
-"scale_lock_ratio": true
-}
-typing_sound = {}
-
-[sub_resource type="Resource" id="Resource_u1rvj"]
-script = ExtResource("1_tubb5")
-portrait_scene = 1560153517143163904
-export_overrides = {
-"portrait_image": {
-"type": 4,
-"value": "res://icon.svg"
+"value": ""
+},
+"portrait_mirror": {
+"type": 1,
+"value": false
+},
+"protrait_node": {
+"type": 24,
+"value": null
 }
 }
 transform_settings = {
@@ -97,8 +99,7 @@ portrait_on_dialog_box = false
 portraits = {
 "Bob": SubResource("Resource_tubb5"),
 "group": {
-"2d": SubResource("Resource_j8c63"),
-"Control": SubResource("Resource_u1rvj")
+"2d": SubResource("Resource_j8c63")
 }
 }
 typing_sounds = {}

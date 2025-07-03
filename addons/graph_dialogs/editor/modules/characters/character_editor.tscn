@@ -110,7 +110,6 @@ theme_override_styles/panel = ExtResource("5_k1upw")
 
 [node name="TextBoxes" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Panel"]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -240,7 +239,6 @@ layout_mode = 2
 allow_reselect = true
 allow_rmb_select = true
 hide_root = true
-drop_mode_flags = 3
 script = ExtResource("7_7kmf4")
 
 [node name="PortraitPopupMenu" type="PopupMenu" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree"]

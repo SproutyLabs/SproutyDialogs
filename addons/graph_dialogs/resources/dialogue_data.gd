@@ -14,11 +14,11 @@ extends Resource
 ## This dictionary is structured as follows:
 ## [codeblock]
 ## {
-##   "dialogue_1": {
+##   "dialogue_id_1": {
 ##     "node_1": { ... },
 ##     "node_2": { ... },
 ##     },
-##   "dialogue_2": {
+##   "dialogue_id_2": {
 ##     "node_1": { ... },	
 ##     "node_2": { ... },
 ##     },
@@ -45,8 +45,8 @@ extends Resource
 ## [codeblock]
 ## {
 ##   "dialogue_id_1": {
-##     "Character 1": UID of the character resource,
-##     "Character 2": UID of the character resource,
+##     "character_name_1": UID of the character resource,
+##     "character_name_2": UID of the character resource,
 ##     ...
 ##   },
 ##   ...
@@ -69,13 +69,13 @@ func get_start_ids() -> Array[String]:
 ## The dictionary is structured as follows:
 ## [codeblock]
 ## {
-##   "Character 1": [portrait_1, portrait_2, ...],
-##   "Character 2": [portrait_1, portrait_2, ...],
+##   "character_name_1": [portrait_name_1, portrait_name_2, ...],
+##   "character_name_2": [portrait_name_1, portrait_name_2, ...],
 ##   ...
 ## }[/codeblock]
 func get_portraits_on_dialog(start_id: String) -> Dictionary:
 	var portraits: Dictionary = {}
-	for node in graph_data.get(start_id):
+	for node in graph_data[start_id].values():
 		if node["node_type"] == "dialogue_node":
 			if node["character"] == "" or node["portrait"] == "":
 				continue # Skip if no character or portrait is set

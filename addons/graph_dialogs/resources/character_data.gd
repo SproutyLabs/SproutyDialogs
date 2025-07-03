@@ -38,10 +38,10 @@ extends Resource
 ## The dictionary structure is as follows:
 ## [codeblock]
 ## {
-##   "portrait_1": GraphDialogsPortraitData (SubResource)
+##   "portrait_name_1": GraphDialogsPortraitData (SubResource)
 ##   "portrait_group": {
-##  	 "portrait_2": GraphDialogsPortraitData (SubResource)
-##  	 "portrait_3": GraphDialogsPortraitData (SubResource)
+##  	 "portrait_name_2": GraphDialogsPortraitData (SubResource)
+##  	 "portrait_name_3": GraphDialogsPortraitData (SubResource)
 ##  	 ...
 ##   },
 ##   ...
@@ -66,3 +66,17 @@ extends Resource
 ##   ...
 ## }[/codeblock]
 @export var typing_sounds: Dictionary = {}
+
+
+## Returns the portrait data for a given portrait path name.
+## The path name can be a portrait name or a path (e.g., "group/portrait").
+## If the portrait is a group, it will recursively search for the portrait data.
+func get_portrait_from_path_name(path_name: String, group: Dictionary = portraits) -> Variant:
+	if group.has(path_name) and group[path_name] is GraphDialogsPortraitData:
+		return group[path_name]
+	
+	if path_name.contains("/"):
+		var parts = path_name.split("/")
+		if group.has(parts[0]):
+			return get_portrait_from_path_name("/".join(parts.slice(1, parts.size())), group[parts[0]])
+	return null

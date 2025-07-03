@@ -111,6 +111,8 @@ func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_
 	new_node.name = node_type + "_" + str(node_index)
 	new_node.title += ' #' + str(node_index)
 	new_node.position_offset = node_offset
+	new_node.node_index = node_index
+	new_node.node_type = node_type
 	add_child(new_node, true)
 
 	# Connect translation signals

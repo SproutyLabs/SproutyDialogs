@@ -40,12 +40,47 @@ var start_id: String:
 var _starts_ids: Array[String] = []
 
 ## Dictionary to store the portrait parent nodes by character.
+## The keys are character names and the values are the parent nodes where
+## the portraits will be displayed.
+## The dictionary structure is:
+## [codeblock]
+## {
+##   "character_name_1": Node reference,
+##   "character_name_2": Node reference,
+##   ...
+## }[/codeblock]
 var _portrait_parents: Dictionary = {}
 ## Dictionary to store the dialog box parent nodes by character.
+## The keys are character names and the values are the parent nodes where
+## the dialog boxes will be displayed.
+## The dictionary structure is:
+## [codeblock]
+## {
+##   "character_name_1": Node reference,
+##   "character_name_2": Node reference,
+##   ...
+## }[/codeblock]
 var _dialog_box_parents: Dictionary = {}
 
-## Current dialog box to display the dialog.
+## Dictionary to store the portraits displayed by character.
+## The keys are character names and the values are dictionaries with portrait names
+## as keys and DialogPortrait scenes loaded as values.
+## The dictionary structure is:
+## [codeblock]
+## {
+##   "character_name_1": {
+##     "portrait_name_1": DialogPortrait instance,
+##     "portrait_name_2": DialogPortrait instance,
+##     ...
+##   },
+##   ...
+## }[/codeblock]
+var _portraits_displayed: Dictionary = {}
+
+## Current dialog box being displayed.
 var _current_dialog_box: DialogBox
+## Current portrait being displayed.
+var _current_portrait: DialogPortrait
 
 ## Next node to process in the dialog tree after a dialogue node.
 var _next_node: String = ""
@@ -69,8 +104,7 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	# Play the dialog on ready if the property is set
 	if not Engine.is_editor_hint():
-		GraphDialogs.load_resources(dialog_data, start_id,
-				_portrait_parents, _dialog_box_parents)
+		GraphDialogs.load_resources(dialog_data, start_id, _dialog_box_parents)
 		if play_on_ready: start()
 
 
@@ -150,7 +184,7 @@ func _set(property: StringName, value: Variant) -> bool:
 
 #endregion
 
-#region === Process dialog =====================================================
+#region === Process graph ======================================================
 
 ## Start processing a dialog tree by ID
 func start(dialog_id: String = start_id) -> void:
@@ -196,13 +230,21 @@ func _process_node(node_name: String) -> void:
 		)
 
 
-## Play the dialog when the dialogue node is processed
+## Play dialog when the dialogue node is processed
 func _on_dialogue_processed(char: String, portrait: String, dialog: String, next_node: String) -> void:
 	_next_node = next_node
 	_update_dialog_box(char)
-	
+	_update_portrait(char, portrait)
 	_current_dialog_box.play_dialog(char, dialog, self)
 
+
+## Continue to the next node in the dialog tree
+func _on_continue_dialog() -> void:
+	_process_node(_next_node)
+
+#endregion
+
+#region === Dialog box and portrait management =================================
 
 ## Update the dialog box for the current character
 func _update_dialog_box(character_name: String) -> void:
@@ -219,8 +261,30 @@ func _update_dialog_box(character_name: String) -> void:
 		_current_dialog_box.continue_dialog.connect(_on_continue_dialog)
 
 
-## Continue to the next node in the dialog tree
-func _on_continue_dialog() -> void:
-	_process_node(_next_node)
+## Update the portrait for the current character
+func _update_portrait(character_name: String, portrait_name: String) -> void:
+	if character_name.is_empty() or portrait_name.is_empty():
+		_current_portrait = null
+		return
+	var is_joining = false
+	if not _portraits_displayed.has(character_name):
+		_portraits_displayed[character_name] = {}
+		is_joining = true
+	
+	# Check if the portrait is already displayed
+	if _portraits_displayed[character_name].has(portrait_name):
+		_current_portrait = _portraits_displayed[character_name][portrait_name]
+		_current_portrait.update_portrait()
+
+	else: # Instantiate the portrait scene if not already displayed
+		_current_portrait = GraphDialogs.instantiate_portrait(start_id,
+			character_name, portrait_name, _portrait_parents[character_name])
+	
+		if _current_portrait: # If the portrait was instantiated successfully
+			_portraits_displayed[character_name][portrait_name] = _current_portrait
+			_current_portrait.update_portrait()
+			
+			if is_joining: # Entry action if the character is joining the dialog
+				_current_portrait.on_portrait_entry()
 
 #endregion
