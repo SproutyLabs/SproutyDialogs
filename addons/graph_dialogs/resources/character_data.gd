@@ -24,14 +24,14 @@ extends Resource
 ## Character description.
 ## This does nothing, its only for your reference.
 @export var description: String = ""
-## Text box to display the character's dialogue.
+## Dialog box to display the character's dialogue.
 ## This is the UID of a scene that contains a [class DialogBox] node.
-@export var text_box: int = -1
-## Flag to indicate if the character's portrait should be displayed on the text box.
+@export var dialog_box: int = -1
+## Flag to indicate if the character's portrait should be displayed on the dialog box.
 ## If true, the character's portrait scene will be shown in the [param display portrait]
 ## node of the [class DialogBox]. For this you need to set the [param display portrait]
 ## node that will hold the portrait as a parent of the portrait scene.
-@export var portrait_on_text_box: bool = false
+@export var portrait_on_dialog_box: bool = false
 ## Character's portraits.
 ## This is a dictionary where each key is a portrait name or a group of portraits
 ## and its value is a dictionary containing the portrait data or more portraits.

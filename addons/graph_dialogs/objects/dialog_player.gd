@@ -29,8 +29,8 @@ var start_id: String:
 		start_id = value
 		if dialog_data: # Set dictionaries to store the nodes references
 			for char in dialog_data.characters[value]:
-				_portrait_displays[char] = null
-				_dialog_boxes[char] = null
+				_portrait_parents[char] = null
+				_dialog_box_parents[char] = null
 		notify_property_list_changed()
 
 ## Play the dialog when the node is ready.
@@ -39,13 +39,14 @@ var start_id: String:
 ## Array to store the start IDs of the dialogues.
 var _starts_ids: Array[String] = []
 
-## Dictionary to store the portrait display nodes by character.
-var _portrait_displays: Dictionary = {}
-## Dictionary to store the dialog box nodes by character.
-var _dialog_boxes: Dictionary = {}
+## Dictionary to store the portrait parent nodes by character.
+var _portrait_parents: Dictionary = {}
+## Dictionary to store the dialog box parent nodes by character.
+var _dialog_box_parents: Dictionary = {}
 
 ## Current dialog box to display the dialog.
 var _current_dialog_box: DialogBox
+
 ## Next node to process in the dialog tree after a dialogue node.
 var _next_node: String = ""
 
@@ -68,11 +69,12 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	# Play the dialog on ready if the property is set
 	if not Engine.is_editor_hint():
+		GraphDialogs.load_resources(dialog_data, start_id,
+				_portrait_parents, _dialog_box_parents)
 		if play_on_ready: start()
 
 
 #region === Editor properties ==================================================
-
 ## Set extra properties on editor
 func _get_property_list():
 	if Engine.is_editor_hint():
@@ -93,7 +95,7 @@ func _get_property_list():
 			# Set characters options by dialog
 			if not start_id.is_empty():
 				props.append({
-				"name": "Characters Settings",
+				"name": "Anchors Settings",
 				"type": TYPE_STRING,
 				"usage": PROPERTY_USAGE_GROUP,
 				"hint_string": "char_",
@@ -106,57 +108,59 @@ func _get_property_list():
 						"hint_string": char,
 					})
 					props.append({ # Set portrait parent node path by character
-						"name": char + "_portrait_parent",
-						"type": TYPE_NODE_PATH,
-						"hint": PROPERTY_HINT_NODE_PATH_VALID_TYPES,
+						"name": char + "_portraits_parent",
+						"type": TYPE_OBJECT,
+						"hint": PROPERTY_HINT_NODE_TYPE,
 						"hint_string": "Node",
 					})
 					props.append({ # Set dialogue box node path by character
-						"name": char + "_dialog_box",
-						"type": TYPE_NODE_PATH,
-						"hint": PROPERTY_HINT_NODE_PATH_VALID_TYPES,
-						"hint_string": "DialogBox",
+						"name": char + "_dialog_box_parent",
+						"type": TYPE_OBJECT,
+						"hint": PROPERTY_HINT_NODE_TYPE,
+						"hint_string": "Node",
 					})
 		return props
 
 
 func _get(property: StringName):
 	# Show the portrait parent node path by character
-	if property.ends_with("_portrait_parent"):
-		var char_name = property.get_slice("_portrait_", 0)
-		return _portrait_displays[char_name]
+	if property.ends_with("_portraits_parent"):
+		var char_name = property.get_slice("_portraits_", 0)
+		return _portrait_parents[char_name]
 
 	# Show the dialogue box node path by character
-	if property.ends_with("_dialog_box"):
+	if property.ends_with("_dialog_box_parent"):
 		var char_name = property.get_slice("_dialog_", 0)
-		return _dialog_boxes[char_name]
+		return _dialog_box_parents[char_name]
 
 
 func _set(property: StringName, value: Variant) -> bool:
 	# Storing the portrait parent node path by character
-	if property.ends_with("_portrait_parent"):
-		var char_name = property.get_slice("_portrait_", 0)
-		_portrait_displays[char_name] = value
+	if property.ends_with("_portraits_parent"):
+		var char_name = property.get_slice("_portraits_", 0)
+		_portrait_parents[char_name] = value
 		return true
 	
 	# Storing the dialogue box node path by character
-	if property.ends_with("_dialog_box"):
+	if property.ends_with("_dialog_box_parent"):
 		var char_name = property.get_slice("_dialog_", 0)
-		_dialog_boxes[char_name] = value
+		_dialog_box_parents[char_name] = value
 		return true
 	return false
 
 #endregion
 
-#region === Process nodes ======================================================
+#region === Process dialog =====================================================
 
 ## Start processing a dialog tree by ID
 func start(dialog_id: String = start_id) -> void:
-	# Check if the dialog with given id exists
-	if not _starts_ids.has(dialog_id):
+	if not dialog_data: # Check if dialog data is set
+		printerr("[Graph Dialogs] No dialog data set to play.")
+		return
+	if not _starts_ids.has(dialog_id): # Check if the dialog with given id exists
 		printerr("[Graph Dialogs] Cannot find '" + dialog_id + "' ID on dialog file.")
 		return
-	
+
 	# Search for start node and start processing from there
 	for node in dialog_data.graph_data[dialog_id]:
 		if node.contains("start_node"):
@@ -195,7 +199,14 @@ func _process_node(node_name: String) -> void:
 ## Play the dialog when the dialogue node is processed
 func _on_dialogue_processed(char: String, portrait: String, dialog: String, next_node: String) -> void:
 	_next_node = next_node
-	var dialog_box = get_node(_dialog_boxes[char])
+	_update_dialog_box(char)
+	
+	_current_dialog_box.play_dialog(char, dialog, self)
+
+
+## Update the dialog box for the current character
+func _update_dialog_box(character_name: String) -> void:
+	var dialog_box = GraphDialogs.get_dialog_box(start_id, character_name)
 	
 	# Check if the dialog box is already playing a dialog
 	if _current_dialog_box and dialog_box != _current_dialog_box:
@@ -205,9 +216,7 @@ func _on_dialogue_processed(char: String, portrait: String, dialog: String, next
 
 	# Connect the dialog box signals
 	if not _current_dialog_box.is_connected("continue_dialog", _on_continue_dialog):
-		_current_dialog_box.connect("continue_dialog", _on_continue_dialog)
-	
-	_current_dialog_box.play_dialog(char, dialog, self)
+		_current_dialog_box.continue_dialog.connect(_on_continue_dialog)
 
 
 ## Continue to the next node in the dialog tree

@@ -21,7 +21,7 @@ graph_data = {
 "node_index": 2,
 "node_type": "dialogue_node",
 "offset": Vector2(1300, 260),
-"portrait": "group/aaaa",
+"portrait": "group/2d",
 "to_node": ["END"]
 },
 "start_node_1": {

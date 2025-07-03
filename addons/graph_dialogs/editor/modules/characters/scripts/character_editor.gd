@@ -26,12 +26,12 @@ signal modified
 
 ## Description text input field
 @onready var _description_field: TextEdit = %DescriptionField
-## Text box scene file field
-@onready var _text_box_scene_field: GraphDialogsFileField = %TextBoxSceneField
-## Text box scene button
-@onready var _to_text_box_scene_button: Button = %ToTextBoxSceneButton
-## Text box new scene button
-@onready var _new_text_box_scene_button: Button = %NewTextBoxSceneButton
+## Dialog box scene file field
+@onready var _dialog_box_scene_field: GraphDialogsFileField = %DialogBoxSceneField
+## Dialog box scene button
+@onready var _to_dialog_box_scene_button: Button = %ToDialogBoxSceneButton
+## Dialog box new scene button
+@onready var _new_dialog_box_scene_button: Button = %NewDialogBoxSceneButton
 
 ## Portrait tree
 @onready var _portrait_tree: Tree = %PortraitTree
@@ -45,8 +45,8 @@ signal modified
 ## Portrait settings panel scene
 var portrait_editor_scene := preload("res://addons/graph_dialogs/editor/modules/characters/portrait_editor.tscn")
 
-## Default text box scene
-var _default_text_box_scene := preload("res://addons/graph_dialogs/objects/defaults/default_dialog_box.tscn")
+## Default dialog box scene
+var _default_dialog_box_scene := preload("res://addons/graph_dialogs/objects/defaults/default_dialog_box.tscn")
 
 ## Current portrait selected
 var _current_portrait: TreeItem = null
@@ -56,14 +56,21 @@ var _key_name: String = ""
 ## Default locale for dialog text
 var _default_locale: String = ""
 
-## Portrait display on text box option
-var _portrait_on_text_box: bool = false
+## Portrait display on dialog box option
+var _portrait_on_dialog_box: bool = false
 
 
 func _ready() -> void:
+	# Connect signals
+	_dialog_box_scene_field.file_path_changed.connect(_on_dialog_box_scene_path_changed)
+	_to_dialog_box_scene_button.pressed.connect(_on_dialog_box_scene_button_pressed)
+	_new_dialog_box_scene_button.pressed.connect(_on_new_dialog_box_scene_pressed)
+	%PortraitOnDialogBoxToggle.toggled.connect(_on_portrait_dialog_box_toggled)
 	_portrait_tree.portrait_item_selected.connect(_on_portrait_selected)
-	_to_text_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
-	_new_text_box_scene_button.icon = get_theme_icon("Add", "EditorIcons")
+
+	# Set icons for buttons and fields
+	_to_dialog_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
+	_new_dialog_box_scene_button.icon = get_theme_icon("Add", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
@@ -83,10 +90,10 @@ func get_character_data() -> GraphDialogsCharacterData:
 	data.key_name = _key_name
 	data.display_name = {_key_name: _get_name_translations()}
 	data.description = _description_field.text
-	data.text_box = ResourceSaver.get_resource_id_for_path(_text_box_scene_field.get_value()) if \
-		GraphDialogsFileUtils.check_valid_extension(_text_box_scene_field.get_value(),
-			_text_box_scene_field.file_filters) else -1
-	data.portrait_on_text_box = _portrait_on_text_box
+	data.dialog_box = ResourceSaver.get_resource_id_for_path(_dialog_box_scene_field.get_value()) if \
+		GraphDialogsFileUtils.check_valid_extension(_dialog_box_scene_field.get_value(),
+			_dialog_box_scene_field.file_filters) else -1
+	data.portrait_on_dialog_box = _portrait_on_dialog_box
 	data.portraits = _portrait_tree.get_portraits_data()
 	data.typing_sounds = {} # Typing sounds are not implemented yet
 	return data
@@ -104,22 +111,22 @@ func load_character(data: GraphDialogsCharacterData, name_data: Dictionary) -> v
 	_update_translations_state()
 
 	# Text box scene file
-	if data.text_box == -1:
-		_text_box_scene_field.set_value("")
-		_to_text_box_scene_button.visible = false
-		_new_text_box_scene_button.visible = true
+	if data.dialog_box == -1:
+		_dialog_box_scene_field.set_value("")
+		_to_dialog_box_scene_button.visible = false
+		_new_dialog_box_scene_button.visible = true
 	else: # If the text box scene is set, load it
-		if not ResourceLoader.exists(ResourceUID.get_id_path(data.text_box)):
-			printerr("[Graph Dialogs] Text box scene file not found: ", data.text_box)
+		if not ResourceLoader.exists(ResourceUID.get_id_path(data.dialog_box)):
+			printerr("[Graph Dialogs] Text box scene file not found: ", data.dialog_box)
 			return
-		_text_box_scene_field.set_value(ResourceUID.get_id_path(data.text_box))
+		_dialog_box_scene_field.set_value(ResourceUID.get_id_path(data.dialog_box))
 	
 	if GraphDialogsFileUtils.check_valid_extension(
-			_text_box_scene_field.get_value(), _text_box_scene_field.file_filters):
-		_to_text_box_scene_button.visible = true
-		_new_text_box_scene_button.visible = false
-	_portrait_on_text_box = data.portrait_on_text_box
-	%PortraitOnTextBoxToggle.button_pressed = _portrait_on_text_box
+			_dialog_box_scene_field.get_value(), _dialog_box_scene_field.file_filters):
+		_to_dialog_box_scene_button.visible = true
+		_new_dialog_box_scene_button.visible = false
+	_portrait_on_dialog_box = data.portrait_on_dialog_box
+	%PortraitOnDialogBoxToggle.button_pressed = _portrait_on_dialog_box
 
 	# Portraits
 	_portrait_tree.load_portraits_data(data.portraits)
@@ -127,7 +134,7 @@ func load_character(data: GraphDialogsCharacterData, name_data: Dictionary) -> v
 
 ## Open a scene in the editor
 func open_scene_in_editor(path: String) -> void:
-	if GraphDialogsFileUtils.check_valid_extension(path, _text_box_scene_field.file_filters):
+	if GraphDialogsFileUtils.check_valid_extension(path, _dialog_box_scene_field.file_filters):
 		if ResourceLoader.exists(path):
 			EditorInterface.open_scene_from_path(path)
 			await get_tree().process_frame
@@ -192,34 +199,34 @@ func _set_translation_text_boxes() -> void:
 
 #region === Dialog Text box ====================================================
 
-## Handle the text box scene file path
-func _on_text_box_scene_path_changed(path: String) -> void:
+## Handle the dialog box scene file path
+func _on_dialog_box_scene_path_changed(path: String) -> void:
 	if path.is_empty(): # No path selected
-		_to_text_box_scene_button.visible = false
-		_new_text_box_scene_button.visible = true
-	elif GraphDialogsFileUtils.check_valid_extension(path, _text_box_scene_field.file_filters):
-		_to_text_box_scene_button.visible = true # Valid path
-		_new_text_box_scene_button.visible = false
+		_to_dialog_box_scene_button.visible = false
+		_new_dialog_box_scene_button.visible = true
+	elif GraphDialogsFileUtils.check_valid_extension(path, _dialog_box_scene_field.file_filters):
+		_to_dialog_box_scene_button.visible = true # Valid path
+		_new_dialog_box_scene_button.visible = false
 	on_modified()
 
 
-## Handle the text box scene button press
-func _on_text_box_scene_button_pressed() -> void:
-	open_scene_in_editor(_text_box_scene_field.get_value())
+## Handle the dialog box scene button press
+func _on_dialog_box_scene_button_pressed() -> void:
+	open_scene_in_editor(_dialog_box_scene_field.get_value())
 
 
-## Create a new text box scene and open it in the editor
-func _on_new_text_box_scene_pressed() -> void:
-	if not new_scene_dialog.is_connected("file_selected", _on_new_text_box_path_selected):
-		new_scene_dialog.connect("file_selected", _on_new_text_box_path_selected)
+## Create a new dialog box scene and open it in the editor
+func _on_new_dialog_box_scene_pressed() -> void:
+	if not new_scene_dialog.is_connected("file_selected", _on_new_dialog_box_path_selected):
+		new_scene_dialog.file_selected.connect(_on_new_dialog_box_path_selected)
 	new_scene_dialog.set_current_dir(GraphDialogsFileUtils.get_recent_file_path("text_box_files"))
 	new_scene_dialog.get_line_edit().text = "new_text_box.tscn"
 	new_scene_dialog.popup_centered()
 
 
 ## Create a new text box scene file
-func _on_new_text_box_path_selected(path: String) -> void:
-	var new_scene = _default_text_box_scene.instantiate()
+func _on_new_dialog_box_path_selected(path: String) -> void:
+	var new_scene = _default_dialog_box_scene.instantiate()
 	new_scene.name = path.get_file().split(".")[0].to_pascal_case()
 
 	# Save the new scene file
@@ -229,9 +236,9 @@ func _on_new_text_box_path_selected(path: String) -> void:
 	new_scene.queue_free()
 
 	# Set the text box scene path
-	_text_box_scene_field.set_value(path)
-	_to_text_box_scene_button.visible = true
-	_new_text_box_scene_button.visible = false
+	_dialog_box_scene_field.set_value(path)
+	_to_dialog_box_scene_button.visible = true
+	_new_dialog_box_scene_button.visible = false
 
 	# Open the new scene in the editor
 	open_scene_in_editor(path)
@@ -242,8 +249,8 @@ func _on_new_text_box_path_selected(path: String) -> void:
 
 
 ## Handle the text box portrait display toggle
-func _on_portrait_text_box_toggled(toggled_on: bool) -> void:
-	_portrait_on_text_box = toggled_on
+func _on_portrait_dialog_box_toggled(toggled_on: bool) -> void:
+	_portrait_on_dialog_box = toggled_on
 	on_modified()
 
 #endregion

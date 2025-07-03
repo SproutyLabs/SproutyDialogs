@@ -40,7 +40,7 @@ extends Resource
 @export var dialogs: Dictionary = {}
 ## A dictionary containing the characters for each dialogue ID.
 ## This is a dictionary where each key is the dialogue ID 
-## and its value is a dictionary of the characters with their UIDs.
+## and its value is the characters associated with its UID.
 ## This dictionary is structured as follows:
 ## [codeblock]
 ## {
@@ -49,8 +49,6 @@ extends Resource
 ##     "Character 2": UID of the character resource,
 ##     ...
 ##   },
-##   "dialogue_id_2": { ... },
-##   "dialogue_id_3": { ... },
 ##   ...
 ## }[/codeblock]
 @export var characters: Dictionary = {}
@@ -62,5 +60,27 @@ extends Resource
 func get_start_ids() -> Array[String]:
 	var dialogue_ids: Array[String] = []
 	for dialogue_id in graph_data.keys():
-		dialogue_ids.append(dialogue_id.replace("DIALOG_", ""))
+		dialogue_ids.append(dialogue_id)
 	return dialogue_ids
+
+
+## Returns a dictionary of the characters and their portraits for a given start ID.
+## The start ID is the ID of the dialogue branch to get the characters from.
+## The dictionary is structured as follows:
+## [codeblock]
+## {
+##   "Character 1": [portrait_1, portrait_2, ...],
+##   "Character 2": [portrait_1, portrait_2, ...],
+##   ...
+## }[/codeblock]
+func get_portraits_on_dialog(start_id: String) -> Dictionary:
+	var portraits: Dictionary = {}
+	for node in graph_data.get(start_id):
+		if node["node_type"] == "dialogue_node":
+			if node["character"] == "" or node["portrait"] == "":
+				continue # Skip if no character or portrait is set
+			if not portraits.has(node["character"]):
+				portraits[node["character"]] = [node["portrait"]]
+			else:
+				portraits[node["character"]].append(node["portrait"])
+	return portraits

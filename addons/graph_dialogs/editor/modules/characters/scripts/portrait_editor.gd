@@ -18,8 +18,6 @@ extends VBoxContainer
 @onready var _portrait_name: Label = $Title/PortraitName
 ## Portrait preview pivot node
 @onready var _preview_container: Node2D = %PreviewContainer
-## Portrait preview image node
-@onready var _image_preview: Sprite2D = %ImagePreview
 
 ## Portrait scene path field
 @onready var _portrait_scene_field: GraphDialogsFileField = %PortraitSceneField
@@ -100,6 +98,8 @@ func load_portrait_data(name: String, data: GraphDialogsPortraitData) -> void:
 			return
 		_portrait_scene_field.set_value(ResourceUID.get_id_path(data.portrait_scene))
 
+	_portrait_export_properties.set_export_overrides(data.export_overrides)
+	
 	# Check if the scene file is valid and set the preview
 	if GraphDialogsFileUtils.check_valid_extension(
 			_portrait_scene_field.get_value(), _portrait_scene_field.file_filters):
@@ -109,8 +109,6 @@ func load_portrait_data(name: String, data: GraphDialogsPortraitData) -> void:
 	else:
 		_to_portrait_scene_button.visible = false
 		_new_portrait_scene_button.visible = true
-
-	_portrait_export_properties.set_export_overrides(data.export_overrides)
 
 	# Load image settings
 	_portrait_scale_section.get_node("LockRatioButton").button_pressed = data.transform_settings.scale_lock_ratio
