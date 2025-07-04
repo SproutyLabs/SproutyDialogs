@@ -196,6 +196,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
 			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
 			GraphDialogsCSVFileManager.save_dialogs_on_csv(graph_editor_data["dialogs"], data.csv_file_path)
+			GraphDialogsFileUtils.collect_translations()
 
 	elif data is GraphDialogsCharacterData:
 		data = file_metadata["cache_node"].get_character_data()
