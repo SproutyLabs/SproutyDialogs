@@ -17,7 +17,7 @@ extends VBoxContainer
 ## Portrait name label
 @onready var _portrait_name: Label = $Title/PortraitName
 ## Portrait preview pivot node
-@onready var _preview_container: Node2D = %PreviewContainer
+@onready var _preview_container: Control = %PreviewContainer
 
 ## Portrait scene path field
 @onready var _portrait_scene_field: GraphDialogsFileField = %PortraitSceneField
@@ -41,9 +41,6 @@ extends VBoxContainer
 var _default_portrait_scene := preload("res://addons/graph_dialogs/objects/defaults/default_portrait.tscn")
 ## Portrait custom script template
 var _portrait_script_template := "res://addons/graph_dialogs/objects/defaults/default_portrait.gd"
-
-# Offset of the preview node position
-var _preview_offset: Vector2 = Vector2(20, 20)
 
 
 func _ready():
@@ -137,8 +134,8 @@ func _update_preview_transform() -> void:
 		_portrait_scale_section.get_node("YField").value
 		)
 	_preview_container.position = Vector2(
-		_portrait_offset_section.get_node("XField").value + _preview_offset.x,
-		_portrait_offset_section.get_node("YField").value + _preview_offset.y
+		_portrait_offset_section.get_node("XField").value,
+		_portrait_offset_section.get_node("YField").value
 		)
 	_preview_container.rotation_degrees = _portrait_rotation_section.get_node("RotationField").value
 	
@@ -159,8 +156,8 @@ func _switch_scene_preview(new_scene: String) -> void:
 	var scene = load(new_scene).instantiate()
 	_preview_container.add_child(scene)
 	_portrait_export_properties.load_exported_properties(scene)
-	if _preview_container.get_child(0).has_method("update_portrait"):
-			_preview_container.get_child(0).update_portrait() # Update the portrait preview
+	if _preview_container.get_child(0).has_method("set_portrait"):
+			_preview_container.get_child(0).set_portrait() # Update the portrait preview
 
 
 ## Reload the current scene in the preview
@@ -273,13 +270,13 @@ func _on_scale_y_value_changed(value: float) -> void:
 
 ## Update the image offset position
 func _on_offset_x_value_changed(value: float) -> void:
-	_preview_container.position.x = value + _preview_offset.x
+	_preview_container.position.x = value
 	_character_editor.on_modified()
 
 
 ## Update the image offset position
 func _on_offset_y_value_changed(value: float) -> void:
-	_preview_container.position.y = value + _preview_offset.y
+	_preview_container.position.y = value
 	_character_editor.on_modified()
 
 
@@ -306,8 +303,8 @@ func _on_export_property_changed(name: String, value: Variant) -> void:
 	_preview_container.get_child(0).set(name, value)
 
 	# Update the portrait preview scene
-	if _preview_container.get_child(0).has_method("update_portrait"):
-			_preview_container.get_child(0).update_portrait()
+	if _preview_container.get_child(0).has_method("set_portrait"):
+			_preview_container.get_child(0).set_portrait()
 	_character_editor.on_modified()
 
 #endregion

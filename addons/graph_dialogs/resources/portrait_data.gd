@@ -15,7 +15,19 @@ extends Resource
 @export var portrait_scene: int = -1
 ## Portrait exported overrides properties.
 ## This is a dictionary where each key is the property name to override
-## and its value is the new value for that property.
+## and its value is a dictionary containing the value and type of the property.
+## The dictionary structure is as follows:
+## [codeblock]{
+##   "property_name_1": {
+##     "value": value_of_property_1,
+##     "type": 0  (from Variant.Type enum. e.g., 0 for NIL)
+##   },
+##   "property_name_2": {
+##     "value": value_of_property_2,
+##     "type": 1 (from Variant.Type enum. e.g., 1 for BOOL)
+##   },
+##   ...
+## }[/codeblock]
 @export var export_overrides: Dictionary = {}
 ## Transform settings for the portrait.
 ## This is a dictionary containing the following keys:

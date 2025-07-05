@@ -23,11 +23,11 @@ extends DialogPortrait
 @export var animation_time: float = 1.0
 
 
-func update_portrait() -> void:
+func set_portrait() -> void:
 	# -------------------------------------------------------------------
 	# This method is called when the portrait is instantiated or changed.
-	# This is the default behavior of the portrait when is active.
-	# You can add your own logic here to handle the portrait update.
+	# This is the default behavior of the portrait.
+	# You can add your own logic here to handle the portrait.
 	# -------------------------------------------------------------------
 	# In this base case, a portrait image is loaded and set it to the sprite
 	if portrait_image != "" and FileAccess.file_exists(portrait_image):
@@ -35,40 +35,60 @@ func update_portrait() -> void:
 
 
 func on_portrait_entry() -> void:
-	# -------------------------------------------------------------------
-	# This method is called when the character enters the scene.
-	# Then the portrait goes to its default behavior (update_portrait is called).
-	# You can add your own logic here to handle the portrait when the character enters.
-	# -------------------------------------------------------------------
+	# --------------------------------------------------------------------------
+	# This method is called when the character joins the scene.
+	# You can add your own logic here to handle when the character enters.
+	# --------------------------------------------------------------------------
 	# In this base case, the portrait is animated to enter the scene with fade in
 	_fade_in_animation($Sprite2D)
 
 
 func on_portrait_exit() -> void:
-	# -------------------------------------------------------------------
-	# This method is called when the character leaves the scene
-	# You can add your own logic here to handle the portrait when the character leaves
-	# -------------------------------------------------------------------
+	# --------------------------------------------------------------------------
+	# This method is called when the character leaves the scene.
+	# You can add your own logic here to handle when the character leaves.
+	# --------------------------------------------------------------------------
 	# In this base case, the portrait is animated to exit the scene with fade out
 	_fade_out_animation($Sprite2D)
 
 
 func on_portrait_talk() -> void:
-	# --------------------------------------------------------------------
-	# This method is called when the character starts talking (typing dialog)
-	# You can add your own logic here to handle the portrait when the character talks
-	# --------------------------------------------------------------------
+	# --------------------------------------------------------------------------
+	# This method is called when the character starts talking (typing starts).
+	# You can add your own logic here to handle when the character talks
+	# --------------------------------------------------------------------------
 	# In this base case, the portrait is animated to talk with a custom animation
 	_bounce_animation($Sprite2D)
 
 
-func on_portrait_talk_end() -> void:
-	# --------------------------------------------------------------------
-	# This method is called when the character stops talking (dialog finished)
-	# Then the portrait goes to its default behavior (update_portrait is called)
-	# You can add your own logic here to handle the portrait when the character stops talking
-	# --------------------------------------------------------------------
+func on_portrait_stop_talking() -> void:
+	# --------------------------------------------------------------------------
+	# This method is called when the character stops talking (typing ends).
+	# You can add your own logic here to handle when the character stops talking
+	# --------------------------------------------------------------------------
 	get_node("bounce_animation").kill()
+
+
+func on_portrait_highlight() -> void:
+	# --------------------------------------------------------------------------
+	# This method is called when the character is the active speaker in the dialog,
+	# but is not currently talking (e.g. waiting for user input).
+	# This is called when the character ends talking, but is still the active speaker
+	# in the dialog, and for other situations where the character is highlighted
+	# but not actively talking.
+	# You can add your own logic here to handle when the character is highlighted.
+	# --------------------------------------------------------------------------
+	# In this base case, we do nothing, but you can add your own logic here
+	pass
+
+
+func on_portrait_unhighlight() -> void:
+	# --------------------------------------------------------------------------
+	# This method is called when the character is not the active speaker in the dialog.
+	# You can add your own logic here to handle when the character is not highlighted.
+	# --------------------------------------------------------------------------
+	# In this base case, we do nothing, but you can add your own logic here
+	pass
 
 
 ## Fade in animation.

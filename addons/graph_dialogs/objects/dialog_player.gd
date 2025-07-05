@@ -235,7 +235,7 @@ func _on_dialogue_processed(char: String, portrait: String, dialog: String, next
 	_next_node = next_node
 	_update_dialog_box(char)
 	_update_portrait(char, portrait)
-	_current_dialog_box.play_dialog(char, dialog, self)
+	_current_dialog_box.play_dialog(char, dialog)
 
 
 ## Continue to the next node in the dialog tree
@@ -253,12 +253,15 @@ func _update_dialog_box(character_name: String) -> void:
 	# Check if the dialog box is already playing a dialog
 	if _current_dialog_box and dialog_box != _current_dialog_box:
 		_current_dialog_box.end_dialog() # End the current dialog
-	
-	_current_dialog_box = dialog_box
 
 	# Connect the dialog box signals
-	if not _current_dialog_box.is_connected("continue_dialog", _on_continue_dialog):
-		_current_dialog_box.continue_dialog.connect(_on_continue_dialog)
+	if not dialog_box.is_connected("continue_dialog", _on_continue_dialog):
+		dialog_box.continue_dialog.connect(_on_continue_dialog)
+		dialog_box.dialog_typing_ends.connect(_on_dialog_typing_ends)
+		dialog_box.dialog_starts.connect(_on_dialog_display_starts)
+		dialog_box.dialog_ends.connect(_on_dialog_display_ends)
+	
+	_current_dialog_box = dialog_box
 
 
 ## Update the portrait for the current character
@@ -266,25 +269,51 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 	if character_name.is_empty() or portrait_name.is_empty():
 		_current_portrait = null
 		return
+
 	var is_joining = false
+	# Check if the character is joining the dialog
 	if not _portraits_displayed.has(character_name):
 		_portraits_displayed[character_name] = {}
 		is_joining = true
 	
-	# Check if the portrait is already displayed
+	# If the portrait is already loaded, use it
 	if _portraits_displayed[character_name].has(portrait_name):
 		_current_portrait = _portraits_displayed[character_name][portrait_name]
-		_current_portrait.update_portrait()
 
-	else: # Instantiate the portrait scene if not already displayed
+	else: # Instantiate the portrait scene if not already loaded
 		_current_portrait = GraphDialogs.instantiate_portrait(start_id,
 			character_name, portrait_name, _portrait_parents[character_name])
+		_portraits_displayed[character_name][portrait_name] = _current_portrait
 	
-		if _current_portrait: # If the portrait was instantiated successfully
-			_portraits_displayed[character_name][portrait_name] = _current_portrait
-			_current_portrait.update_portrait()
-			
-			if is_joining: # Entry action if the character is joining the dialog
-				_current_portrait.on_portrait_entry()
+	_current_portrait.set_portrait()
+
+	if is_joining: # Entry action if the character is joining the dialog
+		_current_portrait.on_portrait_entry()
+	
+	# Hide all other portraits of the character
+	for portrait in _portraits_displayed[character_name].values():
+		if portrait != _current_portrait:
+			portrait.hide()
+		else:
+			portrait.show()
+
+
+## Handle when the dialog display starts for a character.
+func _on_dialog_display_starts(character_name: String) -> void:
+	if _current_portrait and _current_portrait.get_parent().name == character_name:
+		_current_portrait.on_portrait_talk()
+
+
+## Handle when the dialog display ends for a character.
+func _on_dialog_display_ends(character_name: String) -> void:
+	if _current_portrait and _current_portrait.get_parent().name == character_name:
+		_current_portrait.unhighlight_portrait()
+
+
+## Handle when the dialog typing ends for a character.
+func _on_dialog_typing_ends(character_name: String) -> void:
+	if _current_portrait and _current_portrait.get_parent().name == character_name:
+		_current_portrait.on_portrait_stop_talking()
+		_current_portrait.highlight_portrait()
 
 #endregion

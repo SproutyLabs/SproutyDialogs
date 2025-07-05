@@ -4,12 +4,21 @@ class_name DialogBox
 extends Panel
 
 ## -----------------------------------------------------------------------------
-## Dialog Box to display dialogues
+## Dialog Box
+##
+## It displays the dialog text and character name in a dialog box.
 ## -----------------------------------------------------------------------------
 
-## Signal to continue the dialog tree when the player press the continue button.
+## Emitted when the dialog is started.
+signal dialog_starts(character_name: String)
+## Emitted when the dialog ends typing.
+signal dialog_typing_ends(character_name: String)
+## Emitted when the dialog is ended.
+signal dialog_ends(character_name: String)
+
+## Emitted when the player press the continue button to continue the dialog tree 
 signal continue_dialog
-## Signal to do something when a meta tag is clicked in the dialog.
+## Emitted when a meta tag is clicked in the dialog.
 signal meta_clicked(meta: String)
 
 ## Max number of characters to display in the dialog box.[br][br]
@@ -44,11 +53,14 @@ var type_timer: Timer
 var _display_completed: bool = false
 ## Array to store the dialog sentences.
 var _sentences: Array[String] = []
+
 ## Index of the current sentence being displayed.
 var _current_sentence: int = 0
+## Current character that is being displayed in the dialog.
+var _current_character: String = ""
 
-## Dialog player to play the dialog.
-var _dialog_player: DialogPlayer
+## Flag to control if the dialog is running
+var _is_running: bool = false
 
 
 func _enter_tree() -> void:
@@ -71,11 +83,8 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	# Handle input events to continue or skip dialog
-	if _dialog_player and _dialog_player.is_running():
-		# Skip dialog animation and show the entire text
-		if (not _display_completed
-			and Input.is_action_just_pressed(skip_input_action)):
+	if _is_running: # Skip dialog animation and show the entire text
+		if not _display_completed and Input.is_action_just_pressed(skip_input_action):
 			dialog_display.visible_characters = dialog_display.text.length()
 			type_timer.stop()
 			_on_display_completed()
@@ -89,21 +98,18 @@ func _input(event: InputEvent) -> void:
 
 
 ## Play a dialog on dialog box
-func play_dialog(char: String, dialog: String, player: DialogPlayer) -> void:
+func play_dialog(character_name: String, dialog: String) -> void:
 	if not visible: # Start a new dialog
-		_dialog_player = player
-		# Connect dialog ended signal to close the dialog box
-		if not _dialog_player.is_connected("dialog_ended", _on_dialog_ended):
-			_dialog_player.connect("dialog_ended", _on_dialog_ended)
-		
 		# TODO: Allow to open dialog box with an animation
 		show()
 	
-	name_display.text = char
+	_current_character = character_name
+	name_display.text = character_name
 	dialog_display.text = dialog
-	print(char + " : " + dialog)
 	
 	# Display dialog by characters limit
+	dialog_starts.emit(character_name)
+	_is_running = true
 	_sentences = []
 	_current_sentence = 0
 	_display_completed = false
@@ -114,11 +120,14 @@ func play_dialog(char: String, dialog: String, player: DialogPlayer) -> void:
 ## End the dialog and close the dialog box
 func end_dialog() -> void:
 	# TODO: Allow to close dialog box with an animation
+	dialog_ends.emit(_current_character)
 	_display_completed = false
 	_current_sentence = 0
+	_is_running = false
 	_sentences = []
 	hide()
 
+#region === Dialog process =====================================================
 
 ## Split dialog by characters limit
 func _split_dialog(dialog: String) -> Array[String]:
@@ -189,6 +198,7 @@ func _split_dialog(dialog: String) -> Array[String]:
 		return sentences
 	return [dialog]
 
+
 ## Add tags to the beginning of the sentence
 func _add_tags_to_sentence(sentence: String, tags: Array) -> String:
 	var tags_string = ""
@@ -196,6 +206,7 @@ func _add_tags_to_sentence(sentence: String, tags: Array) -> String:
 		tags_string += tag
 	sentence = tags_string + sentence
 	return sentence
+
 
 ## Display a new sentence
 func _display_new_sentence(sentence: String) -> void:
@@ -219,6 +230,7 @@ func _on_type_timer_timeout() -> void:
 func _on_display_completed() -> void:
 	continue_indicator.visible = true
 	_display_completed = true
+	dialog_typing_ends.emit(_current_character)
 
 
 ## When the dialog ends, close the dialog box
@@ -231,3 +243,5 @@ func _on_dialog_meta_clicked(meta: String) -> void:
 	if open_url_on_meta_click:
 		OS.shell_open(meta) # Open the URL in the default browser
 	meta_clicked.emit(meta) # Emit the meta clicked signal
+
+#endregion

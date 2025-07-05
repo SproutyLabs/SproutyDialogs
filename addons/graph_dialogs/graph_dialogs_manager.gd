@@ -17,7 +17,7 @@ var current_dialog_id: String = ""
 var current_dialog_node: String = ""
 
 ## CanvasLayer to display the dialog box.
-var dialog_boxes_canvas: CanvasLayer = null
+var _dialog_boxes_canvas: CanvasLayer = null
 ## CanvasLayer to display the portraits.
 var _portraits_canvas: CanvasLayer = null
 
@@ -61,24 +61,24 @@ var _portraits: Dictionary = {}
 
 func _ready():
 	# Initialize the dialog box and portrait canvases
-	dialog_boxes_canvas = _new_canvas_layer("DialogBoxCanvas", 2)
-	_portraits_canvas = _new_canvas_layer("PortraitCanvas", 1)
+	_portraits_canvas = _new_canvas_layer("PortraitsCanvas", 1)
+	_dialog_boxes_canvas = _new_canvas_layer("DialogBoxCanvas", 2)
 	
 	# Load the default dialog box
 	var default_box_uid = ProjectSettings.get_setting("graph_dialogs/general/default_dialog_box")
 	var default_box = load(ResourceUID.get_id_path(default_box_uid)).instantiate()
 	default_box.name = "DefaultDialogBox"
-	dialog_boxes_canvas.add_child(default_box)
+	_dialog_boxes_canvas.add_child(default_box)
 
 
-#region === Handle resources ===================================================
+#region === Dialog resources ===================================================
 
 ## Returns the dialog box for a given character in a specific dialog.
 ## Only can return a dialog box that is in a dialog of the current scene.
 ## If the character has no dialog box set, it returns the default dialog box.
 func get_dialog_box(start_id: String, character_name: String) -> DialogBox:
 	if character_name == "":
-		return dialog_boxes_canvas.get_node("DefaultDialogBox")
+		return _dialog_boxes_canvas.get_node("DefaultDialogBox")
 	
 	if (not _dialog_boxes.has(character_name)) or (not _dialog_boxes[character_name].has(start_id)):
 		printerr("[GraphDialogs] No dialog box found for character '" + character_name \
@@ -94,23 +94,64 @@ func instantiate_portrait(start_id: String, character_name: String,
 		portrait_name: String, portrait_parent: Node = null) -> DialogPortrait:
 	if character_name.is_empty() or portrait_name.is_empty():
 		return null
+	
 	if (not _portraits.has(character_name)) or (not _portraits[character_name].has(portrait_name)):
 		printerr("[GraphDialogs] No '" + portrait_name + " portrait scene found " \
 				+"' from character " + character_name \
 				+". The character or portrait are not in a dialog of the current scene.")
 		return null
+	
 	var portrait_scene = _portraits[character_name][portrait_name].instantiate()
-	portrait_scene.name = character_name + "_" + portrait_name
+	_set_portrait_properties(character_name, portrait_name, portrait_scene)
+	portrait_scene.name = portrait_name
 
 	# If the portrait is set to be displayed on the dialog box, display it there
 	if _characters[character_name].portrait_on_dialog_box:
 		get_dialog_box(start_id, character_name).display_portrait(portrait_scene)
 	# If there is a parent for the portrait, add it to the parent
 	elif portrait_parent:
-		portrait_parent.add_child(portrait_scene)
-	else: # If no parent is set, add it to the default canvas
-		_portraits_canvas.add_child(portrait_scene)
+		var parent = _new_portrait_parent(character_name, portrait_parent)
+		parent.add_child(portrait_scene)
+	else:
+		# If no parent is set, add it to the default canvas
+		var parent = _new_portrait_parent(character_name, _portraits_canvas)
+		parent.add_child(portrait_scene)
+
 	return portrait_scene
+
+
+# Create a new parent for the portrait if it doesn't exist
+func _new_portrait_parent(character_name: String, parent: Node) -> Control:
+	if not parent.get_node_or_null(character_name):
+		var node = Control.new()
+		node.name = character_name
+		node.set_anchors_preset(Control.PRESET_CENTER)
+		parent.add_child(node)
+		return node
+	return parent.get_node(character_name)
+
+
+## Set the export overrides and transform settings for a portrait scene.
+func _set_portrait_properties(character_name: String,
+		portrait_name: String, portrait_scene: DialogPortrait) -> void:
+	if not _characters.has(character_name):
+		printerr("[GraphDialogs] No character data found for '" + character_name + "'." \
+				+" Cannot set portrait properties.")
+		return
+	
+	var portrait_data = _characters[character_name].get_portrait_from_path_name(portrait_name)
+	if not portrait_data:
+		printerr("[GraphDialogs] No portrait data found for '" + portrait_name \
+				+"' in character " + character_name + ". Cannot set portrait properties.")
+		return
+	
+	for prop in portrait_data.export_overrides: # Set export overrides
+		portrait_scene.set(prop, portrait_data.export_overrides[prop]["value"])
+	
+	# Set transform settings
+	portrait_scene.scale = portrait_data.transform_settings.scale
+	portrait_scene.position = portrait_data.transform_settings.offset
+	portrait_scene.rotation_degrees = portrait_data.transform_settings.rotation
 
 
 ## Load the resources needed for run a dialog from the dialog data.
@@ -128,11 +169,6 @@ func load_resources(dialog_data: GraphDialogsDialogueData,
 				)
 		_load_dialog_box(start_id, char, dialog_box_parents)
 		_load_portraits(char, portraits[char])
-	
-	print("\n- Dialog boxes:")
-	print(_dialog_boxes)
-	print("\n- Portraits:")
-	print(_portraits)
 
 
 ## Load and instantiate the dialog box for a character.
@@ -151,11 +187,11 @@ func _load_dialog_box(start_id: String, character_name: String, dialog_box_paren
 		if dialog_box_parents.has(character_name) and dialog_box_parents[character_name] != null:
 				dialog_box_parents[character_name].add_child(dialog_box)
 		else: # If not, add the dialog box to the default canvas
-			dialog_boxes_canvas.add_child(dialog_box)
+			_dialog_boxes_canvas.add_child(dialog_box)
 		
 		_dialog_boxes[character_name][start_id] = dialog_box
 	else: # If no dialog box is set, use the default one
-		_dialog_boxes[character_name][start_id] = dialog_boxes_canvas.get_node("DefaultDialogBox")
+		_dialog_boxes[character_name][start_id] = _dialog_boxes_canvas.get_node("DefaultDialogBox")
 
 
 ## Load the portraits for a character to use them later.
