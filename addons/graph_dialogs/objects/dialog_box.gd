@@ -23,12 +23,12 @@ signal meta_clicked(meta: String)
 
 ## Max number of characters to display in the dialog box.[br][br]
 ## The dialog will be split according to this limit and displayed in parts.
-@export var max_characters_to_display: int = 0
+@export var _max_characters_to_display: int = 0
 ## Time between typing dialog characters, controls the [b]speed[/b] of text display.
 ## [br][br][i]The higher the value, the slower the text is displayed.[/i]
-@export var type_time: float = 0.05
+@export var _type_time: float = 0.05
 ## Flag to open URL when a meta tag is clicked in the dialog.
-@export var open_url_on_meta_click: bool = true
+@export var _open_url_on_meta_click: bool = true
 
 @export_category("Input Actions")
 ## Input action to continue dialogue.[br][br]
@@ -40,14 +40,17 @@ signal meta_clicked(meta: String)
 
 @export_category("Dialog Box Components")
 ## [RichTextLabel] where character name will be displayed.
-@export var name_display: RichTextLabel
+@export var _name_display: RichTextLabel
 ## [RichTextLabel] where dialogue will be displayed.
-@export var dialog_display: RichTextLabel
+@export var _dialog_display: RichTextLabel
 ## Visual indicator to indicate press for continue the dialogue (like an arrow).
-@export var continue_indicator: Control
+@export var _continue_indicator: Control
+## [Node] where the character portrait will be displayed.
+## If you want to display the portrait in the dialog box, you need to set this property.
+@export var _portrait_display: Node
 
 ## Timer to control the typing speed of the dialog.
-var type_timer: Timer
+var _type_timer: Timer
 
 ## Flag to control if the dialog is completed.
 var _display_completed: bool = false
@@ -65,28 +68,28 @@ var _is_running: bool = false
 
 func _enter_tree() -> void:
 	# Set up timer to control the typing speed of the dialog
-	type_timer = Timer.new()
-	add_child(type_timer)
-	type_timer.wait_time = type_time
-	type_timer.timeout.connect(_on_type_timer_timeout)
+	_type_timer = Timer.new()
+	add_child(_type_timer)
+	_type_timer.wait_time = _type_time
+	_type_timer.timeout.connect(_on_type_timer_timeout)
 	hide()
 
 
 func _ready() -> void:
 	# Connect meta clicked signal to handle meta tags
-	if not dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
-		dialog_display.connect("meta_clicked", _on_dialog_meta_clicked)
+	if not _dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
+		_dialog_display.connect("meta_clicked", _on_dialog_meta_clicked)
 	
 	# Set up dialog box settings
-	dialog_display.bbcode_enabled = true
-	continue_indicator.visible = false
+	_dialog_display.bbcode_enabled = true
+	_continue_indicator.visible = false
 
 
 func _input(event: InputEvent) -> void:
 	if _is_running: # Skip dialog animation and show the entire text
 		if not _display_completed and Input.is_action_just_pressed(skip_input_action):
-			dialog_display.visible_characters = dialog_display.text.length()
-			type_timer.stop()
+			_dialog_display.visible_characters = _dialog_display.text.length()
+			_type_timer.stop()
 			_on_display_completed()
 		# Continue dialog when the player press the continue button
 		elif _display_completed and Input.is_action_just_pressed(continue_input_action):
@@ -104,8 +107,8 @@ func play_dialog(character_name: String, dialog: String) -> void:
 		show()
 	
 	_current_character = character_name
-	name_display.text = character_name
-	dialog_display.text = dialog
+	_name_display.text = character_name
+	_dialog_display.text = dialog
 	
 	# Display dialog by characters limit
 	dialog_starts.emit(character_name)
@@ -127,14 +130,20 @@ func end_dialog() -> void:
 	_sentences = []
 	hide()
 
+
+## Set a portrait to be displayed in the dialog box
+func display_portrait(portrait_node: Node) -> void:
+	_portrait_display.add_child(portrait_node)
+
+
 #region === Dialog process =====================================================
 
 ## Split dialog by characters limit
 func _split_dialog(dialog: String) -> Array[String]:
-	if max_characters_to_display == 0:
+	if _max_characters_to_display == 0:
 		return [dialog]
 	
-	if dialog.length() > max_characters_to_display:
+	if dialog.length() > _max_characters_to_display:
 		var words: Array = dialog.split(" ")
 		var sentences: Array[String] = []
 		var clean_sentence: String = ""
@@ -152,7 +161,7 @@ func _split_dialog(dialog: String) -> Array[String]:
 			var aux_sentence = clean_sentence + " " + clean_word
 
 			# When not reach the limit, add the word to the sentence -----------
-			if aux_sentence.length() < max_characters_to_display:
+			if aux_sentence.length() < _max_characters_to_display:
 				sentence += " " + word
 				clean_sentence += "" + clean_word
 			
@@ -210,25 +219,25 @@ func _add_tags_to_sentence(sentence: String, tags: Array) -> String:
 
 ## Display a new sentence
 func _display_new_sentence(sentence: String) -> void:
-	dialog_display.text = sentence
-	dialog_display.visible_characters = 0
-	continue_indicator.visible = false
+	_dialog_display.text = sentence
+	_dialog_display.visible_characters = 0
+	_continue_indicator.visible = false
 	_display_completed = false
-	type_timer.start()
+	_type_timer.start()
 
 
 ## Timer to type the dialog characters
 func _on_type_timer_timeout() -> void:
-	if dialog_display.visible_characters < dialog_display.text.length():
-		dialog_display.visible_characters += 1
+	if _dialog_display.visible_characters < _dialog_display.text.length():
+		_dialog_display.visible_characters += 1
 	else:
-		type_timer.stop()
+		_type_timer.stop()
 		_on_display_completed()
 
 
 ## When the dialog finishes displaying a text
 func _on_display_completed() -> void:
-	continue_indicator.visible = true
+	_continue_indicator.visible = true
 	_display_completed = true
 	dialog_typing_ends.emit(_current_character)
 
@@ -240,7 +249,7 @@ func _on_dialog_ended() -> void:
 
 ## When a meta tag is clicked in the dialog
 func _on_dialog_meta_clicked(meta: String) -> void:
-	if open_url_on_meta_click:
+	if _open_url_on_meta_click:
 		OS.shell_open(meta) # Open the URL in the default browser
 	meta_clicked.emit(meta) # Emit the meta clicked signal
 

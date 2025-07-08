@@ -104,18 +104,23 @@ func instantiate_portrait(start_id: String, character_name: String,
 	var portrait_scene = _portraits[character_name][portrait_name].instantiate()
 	_set_portrait_properties(character_name, portrait_name, portrait_scene)
 	portrait_scene.name = portrait_name
-
+	
 	# If the portrait is set to be displayed on the dialog box, display it there
 	if _characters[character_name].portrait_on_dialog_box:
-		get_dialog_box(start_id, character_name).display_portrait(portrait_scene)
+		var dialog_box = get_dialog_box(start_id, character_name)
+		var char_parent = _new_portrait_parent(character_name, dialog_box)
+		char_parent.add_child(portrait_scene)
+		dialog_box.display_portrait(char_parent)
 	# If there is a parent for the portrait, add it to the parent
 	elif portrait_parent:
-		var parent = _new_portrait_parent(character_name, portrait_parent)
-		parent.add_child(portrait_scene)
+		var char_parent = _new_portrait_parent(character_name, portrait_parent)
+		portrait_parent.add_child(char_parent)
+		char_parent.add_child(portrait_scene)
 	else:
 		# If no parent is set, add it to the default canvas
-		var parent = _new_portrait_parent(character_name, _portraits_canvas)
-		parent.add_child(portrait_scene)
+		var char_parent = _new_portrait_parent(character_name, _portraits_canvas)
+		_portraits_canvas.add_child(char_parent)
+		char_parent.add_child(portrait_scene)
 
 	return portrait_scene
 
@@ -126,7 +131,6 @@ func _new_portrait_parent(character_name: String, parent: Node) -> Control:
 		var node = Control.new()
 		node.name = character_name
 		node.set_anchors_preset(Control.PRESET_CENTER)
-		parent.add_child(node)
 		return node
 	return parent.get_node(character_name)
 
