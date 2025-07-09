@@ -47,7 +47,7 @@ static func check_valid_extension(path: String, extensions: Array) -> bool:
 ## and add them to the project settings translations.
 ## This allow to use the translations from CSV files in the project.
 static func collect_translations() -> void:
-	var path = ProjectSettings.get_setting("graph_dialogs/translation/csv_files_path")
+	var path = GraphDialogsSettings.get_setting("csv_translations_folder")
 	if path.is_empty():
 		printerr("[Graph Dialogs] Cannot collect translations, need a path to CSV translation files.")
 		return
@@ -63,7 +63,7 @@ static func collect_translations() -> void:
 	# Keep only the translation of setted locales
 	var valid_translation_files = []
 	for file in all_translation_files:
-		for locale in ProjectSettings.get_setting("graph_dialogs/translation/locales"):
+		for locale in GraphDialogsSettings.get_setting("locales"):
 			if file.split(".")[-2] == locale:
 				valid_translation_files.append(file)
 				break

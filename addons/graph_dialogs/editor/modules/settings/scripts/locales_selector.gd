@@ -37,7 +37,7 @@ func set_locale_list() -> void:
 		if child is MarginContainer:
 			child.queue_free()
 	
-	var locales = ProjectSettings.get_setting("graph_dialogs/translation/locales")
+	var locales = GraphDialogsSettings.get_setting("locales")
 	
 	if locales == null or locales.is_empty():
 		$"%LocalesContainer" / Label.visible = true
@@ -75,8 +75,7 @@ func _on_locale_removed(locale_code: String) -> void:
 ## Save the locales selected.
 func _save_locales() -> void:
 	# Save locales in translation settings
-	ProjectSettings.set_setting("graph_dialogs/translation/locales", _current_locales)
-	ProjectSettings.save()
+	GraphDialogsSettings.set_setting("locales", _current_locales)
 	locales_changed.emit()
 	_current_locales = []
 	$SaveButton.text = "Save Locales"
@@ -95,7 +94,7 @@ func _on_save_locales_pressed() -> void:
 		_current_locales.append(locale)
 	
 	# If a locale has been removed, show confirmation alert
-	for locale in ProjectSettings.get_setting("graph_dialogs/translation/locales"):
+	for locale in GraphDialogsSettings.get_setting("locales"):
 		if not _current_locales.has(locale):
 			_confirm_panel.popup_centered()
 			return

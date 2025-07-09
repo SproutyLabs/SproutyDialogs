@@ -213,11 +213,11 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 
 ## Set translation text boxes
 func _set_translation_text_boxes() -> void:
-	_default_locale = ProjectSettings.get_setting("graph_dialogs/translation/default_locale")
+	_default_locale = GraphDialogsSettings.get_setting("default_locale")
 	%DefaultLocaleLabel.text = "(" + _default_locale + ")"
 	_default_text_box.set_text("")
 	_translation_boxes.set_translation_boxes(
-			ProjectSettings.get_setting("graph_dialogs/translation/locales").filter(
+			GraphDialogsSettings.get_setting("locales").filter(
 				func(locale): return locale != _default_locale
 			)
 		)

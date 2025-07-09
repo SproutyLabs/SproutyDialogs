@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://pdcicn3rbwbs"]
+[gd_scene load_steps=6 format=3 uid="uid://pdcicn3rbwbs"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_r0mi1"]
 [ext_resource type="PackedScene" uid="uid://bk5rchg4mt0js" path="res://addons/graph_dialogs/editor/modules/settings/translation_settings.tscn" id="2_g62sc"]
 [ext_resource type="Script" uid="uid://cmlad7vuvr5on" path="res://addons/graph_dialogs/editor/modules/settings/scripts/settings_panel.gd" id="2_yfqmm"]
 [ext_resource type="Script" uid="uid://d0js6iit3n6uq" path="res://addons/graph_dialogs/editor/modules/settings/scripts/general_settings.gd" id="3_08daf"]
+[ext_resource type="Script" uid="uid://dmsryopl4atwi" path="res://addons/graph_dialogs/editor/modules/settings/scripts/text_settings.gd" id="4_mtbo4"]
 
 [node name="SettingsPanel" type="TabContainer"]
 anchors_preset = 15
@@ -12,7 +13,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_r0mi1")
-current_tab = 1
+current_tab = 2
 script = ExtResource("2_yfqmm")
 
 [node name="General" type="TabBar" parent="."]
@@ -20,7 +21,8 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Label" type="Label" parent="General"]
+[node name="GeneralSettings" type="Label" parent="General"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -36,9 +38,31 @@ grow_vertical = 2
 text = "(general settings)"
 script = ExtResource("3_08daf")
 
-[node name="Translation" type="TabBar" parent="."]
+[node name="Text" type="TabBar" parent="."]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 1
+
+[node name="TextSettings" type="Label" parent="Text"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -11.5
+offset_right = 20.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "(text settings)"
+script = ExtResource("4_mtbo4")
+
+[node name="Translation" type="TabBar" parent="."]
+layout_mode = 2
+metadata/_tab_index = 2
 
 [node name="TranslationSettings" parent="Translation" instance=ExtResource("2_g62sc")]
 unique_name_in_owner = true

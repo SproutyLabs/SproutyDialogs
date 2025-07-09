@@ -23,11 +23,12 @@ size_flags_horizontal = 3
 [node name="Container" type="VBoxContainer" parent="TranslationSettings"]
 layout_mode = 2
 
-[node name="UseTranslationToggle" type="CheckButton" parent="TranslationSettings/Container"]
+[node name="EnableTranslationsToggle" type="CheckButton" parent="TranslationSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable/disable translations for dialogues."
-text = "Use translation"
+button_pressed = true
+text = "Enable translations"
 icon = ExtResource("2_2wqnh")
 
 [node name="--" type="HSeparator" parent="TranslationSettings/Container"]
@@ -37,7 +38,6 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for translations. Otherwise, translations will be saved in the dialog file or in the character file for character names."
-disabled = true
 text = "Use CSV files for translation"
 icon = ExtResource("2_qeqd1")
 
@@ -55,7 +55,7 @@ tooltip_text = "Path to the directory of the CSV translation files. This directo
 
 [node name="Label" type="Label" parent="TranslationSettings/Container/CSVFolder"]
 layout_mode = 2
-text = "CSV Files Path"
+text = "CSV Translations Folder"
 
 [node name="CSVFolderField" parent="TranslationSettings/Container/CSVFolder" instance=ExtResource("4_01lks")]
 unique_name_in_owner = true
@@ -69,7 +69,6 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable translation for the character names."
-disabled = true
 text = "Translate character names"
 icon = ExtResource("3_rjao7")
 
@@ -77,7 +76,6 @@ icon = ExtResource("3_rjao7")
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable translation for the character names."
-disabled = true
 text = "Use a CSV file for character names"
 
 [node name="CharCSVWarning" type="RichTextLabel" parent="TranslationSettings/Container"]

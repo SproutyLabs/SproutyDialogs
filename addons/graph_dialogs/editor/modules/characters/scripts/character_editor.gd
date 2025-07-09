@@ -75,9 +75,6 @@ func _ready() -> void:
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
 
-	_set_translation_text_boxes()
-	_update_translations_state()
-
 
 ## Emit the modified signal
 func on_modified():
@@ -147,9 +144,10 @@ func open_scene_in_editor(path: String) -> void:
 
 ## Update name translations text boxes when locales change
 func on_locales_changed() -> void:
-	var translations = _get_name_translations()
-	_set_translation_text_boxes()
-	_load_name_translations(translations)
+	if _key_name != "":
+		var translations = _get_name_translations()
+		_set_translation_text_boxes()
+		_load_name_translations(translations)
 
 
 ## Handle the translation enabled change
@@ -161,8 +159,8 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 
 ## Update the translations state based on project settings
 func _update_translations_state() -> void:
-	if ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled") \
-		and ProjectSettings.get_setting("graph_dialogs/translation/translate_character_names"):
+	if GraphDialogsSettings.get_setting("enable_translations") \
+			and GraphDialogsSettings.get_setting("translate_character_names"):
 		_name_translations_container.visible = true
 		_name_default_locale_label.visible = true
 	else:
@@ -186,11 +184,11 @@ func _load_name_translations(translations: Dictionary) -> void:
 
 ## Set character name translations text boxes
 func _set_translation_text_boxes() -> void:
-	_default_locale = ProjectSettings.get_setting("graph_dialogs/translation/default_locale")
+	_default_locale = GraphDialogsSettings.get_setting("default_locale")
 	_name_default_locale_label.text = "(" + _default_locale + ")"
 	_name_default_locale_field.text = ""
 	_name_translations_container.set_translation_boxes(
-			ProjectSettings.get_setting("graph_dialogs/translation/locales").filter(
+			GraphDialogsSettings.get_setting("locales").filter(
 				func(locale): return locale != _default_locale
 			)
 		)

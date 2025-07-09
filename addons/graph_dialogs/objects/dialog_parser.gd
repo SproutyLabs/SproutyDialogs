@@ -44,8 +44,8 @@ func process_dialogue(node_data: Dictionary) -> void:
 ## Returns the translated dialog text
 func _get_translated_dialog(key: String) -> String:
 	# If translation is enabled and using CSV, use the translation server
-	if ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled") \
-		and ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv"):
+	if GraphDialogsSettings.get_setting("enable_translations") \
+			and GraphDialogsSettings.get_setting("use_csv"):
 		return tr(key)
 	else: # Otherwise, get the dialog from the dialog resource
 		var locale = TranslationServer.get_locale()
