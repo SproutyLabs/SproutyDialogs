@@ -87,21 +87,25 @@ func _ready() -> void:
 func new_dialog_file(path: String) -> void:
 	# Create a new dialogue data resource
 	var resource = GraphDialogsDialogueData.new()
-	ResourceSaver.save(resource, path)
-
-	# Set a csv file if translation is enabled
+	var csv_path = ""
+	
 	if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
 		and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
-		var csv_path = GraphDialogsCSVFileManager.new_csv_template_file(path.get_file())
+		# Create a new CSV file for translations
+		csv_path = GraphDialogsCSVFileManager.new_csv_template_file(path.get_file())
 		if csv_path.is_empty(): return
-		resource.csv_file_path = csv_path
 		_csv_file_field.set_value(csv_path)
 		_csv_file_field.get_parent().show()
-
+		
+		# Refresh the filesystem to ensure the CSV file is imported
+		EditorInterface.get_resource_filesystem().scan()
+		await EditorInterface.get_resource_filesystem().resources_reimported
+		resource.csv_translation_file = ResourceSaver.get_resource_id_for_path(csv_path, true)
+	
+	ResourceSaver.save(resource, path)
 	var graph = _new_graph_from_resource(resource)
-	_file_list.new_file_item(path, resource, graph)
-	request_to_switch_tab.emit(0) # Switch to the graph dialog tab
-
+	_file_list.new_file_item(path, resource, graph, csv_path)
+	request_to_switch_tab.emit(0)
 	_save_file_button.disabled = false
 	GraphDialogsFileUtils.set_recent_file_path("dialog_files", path)
 	print("[Graph Dialogs] Dialog file '" + path.get_file() + "' created.")
@@ -113,9 +117,12 @@ func _new_graph_from_resource(resource: GraphDialogsDialogueData) -> GraphEdit:
 	add_child(graph)
 	graph.modified.connect(_on_data_modified)
 	var dialogs = resource.dialogs if resource.dialogs else {}
+	# Load dialogs from CSV file if translation is enabled
 	if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
 		and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
-		dialogs = GraphDialogsCSVFileManager.load_dialogs_from_csv(resource.csv_file_path)
+		if ResourceUID.has_id(resource.csv_translation_file):
+			dialogs = GraphDialogsCSVFileManager.load_dialogs_from_csv(
+					ResourceUID.get_id_path(resource.csv_translation_file))
 	graph.load_graph_data(resource.graph_data, dialogs, resource.characters)
 	graph.name = "Graph"
 	remove_child(graph)
@@ -160,7 +167,8 @@ func load_file(path: String) -> void:
 		if resource is GraphDialogsDialogueData:
 			GraphDialogsFileUtils.set_recent_file_path("dialogue_files", path)
 			var graph = _new_graph_from_resource(resource)
-			_file_list.new_file_item(path, resource, graph)
+			_file_list.new_file_item(path, resource, graph,
+					ResourceUID.get_id_path(resource.csv_translation_file))
 			request_to_switch_tab.emit(0)
 		
 		elif resource is GraphDialogsCharacterData:
@@ -190,13 +198,22 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		data.graph_data = graph_editor_data["nodes_data"]
 		data.dialogs = graph_editor_data["dialogs"]
 		data.characters = graph_editor_data["characters"]
+
+		# Set the CSV file path if exists
+		if GraphDialogsFileUtils.check_valid_extension(_csv_file_field.get_value(), ["*.csv"]):
+			data.csv_translation_file = ResourceSaver.get_resource_id_for_path(_csv_file_field.get_value(), true)
+		
 		file_metadata["data"] = data
 
 		# Save the CSV file with the dialogs
 		if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
 			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
-			GraphDialogsCSVFileManager.save_dialogs_on_csv(graph_editor_data["dialogs"], data.csv_file_path)
-			GraphDialogsFileUtils.collect_translations()
+			if ResourceUID.has_id(data.csv_translation_file):
+				GraphDialogsCSVFileManager.save_dialogs_on_csv(
+					graph_editor_data["dialogs"],
+					ResourceUID.get_id_path(data.csv_translation_file)
+				)
+				GraphDialogsFileUtils.collect_translations()
 
 	elif data is GraphDialogsCharacterData:
 		data = file_metadata["cache_node"].get_character_data()
@@ -244,7 +261,7 @@ func on_new_character_pressed() -> void:
 func switch_to_selected_file(file_metadata: Dictionary) -> void:
 	if file_metadata.data is GraphDialogsDialogueData:
 		request_to_switch_graph.emit(file_metadata["cache_node"])
-		_csv_file_field.set_value(file_metadata.data.csv_file_path)
+		_csv_file_field.set_value(file_metadata.csv_file)
 		request_to_switch_tab.emit(0)
 	
 	elif file_metadata.data is GraphDialogsCharacterData:
@@ -290,8 +307,10 @@ func _on_data_modified() -> void:
 
 ## Update the CSV file path to the current dialog file
 func _on_csv_file_path_changed(path: String) -> void:
+	if not GraphDialogsFileUtils.check_valid_extension(path, ["*.csv"]):
+		printerr("[Graph Dialogs] Invalid CSV file path: " + path)
+		return
 	_csv_file_field.set_value(path)
-	_file_list.set_resource_metadata(
-		_file_list.get_current_index(),
-		"csv_file_path", path
-	)
+	var data = _file_list.get_item_metadata(_file_list.get_current_index())
+	data.csv_file = path
+	_file_list.set_item_metadata(_file_list.get_current_index(), data)

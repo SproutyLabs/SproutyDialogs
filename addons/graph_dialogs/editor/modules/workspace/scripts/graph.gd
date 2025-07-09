@@ -199,7 +199,12 @@ func load_graph_data(data: Dictionary, dialogs: Dictionary, characters: Dictiona
 			
 			# Load dialogs and characters on dialogue nodes
 			if node_data["node_type"] == "dialogue_node":
-				new_node.load_dialogs(dialogs[node_data["dialog_key"]])
+				if not dialogs.has(node_data["dialog_key"]):
+					printerr("[GraphDialogs] No dialog found for key: " + node_data["dialog_key"] \
+						+".\n\t- If you are using CSV files, check that the key exists in it." \
+						+"\n\t- Also, check that the CSV file associated with the dialog is correct.")
+				else:
+					new_node.load_dialogs(dialogs[node_data["dialog_key"]])
 				var character_name = node_data["character"]
 				if character_name != "":
 					var character_uid = characters[dialogue_id][character_name]

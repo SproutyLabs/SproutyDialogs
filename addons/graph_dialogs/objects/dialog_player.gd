@@ -20,14 +20,15 @@ signal dialog_ended
 @export var dialog_data: GraphDialogsDialogueData:
 	set(value):
 		dialog_data = value
-		_starts_ids = value.get_start_ids()
+		if value: _starts_ids = value.get_start_ids()
+		start_id = "(Select a dialog)"
 		notify_property_list_changed()
 
 ## Start ID of the dialog to play.
 var start_id: String:
 	set(value):
 		start_id = value
-		if dialog_data: # Set dictionaries to store the nodes references
+		if dialog_data and dialog_data.characters.has(value):
 			for char in dialog_data.characters[value]:
 				_portrait_parents[char] = null
 				_dialog_box_parents[char] = null
@@ -104,6 +105,9 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	# Play the dialog on ready if the property is set
 	if not Engine.is_editor_hint():
+		if start_id == "(Select a dialog)":
+			printerr("[Graph Dialogs] No dialog ID selected to play.")
+			return
 		GraphDialogs.load_resources(dialog_data, start_id, _dialog_box_parents)
 		if play_on_ready: start()
 
@@ -127,7 +131,7 @@ func _get_property_list():
 				"hint_string": id_list
 			})
 			# Set characters options by dialog
-			if not start_id.is_empty():
+			if not start_id.is_empty() and start_id in dialog_data.characters:
 				props.append({
 				"name": "Anchors Settings",
 				"type": TYPE_STRING,

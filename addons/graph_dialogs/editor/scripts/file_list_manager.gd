@@ -127,7 +127,7 @@ func set_resource_metadata(index: int, property: String, value: Variant) -> void
 
 
 ## Create a new file item on the file list
-func new_file_item(path: String, data: Resource, cache_node: Node) -> void:
+func new_file_item(path: String, data: Resource, cache_node: Node, csv_file: String = "") -> void:
 	var file_name := path.get_file()
 	var item_index: int = _file_list.item_count
 
@@ -141,6 +141,7 @@ func new_file_item(path: String, data: Resource, cache_node: Node) -> void:
 	var metadata := {
 		"file_name": file_name,
 		"file_path": path,
+		"csv_file": csv_file,
 		"data": data,
 		"cache_node": cache_node,
 		"modified": false

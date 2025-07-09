@@ -36,7 +36,7 @@ func get_data() -> Dictionary:
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
-		"start_id": start_id,
+		"start_id": start_id.to_upper(),
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
 		"offset": position_offset
@@ -57,7 +57,7 @@ func set_data(dict: Dictionary) -> void:
 
 ## Return the dialog ID
 func get_start_id() -> String:
-	return start_id
+	return start_id.to_upper()
 
 
 ## Update the dialog ID and become it to uppercase

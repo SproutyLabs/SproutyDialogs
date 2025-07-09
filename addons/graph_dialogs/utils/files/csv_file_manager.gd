@@ -57,8 +57,7 @@ static func load_file(file_path: String) -> Array:
 		file.close()
 		return data
 	else: # File does not exist at the given path
-		printerr("[Graph Dialogs] Cannot open non-existing file at %s"
-		% [file_path])
+		printerr("[Graph Dialogs] File at '%s' does not exist" % [file_path])
 		return []
 	return []
 
@@ -101,7 +100,6 @@ static func update_row(file_path: String, header: Array, row: Array) -> void:
 ## Create a new CSV template file
 static func new_csv_template_file(name: String) -> String:
 	var csv_files_path: String = ProjectSettings.get_setting("graph_dialogs/translation/csv_files_path")
-	print("[Graph Dialogs] Creating new CSV template file at %s" % [csv_files_path])
 	if csv_files_path.is_empty():
 		printerr("[Graph Dialogs] Cannot create file, need a directory path to CSV translation files."
 				+" Please set 'CSV files path' in Settings > Translation.")

@@ -52,8 +52,9 @@ extends Resource
 ##   ...
 ## }[/codeblock]
 @export var characters: Dictionary = {}
-## The path to the CSV file that contains the translated dialogue.
-@export var csv_file_path: String = ""
+## Reference to CSV file with the translations for the dialogues.
+## This is the UID of the CSV file resource.
+@export var csv_translation_file: int = -1
 
 
 ## Returns a list of the start IDs from the graph data.
