@@ -88,6 +88,23 @@ func get_dialog_box(start_id: String, character_name: String) -> DialogBox:
 	return _dialog_boxes[character_name][start_id]
 
 
+## Load the resources needed for run a dialog from the dialog data.
+## This includes characters, dialog boxes, and portraits.
+func load_resources(dialog_data: GraphDialogsDialogueData,
+		start_id: String, dialog_box_parents: Dictionary) -> void:
+	if not dialog_data: return
+	var portraits = dialog_data.get_portraits_on_dialog(start_id)
+
+	for char in dialog_data.characters[start_id]:
+		# Store the character data if not already loaded
+		if not _characters.has(char):
+			_characters[char] = load(
+					ResourceUID.get_id_path(dialog_data.characters[start_id][char])
+				)
+		_load_dialog_box(start_id, char, dialog_box_parents)
+		_load_portraits(char, portraits[char])
+
+
 ## Instantiate a character portrait in the scene.
 ## This will load a portrait scene and instantiate it to be used in the dialog.
 func instantiate_portrait(start_id: String, character_name: String,
@@ -109,17 +126,18 @@ func instantiate_portrait(start_id: String, character_name: String,
 	if _characters[character_name].portrait_on_dialog_box:
 		var dialog_box = get_dialog_box(start_id, character_name)
 		var char_parent = _new_portrait_parent(character_name, dialog_box)
-		char_parent.add_child(portrait_scene)
-		dialog_box.display_portrait(char_parent)
+		dialog_box.display_portrait(char_parent, portrait_scene)
 	# If there is a parent for the portrait, add it to the parent
 	elif portrait_parent:
 		var char_parent = _new_portrait_parent(character_name, portrait_parent)
-		portrait_parent.add_child(char_parent)
+		if not portrait_parent.has_node(NodePath(character_name)):
+			portrait_parent.add_child(char_parent)
 		char_parent.add_child(portrait_scene)
 	else:
 		# If no parent is set, add it to the default canvas
 		var char_parent = _new_portrait_parent(character_name, _portraits_canvas)
-		_portraits_canvas.add_child(char_parent)
+		if not _portraits_canvas.has_node(NodePath(char_parent.name)):
+			_portraits_canvas.add_child(char_parent)
 		char_parent.add_child(portrait_scene)
 
 	return portrait_scene
@@ -156,23 +174,6 @@ func _set_portrait_properties(character_name: String,
 	portrait_scene.scale = portrait_data.transform_settings.scale
 	portrait_scene.position = portrait_data.transform_settings.offset
 	portrait_scene.rotation_degrees = portrait_data.transform_settings.rotation
-
-
-## Load the resources needed for run a dialog from the dialog data.
-## This includes characters, dialog boxes, and portraits.
-func load_resources(dialog_data: GraphDialogsDialogueData,
-		start_id: String, dialog_box_parents: Dictionary) -> void:
-	if not dialog_data: return
-	var portraits = dialog_data.get_portraits_on_dialog(start_id)
-
-	for char in dialog_data.characters[start_id]:
-		# Store the character data if not already loaded
-		if not _characters.has(char):
-			_characters[char] = load(
-					ResourceUID.get_id_path(dialog_data.characters[start_id][char])
-				)
-		_load_dialog_box(start_id, char, dialog_box_parents)
-		_load_portraits(char, portraits[char])
 
 
 ## Load and instantiate the dialog box for a character.

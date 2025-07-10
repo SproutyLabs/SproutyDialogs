@@ -83,11 +83,15 @@ var _current_dialog_box: DialogBox
 ## Current portrait being displayed.
 var _current_portrait: DialogPortrait
 
-## Next node to process in the dialog tree after a dialogue node.
-var _next_node: String = ""
-
 ## Dialog parser instance to process the dialog nodes.
 var _dialog_parser: DialogParser
+
+## Current node being processing
+var _current_node: String = ""
+## Next node to process in the dialog tree after a dialogue node.
+var _next_node: String = ""
+## Node where the dialog was paused, to resume later.
+var _paused_node: String = ""
 
 ## Flag to control if the dialog is running.
 var _is_running: bool = false
@@ -209,9 +213,52 @@ func start(dialog_id: String = start_id) -> void:
 			break
 
 
+## Pause processing the dialog tree
+func pause() -> void:
+	_is_running = false
+	# If there is a current dialog box, pause it
+	if _current_dialog_box:
+		_current_dialog_box.pause_dialog()
+		if _current_portrait:
+			_current_portrait.on_portrait_stop_talking()
+	# If not, save the current node to resume later
+	elif _current_node != "":
+		_paused_node = _current_node
+
+
+## Resume processing the dialog tree
+func resume() -> void:
+	_is_running = true
+	# If there is a current dialog box, resume it
+	if _current_dialog_box:
+		_current_dialog_box.resume_dialog()
+		if _current_portrait:
+			_current_portrait.on_portrait_talk()
+	# If there is no dialog box, but there is a paused node, continue the flow
+	elif _paused_node != "":
+		_process_node(_paused_node)
+		_paused_node = ""
+
+
 ## Stop processing the dialog tree
 func stop() -> void:
 	_is_running = false
+	_current_dialog_box.end_dialog()
+	_current_dialog_box = null
+	_current_portrait = null
+	_current_node = ""
+	_paused_node = ""
+	_next_node = ""
+	# Exit displayed portraits and free them
+	for char in _portraits_displayed.keys():
+		for portrait in _portraits_displayed[char].values():
+			if portrait.is_visible():
+				portrait.on_portrait_exit()
+	for char in _portraits_displayed.keys():
+		for portrait in _portraits_displayed[char].values():
+			print("[Graph Dialogs] Freeing portraits from: " + portrait.get_parent().name)
+			portrait.get_parent().queue_free()
+	_portraits_displayed.clear()
 	dialog_ended.emit()
 
 
@@ -227,6 +274,7 @@ func _process_node(node_name: String) -> void:
 	if node_name == 'END':
 		stop()
 		return
+	_current_node = node_name
 	# Get the node type to process
 	var node_type = node_name.split("_node_")[0] + "_node"
 	_dialog_parser.node_processors[node_type].call(
@@ -239,7 +287,7 @@ func _on_dialogue_processed(char: String, portrait: String, dialog: String, next
 	_next_node = next_node
 	_update_dialog_box(char)
 	_update_portrait(char, portrait)
-	_current_dialog_box.play_dialog(char, dialog)
+	_current_dialog_box.start_dialog(char, dialog)
 
 
 ## Continue to the next node in the dialog tree
@@ -318,6 +366,5 @@ func _on_dialog_display_ends(character_name: String) -> void:
 func _on_dialog_typing_ends(character_name: String) -> void:
 	if _current_portrait and _current_portrait.get_parent().name == character_name:
 		_current_portrait.on_portrait_stop_talking()
-		_current_portrait.highlight_portrait()
 
 #endregion

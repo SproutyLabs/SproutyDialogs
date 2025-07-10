@@ -21,16 +21,16 @@ static var _settings_paths: Dictionary = {
 	
 	# --- Text settings --------------------------------------------------------
 	"default_typing_speed": "graph_dialogs/text/default_typing_speed",
-	"new_line_as_new_dialog": "graph_dialogs/text/new_line_as_new_dialog",
 	"open_url_on_meta_tag_click": "graph_dialogs/text/open_url_on_meta_tag_click",
 
 	# Text/Display settings
+	"new_line_as_new_dialog": "graph_dialogs/text/display/new_line_as_new_dialog",
 	"split_dialog_by_max_characters": "graph_dialogs/text/display/split_dialog_by_max_characters",
 	"max_characters": "graph_dialogs/text/display/max_characters",
 
 	# Text/Skip settings
 	"allow_skip_text_reveal": "graph_dialogs/text/skip/allow_skip_text_reveal",
-	"skip_delay": "graph_dialogs/text/skip/skip_delay",
+	"can_skip_delay": "graph_dialogs/text/skip/can_skip_delay",
 	"skip_continue_delay": "graph_dialogs/text/skip/continue_delay",
 	
 	# -- Translation settings --------------------------------------------------
@@ -89,11 +89,11 @@ static func initialize_default_settings() -> void:
 
 	# Text settings
 	ProjectSettings.set_setting(_settings_paths["default_typing_speed"], 0.05)
-	ProjectSettings.set_setting(_settings_paths["new_line_as_new_dialog"], false)
+	ProjectSettings.set_setting(_settings_paths["new_line_as_new_dialog"], true)
 	ProjectSettings.set_setting(_settings_paths["split_dialog_by_max_characters"], false)
 	ProjectSettings.set_setting(_settings_paths["max_characters"], 0)
 	ProjectSettings.set_setting(_settings_paths["allow_skip_text_reveal"], true)
-	ProjectSettings.set_setting(_settings_paths["skip_delay"], 0.1)
+	ProjectSettings.set_setting(_settings_paths["can_skip_delay"], 0.1)
 	ProjectSettings.set_setting(_settings_paths["skip_continue_delay"], 0.1)
 	ProjectSettings.set_setting(_settings_paths["open_url_on_meta_tag_click"], true)
 

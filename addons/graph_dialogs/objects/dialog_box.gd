@@ -1,4 +1,3 @@
-@tool
 @icon("res://addons/graph_dialogs/icons/icon.svg")
 class_name DialogBox
 extends Panel
@@ -6,7 +5,7 @@ extends Panel
 ## -----------------------------------------------------------------------------
 ## Dialog Box
 ##
-## It displays the dialog text and character name in a dialog box.
+## This class is responsible for displaying the dialog in the game.
 ## -----------------------------------------------------------------------------
 
 ## Emitted when the dialog is started.
@@ -21,36 +20,33 @@ signal continue_dialog
 ## Emitted when a meta tag is clicked in the dialog.
 signal meta_clicked(meta: String)
 
-## Max number of characters to display in the dialog box.[br][br]
-## The dialog will be split according to this limit and displayed in parts.
-@export var _max_characters_to_display: int = 0
-## Time between typing dialog characters, controls the [b]speed[/b] of text display.
-## [br][br][i]The higher the value, the slower the text is displayed.[/i]
-@export var _type_time: float = 0.05
-## Flag to open URL when a meta tag is clicked in the dialog.
-@export var _open_url_on_meta_click: bool = true
-
-@export_category("Input Actions")
-## Input action to continue dialogue.[br][br]
-## (For default press [kbd]enter[/kbd] or [kbd]space[/kbd] key).
-@export var continue_input_action: StringName = "ui_accept"
-## Input action to skip dialogue animation. [br][br]
-## (For default press [kbd]enter[/kbd] or [kbd]space[/kbd] key).
-@export var skip_input_action: StringName = "ui_accept"
+## Typing speed of the dialog text in seconds.
+@export var _typing_speed: float = GraphDialogsSettings.get_setting("default_typing_speed")
+## Maximum number of characters to be displayed in the dialog box.[br][br]
+## The dialogue will be split according to this limit and displayed in parts
+## if the [split_dialog_by_max_characters] setting is active.
+@export var _max_characters: int = GraphDialogsSettings.get_setting("max_characters")
 
 @export_category("Dialog Box Components")
-## [RichTextLabel] where character name will be displayed.
-@export var _name_display: RichTextLabel
-## [RichTextLabel] where dialogue will be displayed.
+## [RichTextLabel] where dialogue will be displayed.[br][br]
+## This component is required to display the text in it.
 @export var _dialog_display: RichTextLabel
-## Visual indicator to indicate press for continue the dialogue (like an arrow).
+## [RichTextLabel] where character name will be displayed.[br][br]
+## If you want to display the character name in the dialog box, you need to set this property.
+@export var _name_display: RichTextLabel
+## Visual indicator to indicate press for continue the dialogue (like an arrow).[br][br]
+## If you want to display the continue indicator, you need to set this property.
 @export var _continue_indicator: Control
-## [Node] where the character portrait will be displayed.
+## [Node] where the character portrait will be displayed.[br][br]
 ## If you want to display the portrait in the dialog box, you need to set this property.
 @export var _portrait_display: Node
 
 ## Timer to control the typing speed of the dialog.
 var _type_timer: Timer
+## Timer to control if the dialog can be skipped.
+var _can_skip_timer: Timer
+## Flag to control if the dialog can be skipped.
+var _can_skip: bool = true
 
 ## Flag to control if the dialog is completed.
 var _display_completed: bool = false
@@ -70,15 +66,21 @@ func _enter_tree() -> void:
 	# Set up timer to control the typing speed of the dialog
 	_type_timer = Timer.new()
 	add_child(_type_timer)
-	_type_timer.wait_time = _type_time
+	_type_timer.wait_time = _typing_speed
 	_type_timer.timeout.connect(_on_type_timer_timeout)
+
+	# Set up timer to control when the dialog can be skipped
+	_can_skip_timer = Timer.new()
+	add_child(_can_skip_timer)
+	_can_skip_timer.wait_time = GraphDialogsSettings.get_setting("can_skip_delay")
+	_can_skip_timer.timeout.connect(func(): _can_skip = true)
 	hide()
 
 
 func _ready() -> void:
 	# Connect meta clicked signal to handle meta tags
 	if not _dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
-		_dialog_display.connect("meta_clicked", _on_dialog_meta_clicked)
+		_dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
 	
 	# Set up dialog box settings
 	_dialog_display.bbcode_enabled = true
@@ -86,43 +88,69 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if _is_running: # Skip dialog animation and show the entire text
-		if not _display_completed and Input.is_action_just_pressed(skip_input_action):
-			_dialog_display.visible_characters = _dialog_display.text.length()
-			_type_timer.stop()
-			_on_display_completed()
-		# Continue dialog when the player press the continue button
-		elif _display_completed and Input.is_action_just_pressed(continue_input_action):
-				if _current_sentence < _sentences.size() - 1: # Display next sentence
-					_current_sentence += 1
-					_display_new_sentence(_sentences[_current_sentence])
-				else: # Continue with the next dialog node
-					continue_dialog.emit()
+	if not _is_running:
+		return
+	
+	# Skip dialog animation and show the full text
+	if not _display_completed and _can_skip and Input.is_action_just_pressed(
+			GraphDialogsSettings.get_setting("continue_input_action")):
+		_dialog_display.visible_characters = _dialog_display.text.length()
+		_type_timer.stop()
+		# Wait for the continue delay before allowing to skip again
+		await get_tree().create_timer(
+				GraphDialogsSettings.get_setting("skip_continue_delay")).timeout
+		 # This is to prevent skipping too fast
+		_can_skip = false
+		_can_skip_timer.start()
+		_on_display_completed()
+	# Continue dialog when the player press the continue button
+	elif _display_completed and Input.is_action_just_pressed(
+			GraphDialogsSettings.get_setting("continue_input_action")):
+			if _current_sentence < _sentences.size() - 1:
+				_current_sentence += 1
+				_display_new_sentence(_sentences[_current_sentence])
+			else: # Continue with the next dialog node
+				continue_dialog.emit()
 
 
 ## Play a dialog on dialog box
-func play_dialog(character_name: String, dialog: String) -> void:
-	if not visible: # Start a new dialog
-		# TODO: Allow to open dialog box with an animation
+func start_dialog(character_name: String, dialog: String) -> void:
+	if not visible:
 		show()
 	
 	_current_character = character_name
 	_name_display.text = character_name
 	_dialog_display.text = dialog
-	
-	# Display dialog by characters limit
-	dialog_starts.emit(character_name)
-	_is_running = true
-	_sentences = []
 	_current_sentence = 0
+	_sentences = []
+
+	# Split the dialog by lines and characters if the settings are enabled
+	var dialog_lines = _split_dialog_by_lines(dialog)
+	for line in dialog_lines:
+		var split_result = _split_dialog_by_characters(line)
+		_sentences.append_array(split_result)
+	
+	# Start the dialog
+	_is_running = true
 	_display_completed = false
-	_sentences = _split_dialog(dialog)
 	_display_new_sentence(_sentences[_current_sentence])
+	dialog_starts.emit(character_name)
+
+
+## Pause the dialog
+func pause_dialog() -> void:
+	_is_running = false
+	_type_timer.paused = true
+
+
+## Resume the dialog
+func resume_dialog() -> void:
+	_is_running = true
+	_type_timer.paused = false
 
 
 ## End the dialog and close the dialog box
 func end_dialog() -> void:
-	# TODO: Allow to close dialog box with an animation
 	dialog_ends.emit(_current_character)
 	_display_completed = false
 	_current_sentence = 0
@@ -132,83 +160,104 @@ func end_dialog() -> void:
 
 
 ## Set a portrait to be displayed in the dialog box
-func display_portrait(portrait_node: Node) -> void:
-	_portrait_display.add_child(portrait_node)
+func display_portrait(character_parent: Node, portrait_node: Node) -> void:
+	if not _portrait_display.has_node(NodePath(character_parent.name)):
+		character_parent.add_child(portrait_node)
+		_portrait_display.add_child(character_parent)
+	else: # If the character node already exists, add the portrait to it
+		_portrait_display.get_node(NodePath(character_parent.name)).add_child(portrait_node)
 
 
-#region === Dialog process =====================================================
+#region === Split dialog =======================================================
 
-## Split dialog by characters limit
-func _split_dialog(dialog: String) -> Array[String]:
-	if _max_characters_to_display == 0:
+## Split dialog by new lines if the setting is enabled.
+## Splits the dialog by lines preserving the continuity of the bbcode tags.
+func _split_dialog_by_lines(dialog: String) -> Array:
+	if not GraphDialogsSettings.get_setting("new_line_as_new_dialog"):
 		return [dialog]
 	
-	if dialog.length() > _max_characters_to_display:
-		var words: Array = dialog.split(" ")
-		var sentences: Array[String] = []
-		var clean_sentence: String = ""
-		var sentence: String = ""
-		var opened_tags = []
-		var next_sentence_tags = []
-		
-		# Regex to get bbcodes tags from text
-		var regex_tags = RegEx.new()
-		regex_tags.compile("\\[.*?\\]")
-		
-		for word in words:
-			# Add each word without bbcode tags to count the characters
-			var clean_word = regex_tags.sub(word, "", true)
-			var aux_sentence = clean_sentence + " " + clean_word
+	var lines = Array(dialog.split("\n"))
+	if lines.size() == 0:
+		return [dialog]
+	
+	var sentences = []
+	var opened_tags = []
+	var regex = RegEx.new()
+	regex.compile("\\[.*?\\]")
 
-			# When not reach the limit, add the word to the sentence -----------
-			if aux_sentence.length() < _max_characters_to_display:
-				sentence += " " + word
-				clean_sentence += "" + clean_word
-			
-				# Get opened bbcode tags from the word and add to the list -----
-				var tags = regex_tags.search_all(word).map(
-					func(tag): return tag.get_string()
-				)
-				for tag in tags:
-					if tag.begins_with("[/"): # Tag is a closing tag
-						var tag_begin = tag.replace("[/", "[").replace("]", "")
-						# Find the opening tag to remove from the list
-						var open_tag_index = opened_tags.find(
-							func(open_tag): return open_tag.begins_with(tag_begin)
-						)
-						if open_tag_index: # Remove the opening tag
-							print("\nClosing tag: " + tag)
-							print("Remove tag: " + opened_tags[open_tag_index])
-							opened_tags.erase(opened_tags[open_tag_index])
-							print("Opened tags: " + str(opened_tags))
-						
-					else: # Add the opening tag to the list
-						opened_tags.append(tag)
-						print("\nAdd opening tag: " + tag)
-						print("Opened tags: " + str(opened_tags))
-			
-			else: # When reach the limit, add the sentence to the list ---------
-				# Add opened tags from previous sentence on the beginning
-				sentence = _add_tags_to_sentence(sentence, next_sentence_tags)
-				next_sentence_tags = opened_tags.duplicate()
-				print("\nAdd sentence: " + sentence)
-				print("\nNext sentence tags: " + str(next_sentence_tags))
+	for line in lines:
+		line = line.strip_edges()
+		if line == "":
+			continue
+		# Add the opened tags from previous lines and update the opened tags
+		sentences.append(_add_tags_to_sentence(line, opened_tags))
+		opened_tags = _get_opened_tags_from_sentence(line, opened_tags, regex)
+	return sentences
 
-				# Add the sentence to the list
-				sentences.append(sentence)
-				clean_sentence = ""
-				sentence = ""
-		
-		# Add the last sentence to the list -----------------------------------
-		if sentence != "":
+
+## Split dialog by characters max limit if the setting is enabled.
+## If the dialog is longer than the max characters limit, it will be split into
+## multiple sentences, preserving the continuity of the bbcode tags.
+func _split_dialog_by_characters(dialog: String) -> Array:
+	if not GraphDialogsSettings.get_setting("split_dialog_by_max_characters") \
+			or _max_characters > dialog.length():
+		return [dialog]
+	
+	var words: Array = dialog.split(" ")
+	var sentences: Array[String] = []
+	var clean_sentence: String = ""
+	var sentence: String = ""
+	var opened_tags: Array = []
+	var next_sentence_tags: Array = []
+
+	var regex = RegEx.new()
+	regex.compile("\\[.*?\\]")
+
+	var i = 0
+	while i < words.size():
+		var word = words[i]
+		var clean_word = regex.sub(word, "", true)
+		var aux_sentence = clean_sentence + " " + clean_word
+		# If the sentence is short than the limit, add the word to the sentence
+		if aux_sentence.length() < _max_characters:
+			sentence += " " + word
+			clean_sentence += "" + clean_word
+			opened_tags = _get_opened_tags_from_sentence(word, opened_tags, regex)
+			i += 1
+		else: # If the sentence is longer, cut it and add to the sentences list
 			sentence = _add_tags_to_sentence(sentence, next_sentence_tags)
-			print("\nAdd last sentence: " + sentence)
-			sentences.append(sentence)
-		return sentences
-	return [dialog]
+			next_sentence_tags = opened_tags.duplicate()
+			sentence = sentence.strip_edges()
+			if sentence != "":
+				sentences.append(sentence)
+			clean_sentence = ""
+			sentence = ""
+	
+	if sentence != "": # Add the last sentence to the list
+		sentence = _add_tags_to_sentence(sentence, next_sentence_tags)
+		sentences.append(sentence)
+	return sentences
 
 
-## Add tags to the beginning of the sentence
+## Get all opened tags from a sentence
+func _get_opened_tags_from_sentence(sentence: String, opened_tags: Array, regex: RegEx) -> Array:
+	var tags = regex.search_all(sentence).map(
+		func(tag): return tag.get_string()
+		)
+	for tag in tags:
+		if tag.begins_with("[/"): # Look for closing tags
+			var tag_begin = tag.replace("[/", "[").replace("]", "")
+			var open_tag_index = opened_tags.find(
+				func(open_tag): return open_tag.begins_with(tag_begin)
+			)
+			if open_tag_index: # Remove from opened tags if a closing tag was found
+				opened_tags.erase(opened_tags[open_tag_index])
+		else:
+			opened_tags.append(tag) # If not, add to opened tags
+	return opened_tags
+
+
+## Add tags to the beginning of a sentence
 func _add_tags_to_sentence(sentence: String, tags: Array) -> String:
 	var tags_string = ""
 	for tag in tags:
@@ -216,6 +265,9 @@ func _add_tags_to_sentence(sentence: String, tags: Array) -> String:
 	sentence = tags_string + sentence
 	return sentence
 
+#endregion
+
+#region === Display dialog =====================================================
 
 ## Display a new sentence
 func _display_new_sentence(sentence: String) -> void:
@@ -249,8 +301,8 @@ func _on_dialog_ended() -> void:
 
 ## When a meta tag is clicked in the dialog
 func _on_dialog_meta_clicked(meta: String) -> void:
-	if _open_url_on_meta_click:
+	if GraphDialogsSettings.get_setting("open_url_on_meta_tag_click"):
 		OS.shell_open(meta) # Open the URL in the default browser
-	meta_clicked.emit(meta) # Emit the meta clicked signal
+	meta_clicked.emit(meta)
 
 #endregion
