@@ -63,10 +63,10 @@ static func collect_translations() -> void:
 	# Keep only the translation of setted locales
 	var valid_translation_files = []
 	for file in all_translation_files:
-		for locale in GraphDialogsSettings.get_setting("locales"):
-			if file.split(".")[-2] == locale:
-				valid_translation_files.append(file)
-				break
+		if not FileAccess.file_exists(file):
+			continue # Skip files that do not exist
+		if GraphDialogsSettings.get_setting("locales").has(file.split(".")[-2]):
+			valid_translation_files.append(file)
 	
 	ProjectSettings.set_setting(
 			'internationalization/locale/translations',
