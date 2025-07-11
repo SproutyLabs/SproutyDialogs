@@ -1,13 +1,13 @@
 @tool
 extends VBoxContainer
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Portrait Editor
 ## 
 ## This module allows the user to edit a portrait for a character.
 ## It provides a preview of the portrait and allows the user to set
 ## various properties and settings.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Character editor reference
 @onready var _character_editor: Container = find_parent("CharacterEditor")
@@ -37,10 +37,10 @@ extends VBoxContainer
 ## Portrait offset section
 @onready var _portrait_offset_section: Container = %PortraitOffset
 
-## Portrait image scene template
+## Default portrait scene template
 var _default_portrait_scene := preload("res://addons/graph_dialogs/objects/defaults/default_portrait.tscn")
-## Portrait custom script template
-var _portrait_script_template := "res://addons/graph_dialogs/objects/defaults/default_portrait.gd"
+## Default portrait script template
+var _default_portrait_script := "res://addons/graph_dialogs/objects/defaults/default_portrait.gd"
 
 
 func _ready():
@@ -207,7 +207,7 @@ func _new_portrait_scene(scene_path: String) -> void:
 	# Creates and set a template script for the new scene
 	var script_path := scene_path.get_basename() + ".gd"
 	var script = GDScript.new()
-	script.source_code = FileAccess.get_file_as_string(_portrait_script_template)
+	script.source_code = FileAccess.get_file_as_string(_default_portrait_script)
 	ResourceSaver.save(script, script_path)
 	new_scene.set_script(load(script_path))
 

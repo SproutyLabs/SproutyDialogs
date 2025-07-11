@@ -3,13 +3,13 @@
 class_name DialogPlayer
 extends Node
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Dialog Player
 ##
-## It reads a dialog file and processes the dialog tree to play the dialogues.
+## It reads a dialog data file and processes a dialog tree to play the dialogues.
 ## The dialog tree is composed of nodes that represent dialogues and actions.
-## The player processes the nodes and plays the dialogues in the dialog boxes.
-## -----------------------------------------------------------------------------
+## The player processes the nodes and plays the dialogues in [DialogBox] nodes.
+# -----------------------------------------------------------------------------
 
 ## Signal emitted when the dialog is started.
 signal dialog_started(start_id: String)
@@ -24,7 +24,7 @@ signal dialog_ended
 		start_id = "(Select a dialog)"
 		notify_property_list_changed()
 
-## Start ID of the dialog to play.
+## Start ID of the dialog tree to play.
 var start_id: String:
 	set(value):
 		start_id = value
@@ -35,7 +35,7 @@ var start_id: String:
 		notify_property_list_changed()
 
 ## Play the dialog when the node is ready.
-@export var play_on_ready: bool = false
+@export var _play_on_ready: bool = false
 
 ## Array to store the start IDs of the dialogues.
 var _starts_ids: Array[String] = []
@@ -78,13 +78,13 @@ var _dialog_box_parents: Dictionary = {}
 ## }[/codeblock]
 var _portraits_displayed: Dictionary = {}
 
+## Dialog parser instance to process the dialog nodes.
+var _dialog_parser: DialogParser
+
 ## Current dialog box being displayed.
 var _current_dialog_box: DialogBox
 ## Current portrait being displayed.
 var _current_portrait: DialogPortrait
-
-## Dialog parser instance to process the dialog nodes.
-var _dialog_parser: DialogParser
 
 ## Current node being processing
 var _current_node: String = ""
@@ -113,7 +113,7 @@ func _ready() -> void:
 			printerr("[Graph Dialogs] No dialog ID selected to play.")
 			return
 		GraphDialogs.load_resources(dialog_data, start_id, _dialog_box_parents)
-		if play_on_ready: start()
+		if _play_on_ready: start()
 
 
 #region === Editor properties ==================================================
@@ -243,21 +243,30 @@ func resume() -> void:
 ## Stop processing the dialog tree
 func stop() -> void:
 	_is_running = false
-	_current_dialog_box.end_dialog()
-	_current_dialog_box = null
 	_current_portrait = null
 	_current_node = ""
 	_paused_node = ""
 	_next_node = ""
-	# Exit displayed portraits and free them
+
+	if not _current_dialog_box.is_displaying_portrait():
+		await _current_dialog_box.stop_dialog(true)
+		_current_dialog_box = null
+	
+	# Exit all active portraits
 	for char in _portraits_displayed.keys():
 		for portrait in _portraits_displayed[char].values():
 			if portrait.is_visible():
-				portrait.on_portrait_exit()
+				await portrait.on_portrait_exit()
+	
+	# Free all portraits displayed
 	for char in _portraits_displayed.keys():
 		for portrait in _portraits_displayed[char].values():
-			print("[Graph Dialogs] Freeing portraits from: " + portrait.get_parent().name)
 			portrait.get_parent().queue_free()
+	
+	if _current_dialog_box:
+		await _current_dialog_box.stop_dialog(true)
+		_current_dialog_box = null
+	
 	_portraits_displayed.clear()
 	dialog_ended.emit()
 
@@ -286,8 +295,8 @@ func _process_node(node_name: String) -> void:
 func _on_dialogue_processed(char: String, portrait: String, dialog: String, next_node: String) -> void:
 	_next_node = next_node
 	_update_dialog_box(char)
-	_update_portrait(char, portrait)
-	_current_dialog_box.start_dialog(char, dialog)
+	await _update_portrait(char, portrait)
+	_current_dialog_box.play_dialog(char, dialog)
 
 
 ## Continue to the next node in the dialog tree
@@ -304,7 +313,7 @@ func _update_dialog_box(character_name: String) -> void:
 	
 	# Check if the dialog box is already playing a dialog
 	if _current_dialog_box and dialog_box != _current_dialog_box:
-		_current_dialog_box.end_dialog() # End the current dialog
+		_current_dialog_box.stop_dialog() # End the current dialog
 
 	# Connect the dialog box signals
 	if not dialog_box.is_connected("continue_dialog", _on_continue_dialog):
@@ -338,9 +347,6 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 		_portraits_displayed[character_name][portrait_name] = _current_portrait
 	
 	_current_portrait.set_portrait()
-
-	if is_joining: # Entry action if the character is joining the dialog
-		_current_portrait.on_portrait_entry()
 	
 	# Hide all other portraits of the character
 	for portrait in _portraits_displayed[character_name].values():
@@ -348,6 +354,9 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 			portrait.hide()
 		else:
 			portrait.show()
+	
+	if is_joining: # Entry action if the character is joining the dialog
+		await _current_portrait.on_portrait_entry()
 
 
 ## Handle when the dialog display starts for a character.

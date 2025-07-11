@@ -1,7 +1,7 @@
 @tool
 extends DialogPortrait
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## This is a template for a dialog portrait with a default behavior.
 ##
 ## This script provides a basic implementation of a dialog portrait behavior.
@@ -14,13 +14,22 @@ extends DialogPortrait
 ##
 ## If you want to hide some properties from the editor, put them in a group
 ## called "Private" (@export_group("Private")).
-## -----------------------------------------------------------------------------
+##
+## -- NOTE ------------------------------------------------------------
+## You can delete everything you don't need from this template, except 
+## except the portrait methods because are needed to use the portraits.
+## --------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Portrait image file path
 @export_file("*.png", "*.jpg") var portrait_image: String
 
 @export_group("Private")
+## Animation time for the portrait animations
 @export var animation_time: float = 1.0
+
+## Tween for animations 
+var _tween: Tween = null
 
 
 func set_portrait() -> void:
@@ -41,6 +50,7 @@ func on_portrait_entry() -> void:
 	# --------------------------------------------------------------------------
 	# In this base case, the portrait is animated to enter the scene with fade in
 	_fade_in_animation($Sprite2D)
+	await _tween.finished # Wait for the animation to finish
 
 
 func on_portrait_exit() -> void:
@@ -50,6 +60,7 @@ func on_portrait_exit() -> void:
 	# --------------------------------------------------------------------------
 	# In this base case, the portrait is animated to exit the scene with fade out
 	_fade_out_animation($Sprite2D)
+	await _tween.finished # Wait for the animation to finish
 
 
 func on_portrait_talk() -> void:
@@ -58,7 +69,7 @@ func on_portrait_talk() -> void:
 	# You can add your own logic here to handle when the character talks
 	# --------------------------------------------------------------------------
 	# In this base case, the portrait is animated to talk with a custom animation
-	_bounce_animation($Sprite2D)
+	_talking_animation($Sprite2D)
 
 
 func on_portrait_stop_talking() -> void:
@@ -66,87 +77,67 @@ func on_portrait_stop_talking() -> void:
 	# This method is called when the character stops talking (typing ends).
 	# You can add your own logic here to handle when the character stops talking
 	# --------------------------------------------------------------------------
-	get_node("bounce_animation").kill()
+	_tween.kill() # Stop the talking animation
+	highlight_portrait() # Reset the state when the character stops talking
 
 
-func on_portrait_highlight() -> void:
+func highlight_portrait() -> void:
 	# --------------------------------------------------------------------------
-	# This method is called when the character is the active speaker in the dialog,
+	# This method is called when the character is active in the dialog,
 	# but is not currently talking (e.g. waiting for user input).
-	# This is called when the character ends talking, but is still the active speaker
-	# in the dialog, and for other situations where the character is highlighted
-	# but not actively talking.
 	# You can add your own logic here to handle when the character is highlighted.
 	# --------------------------------------------------------------------------
-	# In this base case, we do nothing, but you can add your own logic here
-	pass
+	# In this base case, the portrait is highlighted by unsetting transparency
+	$Sprite2D.modulate.a = 1.0
 
 
-func on_portrait_unhighlight() -> void:
+func unhighlight_portrait() -> void:
 	# --------------------------------------------------------------------------
-	# This method is called when the character is not the active speaker in the dialog.
+	# This method is called when the character is not active in the dialog.
+	# (e.g. when the speaker is changed to another character).
 	# You can add your own logic here to handle when the character is not highlighted.
 	# --------------------------------------------------------------------------
-	# In this base case, we do nothing, but you can add your own logic here
-	pass
+	# In this base case, the portrait is unhighlighted by adding semi-transparency
+	$Sprite2D.modulate.a = 0.5
 
+
+#region === Placeholder Animations =============================================
 
 ## Fade in animation.
 ## It animates the portrait to enter the scene with a fade in effect.
-## You can delete this method if you don't want to use it.
+## (You can delete this method if you don't need it)
 func _fade_in_animation(node: Node) -> void:
-	var end_position = node.position
+	var end_position = node.position.y
 	node.position.y += node.get_viewport().size.y / 5
-	node.modulate = Color.TRANSPARENT
+	node.modulate.a = 0.0
 
-	var tween := self.create_tween()
-	tween.set_ease(Tween.EASE_OUT)
-	tween.set_trans(Tween.TRANS_SINE)
-	tween.set_parallel()
-	tween.tween_property(node, "position", end_position, animation_time)
-	tween.tween_property(node, "modulation:a", 1.0, animation_time)
+	_tween = self.create_tween()
+	_tween.set_ease(Tween.EASE_OUT)
+	_tween.set_trans(Tween.TRANS_SINE)
+	_tween.set_parallel()
+	_tween.tween_property(node, "position:y", end_position, animation_time)
+	_tween.tween_property(node, "modulate:a", 1.0, animation_time)
 
 
 ## Fade out animation.
 ## It animates the portrait to exit the scene with a fade out effect.
-## You can delete this method if you don't want to use it.
+## (You can delete this method if you don't need it)
 func _fade_out_animation(node: Node) -> void:
 	var end_position = node.position.y + node.get_viewport().size.y / 5
-	var tween := self.create_tween()
-	tween.set_ease(Tween.EASE_IN)
-	tween.set_trans(Tween.TRANS_SINE)
-	tween.set_parallel()
-	tween.tween_property(node, "position", end_position, animation_time)
-	tween.tween_property(node, "modulation:a", 0.0, animation_time)
+	_tween = self.create_tween()
+	_tween.set_ease(Tween.EASE_IN)
+	_tween.set_trans(Tween.TRANS_SINE)
+	_tween.set_parallel()
+	_tween.tween_property(node, "position:y", end_position, animation_time)
+	_tween.tween_property(node, "modulate:a", 0.0, animation_time)
 
 
-## Bounce animation.
-## It animates the portrait to bounce when the character is talking.
-## You can delete this method if you don't want to use it.
-func _bounce_animation(node: Node) -> void:
-	var tween := self.create_tween().set_loops()
-	tween.name = "bounce_animation"
-	tween.set_ease(Tween.EASE_OUT)
-	tween.tween_property(
-		node,
-		'position:y',
-		node.position.y - node.get_viewport().size.y / 10,
-		animation_time * 0.4
-		).set_trans(Tween.TRANS_EXPO)
-	tween.parallel().tween_property(
-		node, 'scale:y',
-		node.scale.y * 1.05,
-		animation_time * 0.4
-		).set_trans(Tween.TRANS_EXPO)
-	tween.tween_property(
-		node,
-		'position:y',
-		node.position.y,
-		animation_time * 0.6
-		).set_trans(Tween.TRANS_BOUNCE)
-	tween.parallel().tween_property(
-		node,
-		'scale:y',
-		node.scale.y,
-		animation_time * 0.6
-		).set_trans(Tween.TRANS_BOUNCE)
+## Talking animation.
+## It animates the portrait while the character is talking.
+## (You can delete this method if you don't need it)
+func _talking_animation(node: Node) -> void:
+	_tween = self.create_tween().set_loops()
+	_tween.tween_property(node, 'scale:y', node.scale.y * 1.05, 0.1)
+	_tween.tween_property(node, 'scale:y', node.scale.y, 0.1)
+
+#endregion

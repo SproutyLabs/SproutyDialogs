@@ -1,13 +1,13 @@
 @tool
 extends HSplitContainer
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Character Editor
 ## 
 ## This module is responsible for the character files creation and editing.
 ## It allows the user to edit character data, including the character's name,
 ## description, dialogue box, portraits and typing sounds.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Triggered when something is modified
 signal modified
@@ -45,8 +45,10 @@ signal modified
 ## Portrait settings panel scene
 var portrait_editor_scene := preload("res://addons/graph_dialogs/editor/modules/characters/portrait_editor.tscn")
 
-## Default dialog box scene
+## Default dialog box scene template
 var _default_dialog_box_scene := preload("res://addons/graph_dialogs/objects/defaults/default_dialog_box.tscn")
+## Default dialog box script template
+var _default_dialog_box_script := "res://addons/graph_dialogs/objects/defaults/default_dialog_box.gd"
 
 ## Current portrait selected
 var _current_portrait: TreeItem = null
@@ -226,6 +228,13 @@ func _on_new_dialog_box_scene_pressed() -> void:
 func _on_new_dialog_box_path_selected(path: String) -> void:
 	var new_scene = _default_dialog_box_scene.instantiate()
 	new_scene.name = path.get_file().split(".")[0].to_pascal_case()
+
+	# Creates and set a template script for the new scene
+	var script_path := path.get_basename() + ".gd"
+	var script = GDScript.new()
+	script.source_code = FileAccess.get_file_as_string(_default_dialog_box_script)
+	ResourceSaver.save(script, script_path)
+	new_scene.set_script(load(script_path))
 
 	# Save the new scene file
 	var packed_scene = PackedScene.new()

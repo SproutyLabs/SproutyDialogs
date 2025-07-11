@@ -2,6 +2,14 @@
 class_name DialogParser
 extends Node
 
+# -----------------------------------------------------------------------------
+## Dialog Parser
+##
+## This class is responsible for processing the dialog nodes from the graph.
+## The parsers can be access by the [param node_processors] dictionary, that is
+## used by the [DialogPlayer] to process the nodes by their type.
+# -----------------------------------------------------------------------------
+
 ## Emitted when the node is processed and is ready to continue to the next node.
 signal continue_to_node(to_node: String)
 ## Emitted when the dialogue node was processed.
@@ -14,22 +22,22 @@ signal dialogue_processed(
 
 ## Node processors reference dictionary.
 var node_processors: Dictionary = {
-	"start_node": process_start,
-	"dialogue_node": process_dialogue,
-	"condition_node": process_condition,
-	"options_node": process_options,
-	"set_variable_node": process_set_variable,
-	"signal_node": process_signal,
-	"wait_node": process_wait
+	"start_node": _process_start,
+	"dialogue_node": _process_dialogue,
+	"condition_node": _process_condition,
+	"options_node": _process_options,
+	"set_variable_node": _process_set_variable,
+	"signal_node": _process_signal,
+	"wait_node": _process_wait
 }
 
 
-func process_start(node_data: Dictionary) -> void:
+func _process_start(node_data: Dictionary) -> void:
 	print("[Graph Dialogs] Processing start node...")
 	continue_to_node.emit(node_data.to_node[0])
 
 
-func process_dialogue(node_data: Dictionary) -> void:
+func _process_dialogue(node_data: Dictionary) -> void:
 	print("[Graph Dialogs] Processing dialogue node...")
 	var character = node_data["character"]
 	var portrait = node_data["portrait"]
@@ -69,31 +77,31 @@ func _parse_variables(value: String) -> String:
 #endregion
 
 
-func process_condition(node_data: Dictionary) -> void:
+func _process_condition(node_data: Dictionary) -> void:
 	# TODO: Process the node
 	print("[Graph Dialogs] Processing condition node...")
 	continue_to_node.emit(node_data.to_node[0])
 
 
-func process_options(node_data: Dictionary) -> void:
+func _process_options(node_data: Dictionary) -> void:
 	# TODO: Process the node
 	print("[Graph Dialogs] Processing options node...")
 	continue_to_node.emit(node_data.to_node[0])
 
 
-func process_set_variable(node_data: Dictionary) -> void:
+func _process_set_variable(node_data: Dictionary) -> void:
 	# TODO: Process the node
 	print("[Graph Dialogs] Processing set variable node...")
 	continue_to_node.emit(node_data.to_node[0])
 
 
-func process_signal(node_data: Dictionary) -> void:
+func _process_signal(node_data: Dictionary) -> void:
 	# TODO: Process the node
 	print("[Graph Dialogs] Processing signal node...")
 	continue_to_node.emit(node_data.to_node[0])
 
 
-func process_wait(node_data: Dictionary) -> void:
+func _process_wait(node_data: Dictionary) -> void:
 	# TODO: Process the node
 	print("[Graph Dialogs] Processing wait node...")
 	continue_to_node.emit(node_data.to_node[0])

@@ -2,11 +2,15 @@
 class_name DialogBox
 extends Panel
 
-## -----------------------------------------------------------------------------
-## Dialog Box
+# -----------------------------------------------------------------------------
+## Dialog Box base class
 ##
-## This class is responsible for displaying the dialog in the game.
-## -----------------------------------------------------------------------------
+## This class is responsible for displaying the dialogues in the game.
+## It handles the display of the text and the character name in the dialog box.
+##
+## [br][br][i][color=red]This class should not be used directly by the user.
+## [/color] Rather, it is used by a [DialogPlayer] to display the dialog.[/i]
+# -----------------------------------------------------------------------------
 
 ## Emitted when the dialog is started.
 signal dialog_starts(character_name: String)
@@ -24,21 +28,24 @@ signal meta_clicked(meta: String)
 @export var _typing_speed: float = GraphDialogsSettings.get_setting("default_typing_speed")
 ## Maximum number of characters to be displayed in the dialog box.[br][br]
 ## The dialogue will be split according to this limit and displayed in parts
-## if the [split_dialog_by_max_characters] setting is active.
+## if the [param split_dialog_by_max_characters] setting is active.
 @export var _max_characters: int = GraphDialogsSettings.get_setting("max_characters")
 
 @export_category("Dialog Box Components")
 ## [RichTextLabel] where dialogue will be displayed.[br][br]
-## This component is required to display the text in it.
+## [color=red]This component is required to display the text in it.[/color]
 @export var _dialog_display: RichTextLabel
 ## [RichTextLabel] where character name will be displayed.[br][br]
-## If you want to display the character name in the dialog box, you need to set this property.
+## [color=red]If you want to display the character name in the dialog box, 
+## you need to set this property.[/color]
 @export var _name_display: RichTextLabel
-## Visual indicator to indicate press for continue the dialogue (like an arrow).[br][br]
-## If you want to display the continue indicator, you need to set this property.
+## Visual indicator to indicate press for continue the dialogue (e.g. an arrow).
+## [br][br][color=red]If you want to display a continue indicator in the
+## dialog box,you need to set this property.[/color]
 @export var _continue_indicator: Control
-## [Node] where the character portrait will be displayed.[br][br]
-## If you want to display the portrait in the dialog box, you need to set this property.
+## [Node] where the character portrait will be displayed (portrait parent).[br][br]
+## [color=red]If you want to display the portrait in the dialog box, 
+## you need to set this property.[/color]
 @export var _portrait_display: Node
 
 ## Timer to control the typing speed of the dialog.
@@ -58,18 +65,20 @@ var _current_sentence: int = 0
 ## Current character that is being displayed in the dialog.
 var _current_character: String = ""
 
-## Flag to control if the dialog is running
+## Flag to check if the dialog box is displaying a portrait.
+var _is_displaying_portrait: bool = false
+## Flag to check if the dialog box was already started.
+var _is_started: bool = false
+## Flag to check if the dialog is running
 var _is_running: bool = false
 
 
 func _enter_tree() -> void:
-	# Set up timer to control the typing speed of the dialog
 	_type_timer = Timer.new()
 	add_child(_type_timer)
 	_type_timer.wait_time = _typing_speed
 	_type_timer.timeout.connect(_on_type_timer_timeout)
 
-	# Set up timer to control when the dialog can be skipped
 	_can_skip_timer = Timer.new()
 	add_child(_can_skip_timer)
 	_can_skip_timer.wait_time = GraphDialogsSettings.get_setting("can_skip_delay")
@@ -82,7 +91,6 @@ func _ready() -> void:
 	if not _dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
 		_dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
 	
-	# Set up dialog box settings
 	_dialog_display.bbcode_enabled = true
 	_continue_indicator.visible = false
 
@@ -90,19 +98,10 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if not _is_running:
 		return
-	
-	# Skip dialog animation and show the full text
+	# Skip dialog typing and show the full text
 	if not _display_completed and _can_skip and Input.is_action_just_pressed(
 			GraphDialogsSettings.get_setting("continue_input_action")):
-		_dialog_display.visible_characters = _dialog_display.text.length()
-		_type_timer.stop()
-		# Wait for the continue delay before allowing to skip again
-		await get_tree().create_timer(
-				GraphDialogsSettings.get_setting("skip_continue_delay")).timeout
-		 # This is to prevent skipping too fast
-		_can_skip = false
-		_can_skip_timer.start()
-		_on_display_completed()
+		_skip_dialog_typing()
 	# Continue dialog when the player press the continue button
 	elif _display_completed and Input.is_action_just_pressed(
 			GraphDialogsSettings.get_setting("continue_input_action")):
@@ -114,10 +113,12 @@ func _input(event: InputEvent) -> void:
 
 
 ## Play a dialog on dialog box
-func start_dialog(character_name: String, dialog: String) -> void:
+func play_dialog(character_name: String, dialog: String) -> void:
+	if not _is_started: # First time the dialog is started
+		await _on_dialog_box_start()
 	if not visible:
 		show()
-	
+
 	_current_character = character_name
 	_name_display.text = character_name
 	_dialog_display.text = dialog
@@ -131,6 +132,7 @@ func start_dialog(character_name: String, dialog: String) -> void:
 		_sentences.append_array(split_result)
 	
 	# Start the dialog
+	_is_started = true
 	_is_running = true
 	_display_completed = false
 	_display_new_sentence(_sentences[_current_sentence])
@@ -149,14 +151,24 @@ func resume_dialog() -> void:
 	_type_timer.paused = false
 
 
-## End the dialog and close the dialog box
-func end_dialog() -> void:
+## Stop the dialog
+func stop_dialog(close_dialog: bool = false) -> void:
 	dialog_ends.emit(_current_character)
 	_display_completed = false
 	_current_sentence = 0
 	_is_running = false
 	_sentences = []
-	hide()
+
+	if close_dialog: # Close if the dialog ends
+		await _on_dialog_box_close()
+		_is_started = false
+	else: # Hide if the dialog will continue
+		hide()
+
+
+## Return if the dialog box is displaying a portrait
+func is_displaying_portrait() -> bool:
+	return _is_displaying_portrait
 
 
 ## Set a portrait to be displayed in the dialog box
@@ -164,9 +176,39 @@ func display_portrait(character_parent: Node, portrait_node: Node) -> void:
 	if not _portrait_display.has_node(NodePath(character_parent.name)):
 		character_parent.add_child(portrait_node)
 		_portrait_display.add_child(character_parent)
-	else: # If the character node already exists, add the portrait to it
+	else:
+		# If the character node already exists, add the portrait to it
 		_portrait_display.get_node(NodePath(character_parent.name)).add_child(portrait_node)
+	_is_displaying_portrait = true
 
+
+## Skip the dialog typing and show the full text
+func _skip_dialog_typing() -> void:
+	_dialog_display.visible_characters = _dialog_display.text.length()
+	_type_timer.stop()
+	# Wait for the continue delay before allowing to skip again
+	await get_tree().create_timer(
+			GraphDialogsSettings.get_setting("skip_continue_delay")).timeout
+	_can_skip = false # Prevent skipping too fast
+	_can_skip_timer.start()
+	_on_display_completed()
+
+#region === Overrides ==========================================================
+
+## Abstract method to modify in inherited dialog box classes.
+## Handle the behavior of the dialog box when starts at the beginning of the dialog.
+## This method is called when the dialog box is shown on dialog start.
+func _on_dialog_box_start() -> void:
+	show()
+
+
+## Abstract method to modify in inherited dialog box classes.
+## Handle the behavior of the dialog box when is closed at the end of the dialog.
+## This method is called when the dialog box is closed after the dialog ends.
+func _on_dialog_box_close() -> void:
+	hide()
+
+#endregion
 
 #region === Split dialog =======================================================
 
@@ -296,7 +338,7 @@ func _on_display_completed() -> void:
 
 ## When the dialog ends, close the dialog box
 func _on_dialog_ended() -> void:
-	end_dialog()
+	stop_dialog()
 
 
 ## When a meta tag is clicked in the dialog
