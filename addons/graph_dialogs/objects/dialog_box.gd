@@ -113,14 +113,14 @@ func _input(event: InputEvent) -> void:
 
 
 ## Play a dialog on dialog box
-func play_dialog(character_name: String, dialog: String) -> void:
+func play_dialog(character_name: String, display_name: String, dialog: String) -> void:
 	if not _is_started: # First time the dialog is started
 		await _on_dialog_box_start()
 	if not visible:
 		show()
 
 	_current_character = character_name
-	_name_display.text = character_name
+	_name_display.text = display_name
 	_dialog_display.text = dialog
 	_current_sentence = 0
 	_sentences = []

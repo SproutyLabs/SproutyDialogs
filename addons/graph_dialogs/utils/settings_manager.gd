@@ -16,8 +16,10 @@ const DEFAULT_BOX_PATH = "res://addons/graph_dialogs/objects/defaults/default_di
 ## This dictionary maps setting names to their paths in the project settings.
 static var _settings_paths: Dictionary = {
 	# --- General settings -----------------------------------------------------
-	"default_dialog_box": "graph_dialogs/general/default_dialog_box",
 	"continue_input_action": "graph_dialogs/general/continue_input_action",
+	"default_dialog_box": "graph_dialogs/general/default_dialog_box",
+	"dialog_box_canvas_layer": "graph_dialogs/general/dialog_box_canvas_layer",
+	"portraits_canvas_layer": "graph_dialogs/general/portraits_canvas_layer",
 	
 	# --- Text settings --------------------------------------------------------
 	"default_typing_speed": "graph_dialogs/text/default_typing_speed",
@@ -82,10 +84,12 @@ static func has_setting(setting_name: String) -> bool:
 ## This method should be called when the plugin is first loaded or when the settings are reset.
 static func initialize_default_settings() -> void:
 	# General settings
-	ProjectSettings.set_setting(_settings_paths["default_dialog_box"],
-			ResourceSaver.get_resource_id_for_path(DEFAULT_BOX_PATH))
 	ProjectSettings.set_setting(_settings_paths["continue_input_action"],
 			"dialogs_continue_action")
+	ProjectSettings.set_setting(_settings_paths["default_dialog_box"],
+			ResourceSaver.get_resource_id_for_path(DEFAULT_BOX_PATH))
+	ProjectSettings.set_setting(_settings_paths["dialog_box_canvas_layer"], 2)
+	ProjectSettings.set_setting(_settings_paths["portraits_canvas_layer"], 1)
 
 	# Text settings
 	ProjectSettings.set_setting(_settings_paths["default_typing_speed"], 0.05)

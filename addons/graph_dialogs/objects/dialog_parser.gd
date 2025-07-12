@@ -1,4 +1,3 @@
-@tool
 class_name DialogParser
 extends Node
 
@@ -14,7 +13,8 @@ extends Node
 signal continue_to_node(to_node: String)
 ## Emitted when the dialogue node was processed.
 signal dialogue_processed(
-	character: String,
+	character_name: String,
+	translated_name: String,
 	portrait: String,
 	dialog: String,
 	next_node: String
@@ -39,12 +39,14 @@ func _process_start(node_data: Dictionary) -> void:
 
 func _process_dialogue(node_data: Dictionary) -> void:
 	print("[Graph Dialogs] Processing dialogue node...")
-	var character = node_data["character"]
-	var portrait = node_data["portrait"]
-
 	var dialog = _get_translated_dialog(node_data["dialog_key"])
-	dialog = _parse_variables(dialog) # Parse variables in the dialog text
-	dialogue_processed.emit(character, portrait, dialog, node_data["to_node"][0])
+	dialogue_processed.emit(
+		node_data["character"],
+		_get_translated_character_name(node_data["character"]),
+		node_data["portrait"],
+		_parse_variables(dialog),
+		node_data["to_node"][0]
+	)
 
 
 #region === Dialog processing ==================================================
@@ -57,7 +59,20 @@ func _get_translated_dialog(key: String) -> String:
 		return tr(key)
 	else: # Otherwise, get the dialog from the dialog resource
 		var locale = TranslationServer.get_locale()
-		return get_parent().dialog_data.dialogs[key][locale]
+		return get_parent().get_dialog_data().dialogs[key][locale]
+
+
+## Returns the translated character name
+func _get_translated_character_name(character: String) -> String:
+	# If translation is enabled and using CSV, use the translation server
+	if GraphDialogsSettings.get_setting("enable_translations") \
+			and GraphDialogsSettings.get_setting("translate_character_names"):
+		if GraphDialogsSettings.get_setting("use_csv_for_character_names"):
+			return tr(character)
+		else: # Otherwise, get the dialog from the dialog resource
+			var locale = TranslationServer.get_locale()
+			return get_parent().get_character_data(character).display_name[locale]
+	return character # If no translation is enabled, return the original name
 
 
 # Replaces all {} variables with their corresponding values in the dialog.

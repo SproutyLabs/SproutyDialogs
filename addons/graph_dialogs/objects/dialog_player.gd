@@ -11,35 +11,45 @@ extends Node
 ## The player processes the nodes and plays the dialogues in [DialogBox] nodes.
 # -----------------------------------------------------------------------------
 
-## Signal emitted when the dialog is started.
-signal dialog_started(start_id: String)
-## Signal emitted when the dialog is ended.
-signal dialog_ended
+## Emitted when the dialog starts.
+signal dialog_started(dialog_file: String, start_id: String)
+## Emitted when the dialog is paused.
+signal dialog_paused(dialog_file: String, start_id: String)
+## Emitted when the dialog is resumed.
+signal dialog_resumed(dialog_file: String, start_id: String)
+## Emitted when the dialog is ended.
+signal dialog_ended(dialog_file: String, start_id: String)
+## Emitted when the dialog player stop.
+signal dialog_player_stop(dialog_player: DialogPlayer)
 
 ## Dialog Data resource to play.
-@export var dialog_data: GraphDialogsDialogueData:
+var _dialog_data: GraphDialogsDialogueData:
 	set(value):
-		dialog_data = value
+		_dialog_data = value
+		_start_id = "(Select a dialog)"
 		if value: _starts_ids = value.get_start_ids()
-		start_id = "(Select a dialog)"
+		_dialog_file_name = value.resource_path.get_file().get_basename()
 		notify_property_list_changed()
 
 ## Start ID of the dialog tree to play.
-var start_id: String:
+var _start_id: String:
 	set(value):
-		start_id = value
-		if dialog_data and dialog_data.characters.has(value):
-			for char in dialog_data.characters[value]:
+		_start_id = value
+		if _dialog_data and _dialog_data.characters.has(value):
+			for char in _dialog_data.characters[value]:
 				_portrait_parents[char] = null
 				_dialog_box_parents[char] = null
 		notify_property_list_changed()
 
 ## Play the dialog when the node is ready.
-@export var _play_on_ready: bool = false
+var _play_on_ready: bool = false
+## Flag to destroy the dialog player when the dialog ends.
+## If true, the player will be freed from the scene tree when the dialog ends.
+## If false, the player will remain in the scene tree to be reused later.
+var _destroy_on_end: bool = true
 
 ## Array to store the start IDs of the dialogues.
 var _starts_ids: Array[String] = []
-
 ## Dictionary to store the portrait parent nodes by character.
 ## The keys are character names and the values are the parent nodes where
 ## the portraits will be displayed.
@@ -52,6 +62,8 @@ var _starts_ids: Array[String] = []
 ## }[/codeblock]
 var _portrait_parents: Dictionary = {}
 ## Dictionary to store the dialog box parent nodes by character.
+## This is used if you want to display dialog boxes in some scene node
+## instead of the default canvas layer to dialog boxes (override parent node).
 ## The keys are character names and the values are the parent nodes where
 ## the dialog boxes will be displayed.
 ## The dictionary structure is:
@@ -62,10 +74,11 @@ var _portrait_parents: Dictionary = {}
 ##   ...
 ## }[/codeblock]
 var _dialog_box_parents: Dictionary = {}
-
 ## Dictionary to store the portraits displayed by character.
+## This is used if you want to display portraits in some scene node
+## instead of the default canvas layer to portraits (override parent node).
 ## The keys are character names and the values are dictionaries with portrait names
-## as keys and DialogPortrait scenes loaded as values.
+## as keys and [DialogPortrait] scenes loaded as values.
 ## The dictionary structure is:
 ## [codeblock]
 ## {
@@ -77,9 +90,13 @@ var _dialog_box_parents: Dictionary = {}
 ##   ...
 ## }[/codeblock]
 var _portraits_displayed: Dictionary = {}
+## Name of the dialog file being played.
+var _dialog_file_name: String = ""
 
 ## Dialog parser instance to process the dialog nodes.
 var _dialog_parser: DialogParser
+## Resource manager instance used to load resources for the dialogs.
+var _resource_manager: GraphDialogsResourceManager
 
 ## Current dialog box being displayed.
 var _current_dialog_box: DialogBox
@@ -98,51 +115,145 @@ var _is_running: bool = false
 
 
 func _enter_tree() -> void:
-	# Initialize dialog parser
-	_dialog_parser = DialogParser.new()
-	add_child(_dialog_parser)
-	
-	_dialog_parser.continue_to_node.connect(_process_node)
-	_dialog_parser.dialogue_processed.connect(_on_dialogue_processed)
+	if not Engine.is_editor_hint():
+		_dialog_parser = DialogParser.new() # Initialize dialog parser
+		add_child(_dialog_parser)
+		_dialog_parser.continue_to_node.connect(_process_node)
+		_dialog_parser.dialogue_processed.connect(_on_dialogue_processed)
+		_resource_manager = get_node("/root/GraphDialogs").get_resource_manager(owner)
 
 
 func _ready() -> void:
-	# Play the dialog on ready if the property is set
 	if not Engine.is_editor_hint():
-		if start_id == "(Select a dialog)":
-			printerr("[Graph Dialogs] No dialog ID selected to play.")
-			return
-		GraphDialogs.load_resources(dialog_data, start_id, _dialog_box_parents)
-		if _play_on_ready: start()
+		# Load the dialog resources if the dialog data and start ID are set
+		if _dialog_data and _starts_ids.has(_start_id):
+			await _resource_manager.ready
+			_resource_manager.load_resources(_dialog_data, _start_id, _dialog_box_parents)
+			# Start processing the dialog tree if the play on ready is enabled
+			if _play_on_ready:
+				if _start_id == "(Select a dialog)":
+					printerr("[Graph Dialogs] No dialog ID selected to play.")
+					return
+				start()
+
+
+## Set play on ready flag to play the dialog when the node is ready.
+## If true, the dialog will start processing when the dialog player node is ready.
+func play_on_ready(play_on_ready: bool) -> void:
+	_play_on_ready = play_on_ready
+
+
+## Set the flag to destroy the dialog player when the dialog ends.
+## If true, the player will be freed from the scene tree when the dialog ends.
+## If false, the player will remain in the scene tree to be reused later.
+func destroy_on_end(destroy: bool) -> void:
+	_destroy_on_end = destroy
+
+
+## Returns the dialog data resource being processed
+func get_dialog_data() -> GraphDialogsDialogueData:
+	return _dialog_data
+
+
+## Returns the start ID of the dialog tree being processed
+func get_start_id() -> String:
+	if _start_id == "(Select a dialog)":
+		return ""
+	return _start_id
+
+
+## Returns the current character name being processed
+func get_current_character() -> String:
+	if _current_portrait:
+		return _current_portrait.get_parent().name
+	return ""
+
+
+## Returns the current portrait being displayed
+func get_current_portrait() -> DialogPortrait:
+	return _current_portrait
+
+
+## Returns the character data for a given character name.
+## This will return the character data from the dialog data resource
+## being processed, if the character exists in the dialog data.
+## If the character does not exist, it will return null.
+func get_character_data(character: String) -> GraphDialogsCharacterData:
+	return _resource_manager.get_character_data(character)
+
+
+## Set the dialog data and start ID to play a dialog tree.
+## This method loads the dialog resources and prepares the player to process
+## the dialog tree before calling the [method DialogPlayer.start()]method.
+func set_dialog(data: GraphDialogsDialogueData, start_id: String,
+		portrait_parents: Dictionary = {}, dialog_box_parents: Dictionary = {}) -> void:
+	if not data:
+		printerr("[Graph Dialogs] No dialog data provided to set.")
+		return
+	_dialog_data = data
+	_start_id = start_id
+
+	if not _starts_ids.has(_start_id): # Check if the dialog with given id exists
+		printerr("[Graph Dialogs] Cannot find '" + _start_id + "' ID on dialog file.")
+		_start_id = "(Select a dialog)"
+		_dialog_data = null
+		return
+	
+	if not portrait_parents.is_empty():
+		_portrait_parents = portrait_parents
+	if not dialog_box_parents.is_empty():
+		_dialog_box_parents = dialog_box_parents
+	
+	# Load the resources
+	_resource_manager.load_resources(_dialog_data, _start_id, _dialog_box_parents)
 
 
 #region === Editor properties ==================================================
+
 ## Set extra properties on editor
 func _get_property_list():
 	if Engine.is_editor_hint():
 		var props = []
+		props.append({
+			"name": &"_dialog_data",
+			"type": TYPE_OBJECT,
+			"hint": PROPERTY_HINT_RESOURCE_TYPE,
+			"hint_string": "GraphDialogsDialogueData"
+		})
 		# Set available start IDs to select
-		if dialog_data:
+		if _dialog_data:
 			var id_list = ""
 			for id in _starts_ids:
 				id_list += id
 				if id != _starts_ids[-1]:
 					id_list += ","
 			props.append({
-				"name": &"start_id",
+				"name": &"_start_id",
 				"type": TYPE_STRING,
 				"hint": PROPERTY_HINT_ENUM,
 				"hint_string": id_list
 			})
+			props.append({
+				"name": &"_play_on_ready",
+				"type": TYPE_BOOL,
+				"hint": PROPERTY_HINT_NONE,
+				"usage": PROPERTY_USAGE_DEFAULT
+			})
+			props.append({
+				"name": &"_destroy_on_end",
+				"type": TYPE_BOOL,
+				"hint": PROPERTY_HINT_NONE,
+				"usage": PROPERTY_USAGE_DEFAULT
+			})
 			# Set characters options by dialog
-			if not start_id.is_empty() and start_id in dialog_data.characters:
+			if not _start_id.is_empty() and _start_id in _dialog_data.characters:
 				props.append({
-				"name": "Anchors Settings",
+				"name": "Override Display Parents",
 				"type": TYPE_STRING,
 				"usage": PROPERTY_USAGE_GROUP,
 				"hint_string": "char_",
 				})
-				for char in dialog_data.characters[start_id]:
+				for char in _dialog_data.characters[_start_id]:
 					props.append({ # Set a group by character name
 						"name": char.capitalize(),
 						"type": TYPE_STRING,
@@ -194,22 +305,25 @@ func _set(property: StringName, value: Variant) -> bool:
 
 #region === Process graph ======================================================
 
-## Start processing a dialog tree by ID
-func start(dialog_id: String = start_id) -> void:
-	if not dialog_data: # Check if dialog data is set
+## Start processing a dialog tree
+## Need to set the [member DialogPlayer._dialog_data] and [member DialogPlayer._start_id] 
+## before calling this method. The resources are loaded on the [method _ready()] method,
+func start() -> void:
+	if not _dialog_data: # Check if dialog data is set
 		printerr("[Graph Dialogs] No dialog data set to play.")
 		return
-	if not _starts_ids.has(dialog_id): # Check if the dialog with given id exists
-		printerr("[Graph Dialogs] Cannot find '" + dialog_id + "' ID on dialog file.")
+	if not _starts_ids.has(_start_id): # Check if the dialog with given id exists
+		printerr("[Graph Dialogs] Cannot find '" + _start_id + "' ID on dialog file.")
 		return
-
+	
 	# Search for start node and start processing from there
-	for node in dialog_data.graph_data[dialog_id]:
+	for node in _dialog_data.graph_data[_start_id]:
 		if node.contains("start_node"):
-			print("[Graph Dialogs] Starting dialog with ID: " + dialog_id)
+			print("[Graph Dialogs] Starting dialog with ID: " + _start_id)
 			_is_running = true
 			_process_node(node)
-			dialog_started.emit(dialog_id)
+			get_node("/root/GraphDialogs").set_dialog_player_as_running(self)
+			dialog_started.emit(_dialog_file_name, _start_id)
 			break
 
 
@@ -224,6 +338,7 @@ func pause() -> void:
 	# If not, save the current node to resume later
 	elif _current_node != "":
 		_paused_node = _current_node
+	dialog_paused.emit(_dialog_file_name, _start_id)
 
 
 ## Resume processing the dialog tree
@@ -238,6 +353,7 @@ func resume() -> void:
 	elif _paused_node != "":
 		_process_node(_paused_node)
 		_paused_node = ""
+	dialog_resumed.emit(_dialog_file_name, _start_id)
 
 
 ## Stop processing the dialog tree
@@ -268,7 +384,10 @@ func stop() -> void:
 		_current_dialog_box = null
 	
 	_portraits_displayed.clear()
-	dialog_ended.emit()
+	dialog_ended.emit(_dialog_file_name, _start_id)
+	dialog_player_stop.emit(self)
+	if _destroy_on_end:
+		queue_free()
 
 
 ## Check if the dialog is running
@@ -287,16 +406,17 @@ func _process_node(node_name: String) -> void:
 	# Get the node type to process
 	var node_type = node_name.split("_node_")[0] + "_node"
 	_dialog_parser.node_processors[node_type].call(
-		dialog_data.graph_data[start_id][node_name]
+		_dialog_data.graph_data[_start_id][node_name]
 		)
 
 
 ## Play dialog when the dialogue node is processed
-func _on_dialogue_processed(char: String, portrait: String, dialog: String, next_node: String) -> void:
+func _on_dialogue_processed(character_name: String, translated_name: String,
+		portrait: String, dialog: String, next_node: String) -> void:
 	_next_node = next_node
-	_update_dialog_box(char)
-	await _update_portrait(char, portrait)
-	_current_dialog_box.play_dialog(char, dialog)
+	_update_dialog_box(character_name)
+	await _update_portrait(character_name, portrait)
+	_current_dialog_box.play_dialog(character_name, translated_name, dialog)
 
 
 ## Continue to the next node in the dialog tree
@@ -309,7 +429,7 @@ func _on_continue_dialog() -> void:
 
 ## Update the dialog box for the current character
 func _update_dialog_box(character_name: String) -> void:
-	var dialog_box = GraphDialogs.get_dialog_box(start_id, character_name)
+	var dialog_box = _resource_manager.get_dialog_box(_start_id, character_name)
 	
 	# Check if the dialog box is already playing a dialog
 	if _current_dialog_box and dialog_box != _current_dialog_box:
@@ -342,8 +462,8 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 		_current_portrait = _portraits_displayed[character_name][portrait_name]
 
 	else: # Instantiate the portrait scene if not already loaded
-		_current_portrait = GraphDialogs.instantiate_portrait(start_id,
-			character_name, portrait_name, _portrait_parents[character_name])
+		_current_portrait = _resource_manager.instantiate_portrait(_start_id,
+			character_name, portrait_name, _portrait_parents)
 		_portraits_displayed[character_name][portrait_name] = _current_portrait
 	
 	_current_portrait.set_portrait()
