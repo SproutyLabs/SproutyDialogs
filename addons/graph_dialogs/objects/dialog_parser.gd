@@ -122,6 +122,6 @@ func _process_signal(node_data: Dictionary) -> void:
 
 
 func _process_wait(node_data: Dictionary) -> void:
-	# TODO: Process the node
 	print("[Graph Dialogs] Processing wait node...")
+	await get_tree().create_timer(node_data.time).timeout
 	continue_to_node.emit(node_data.to_node[0])

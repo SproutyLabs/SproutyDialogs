@@ -315,7 +315,7 @@ func _set(property: StringName, value: Variant) -> bool:
 
 #endregion
 
-#region === Process graph ======================================================
+#region === Run dialog =========================================================
 
 ## Start processing a dialog tree
 ## Need to set the [member DialogPlayer._dialog_data] and [member DialogPlayer._start_id] 
@@ -406,6 +406,9 @@ func stop() -> void:
 func is_running() -> bool:
 	return _is_running
 
+#endregion
+
+#region === Process graph ======================================================
 
 ## Process the next node on dialog tree
 func _process_node(node_name: String) -> void:
