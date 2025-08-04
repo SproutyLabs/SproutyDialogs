@@ -46,6 +46,8 @@ func set_locale_list() -> void:
 	for locale in locales:
 		# Load saved locales in the list
 		var new_locale = _new_locale()
+		if not new_locale.is_node_ready():
+			await new_locale.ready
 		new_locale.load_locale(locale)
 
 
