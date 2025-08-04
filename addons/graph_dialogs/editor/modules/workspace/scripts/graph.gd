@@ -116,11 +116,9 @@ func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_
 	add_child(new_node, true)
 
 	# Connect translation signals
-	if node_type == "dialogue_node":
+	if node_type == "dialogue_node" or node_type == "options_node":
 		locales_changed.connect(new_node.on_locales_changed)
 		translation_enabled_changed.connect(new_node.on_translation_enabled_changed)
-	if node_type == "option_node":
-		pass # TODO: Connect option node signals if needed
 	return new_node
 
 
@@ -153,10 +151,17 @@ func get_graph_data() -> Dictionary:
 				var character = child.get_character_name()
 				if not dict.characters.has(start_id):
 					dict.characters[start_id] = {}
+					
 				# Add character to the reference dictionary
 				if character != "" and not dict.characters[start_id].has(character):
 						dict.characters[start_id][character] = \
 							ResourceSaver.get_resource_id_for_path(child.get_character_path())
+			
+			# Get option dialogs from options nodes
+			if child.node_type == "options_node":
+				var options = child.get_options_text()
+				for option in options:
+					dict.dialogs.merge(option)
 			
 			# Start nodes define dialogs trees
 			if child.node_type == "start_node":
@@ -211,6 +216,9 @@ func load_graph_data(data: Dictionary, dialogs: Dictionary, characters: Dictiona
 					if character_uid != -1:
 						new_node.load_character(ResourceUID.get_id_path(character_uid))
 						new_node.load_portrait(node_data["portrait"])
+			# Load options on options nodes
+			elif node_data["node_type"] == "options_node":
+				new_node.load_options_text(dialogs)
 	
 	# When all the nodes are loaded, notify the nodes to connect each other
 	nodes_loaded.emit()

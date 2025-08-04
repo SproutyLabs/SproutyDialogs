@@ -36,22 +36,25 @@ func get_running_dialog_players() -> Array[DialogPlayer]:
 
 ## Sets a dialog player as running.
 func set_dialog_player_as_running(player: DialogPlayer) -> void:
+	_current_dialog_players.append(player)
+	## Connects the dialog player signals to the manager.
+	if player.is_connected("dialog_player_stop", _on_dialog_player_stop):
+		return # Already connected, no need to connect again
 	player.dialog_player_stop.connect(_on_dialog_player_stop)
 	player.dialog_started.connect(dialog_started.emit)
 	player.dialog_paused.connect(dialog_paused.emit)
 	player.dialog_resumed.connect(dialog_resumed.emit)
 	player.dialog_ended.connect(dialog_ended.emit)
-	_current_dialog_players.append(player)
 
 
 ## Returns the resource manager instance used to load resources for the dialogs
 ## in the current scene. If no resource manager is set, it will create a new one.
-func get_resource_manager(current_root: Node) -> GraphDialogsResourceManager:
+func get_resource_manager() -> GraphDialogsResourceManager:
 	if not _resource_manager:
 		# Create a new resource manager instance if it doesn't exist
 		_resource_manager = GraphDialogsResourceManager.new()
-		_resource_manager.name = "GraphDialogsResources"
-		current_root.add_child.call_deferred(_resource_manager)
+		_resource_manager.name = "ResourcesManager"
+		add_child.call_deferred(_resource_manager)
 	return _resource_manager
 
 #region === Run dialog =========================================================

@@ -64,6 +64,8 @@ func _ready() -> void:
 	locales_selector.locales_changed.connect(_on_locales_changed)
 	csv_folder_field.folder_path_changed.connect(_on_csv_files_path_changed)
 	char_names_csv_field.file_path_changed.connect(_on_char_names_csv_path_changed)
+
+	await get_tree().create_timer(0.1).timeout # Wait for the settings to be loaded
 	_load_settings()
 
 
@@ -220,7 +222,7 @@ func _on_translate_names_toggled(checked: bool) -> void:
 func _on_use_csv_for_names_toggled(checked: bool) -> void:
 	GraphDialogsSettings.set_setting("use_csv_for_character_names", checked)
 	
-	if char_names_csv_field.get_value().is_empty():
+	if checked and char_names_csv_field.get_value().is_empty():
 		_new_character_names_csv() # Create a new CSV template if the path is empty
 	
 	char_names_csv_field.get_parent().visible = checked

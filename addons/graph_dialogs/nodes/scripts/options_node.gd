@@ -9,16 +9,17 @@ extends BaseNode
 ## -----------------------------------------------------------------------------
 
 ## Option container template
-@onready var option_scene := preload("res://addons/graph_dialogs/editor/components/option_container.tscn")
+@onready var _option_scene := preload("res://addons/graph_dialogs/editor/components/option_container.tscn")
+@onready var _first_option: GraphDialogsOptionContainer = $OptionContainer
 
-@onready var option_container: GraphDialogsOptionContainer = $OptionContainer
+var _options_keys: Array = [] ## List of options keys
 
 func _ready():
 	super ()
 	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
-	if option_container: # Connect signals for the first option container
-		option_container.open_text_editor.connect(get_parent().open_text_editor.emit)
-		option_container.option_removed.connect(_on_option_removed)
+	if _first_option: # Connect signals for the first option container
+		_first_option.open_text_editor.connect(get_parent().open_text_editor.emit)
+		_first_option.option_removed.connect(_on_option_removed)
 
 
 #region === Overridden Methods =================================================
@@ -30,20 +31,19 @@ func get_data() -> Dictionary:
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
-		"options": {},
-		"to_node": [] if connections.size() > 0 else ["END"],
+		"options_keys": [],
+		"to_node": [],
 		"offset": position_offset
 	}
 	for child in get_children():
 		if child is GraphDialogsOptionContainer:
-			dict[name.to_snake_case()]["options"][child.name.to_snake_case()] = {
-				"id": child.option_index,
-				"dialog_key": child.dialog_key
-			}
-			if dict["to_node"][0] != "END" and connections.size() >= child.option_index:
+			dict[name.to_snake_case()]["options_keys"].insert(
+				child.option_index, child.get_dialog_key())
+			if connections.size() > 0 and connections.size() - 1 >= child.option_index:
 				dict[name.to_snake_case()]["to_node"].append(
-					connections[child.option_index]["to_node"].to_snake_case()
-				)
+					connections[child.option_index]["to_node"].to_snake_case())
+			else:
+				dict[name.to_snake_case()]["to_node"].append("END")
 	return dict
 
 
@@ -52,12 +52,48 @@ func set_data(dict: Dictionary) -> void:
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
-
+	_options_keys = dict["options_keys"]
 #endregion
 
+
+## Get options text and its translations
+func get_options_text() -> Array:
+	var options_text = []
+	for child in get_children():
+		if child is GraphDialogsOptionContainer:
+			options_text.append({
+				child.get_dialog_key(): child.get_dialogs_text()
+			})
+	return options_text
+
+
+## Load options text and translations
+func load_options_text(dialogs: Dictionary) -> void:
+	for option in _options_keys.size():
+		if option == 0: # Load the first option
+			_first_option.load_dialogs(dialogs[_options_keys[option]])
+		else:
+			var new_option = _add_new_option()
+			new_option.load_dialogs(dialogs[_options_keys[option]])
+
+
+## Update the locale text boxes
+func on_locales_changed() -> void:
+	for child in get_children():
+		if child is GraphDialogsOptionContainer:
+			child.on_locales_changed()
+
+
+## Handle the translation enabled setting change
+func on_translation_enabled_changed(enabled: bool) -> void:
+	for child in get_children():
+		if child is GraphDialogsOptionContainer:
+			child.on_translation_enabled_changed(enabled)
+
+
 ## Add a new option
-func _on_add_option_button_pressed() -> void:
-	var new_option = option_scene.instantiate()
+func _add_new_option() -> GraphDialogsOptionContainer:
+	var new_option = _option_scene.instantiate()
 	var option_index = get_child_count() - 2
 	
 	add_child(new_option, true)
@@ -68,13 +104,17 @@ func _on_add_option_button_pressed() -> void:
 	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
 	new_option.open_text_editor.connect(get_parent().open_text_editor.emit)
 	new_option.option_removed.connect(_on_option_removed)
-	new_option.connect("resized", _on_resized)
+	new_option.resized.connect(_on_resized)
+	return new_option
+
+
+func _on_add_option_button_pressed() -> void:
+	_add_new_option()
 
 
 ## Handle options when one is removed
 func _on_option_removed(index: int) -> void:
 	get_child(index).queue_free() # Delete option
-	print("Removed option: " + str(index))
 	
 	# Update the following options to the removed one, by moving them upwards
 	for child in get_children(false):

@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://wl8xuktm0hrq"]
+[gd_scene load_steps=4 format=3 uid="uid://wl8xuktm0hrq"]
 
 [ext_resource type="Script" uid="uid://dedmq04uacl5g" path="res://addons/graph_dialogs/objects/defaults/default_dialog_box.gd" id="1_et7ao"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialogs/icons/interactable/collapse-down.svg" id="2_7fxrt"]
+[ext_resource type="Script" uid="uid://cdtkvrnke623v" path="res://addons/graph_dialogs/objects/dialog_option.gd" id="3_wdbrv"]
 
-[node name="DialogBox" type="Panel" node_paths=PackedStringArray("_dialog_display", "_name_display", "_continue_indicator")]
+[node name="DialogBox" type="Panel" node_paths=PackedStringArray("_dialog_display", "_name_display", "_continue_indicator", "_options_container", "_option_template")]
 custom_minimum_size = Vector2(600, 150)
 anchors_preset = 8
 anchor_left = 0.5
@@ -19,11 +20,13 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_et7ao")
-_dialog_display = NodePath("MarginContainer/VBoxContainer/Dialog")
-_name_display = NodePath("MarginContainer/VBoxContainer/Name")
-_continue_indicator = NodePath("MarginContainer/VBoxContainer/Arrow")
+_dialog_display = NodePath("DialogContainer/VBoxContainer/Dialog")
+_name_display = NodePath("DialogContainer/VBoxContainer/Name")
+_continue_indicator = NodePath("DialogContainer/VBoxContainer/Arrow")
+_options_container = NodePath("OptionsContainer")
+_option_template = NodePath("OptionsContainer/DialogOption")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="DialogContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,25 +38,24 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DialogContainer"]
 layout_mode = 2
 
-[node name="Name" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+[node name="Name" type="RichTextLabel" parent="DialogContainer/VBoxContainer"]
 layout_mode = 2
 bbcode_enabled = true
 text = "Name"
 fit_content = true
 scroll_active = false
 
-[node name="Dialog" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+[node name="Dialog" type="RichTextLabel" parent="DialogContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "Dialog text"
 scroll_following = true
 
-[node name="Arrow" type="TextureRect" parent="MarginContainer/VBoxContainer"]
-visible = false
+[node name="Arrow" type="TextureRect" parent="DialogContainer/VBoxContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -62,6 +64,39 @@ texture = ExtResource("2_7fxrt")
 expand_mode = 2
 stretch_mode = 5
 
+[node name="OptionsContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -175.0
+offset_bottom = -175.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DialogOption" type="Button" parent="OptionsContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+text = "Option 1"
+script = ExtResource("3_wdbrv")
+metadata/_custom_type_script = "uid://cdtkvrnke623v"
+
+[node name="DialogOption2" type="Button" parent="OptionsContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Option 2"
+script = ExtResource("3_wdbrv")
+metadata/_custom_type_script = "uid://cdtkvrnke623v"
+
+[node name="DialogOption3" type="Button" parent="OptionsContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+text = "Option 2"
+script = ExtResource("3_wdbrv")
+metadata/_custom_type_script = "uid://cdtkvrnke623v"
+
 [node name="Timer" type="Timer" parent="."]
 
-[connection signal="meta_clicked" from="MarginContainer/VBoxContainer/Dialog" to="." method="_on_dialog_meta_clicked"]
+[connection signal="meta_clicked" from="DialogContainer/VBoxContainer/Dialog" to="." method="_on_dialog_meta_clicked"]

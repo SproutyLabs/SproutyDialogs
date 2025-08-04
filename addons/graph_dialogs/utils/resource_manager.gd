@@ -116,7 +116,8 @@ func load_resources(dialog_data: GraphDialogsDialogueData,
 					ResourceUID.get_id_path(dialog_data.characters[start_id][char])
 				)
 		_load_dialog_box(start_id, char, dialog_box_parents)
-		_load_portraits(char, portraits[char])
+		if portraits.has(char):
+			_load_portraits(char, portraits[char])
 
 
 ## Load and instantiate the dialog box for a character.

@@ -24,6 +24,9 @@ signal continue_dialog
 ## Emitted when a meta tag is clicked in the dialog.
 signal meta_clicked(meta: String)
 
+## Emitted when the player selects an option.
+signal option_selected(option_index: int)
+
 ## Typing speed of the dialog text in seconds.
 @export var _typing_speed: float = GraphDialogsSettings.get_setting("default_typing_speed")
 ## Maximum number of characters to be displayed in the dialog box.[br][br]
@@ -48,6 +51,16 @@ signal meta_clicked(meta: String)
 ## you need to set this property.[/color]
 @export var _portrait_display: Node
 
+@export_category("Options Components")
+## [Container] where the options will be displayed in the dialog box.
+## Recommended to use a [VBoxContainer] or [GridContainer] to display the options.
+## [color=red]This component is required to display the dialog options in it.[/color]
+@export var _options_container: Container
+## [Node] that will be used as a template for the options in the dialog box.
+## It should be a [DialogOption] node or another node that extends it.
+## [br][br][color=red]This component is required to display the dialog options. [/color]
+@export var _option_template: Control
+
 ## Timer to control the typing speed of the dialog.
 var _type_timer: Timer
 ## Timer to control if the dialog can be skipped.
@@ -67,6 +80,8 @@ var _current_character: String = ""
 
 ## Flag to check if the dialog box is displaying a portrait.
 var _is_displaying_portrait: bool = false
+## Flag to check if the dialog box is displaying options.
+var _is_displaying_options: bool = false
 ## Flag to check if the dialog box was already started.
 var _is_started: bool = false
 ## Flag to check if the dialog is running
@@ -91,12 +106,18 @@ func _ready() -> void:
 	if not _dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
 		_dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
 	
+	if _option_template:
+		_option_template = _option_template.duplicate()
 	_dialog_display.bbcode_enabled = true
 	_continue_indicator.visible = false
+	if _options_container:
+		_options_container.visible = false
 
 
 func _input(event: InputEvent) -> void:
 	if not _is_running:
+		return
+	if _is_displaying_options:
 		return
 	# Skip dialog typing and show the full text
 	if not _display_completed and _can_skip and Input.is_action_just_pressed(
@@ -116,20 +137,25 @@ func _input(event: InputEvent) -> void:
 func play_dialog(character_name: String, display_name: String, dialog: String) -> void:
 	if not _is_started: # First time the dialog is started
 		await _on_dialog_box_start()
+	hide_options()
 	if not visible:
 		show()
 
+	if _name_display: # Set the character name
+		_name_display.text = character_name
 	_current_character = character_name
-	_name_display.text = display_name
 	_dialog_display.text = dialog
 	_current_sentence = 0
 	_sentences = []
 
-	# Split the dialog by lines and characters if the settings are enabled
-	var dialog_lines = _split_dialog_by_lines(dialog)
-	for line in dialog_lines:
-		var split_result = _split_dialog_by_characters(line)
-		_sentences.append_array(split_result)
+	if dialog.is_empty(): # If the dialog is empty, just display an empty sentence
+		_sentences.append("")
+	else:
+		# Split the dialog by lines and characters if the settings are enabled
+		var dialog_lines = _split_dialog_by_lines(dialog)
+		for line in dialog_lines:
+			var split_result = _split_dialog_by_characters(line)
+			_sentences.append_array(split_result)
 	
 	# Start the dialog
 	_is_started = true
@@ -166,6 +192,20 @@ func stop_dialog(close_dialog: bool = false) -> void:
 		hide()
 
 
+## Skip the dialog typing and show the full text
+func _skip_dialog_typing() -> void:
+	_dialog_display.visible_characters = _dialog_display.text.length()
+	_type_timer.stop()
+	# Wait for the continue delay before allowing to skip again
+	await get_tree().create_timer(
+			GraphDialogsSettings.get_setting("skip_continue_delay")).timeout
+	_can_skip = false # Prevent skipping too fast
+	_can_skip_timer.start()
+	_on_display_completed()
+
+
+#region === Display portrait ===================================================
+
 ## Return if the dialog box is displaying a portrait
 func is_displaying_portrait() -> bool:
 	return _is_displaying_portrait
@@ -181,17 +221,43 @@ func display_portrait(character_parent: Node, portrait_node: Node) -> void:
 		_portrait_display.get_node(NodePath(character_parent.name)).add_child(portrait_node)
 	_is_displaying_portrait = true
 
+#endregion
 
-## Skip the dialog typing and show the full text
-func _skip_dialog_typing() -> void:
-	_dialog_display.visible_characters = _dialog_display.text.length()
-	_type_timer.stop()
-	# Wait for the continue delay before allowing to skip again
-	await get_tree().create_timer(
-			GraphDialogsSettings.get_setting("skip_continue_delay")).timeout
-	_can_skip = false # Prevent skipping too fast
-	_can_skip_timer.start()
-	_on_display_completed()
+#region === Display options ====================================================
+
+## Display the dialog options
+func display_options(options: Array) -> void:
+	_is_displaying_options = true
+	if not _options_container:
+		printerr("[GraphDialogs] Dialog options container is not set. 
+			Please set the _options_container property on the inspector.")
+		return
+	if not _option_template:
+		push_error("[GraphDialogs] Dialog option template is not set. 
+			Please set the _option_template property on the inspector.")
+		return
+	# Clear previous options
+	for child in _options_container.get_children():
+		child.queue_free()
+
+	for index in options.size(): # Add new options
+		var option_node = _option_template.duplicate()
+		option_node.option_index = index
+		option_node.set_text(options[index])
+		_options_container.add_child(option_node)
+		option_node.option_selected.connect(option_selected.emit)
+		option_node.show()
+	_options_container.show()
+	show()
+
+
+## Hide the dialog options
+func hide_options() -> void:
+	if _options_container:
+		_options_container.hide()
+	_is_displaying_options = false
+
+#endregion
 
 #region === Overrides ==========================================================
 

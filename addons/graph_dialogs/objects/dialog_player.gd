@@ -22,6 +22,11 @@ signal dialog_ended(dialog_file: String, start_id: String)
 ## Emitted when the dialog player stop.
 signal dialog_player_stop(dialog_player: DialogPlayer)
 
+## Emitted when a dialog option is selected.
+signal option_selected(current_node: String, option_index: int)
+## Emitted when a signal event is emitted.
+signal signal_event(argument: String)
+
 ## Dialog Data resource to play.
 var _dialog_data: GraphDialogsDialogueData:
 	set(value):
@@ -103,12 +108,14 @@ var _current_dialog_box: DialogBox
 ## Current portrait being displayed.
 var _current_portrait: DialogPortrait
 
-## Current node being processing
-var _current_node: String = ""
+## Next nodes options to process when a dialog option is selected.
+var _next_options: Array = []
 ## Next node to process in the dialog tree after a dialogue node.
 var _next_node: String = ""
 ## Node where the dialog was paused, to resume later.
 var _paused_node: String = ""
+## Current node being processing
+var _current_node: String = ""
 
 ## Flag to control if the dialog is running.
 var _is_running: bool = false
@@ -120,7 +127,13 @@ func _enter_tree() -> void:
 		add_child(_dialog_parser)
 		_dialog_parser.continue_to_node.connect(_process_node)
 		_dialog_parser.dialogue_processed.connect(_on_dialogue_processed)
-		_resource_manager = get_node("/root/GraphDialogs").get_resource_manager(owner)
+		_dialog_parser.options_processed.connect(_on_options_processed)
+		_dialog_parser.signal_processed.connect(_on_signal_processed)
+		_resource_manager = get_node("/root/GraphDialogs").get_resource_manager()
+
+
+func _exit_tree() -> void:
+	pass
 
 
 func _ready() -> void:
@@ -209,7 +222,6 @@ func set_dialog(data: GraphDialogsDialogueData, start_id: String,
 
 
 #region === Editor properties ==================================================
-
 ## Set extra properties on editor
 func _get_property_list():
 	if Engine.is_editor_hint():
@@ -419,6 +431,26 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 	_current_dialog_box.play_dialog(character_name, translated_name, dialog)
 
 
+## Handle when the options node is processed
+func _on_options_processed(options: Array, next_nodes: Array) -> void:
+	_current_dialog_box.display_options(options)
+	_next_options = next_nodes
+
+
+## Process the next node of the option selected
+func _on_option_selected(option_index: int) -> void:
+	_current_dialog_box.hide_options()
+	option_selected.emit(_current_node, option_index)
+	_process_node(_next_options[option_index])
+
+
+## Emit a signal event when the signal node is processed
+func _on_signal_processed(signal_argument: String, next_node: String) -> void:
+	signal_event.emit(signal_argument)
+	_next_node = next_node
+	_process_node(_next_node)
+
+
 ## Continue to the next node in the dialog tree
 func _on_continue_dialog() -> void:
 	_process_node(_next_node)
@@ -441,6 +473,7 @@ func _update_dialog_box(character_name: String) -> void:
 		dialog_box.dialog_typing_ends.connect(_on_dialog_typing_ends)
 		dialog_box.dialog_starts.connect(_on_dialog_display_starts)
 		dialog_box.dialog_ends.connect(_on_dialog_display_ends)
+		dialog_box.option_selected.connect(_on_option_selected)
 	
 	_current_dialog_box = dialog_box
 

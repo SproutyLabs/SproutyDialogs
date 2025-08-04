@@ -19,6 +19,10 @@ signal dialogue_processed(
 	dialog: String,
 	next_node: String
 )
+## Emitted when the options node was processed.
+signal options_processed(options: Array, next_nodes: Array)
+## Emitted when the signal node was processed.
+signal signal_processed(signal_argument: String, next_node: String)
 
 ## Node processors reference dictionary.
 var node_processors: Dictionary = {
@@ -99,9 +103,11 @@ func _process_condition(node_data: Dictionary) -> void:
 
 
 func _process_options(node_data: Dictionary) -> void:
-	# TODO: Process the node
 	print("[Graph Dialogs] Processing options node...")
-	continue_to_node.emit(node_data.to_node[0])
+	# Return the translated options and their next nodes
+	options_processed.emit(node_data.options_keys.map(
+		func(key): return _get_translated_dialog(key)
+	), node_data.to_node)
 
 
 func _process_set_variable(node_data: Dictionary) -> void:
@@ -111,9 +117,8 @@ func _process_set_variable(node_data: Dictionary) -> void:
 
 
 func _process_signal(node_data: Dictionary) -> void:
-	# TODO: Process the node
 	print("[Graph Dialogs] Processing signal node...")
-	continue_to_node.emit(node_data.to_node[0])
+	signal_processed.emit(node_data.signal_argument, node_data.to_node[0])
 
 
 func _process_wait(node_data: Dictionary) -> void:

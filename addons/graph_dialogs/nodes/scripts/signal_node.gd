@@ -8,10 +8,10 @@ extends BaseNode
 ## Node to emit a signal between dialog nodes.
 ## -----------------------------------------------------------------------------
 
-## Signal name text input
-@onready var name_input: LineEdit = $NameInput
-## Signal name value
-@onready var signal_name: String = name_input.text
+## Signal argument text input
+@onready var _text_input: LineEdit = $Input
+## Signal argument value
+@onready var _signal_argument: String = _text_input.text
 
 
 func _ready():
@@ -26,7 +26,7 @@ func get_data() -> Dictionary:
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
-		"signal_name": signal_name,
+		"signal_argument": _signal_argument,
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
 		"offset": position_offset
@@ -37,8 +37,8 @@ func get_data() -> Dictionary:
 func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
-	signal_name = dict["signal_name"]
-	name_input.text = dict["signal_name"]
+	_signal_argument = dict["signal_argument"]
+	_text_input.text = dict["signal_argument"]
 	
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
@@ -46,5 +46,5 @@ func set_data(dict: Dictionary) -> void:
 #endregion
 
 func _on_input_text_changed(new_text: String) -> void:
-	signal_name = new_text
+	_signal_argument = new_text
 	get_parent().on_modified()
