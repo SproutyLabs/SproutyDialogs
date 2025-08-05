@@ -1,0 +1,57 @@
+[gd_scene load_steps=7 format=3 uid="uid://cqlyj2jyexmds"]
+
+[ext_resource type="Script" uid="uid://d1bsumhmk1ygf" path="res://addons/graph_dialogs/editor/modules/variables/scripts/variable_group.gd" id="1_gui6w"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialogs/icons/interactable/collapse-down.svg" id="1_lvv6v"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/graph_dialogs/theme/empty_panel.tres" id="2_mjwdj"]
+[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialogs/icons/text_editor/image.svg" id="3_an7e1"]
+[ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/graph_dialogs/theme/expander_subpanel_highlight.tres" id="4_d8cdw"]
+[ext_resource type="PackedScene" uid="uid://dols4gqjh3n6g" path="res://addons/graph_dialogs/editor/modules/variables/variable_item.tscn" id="5_f2pg1"]
+
+[node name="VariableGroup" type="PanelContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_gui6w")
+
+[node name="Container" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="--" type="HSeparator" parent="Container"]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+
+[node name="ExpandableButton" type="Button" parent="Container/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("1_lvv6v")
+flat = true
+
+[node name="GroupName" type="LineEdit" parent="Container/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = ExtResource("2_mjwdj")
+text = "New Group"
+placeholder_text = "Group name..."
+
+[node name="RemoveButton" type="Button" parent="Container/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_an7e1")
+flat = true
+
+[node name="---" type="HSeparator" parent="Container"]
+layout_mode = 2
+
+[node name="SubPanel" type="PanelContainer" parent="Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("4_d8cdw")
+
+[node name="SubContainer" type="VBoxContainer" parent="Container/SubPanel"]
+layout_mode = 2
+
+[node name="VariableItem" parent="Container/SubPanel/SubContainer" instance=ExtResource("5_f2pg1")]
+layout_mode = 2

@@ -1,11 +1,11 @@
 @tool
 extends PanelContainer
 
-## ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Character Panel
 ##
 ## Handles the tab panel for the character editor.
-## ---------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Emitted when the new character file button is pressed
 signal new_character_file_pressed

@@ -2,98 +2,101 @@
 extends Tree
 
 # -----------------------------------------------------------------------------
-## Character Portrait Tree
+## Variables Tree
 ##
-## This module is responsible for the character portrait tree.
-## It allows the user to add, remove, rename and duplicate portraits.
+## This module is responsible for the variables tree.
+## It allows the user to add, remove, rename and duplicate variables.
 # -----------------------------------------------------------------------------
 
-## Triggered when the user selects an item
-signal portrait_item_selected(item: TreeItem)
-
-## Character editor reference
-@onready var _character_editor: Container = find_parent("CharacterEditor")
-## Portrait tree popup menu
+## Tree popup menu
 @onready var _popup_menu: PopupMenu = $PortraitPopupMenu
-## Confirmation dialog for removing a portrait group
+## Confirmation dialog for removing a group
 @onready var _remove_group_dialog: ConfirmationDialog = $RemoveGroupDialog
-
-## Icon of the character portrait
-var _portrait_icon: Texture2D = preload("res://addons/graph_dialogs/icons/character.svg")
 
 
 func _ready() -> void:
 	_popup_menu.set_item_icon(0, get_theme_icon("Rename", "EditorIcons"))
 	_popup_menu.set_item_icon(1, get_theme_icon("Duplicate", "EditorIcons"))
 	_popup_menu.set_item_icon(2, get_theme_icon("Remove", "EditorIcons"))
+
+	set_column_title(0, "Name")
+	set_column_title(1, "Type")
+	set_column_title(2, "Default Value")
+	set_column_expand(1, false)
+	set_column_expand_ratio(2, 2)
+	set_column_title_alignment(0, 0)
+	set_column_title_alignment(2, 0)
 	create_item() # Create the root item
 
 
-## Get the portrait data from the tree
-func get_portraits_data(from: TreeItem = get_root()) -> Dictionary:
+## Get the variables data from the tree
+func get_data(from: TreeItem = get_root()) -> Dictionary:
 	var data := {}
 	for item in from.get_children():
 		if item.get_metadata(0).has("group"):
-			data[item.get_text(0)] = get_portraits_data(item)
+			data[item.get_text(0)] = get_data(item)
 		else:
-			data[item.get_text(0)] = item.get_meta("portrait_editor").get_portrait_data()
+			#data[item.get_text(0)] = item.get_meta("portrait_editor").get_portrait_data()
+			pass # TODO: Implement the logic to get the variable data
 	return data
 
 
-## Load the portrait data into the tree
-func load_portraits_data(data: Dictionary, parent_item: TreeItem = get_root()) -> void:
+## Load the variables data into the tree
+func load_data(data: Dictionary, parent_item: TreeItem = get_root()) -> void:
 	if not data:
 		return # If the data is empty, do nothing
 	
 	for item in data.keys():
 		if data[item] is GraphDialogsPortraitData:
-			# If the item is a portrait, create it and load its data
-			var editor = _character_editor.portrait_editor_scene.instantiate()
-			add_child(editor)
-			new_portrait_item(item, data[item], parent_item, editor)
-			editor.load_portrait_data(item, data[item])
-			remove_child(editor)
+			pass # TODO: Implement the logic to create a item
 		else:
 			# If the item is a group, create it and load its children
-			var group_item: TreeItem = new_portrait_group(item, parent_item)
-			load_portraits_data(data[item], group_item)
+			var group_item: TreeItem = new_variable_group(item, parent_item)
+			load_data(data[item], group_item)
 
 
-## Adds a new portrait item to the tree
-func new_portrait_item(name: String, data: GraphDialogsPortraitData,
-		parent_item: TreeItem, portrait_editor: Node) -> TreeItem:
+## Adds a new variable item to the tree
+func new_variable_item(
+	name: String,
+	parent_item: TreeItem,
+	data: Dictionary = {
+		"name": name,
+		"type": 0, # TYPE_NIL
+		"value": null
+	}) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
-	item.set_icon(0, _portrait_icon)
 	item.set_text(0, name)
-	item.set_metadata(0, {"portrait": data})
+	item.set_editable(0, true)
+	item.set_metadata(0, {"variable": data})
 	item.set_meta("item_path", get_item_path(item))
-	item.set_meta("portrait_editor", portrait_editor)
-	item.add_button(0, get_theme_icon("Remove", "EditorIcons"), 0, false, "Remove portrait")
+
+	# TODO: Set the type dropdown an value field
+	item.add_button(1, get_theme_icon("String", "EditorIcons"), 0)
+	item.set_editable(2, true)
+	item.add_button(2, get_theme_icon("Remove", "EditorIcons"), 1, false, "Remove Variable")
 	return item
 
 
-## Adds a new portrait group to the tree
-func new_portrait_group(group_name := "Group", parent_item: TreeItem = get_root()) -> TreeItem:
+## Adds a new variable group to the tree
+func new_variable_group(group_name := "Group", parent_item: TreeItem = get_root()) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
 	item.set_icon(0, get_theme_icon("Folder", "EditorIcons"))
 	item.set_text(0, group_name)
 	item.set_metadata(0, {"group": true})
 	item.set_meta("item_path", get_item_path(item))
-	item.add_button(0, get_theme_icon("Remove", "EditorIcons"), 1, false, "Remove Group")
+	item.add_button(2, get_theme_icon("Remove", "EditorIcons"), 2, false, "Remove Group")
 	return item
 
 
 ## Duplicates a portrait item and adds it to the tree
 func duplicate_portrait_item(item: TreeItem) -> TreeItem:
-	var new_item: TreeItem = new_portrait_item(
+	var new_item: TreeItem = new_variable_item(
 		item.get_text(0) + " (copy)",
-		item.get_metadata(0),
 		item.get_parent(),
-		item.get_meta("portrait_editor")
+		item.get_metadata(0)
 		)
 	item.set_editable(0, true)
 	item.select(0)
-	_character_editor.on_modified()
 	return new_item
 
 
@@ -102,10 +105,6 @@ func remove_portrait_item(item: TreeItem) -> void:
 	if item.get_next_visible(true) and item.get_next_visible(true) != item:
 		item.get_next_visible(true).select(0)
 	item.free()
-	_character_editor.on_modified()
-	# If the tree is empty, hide the portrait editor panel
-	if get_root().get_children().size() == 0:
-		_character_editor.show_portrait_editor_panel(false)
 
 
 ## Removes the portrait group and all its children from the tree
@@ -158,7 +157,6 @@ func filter_branch(parent: TreeItem, filter: String) -> bool:
 		if item.visible: # If the item is visible, check that found a match
 			match_found = true
 	return match_found
-
 
 #region === Drag and Drop ======================================================
 
@@ -214,20 +212,18 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		new_item.move_before(to_item)
 
 	item.free() # Free the original item
-	_character_editor.on_modified()
 
 
 # Create a copy of the item and its children (if is a group)
 func copy_tree_item(item: TreeItem, new_parent: TreeItem) -> TreeItem:
 	var new_item: TreeItem = null
 	if item.get_metadata(0).has("group"):
-		new_item = new_portrait_group(item.get_text(0), new_parent)
+		new_item = new_variable_group(item.get_text(0), new_parent)
 	else:
-		new_item = new_portrait_item(
+		new_item = new_variable_item(
 			item.get_text(0),
-			item.get_metadata(0),
 			new_parent,
-			item.get_meta("portrait_editor")
+			item.get_metadata(0)
 			)
 	
 	for child in item.get_children():
@@ -243,11 +239,6 @@ func _on_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int) -
 	if mouse_button_index == MOUSE_BUTTON_RIGHT:
 		_popup_menu.set_item_disabled(1, get_selected().get_metadata(0).has("group"))
 		_popup_menu.popup_on_parent(Rect2(get_global_mouse_position(), Vector2()))
-
-
-## Called when the user selects a portrait item
-func _on_item_selected() -> void:
-	portrait_item_selected.emit(get_selected())
 
 
 ## Called when the user double-clicks on a portrait item
@@ -273,10 +264,6 @@ func _on_item_edited() -> void:
 			name = item.get_text(0).strip_edges() + " (" + str(suffix) + ")"
 			suffix += 1
 		item.set_text(0, name)
-	
-	if not item.get_metadata(0).has("group"): # Update the portrait name
-		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
-	_character_editor.on_modified()
 
 
 ## Called when the user selects an item in the popup menu
@@ -293,9 +280,11 @@ func _on_popup_menu_id_pressed(id: int) -> void:
 ## Called when the user clicks on a portrait item button
 func _on_item_button_clicked(item: TreeItem, column: int, id: int, mouse_button_index: int) -> void:
 	if mouse_button_index == MOUSE_BUTTON_LEFT:
-		if id == 0: # Remove item button clicked
+		if id == 0: # Select a type
+			pass
+		if id == 1: # Remove item button clicked
 			remove_portrait_item(item)
-		if id == 1: # Remove group button clicked
+		if id == 2: # Remove group button clicked
 			if item.get_children().size() > 0:
 				# If the group has children, show a confirmation dialog
 				_remove_group_dialog.confirmed.connect(remove_portrait_group.bind(item))

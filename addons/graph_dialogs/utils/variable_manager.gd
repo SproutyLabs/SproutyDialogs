@@ -1,0 +1,137 @@
+@tool
+class_name GraphDialogsVariableManager
+extends Node
+
+# -----------------------------------------------------------------------------
+## Variable Manager
+##
+## This class manages the variables for the Graph Dialogs plugin.
+## It provides methods to get, set, and check variable values.
+# -----------------------------------------------------------------------------
+
+## Dictionary to store variable names, types and values
+## The dictionary structure is as follows:
+## {
+##     "variable_name": {
+##         "type": 0, # TYPE_NIL
+##         "value": null
+##     },
+##     ...
+## }
+static var _variables: Dictionary = {}
+
+
+## Check if a variable exists
+static func has_variable(name: String) -> bool:
+	return _variables.has(name)
+
+
+## Get the value of a variable
+static func get_variable(name: String) -> Variant:
+	if has_variable(name):
+		return _variables[name]["value"]
+	return null
+
+
+## Get the type of a variable
+static func get_variable_type(name: String) -> int:
+	if has_variable(name):
+		return _variables[name]["type"]
+	return TYPE_NIL
+
+
+## Set the value of a variable
+static func set_variable(name: String, type: int, value: Variant) -> void:
+	_variables[name] = {
+		"type": type,
+		"value": value
+	}
+
+## Remove a variable
+static func remove_variable(name: String) -> void:
+	if has_variable(name):
+		_variables.erase(name)
+
+
+static func load_from_project_settings() -> void:
+	# Load variables from project settings or any other source
+	# This is a placeholder for actual loading logic
+	pass
+
+
+static func save_to_project_settings() -> void:
+	# Save variables to project settings or any other source
+	# This is a placeholder for actual saving logic
+	pass
+
+
+#region === Variable Type Fields ===============================================
+
+## Returns a Control node for the variable type field
+static func get_field_by_type(type: int, on_value_changed: Callable) -> Control:
+	var field = null
+	match type:
+		TYPE_BOOL:
+			field = CheckBox.new()
+			field.toggled.connect(on_value_changed)
+		TYPE_INT:
+			field = SpinBox.new()
+			field.step = 1
+			field.allow_greater = true
+			field.allow_lesser = true
+			field.value_changed.connect(on_value_changed)
+		TYPE_FLOAT:
+			field = SpinBox.new()
+			field.step = 0.01
+			field.allow_greater = true
+			field.allow_lesser = true
+			field.value_changed.connect(on_value_changed)
+		TYPE_STRING:
+			field = LineEdit.new()
+			field.text_changed.connect(on_value_changed)
+		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
+			var vector_n := int(type_string(type)[-1])
+			var components_names = ["x", "y", "z", "w"]
+			field = HFlowContainer.new()
+			# Create the fields for each component of the vector
+			for i in range(0, vector_n):
+				var label = Label.new()
+				label.text = components_names[i]
+				field.add_child(label)
+				var x_field = SpinBox.new()
+				x_field.step = 0.01
+				x_field.allow_greater = true
+				x_field.allow_lesser = true
+				field.add_child(x_field)
+				x_field.value_changed.connect(func():
+					var values = []
+					for child in field.get_children():
+						if child is SpinBox:
+							values.append(child.value)
+					on_value_changed.call(values)
+				)
+		TYPE_COLOR:
+			field = ColorPickerButton.new()
+			field.color_changed.connect(on_value_changed)
+		_:
+			field = LineEdit.new() # Default to LineEdit for unsupported types
+			field.text_changed.connect(on_value_changed)
+	return field
+
+
+# Returns an OptionButton with all variable types
+static func get_types_dropdown() -> OptionButton:
+	var dropdown: OptionButton = OptionButton.new()
+	dropdown.name = "TypeDropdown"
+	dropdown.add_icon_item(dropdown.get_theme_icon("Bool", "EditorIcons"), "Bool", TYPE_BOOL)
+	dropdown.add_icon_item(dropdown.get_theme_icon("Int", "EditorIcons"), "Int", TYPE_INT)
+	dropdown.add_icon_item(dropdown.get_theme_icon("Float", "EditorIcons"), "Float", TYPE_FLOAT)
+	dropdown.add_icon_item(dropdown.get_theme_icon("String", "EditorIcons"), "String", TYPE_STRING)
+	dropdown.add_icon_item(dropdown.get_theme_icon("Vector2", "EditorIcons"), "Vector2", TYPE_VECTOR2)
+	dropdown.add_icon_item(dropdown.get_theme_icon("Vector3", "EditorIcons"), "Vector3", TYPE_VECTOR3)
+	dropdown.add_icon_item(dropdown.get_theme_icon("Vector4", "EditorIcons"), "Vector4", TYPE_VECTOR4)
+	dropdown.add_icon_item(dropdown.get_theme_icon("Color", "EditorIcons"), "Color", TYPE_COLOR)
+	# Add more types as needed
+	return dropdown
+
+#endregion
