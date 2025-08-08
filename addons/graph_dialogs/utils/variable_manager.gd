@@ -123,15 +123,16 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Control:
 static func get_types_dropdown() -> OptionButton:
 	var dropdown: OptionButton = OptionButton.new()
 	dropdown.name = "TypeDropdown"
-	dropdown.add_icon_item(dropdown.get_theme_icon("Bool", "EditorIcons"), "Bool", TYPE_BOOL)
-	dropdown.add_icon_item(dropdown.get_theme_icon("Int", "EditorIcons"), "Int", TYPE_INT)
-	dropdown.add_icon_item(dropdown.get_theme_icon("Float", "EditorIcons"), "Float", TYPE_FLOAT)
-	dropdown.add_icon_item(dropdown.get_theme_icon("String", "EditorIcons"), "String", TYPE_STRING)
-	dropdown.add_icon_item(dropdown.get_theme_icon("Vector2", "EditorIcons"), "Vector2", TYPE_VECTOR2)
-	dropdown.add_icon_item(dropdown.get_theme_icon("Vector3", "EditorIcons"), "Vector3", TYPE_VECTOR3)
-	dropdown.add_icon_item(dropdown.get_theme_icon("Vector4", "EditorIcons"), "Vector4", TYPE_VECTOR4)
-	dropdown.add_icon_item(dropdown.get_theme_icon("Color", "EditorIcons"), "Color", TYPE_COLOR)
-	# Add more types as needed
+	var root = EditorInterface.get_base_control()
+	dropdown.add_icon_item(root.get_theme_icon("bool", "EditorIcons"), "Bool", TYPE_BOOL)
+	dropdown.add_icon_item(root.get_theme_icon("int", "EditorIcons"), "Int", TYPE_INT)
+	dropdown.add_icon_item(root.get_theme_icon("float", "EditorIcons"), "Float", TYPE_FLOAT)
+	dropdown.add_icon_item(root.get_theme_icon("String", "EditorIcons"), "String", TYPE_STRING)
+	dropdown.add_icon_item(root.get_theme_icon("Vector2", "EditorIcons"), "Vector2", TYPE_VECTOR2)
+	dropdown.add_icon_item(root.get_theme_icon("Vector3", "EditorIcons"), "Vector3", TYPE_VECTOR3)
+	dropdown.add_icon_item(root.get_theme_icon("Vector4", "EditorIcons"), "Vector4", TYPE_VECTOR4)
+	dropdown.add_icon_item(root.get_theme_icon("Color", "EditorIcons"), "Color", TYPE_COLOR)
+	# Add more types as needed here!
 	return dropdown
 
 #endregion

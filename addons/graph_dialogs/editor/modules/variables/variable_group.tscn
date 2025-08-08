@@ -1,33 +1,91 @@
-[gd_scene load_steps=7 format=3 uid="uid://cqlyj2jyexmds"]
+[gd_scene load_steps=12 format=3 uid="uid://cqlyj2jyexmds"]
 
 [ext_resource type="Script" uid="uid://d1bsumhmk1ygf" path="res://addons/graph_dialogs/editor/modules/variables/scripts/variable_group.gd" id="1_gui6w"]
-[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialogs/icons/interactable/collapse-down.svg" id="1_lvv6v"]
+[ext_resource type="StyleBox" uid="uid://diu04q0efmvpq" path="res://addons/graph_dialogs/theme/variable_group_panel.tres" id="1_hq6qs"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/graph_dialogs/theme/empty_panel.tres" id="2_mjwdj"]
-[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/graph_dialogs/icons/text_editor/image.svg" id="3_an7e1"]
-[ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/graph_dialogs/theme/expander_subpanel_highlight.tres" id="4_d8cdw"]
+[ext_resource type="StyleBox" uid="uid://b01lpftql2p1m" path="res://addons/graph_dialogs/theme/variable_group_color_button.tres" id="3_a547j"]
+[ext_resource type="Texture2D" uid="uid://dr1gdp63atsvl" path="res://addons/graph_dialogs/icons/drag-handle.svg" id="4_a547j"]
+[ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/graph_dialogs/icons/interactable/collapse-up.svg" id="5_a547j"]
 [ext_resource type="PackedScene" uid="uid://dols4gqjh3n6g" path="res://addons/graph_dialogs/editor/modules/variables/variable_item.tscn" id="5_f2pg1"]
+[ext_resource type="StyleBox" uid="uid://brqx0mu0nytry" path="res://addons/graph_dialogs/theme/variable_group_subpanel.tres" id="5_gui6w"]
+
+[sub_resource type="Image" id="Image_bg4en"]
+data = {
+"data": PackedByteArray(255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 42, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 93, 93, 41, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 92, 92, 0, 255, 92, 92, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 93, 93, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0),
+"format": "RGBA8",
+"height": 16,
+"mipmaps": false,
+"width": 16
+}
+
+[sub_resource type="ImageTexture" id="ImageTexture_51m6k"]
+image = SubResource("Image_bg4en")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_a547j"]
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.172833, 0.172833, 0.172833, 1)
 
 [node name="VariableGroup" type="PanelContainer"]
 size_flags_horizontal = 3
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("1_hq6qs")
 script = ExtResource("1_gui6w")
 
 [node name="Container" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="--" type="HSeparator" parent="Container"]
+[node name="Header" type="VBoxContainer" parent="Container"]
 layout_mode = 2
 
-[node name="Header" type="HBoxContainer" parent="Container"]
+[node name="--" type="HSeparator" parent="Container/Header"]
 layout_mode = 2
 
-[node name="ExpandableButton" type="Button" parent="Container/Header"]
+[node name="Bar" type="PanelContainer" parent="Container/Header"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("5_gui6w")
+
+[node name="DropHighlight" type="ColorRect" parent="Container/Header/Bar"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+color = Color(0.588235, 0.588235, 0.588235, 0.588235)
+
+[node name="Container" type="HBoxContainer" parent="Container/Header/Bar"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="DragButton" type="Button" parent="Container/Header/Bar/Container"]
 unique_name_in_owner = true
 layout_mode = 2
-toggle_mode = true
-icon = ExtResource("1_lvv6v")
+disabled = true
+icon = ExtResource("4_a547j")
 flat = true
 
-[node name="GroupName" type="LineEdit" parent="Container/Header"]
+[node name="ExpandableButton" type="Button" parent="Container/Header/Bar/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Collapse"
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("5_a547j")
+flat = true
+
+[node name="ColorButton" type="Button" parent="Container/Header/Bar/Container"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/focus = ExtResource("3_a547j")
+theme_override_styles/hover_pressed = ExtResource("3_a547j")
+theme_override_styles/hover = ExtResource("3_a547j")
+theme_override_styles/pressed = ExtResource("3_a547j")
+theme_override_styles/normal = ExtResource("3_a547j")
+
+[node name="GroupName" type="LineEdit" parent="Container/Header/Bar/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -35,23 +93,78 @@ theme_override_styles/normal = ExtResource("2_mjwdj")
 text = "New Group"
 placeholder_text = "Group name..."
 
-[node name="RemoveButton" type="Button" parent="Container/Header"]
+[node name="RemoveButton" type="Button" parent="Container/Header/Bar/Container"]
 unique_name_in_owner = true
 layout_mode = 2
-icon = ExtResource("3_an7e1")
+tooltip_text = "Remove Group"
+icon = SubResource("ImageTexture_51m6k")
 flat = true
 
-[node name="---" type="HSeparator" parent="Container"]
+[node name="ColorPopupPanel" type="PopupPanel" parent="Container/Header/Bar/Container"]
+size = Vector2i(134, 100)
+
+[node name="PanelContainer" type="PanelContainer" parent="Container/Header/Bar/Container/ColorPopupPanel"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 130.0
+offset_bottom = 96.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_a547j")
+
+[node name="GridContainer" type="GridContainer" parent="Container/Header/Bar/Container/ColorPopupPanel/PanelContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="Color#ff516f" type="Button" parent="Container/Header/Bar/Container/ColorPopupPanel/PanelContainer/GridContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/focus = ExtResource("3_a547j")
+theme_override_styles/hover_pressed = ExtResource("3_a547j")
+theme_override_styles/hover = ExtResource("3_a547j")
+theme_override_styles/pressed = ExtResource("3_a547j")
+theme_override_styles/normal = ExtResource("3_a547j")
+
+[node name="ColorButton3" type="Button" parent="Container/Header/Bar/Container/ColorPopupPanel/PanelContainer/GridContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/focus = ExtResource("3_a547j")
+theme_override_styles/hover_pressed = ExtResource("3_a547j")
+theme_override_styles/hover = ExtResource("3_a547j")
+theme_override_styles/pressed = ExtResource("3_a547j")
+theme_override_styles/normal = ExtResource("3_a547j")
+
+[node name="ColorButton4" type="Button" parent="Container/Header/Bar/Container/ColorPopupPanel/PanelContainer/GridContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/focus = ExtResource("3_a547j")
+theme_override_styles/hover_pressed = ExtResource("3_a547j")
+theme_override_styles/hover = ExtResource("3_a547j")
+theme_override_styles/pressed = ExtResource("3_a547j")
+theme_override_styles/normal = ExtResource("3_a547j")
+
+[node name="---" type="HSeparator" parent="Container/Header"]
 layout_mode = 2
 
 [node name="SubPanel" type="PanelContainer" parent="Container"]
-unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("4_d8cdw")
+theme_override_styles/panel = ExtResource("5_gui6w")
 
-[node name="SubContainer" type="VBoxContainer" parent="Container/SubPanel"]
+[node name="ItemsContainer" type="VBoxContainer" parent="Container/SubPanel"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="VariableItem" parent="Container/SubPanel/SubContainer" instance=ExtResource("5_f2pg1")]
+[node name="VariableItem" parent="Container/SubPanel/ItemsContainer" instance=ExtResource("5_f2pg1")]
 layout_mode = 2
+mouse_filter = 1
+
+[node name="VariableItem2" parent="Container/SubPanel/ItemsContainer" instance=ExtResource("5_f2pg1")]
+layout_mode = 2
+mouse_filter = 1

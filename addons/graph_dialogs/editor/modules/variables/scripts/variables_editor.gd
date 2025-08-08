@@ -26,6 +26,10 @@ func _ready():
 	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
 	%SearchBar.right_icon = get_theme_icon("Search", "EditorIcons")
 
+	_variables_container.set_drag_forwarding(
+		_get_drag_data, _can_drop_data, _drop_data
+	)
+
 
 ## Add a new portrait to the tree
 func _on_add_var_button_pressed() -> void:
@@ -42,3 +46,21 @@ func _on_add_folder_button_pressed() -> void:
 ## Filter the portrait tree items
 func _on_search_bar_text_changed(new_text: String) -> void:
 	pass
+
+
+#region === Drag and Drop ======================================================
+func _get_drag_data(at_position: Vector2) -> Variant:
+	return null
+
+
+func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+	return data.has("type")
+
+
+func _drop_data(at_position: Vector2, data: Variant) -> void:
+	var item = data.item
+	var from_group = data.group
+	from_group.remove_child(item)
+	_variables_container.add_child(item)
+
+#endregion
