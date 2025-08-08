@@ -11,15 +11,17 @@ extends Container
 
 ## Emited when the variable is changed
 signal variable_changed(name: String, type: int, value: Variant)
+## Emited when the variable is renamed
+signal variable_renamed(name: String)
 ## Emited when the remove button is pressed
 signal remove_pressed(variable_name: String)
 
 ## The variable name
-@export var variable_name: String = "New Variable"
+@export var _variable_name: String = "New Variable"
 ## The variable type
-@export var variable_type: int = TYPE_STRING
+@export var _variable_type: int = TYPE_STRING
 ## The variable value
-@export var variable_value: Variant = ""
+@export var _variable_value: Variant = ""
 
 ## Drop highlight line
 @onready var _drop_highlight: ColorRect = $DropHighlight
@@ -29,9 +31,9 @@ signal remove_pressed(variable_name: String)
 
 func _ready() -> void:
 	_set_types_dropdown()
-	_set_value_field(variable_type)
+	_set_value_field(_variable_type)
 	$Container/RemoveButton.icon = get_theme_icon("Remove", "EditorIcons")
-	$Container/RemoveButton.pressed.connect(remove_pressed.emit.bind(variable_name))
+	$Container/RemoveButton.pressed.connect(remove_pressed.emit.bind(_variable_name))
 	$Container/NameInput.text_changed.connect(_on_name_changed)
 
 	# Drag and drop setup
@@ -43,6 +45,26 @@ func _ready() -> void:
 	_drop_highlight.color = get_theme_color("accent_color", "Editor")
 	_drop_highlight.hide()
 	show_modified_indicator(false)
+
+
+## Get the variable data as a dictionary
+func get_variable_data() -> Dictionary:
+	return {
+		"name": _variable_name,
+		"type": _variable_type,
+		"value": _variable_value
+	}
+
+
+## Show the modified indicator
+func show_modified_indicator(show: bool) -> void:
+	_modified_indicator.visible = show
+
+
+## Rename the variable
+func rename_variable(new_name: String) -> void:
+	_variable_name = new_name
+	$Container/NameInput.text = new_name
 
 
 ## Set the types dropdown
@@ -60,42 +82,33 @@ func _set_types_dropdown() -> void:
 func _set_value_field(type: int) -> void:
 	if $Container/ValueField.get_child_count() > 0:
 		$Container/ValueField.get_child(0).queue_free()
-	var field = GraphDialogsVariableManager.get_field_by_type(type, _on_value_changed)
-	field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
-	$Container/ValueField.add_child(field)
+	var field_data = GraphDialogsVariableManager.get_field_by_type(type, _on_value_changed)
+	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+	$Container/ValueField.add_child(field_data.field)
+	_variable_value = field_data.default_value
 
 
 ## Handle the name change event
 func _on_name_changed(new_name: String) -> void:
-	variable_name = new_name
+	_variable_name = new_name
 	show_modified_indicator(true)
-	variable_changed.emit(variable_name, variable_type, variable_value)
+	variable_renamed.emit(_variable_name)
+	variable_changed.emit(_variable_name, _variable_type, _variable_value)
 
-	print("Variable changed: ", variable_name, " (", variable_type, ") = ", variable_value)
-
-
+	
 ## Handle the type change event
 func _on_type_changed(type_index: int) -> void:
-	variable_type = $Container/TypeField/TypeDropdown.get_item_id(type_index)
-	variable_changed.emit(variable_name, variable_type, variable_value)
-	_set_value_field(variable_type) # Update the value field based on the new type
+	_variable_type = $Container/TypeField/TypeDropdown.get_item_id(type_index)
+	variable_changed.emit(_variable_name, _variable_type, _variable_value)
+	_set_value_field(_variable_type) # Update the value field based on the new type
 	show_modified_indicator(true)
-
-	print("Variable changed: ", variable_name, " (", variable_type, ") = ", variable_value)
 
 
 ## Handle the value change event
 func _on_value_changed(new_value: Variant) -> void:
-	variable_value = new_value
+	_variable_value = new_value
 	show_modified_indicator(true)
-	variable_changed.emit(variable_name, variable_type, variable_value)
-
-	print("Variable changed: ", variable_name, " (", variable_type, ") = ", variable_value)
-
-
-## Show the modified indicator
-func show_modified_indicator(show: bool) -> void:
-	_modified_indicator.visible = show
+	variable_changed.emit(_variable_name, _variable_type, _variable_value)
 
 
 #region === Drag and Drop ======================================================
@@ -111,7 +124,7 @@ func show_drop_highlight(above: bool = true) -> void:
 
 func _get_drag_data(at_position: Vector2) -> Variant:
 	var preview = Label.new()
-	preview.text = "Dragging: " + variable_name
+	preview.text = "Dragging: " + _variable_name
 	set_drag_preview(preview)
 	var data = {
 	    "item": self,

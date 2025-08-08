@@ -23,6 +23,9 @@ offset_bottom = 50.0
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_l5q3k")
 script = ExtResource("1_bg4en")
+_variable_name = null
+_variable_type = null
+_variable_value = null
 
 [node name="Container" type="HBoxContainer" parent="."]
 layout_mode = 2

@@ -9,8 +9,8 @@ extends Container
 # It allows the user to add, remove, rename and duplicate variable groups.
 # -----------------------------------------------------------------------------
 
-## Emitted when the variable group is changed
-signal group_changed(name: String)
+## Emitted when the group is renamed
+signal group_renamed(name: String)
 ## Emitted when the remove button is pressed
 signal remove_pressed(variable_name: String)
 
@@ -21,12 +21,15 @@ signal remove_pressed(variable_name: String)
 
 ## Items container
 @onready var _items_container: VBoxContainer = %ItemsContainer
+## Empty label to show when the group is empty
+@onready var _empty_label: Label = %EmptyLabel
 
 var collapse_up_icon: Texture2D = preload("res://addons/graph_dialogs/icons/interactable/collapse-up.svg")
 var collapse_down_icon: Texture2D = preload("res://addons/graph_dialogs/icons/interactable/collapse-down.svg")
 
 
 func _ready() -> void:
+	_items_container.child_order_changed.connect(_on_child_order_changed)
 	%RemoveButton.pressed.connect(remove_pressed.emit.bind(group_name))
 	%ExpandableButton.toggled.connect(_on_expandable_button_toggled)
 	%GroupName.text_changed.connect(_on_name_changed)
@@ -38,13 +41,39 @@ func _ready() -> void:
 
 	$%DragButton.set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	mouse_filter = Control.MOUSE_FILTER_PASS
+	_empty_label.hide()
+
+
+## Returns all items in the group
+func get_items() -> Array:
+	return _items_container.get_children().filter(func(item):
+		return item is GraphDialogsVariableItem or item is GraphDialogsVariableGroup)
+
+
+## Show all the items in the group
+func show_items() -> void:
+	for item in _items_container.get_children():
+		if item is GraphDialogsVariableItem or item is GraphDialogsVariableGroup:
+			item.show()
+
+
+## Show modified indicator for all items in the group
+func show_modified_indicator(show: bool) -> void:
+	for item in _items_container.get_children():
+		if item is GraphDialogsVariableItem or item is GraphDialogsVariableGroup:
+			item.show_modified_indicator(show)
+
+
+## Rename the group
+func rename_group(new_name: String) -> void:
+	group_name = new_name
+	%GroupName.text = new_name
 
 
 ## Handle the name change event
 func _on_name_changed(new_name: String) -> void:
 	group_name = new_name
-	group_changed.emit(group_name)
-	print("Variable group changed: ", group_name)
+	group_renamed.emit(group_name)
 
 
 ## Handle the expandable button toggled event
@@ -54,11 +83,20 @@ func _on_expandable_button_toggled(is_pressed: bool) -> void:
 	%ExpandableButton.tooltip_text = "Collapse" if is_pressed else "Expand"
 
 
+## Handle when the group is empty
+func _on_child_order_changed() -> void:
+	if _items_container.get_child_count() == 1:
+		_empty_label.show()
+
+
 #region === Drag and Drop ======================================================
 
-## Show the drop highlight below the last item
-func show_drop_highlight(_above: bool) -> void:
-	_items_container.get_child(-1).show_drop_highlight(false)
+## Show the drop highlight above or below the last item
+func show_drop_highlight(above: bool) -> void:
+	if _items_container.get_child_count() > 1:
+		_items_container.get_child(-1).show_drop_highlight(above)
+	elif _empty_label.is_visible():
+		_empty_label.get_child(0).show() # Show label highlight
 
 
 func _get_drag_data(at_position: Vector2) -> Variant:
@@ -75,11 +113,13 @@ func _get_drag_data(at_position: Vector2) -> Variant:
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	var can = data.has("type") and data.item != self
-	if can: _items_container.get_child(-1).show_drop_highlight(false)
+	if can: show_drop_highlight(false)
 	return can
 
 
 func _drop_data(at_position: Vector2, data: Variant) -> void:
+	_empty_label.get_child(0).hide() # Hide the empty label highlight
+	_empty_label.hide() # Hide the empty label
 	var item = data.item
 	var to_group = _items_container
 	var from_group = data.group

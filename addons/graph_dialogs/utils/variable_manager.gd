@@ -68,27 +68,32 @@ static func save_to_project_settings() -> void:
 #region === Variable Type Fields ===============================================
 
 ## Returns a Control node for the variable type field
-static func get_field_by_type(type: int, on_value_changed: Callable) -> Control:
+static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictionary:
 	var field = null
+	var default_value = null
 	match type:
 		TYPE_BOOL:
 			field = CheckBox.new()
 			field.toggled.connect(on_value_changed)
+			default_value = false
 		TYPE_INT:
 			field = SpinBox.new()
 			field.step = 1
 			field.allow_greater = true
 			field.allow_lesser = true
 			field.value_changed.connect(on_value_changed)
+			default_value = field.value
 		TYPE_FLOAT:
 			field = SpinBox.new()
 			field.step = 0.01
 			field.allow_greater = true
 			field.allow_lesser = true
 			field.value_changed.connect(on_value_changed)
+			default_value = field.value
 		TYPE_STRING:
 			field = LineEdit.new()
 			field.text_changed.connect(on_value_changed)
+			default_value = field.text
 		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
 			var vector_n := int(type_string(type)[-1])
 			var components_names = ["x", "y", "z", "w"]
@@ -110,13 +115,20 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Control:
 							values.append(child.value)
 					on_value_changed.call(values)
 				)
+			default_value = Vector2.ZERO if type == TYPE_VECTOR2 \
+					else Vector3.ZERO if type == TYPE_VECTOR3 else Vector4.ZERO
 		TYPE_COLOR:
 			field = ColorPickerButton.new()
 			field.color_changed.connect(on_value_changed)
+			default_value = field.color
 		_:
 			field = LineEdit.new() # Default to LineEdit for unsupported types
 			field.text_changed.connect(on_value_changed)
-	return field
+			default_value = field.text
+	return {
+		"field": field,
+		"default_value": default_value
+	}
 
 
 # Returns an OptionButton with all variable types
