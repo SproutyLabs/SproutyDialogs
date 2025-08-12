@@ -48,7 +48,7 @@ func _ready() -> void:
 
 	_drop_highlight.color = get_theme_color("accent_color", "Editor")
 	hide_drop_highlight()
-	
+
 	show_modified_indicator(false)
 	_on_name_changed(false) # Initialize the name input field
 
@@ -63,9 +63,26 @@ func get_variable_data() -> Dictionary:
 
 
 ## Rename the variable item
-func rename(new_name: String) -> void:
+func set_name(new_name: String) -> void:
 	_variable_name = new_name
 	_name_input.text = new_name
+
+
+## Set the variable type
+func set_type(type: int) -> void:
+	_variable_type = type
+	$Container/TypeField/TypeDropdown.select(
+		$Container/TypeField/TypeDropdown.get_item_index(type))
+	_set_value_field(_variable_type)
+
+
+## Set the variable value
+## The value type must match the current variable type
+func set_value(value: Variant) -> void:
+	_variable_value = value
+	if _value_field.get_child_count() > 0:
+		var field = _value_field.get_child(0)
+		GraphDialogsVariableManager.set_field_value(field, _variable_type, value)
 
 
 ## Show the modified indicator
@@ -87,7 +104,9 @@ func _set_types_dropdown() -> void:
 ## Set the value field based on the variable type
 func _set_value_field(type: int) -> void:
 	if _value_field.get_child_count() > 0:
-		_value_field.get_child(0).queue_free()
+		var field = _value_field.get_child(0)
+		_value_field.remove_child(field)
+		field.queue_free()
 	var field_data = GraphDialogsVariableManager.get_field_by_type(type, _on_value_changed)
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	_value_field.add_child(field_data.field)

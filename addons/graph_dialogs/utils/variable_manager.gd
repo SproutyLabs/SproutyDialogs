@@ -53,19 +53,38 @@ static func remove_variable(name: String) -> void:
 		_variables.erase(name)
 
 
-static func load_from_project_settings() -> void:
-	# Load variables from project settings or any other source
-	# This is a placeholder for actual loading logic
-	pass
+## Load variables from project settings
+static func load_from_project_settings() -> Dictionary:
+	return GraphDialogsSettings.get_setting("variables")
 
 
-static func save_to_project_settings() -> void:
-	# Save variables to project settings or any other source
-	# This is a placeholder for actual saving logic
-	pass
+## Save variables to project settings
+static func save_to_project_settings(data: Dictionary) -> void:
+	GraphDialogsSettings.set_setting("variables", data)
 
 
 #region === Variable Type Fields ===============================================
+
+# Returns an OptionButton with all variable types
+static func get_types_dropdown() -> OptionButton:
+	var dropdown: OptionButton = OptionButton.new()
+	dropdown.name = "TypeDropdown"
+	var root = EditorInterface.get_base_control()
+	dropdown.add_icon_item(root.get_theme_icon("bool", "EditorIcons"), "Bool", TYPE_BOOL)
+	dropdown.add_icon_item(root.get_theme_icon("int", "EditorIcons"), "Int", TYPE_INT)
+	dropdown.add_icon_item(root.get_theme_icon("float", "EditorIcons"), "Float", TYPE_FLOAT)
+	dropdown.add_icon_item(root.get_theme_icon("String", "EditorIcons"), "String", TYPE_STRING)
+	dropdown.add_icon_item(root.get_theme_icon("Vector2", "EditorIcons"), "Vector2", TYPE_VECTOR2)
+	dropdown.add_icon_item(root.get_theme_icon("Vector3", "EditorIcons"), "Vector3", TYPE_VECTOR3)
+	dropdown.add_icon_item(root.get_theme_icon("Vector4", "EditorIcons"), "Vector4", TYPE_VECTOR4)
+	dropdown.add_icon_item(root.get_theme_icon("Color", "EditorIcons"), "Color", TYPE_COLOR)
+
+	# ----------------------------------
+	# Add more types as needed here (!)
+	# ----------------------------------
+
+	return dropdown
+
 
 ## Returns a Control node for the variable type field
 static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictionary:
@@ -121,6 +140,11 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 			field = ColorPickerButton.new()
 			field.color_changed.connect(on_value_changed)
 			default_value = field.color
+		
+		# ----------------------------------
+		# Add more types as needed here (!)
+		# ----------------------------------
+
 		_:
 			field = LineEdit.new() # Default to LineEdit for unsupported types
 			field.text_changed.connect(on_value_changed)
@@ -131,20 +155,36 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 	}
 
 
-# Returns an OptionButton with all variable types
-static func get_types_dropdown() -> OptionButton:
-	var dropdown: OptionButton = OptionButton.new()
-	dropdown.name = "TypeDropdown"
-	var root = EditorInterface.get_base_control()
-	dropdown.add_icon_item(root.get_theme_icon("bool", "EditorIcons"), "Bool", TYPE_BOOL)
-	dropdown.add_icon_item(root.get_theme_icon("int", "EditorIcons"), "Int", TYPE_INT)
-	dropdown.add_icon_item(root.get_theme_icon("float", "EditorIcons"), "Float", TYPE_FLOAT)
-	dropdown.add_icon_item(root.get_theme_icon("String", "EditorIcons"), "String", TYPE_STRING)
-	dropdown.add_icon_item(root.get_theme_icon("Vector2", "EditorIcons"), "Vector2", TYPE_VECTOR2)
-	dropdown.add_icon_item(root.get_theme_icon("Vector3", "EditorIcons"), "Vector3", TYPE_VECTOR3)
-	dropdown.add_icon_item(root.get_theme_icon("Vector4", "EditorIcons"), "Vector4", TYPE_VECTOR4)
-	dropdown.add_icon_item(root.get_theme_icon("Color", "EditorIcons"), "Color", TYPE_COLOR)
-	# Add more types as needed here!
-	return dropdown
+## Sets the value in the given field based on its type
+static func set_field_value(field: Control, type: int, value: Variant) -> void:
+	match type:
+		TYPE_BOOL:
+			if field is CheckBox:
+				field.button_pressed = bool(value)
+		TYPE_INT, TYPE_FLOAT:
+			if field is SpinBox:
+				field.value = float(value)
+		TYPE_STRING:
+			if field is LineEdit:
+				field.text = str(value)
+		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
+			var vector_n := int(type_string(type)[-1])
+			if field is HFlowContainer:
+				var i = 0
+				for child in field.get_children():
+					if child is SpinBox and i < vector_n:
+						child.value = float(value[i])
+						i += 1
+		TYPE_COLOR:
+			if field is ColorPickerButton:
+				field.color = Color(value)
+		
+		# ----------------------------------
+		# Add more types as needed here (!)
+		# ----------------------------------
+
+		_:
+			if field is LineEdit:
+				field.text = str(value)
 
 #endregion

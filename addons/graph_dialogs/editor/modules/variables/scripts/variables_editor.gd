@@ -42,6 +42,8 @@ func _ready():
 	)
 	if _variables_container.get_child_count() == 1:
 		_empty_label.show() # Show the empty label if there are no variables
+	
+	_load_variables_data(GraphDialogsVariableManager.load_from_project_settings())
 
 
 ## Get the variables data from the container
@@ -55,16 +57,41 @@ func _get_variables_data(variables_array: Array = _variables_container.get_child
 				"value": data.value
 			}
 		elif child is GraphDialogsVariableGroup:
-			variables_data[child.group_name] = {
-				"color": child.group_color,
+			variables_data[child.get_group_name()] = {
+				"color": child.get_group_color(),
 				"variables": _get_variables_data(child.get_items())
 			}
 	return variables_data
 
 
 ## Load variables data into the editor
-func _load_variables_data(data: Dictionary) -> void:
-	pass
+func _load_variables_data(data: Dictionary, parent: Node = _variables_container) -> void:
+	for name in data.keys():
+		var value = data[name]
+		var new_item = null
+		if value.has("type") and value.has("value"): # It's a variable
+			new_item = _variable_item_scene.instantiate()
+			new_item.ready.connect(func():
+				new_item.set_name(name)
+				new_item.set_type(value.type)
+				new_item.set_value(value.value)
+			)
+			new_item.variable_renamed.connect(_on_item_rename.bind(new_item))
+			new_item.variable_changed.connect(_on_variable_changed)
+		elif value.has("variables") and value.has("color"): # It's a group
+			new_item = _variable_group_scene.instantiate()
+			new_item.ready.connect(func():
+				new_item.set_name(name)
+				new_item.set_color(value.color)
+				_load_variables_data(value.variables, new_item) # Recursively load group variables
+			)
+			new_item.group_renamed.connect(_on_item_rename.bind(new_item))
+			new_item.remove_pressed.connect(_on_remove_group.bind(new_item))
+		
+		if parent is GraphDialogsVariableGroup:
+			parent.add_item(new_item) # Add item to a group
+		else:
+			parent.add_child(new_item) # Add item to the main container
 
 
 #region === Search and Filter ==================================================
@@ -85,9 +112,9 @@ func _filter_items(variables_array: Array, search_text: String, names_match: boo
 				filtered_items.append(item)
 		# Check if find a match in the group name or any of its items
 		elif item is GraphDialogsVariableGroup:
-			if names_match and search_text in item.group_name:
-				filtered_items.append(item.group_name)
-			elif not names_match and search_text in item.group_name.to_lower():
+			if names_match and search_text in item.get_group_name():
+				filtered_items.append(item.get_group_name())
+			elif not names_match and search_text in item.get_group_name().to_lower():
 				filtered_items.append(item)
 			else:
 				var group_items = _filter_items(item.get_items(), search_text, names_match)
@@ -110,9 +137,9 @@ func _on_item_rename(name: String, item: Variant) -> void:
 		var suffix := 1 # If there is a match, add a suffix to make it unique
 		while matches.has(clean_name + " (" + str(suffix) + ")"):
 			suffix += 1
-		item.rename(clean_name + " (" + str(suffix) + ")")
+		item.set_name(clean_name + " (" + str(suffix) + ")")
 	else:
-		item.rename(name)
+		item.set_name(name)
 
 
 ## Filter the portrait tree items
@@ -147,18 +174,18 @@ func _on_search_bar_text_changed(new_text: String) -> void:
 
 ## Add a new portrait to the tree
 func _on_add_var_button_pressed() -> void:
-	var new_var = _variable_item_scene.instantiate()
-	new_var.variable_renamed.connect(_on_item_rename.bind(new_var))
-	new_var.variable_changed.connect(_on_variable_changed)
-	_variables_container.add_child(new_var)
+	var new_item = _variable_item_scene.instantiate()
+	new_item.variable_renamed.connect(_on_item_rename.bind(new_item))
+	new_item.variable_changed.connect(_on_variable_changed)
+	_variables_container.add_child(new_item)
 
 
 ## Add a new portrait group to the tree
 func _on_add_folder_button_pressed() -> void:
-	var new_group = _variable_group_scene.instantiate()
-	new_group.group_renamed.connect(_on_item_rename.bind(new_group))
-	new_group.remove_pressed.connect(_on_remove_group.bind(new_group))
-	_variables_container.add_child(new_group)
+	var new_item = _variable_group_scene.instantiate()
+	new_item.group_renamed.connect(_on_item_rename.bind(new_item))
+	new_item.remove_pressed.connect(_on_remove_group.bind(new_item))
+	_variables_container.add_child(new_item)
 
 
 ## Handle variable changes
@@ -172,8 +199,8 @@ func _on_save_button_pressed() -> void:
 	for child in _variables_container.get_children():
 		if child is GraphDialogsVariableItem or child is GraphDialogsVariableGroup:
 			child.show_modified_indicator(false)
-	#TODO: Save to project settings
 	var data = _get_variables_data()
+	GraphDialogsVariableManager.save_to_project_settings(data)
 	print("Saving variables data: ", data)
 
 

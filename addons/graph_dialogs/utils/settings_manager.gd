@@ -48,7 +48,10 @@ static var _settings_paths: Dictionary = {
 	# Translation/Localization settings
 	"default_locale": "graph_dialogs/translation/localization/default_locale",
 	"testing_locale": "graph_dialogs/translation/localization/testing_locale",
-	"locales": "graph_dialogs/translation/localization/locales"
+	"locales": "graph_dialogs/translation/localization/locales",
+
+	# -- Variable settings -----------------------------------------------------
+	"variables": "graph_dialogs/variables/variables"
 }
 
 
@@ -115,4 +118,7 @@ static func initialize_default_settings() -> void:
 	ProjectSettings.set_setting(_settings_paths["default_locale"], editor_lang)
 	ProjectSettings.set_setting(_settings_paths["testing_locale"], editor_lang)
 	ProjectSettings.set_setting(_settings_paths["locales"], [editor_lang])
+
+	# Variable settings
+	ProjectSettings.set_setting(_settings_paths["variables"], {})
 	ProjectSettings.save()

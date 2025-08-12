@@ -15,9 +15,9 @@ signal group_renamed(name: String)
 signal remove_pressed()
 
 ## The variable group name
-@export var group_name: String = ""
+@export var _group_name: String = ""
 ## The variable group color
-@export var group_color: Color = Color(1, 1, 1)
+@export var _group_color: Color = Color(1, 1, 1)
 
 ## Group name input field
 @onready var _name_input: LineEdit = %NameInput
@@ -67,10 +67,38 @@ func _ready() -> void:
 	_on_name_changed(false) # Initialize the name input field
 
 
+## Returns the group name
+func get_group_name() -> String:
+	return _group_name
+
+
+## Returns the group color
+func get_group_color() -> Color:
+	return _group_color
+
+
+## Set the group name
+func set_name(new_name: String) -> void:
+	_group_name = new_name
+	_name_input.text = new_name
+
+
+## Set the group color
+func set_color(new_color: Color) -> void:
+	_color_picker.color = new_color
+	_on_color_changed(new_color)
+
+
 ## Returns all items in the group
 func get_items() -> Array:
 	return _items_container.get_children().filter(func(item):
 		return item is GraphDialogsVariableItem or item is GraphDialogsVariableGroup)
+
+
+## Add an item to the group
+## The item can be a GraphDialogsVariableItem or another GraphDialogsVariableGroup
+func add_item(item: Node) -> void:
+	_items_container.add_child(item)
 
 
 ## Show all the items in the group
@@ -78,12 +106,6 @@ func show_items() -> void:
 	for item in _items_container.get_children():
 		if item is GraphDialogsVariableItem or item is GraphDialogsVariableGroup:
 			item.show()
-
-
-## Rename the group
-func rename(new_name: String) -> void:
-	group_name = new_name
-	_name_input.text = new_name
 
 
 ## Show modified indicator for all items in the group
@@ -98,8 +120,8 @@ func _on_name_changed(toggled_on: bool) -> void:
 	if toggled_on: return # Ignore when editing starts
 	var new_name = _name_input.text.strip_edges()
 	if new_name == "": new_name = "New Group"
-	group_name = new_name
-	group_renamed.emit(group_name)
+	_group_name = new_name
+	group_renamed.emit(_group_name)
 
 
 ## Handle the color change event
@@ -108,7 +130,7 @@ func _on_color_changed(new_color: Color) -> void:
 	style.border_color = new_color
 	$Container/Header/Bar.add_theme_stylebox_override("panel", style)
 	$Container/SubPanel.add_theme_stylebox_override("panel", style)
-	group_color = new_color
+	_group_color = new_color
 
 
 ## Handle the expandable button toggled event
@@ -136,7 +158,7 @@ func show_drop_highlight(above: bool) -> void:
 
 func _get_drag_data(at_position: Vector2) -> Variant:
 	var preview = Label.new()
-	preview.text = "Dragging: " + group_name + " (Group)"
+	preview.text = "Dragging: " + _group_name + " (Group)"
 	set_drag_preview(preview)
 	var data = {
 	    "item": self,
