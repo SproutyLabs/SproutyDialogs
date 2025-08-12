@@ -49,7 +49,7 @@ func _ready() -> void:
 	_drop_highlight.color = get_theme_color("accent_color", "Editor")
 	hide_drop_highlight()
 
-	show_modified_indicator(false)
+	show_as_modified(false)
 	_on_name_changed(false) # Initialize the name input field
 
 
@@ -83,10 +83,11 @@ func set_value(value: Variant) -> void:
 	if _value_field.get_child_count() > 0:
 		var field = _value_field.get_child(0)
 		GraphDialogsVariableManager.set_field_value(field, _variable_type, value)
+	show_as_modified(false)
 
 
 ## Show the modified indicator
-func show_modified_indicator(show: bool) -> void:
+func show_as_modified(show: bool) -> void:
 	_modified_indicator.visible = show
 
 
@@ -119,7 +120,7 @@ func _on_name_changed(toggled_on: bool) -> void:
 	var new_name = _name_input.text.strip_edges()
 	if new_name == "": new_name = "New Variable"
 	_variable_name = new_name
-	show_modified_indicator(true)
+	show_as_modified(true)
 	variable_renamed.emit(_variable_name)
 	variable_changed.emit(_variable_name, _variable_type, _variable_value)
 
@@ -129,13 +130,13 @@ func _on_type_changed(type_index: int) -> void:
 	_variable_type = $Container/TypeField/TypeDropdown.get_item_id(type_index)
 	variable_changed.emit(_variable_name, _variable_type, _variable_value)
 	_set_value_field(_variable_type) # Update the value field based on the new type
-	show_modified_indicator(true)
+	show_as_modified(true)
 
 
 ## Handle the value change event
 func _on_value_changed(new_value: Variant) -> void:
 	_variable_value = new_value
-	show_modified_indicator(true)
+	show_as_modified(true)
 	variable_changed.emit(_variable_name, _variable_type, _variable_value)
 
 

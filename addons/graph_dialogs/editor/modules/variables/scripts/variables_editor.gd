@@ -197,8 +197,12 @@ func _on_variable_changed(name: String, type: int, value: Variant) -> void:
 ## Save the current variables to the project settings
 func _on_save_button_pressed() -> void:
 	for child in _variables_container.get_children():
-		if child is GraphDialogsVariableItem or child is GraphDialogsVariableGroup:
-			child.show_modified_indicator(false)
+		if child is GraphDialogsVariableItem:
+			child.show_as_modified(false)
+		if child is GraphDialogsVariableGroup:
+			child.show_items_as_modified(false)
+			child.show_as_modified(false)
+	# Save the variables data to project settings
 	var data = _get_variables_data()
 	GraphDialogsVariableManager.save_to_project_settings(data)
 	print("Saving variables data: ", data)

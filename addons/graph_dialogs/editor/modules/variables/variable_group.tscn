@@ -5,9 +5,14 @@
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/graph_dialogs/theme/empty_panel.tres" id="2_mjwdj"]
 [ext_resource type="Texture2D" uid="uid://dr1gdp63atsvl" path="res://addons/graph_dialogs/icons/drag-handle.svg" id="4_a547j"]
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/graph_dialogs/icons/interactable/collapse-up.svg" id="5_a547j"]
-[ext_resource type="StyleBox" uid="uid://brqx0mu0nytry" path="res://addons/graph_dialogs/theme/variable_group_subpanel.tres" id="5_gui6w"]
 
-[sub_resource type="Image" id="Image_dou7m"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_v4vsm"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 5
+border_width_right = 2
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Image" id="Image_6jwro"]
 data = {
 "data": PackedByteArray(255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 42, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 93, 93, 41, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 92, 92, 0, 255, 92, 92, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 93, 93, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0),
 "format": "RGBA8",
@@ -16,15 +21,16 @@ data = {
 "width": 16
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_0aje5"]
-image = SubResource("Image_dou7m")
+[sub_resource type="ImageTexture" id="ImageTexture_jxvjv"]
+image = SubResource("Image_6jwro")
 
 [node name="VariableGroup" type="PanelContainer"]
 size_flags_horizontal = 3
 mouse_filter = 1
 theme_override_styles/panel = ExtResource("1_hq6qs")
 script = ExtResource("1_gui6w")
-group_name = "New Group"
+_group_name = null
+_group_color = null
 
 [node name="Container" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -37,7 +43,7 @@ layout_mode = 2
 
 [node name="Bar" type="PanelContainer" parent="Container/Header"]
 layout_mode = 2
-theme_override_styles/panel = ExtResource("5_gui6w")
+theme_override_styles/panel = SubResource("StyleBoxFlat_v4vsm")
 
 [node name="DropHighlight" type="ColorRect" parent="Container/Header/Bar"]
 unique_name_in_owner = true
@@ -79,11 +85,20 @@ theme_override_styles/normal = ExtResource("2_mjwdj")
 text = "New Group"
 placeholder_text = "Group name..."
 
+[node name="ModifiedIndicator" type="Label" parent="Container/Header/Bar/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Unsaved changes"
+mouse_filter = 1
+text = "(*)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="RemoveButton" type="Button" parent="Container/Header/Bar/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Remove Group"
-icon = SubResource("ImageTexture_0aje5")
+icon = SubResource("ImageTexture_jxvjv")
 flat = true
 
 [node name="---" type="HSeparator" parent="Container/Header"]
@@ -92,7 +107,7 @@ layout_mode = 2
 [node name="SubPanel" type="PanelContainer" parent="Container"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/panel = ExtResource("5_gui6w")
+theme_override_styles/panel = SubResource("StyleBoxFlat_v4vsm")
 
 [node name="ItemsContainer" type="VBoxContainer" parent="Container/SubPanel"]
 unique_name_in_owner = true
@@ -106,6 +121,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DropHighlightLine" type="ColorRect" parent="Container/SubPanel/ItemsContainer/EmptyLabel"]
+visible = false
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 1
 anchors_preset = 12

@@ -63,8 +63,9 @@ func _ready() -> void:
 	_color_picker.color = get_theme_color("accent_color", "Editor")
 	_on_color_changed(_color_picker.color) # Set initial color
 
-	_on_mouse_exited() # Hide the drop highlight
+	show_as_modified(false) # Initialize the modified indicator
 	_on_name_changed(false) # Initialize the name input field
+	_on_mouse_exited() # Hide the drop highlight
 
 
 ## Returns the group name
@@ -87,6 +88,7 @@ func set_name(new_name: String) -> void:
 func set_color(new_color: Color) -> void:
 	_color_picker.color = new_color
 	_on_color_changed(new_color)
+	show_as_modified(false)
 
 
 ## Returns all items in the group
@@ -109,10 +111,15 @@ func show_items() -> void:
 
 
 ## Show modified indicator for all items in the group
-func show_modified_indicator(show: bool) -> void:
+func show_items_as_modified(show: bool) -> void:
 	for item in _items_container.get_children():
 		if item is GraphDialogsVariableItem or item is GraphDialogsVariableGroup:
-			item.show_modified_indicator(show)
+			item.show_as_modified(show)
+
+
+## Show the modified indicator for the group
+func show_as_modified(show: bool) -> void:
+	%ModifiedIndicator.visible = show
 
 
 ## Handle the name change event
@@ -122,6 +129,7 @@ func _on_name_changed(toggled_on: bool) -> void:
 	if new_name == "": new_name = "New Group"
 	_group_name = new_name
 	group_renamed.emit(_group_name)
+	show_as_modified(true)
 
 
 ## Handle the color change event
@@ -131,6 +139,7 @@ func _on_color_changed(new_color: Color) -> void:
 	$Container/Header/Bar.add_theme_stylebox_override("panel", style)
 	$Container/SubPanel.add_theme_stylebox_override("panel", style)
 	_group_color = new_color
+	show_as_modified(true)
 
 
 ## Handle the expandable button toggled event
