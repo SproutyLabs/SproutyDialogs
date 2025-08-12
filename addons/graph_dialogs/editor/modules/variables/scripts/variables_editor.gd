@@ -5,7 +5,7 @@ extends MarginContainer
 ## Variables Editor
 ##
 ## This module is responsible for the variables editor.
-## It allows the user to add, remove, rename and duplicate variables.
+## It allows the user to add, remove, rename, filter and save variables.
 # -----------------------------------------------------------------------------
 
 ## Variables container

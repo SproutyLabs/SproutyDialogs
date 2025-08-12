@@ -6,7 +6,7 @@ extends Container
 ## Variable Group
 ##
 ## This class represents a group of variables in the Graph Dialogs editor.
-# It allows the user to add, remove, rename and duplicate variable groups.
+## It allows the user to set the group name and color, and contains variable items.
 # -----------------------------------------------------------------------------
 
 ## Emitted when the group is renamed
@@ -21,22 +21,30 @@ signal remove_pressed()
 
 ## Group name input field
 @onready var _name_input: LineEdit = %NameInput
+## Color picker for selecting group color
+@onready var _color_picker: ColorPickerButton = %ColorPicker
 ## Expandable button to show/hide items
 @onready var _expandable_button: Button = %ExpandableButton
+
 ## Items container
 @onready var _items_container: VBoxContainer = %ItemsContainer
-## Empty label to show when the group is empty
-@onready var _empty_label: Label = %EmptyLabel
 ## Drop highlight
 @onready var _drop_highlight: ColorRect = %DropHighlight
+## Empty label to show when the group is empty
+@onready var _empty_label: Label = %EmptyLabel
 
-var collapse_up_icon: Texture2D = preload("res://addons/graph_dialogs/icons/interactable/collapse-up.svg")
-var collapse_down_icon: Texture2D = preload("res://addons/graph_dialogs/icons/interactable/collapse-down.svg")
+## Collapse icons for the expandable button
+var _collapse_up_icon: Texture2D = preload("res://addons/graph_dialogs/icons/interactable/collapse-up.svg")
+var _collapse_down_icon: Texture2D = preload("res://addons/graph_dialogs/icons/interactable/collapse-down.svg")
+
+## Preloaded style for the group
+var _group_style: StyleBoxFlat = preload("res://addons/graph_dialogs/theme/variable_group_subpanel.tres")
 
 
 func _ready() -> void:
 	_items_container.child_order_changed.connect(_on_child_order_changed)
 	_name_input.editing_toggled.connect(_on_name_changed)
+	_color_picker.color_changed.connect(_on_color_changed)
 	_expandable_button.toggled.connect(_on_expandable_button_toggled)
 	_expandable_button.tooltip_text = "Expand"
 	_expandable_button.button_pressed = true
@@ -49,8 +57,12 @@ func _ready() -> void:
 	%DragButton.set_drag_forwarding(_get_drag_data, _can_drop_data, _drop_data)
 	mouse_exited.connect(_on_mouse_exited)
 	mouse_filter = Control.MOUSE_FILTER_PASS
-
+	
+	# Set highlight and group initial colors
 	_empty_label.get_child(0).color = get_theme_color("accent_color", "Editor")
+	_color_picker.color = get_theme_color("accent_color", "Editor")
+	_on_color_changed(_color_picker.color) # Set initial color
+
 	_on_mouse_exited() # Hide the drop highlight
 	_on_name_changed(false) # Initialize the name input field
 
@@ -90,10 +102,19 @@ func _on_name_changed(toggled_on: bool) -> void:
 	group_renamed.emit(group_name)
 
 
+## Handle the color change event
+func _on_color_changed(new_color: Color) -> void:
+	var style = _group_style.duplicate()
+	style.border_color = new_color
+	$Container/Header/Bar.add_theme_stylebox_override("panel", style)
+	$Container/SubPanel.add_theme_stylebox_override("panel", style)
+	group_color = new_color
+
+
 ## Handle the expandable button toggled event
 func _on_expandable_button_toggled(is_pressed: bool) -> void:
 	_items_container.get_parent().visible = is_pressed
-	_expandable_button.icon = collapse_up_icon if is_pressed else collapse_down_icon
+	_expandable_button.icon = _collapse_up_icon if is_pressed else _collapse_down_icon
 	_expandable_button.tooltip_text = "Collapse" if is_pressed else "Expand"
 
 
