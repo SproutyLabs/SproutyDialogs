@@ -43,7 +43,6 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
 
 [node name="TextEditor" type="Panel"]
-visible = false
 clip_contents = true
 custom_minimum_size = Vector2(500, 0)
 anchors_preset = 15
@@ -65,14 +64,8 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="Header" type="HBoxContainer" parent="Container"]
+visible = false
 layout_mode = 2
-
-[node name="CloseButton" type="Button" parent="Container/Header"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Close"
-icon = ExtResource("2_bd7d8")
 
 [node name="RunButton" type="Button" parent="Container/Header"]
 layout_mode = 2
@@ -83,6 +76,13 @@ icon = ExtResource("3_b12sr")
 
 [node name="Toolbar" type="HFlowContainer" parent="Container"]
 layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Container/Toolbar"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+text = "Close"
+icon = ExtResource("2_bd7d8")
 
 [node name="---" type="VSeparator" parent="Container/Toolbar"]
 layout_mode = 2
@@ -188,6 +188,7 @@ layout_mode = 2
 size_flags_vertical = 4
 
 [node name="FontBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
+visible = false
 layout_mode = 2
 script = ExtResource("20_krlt7")
 text_editor = NodePath("../../..")
@@ -518,6 +519,7 @@ layout_mode = 2
 selected = 0
 item_count = 4
 popup/item_0/icon = ExtResource("25_r4ndn")
+popup/item_0/id = 0
 popup/item_1/icon = ExtResource("26_b0hwj")
 popup/item_1/id = 1
 popup/item_2/icon = ExtResource("27_taqqf")
@@ -637,6 +639,7 @@ tooltip_text = "Specify width and height values as percentages or pixels."
 selected = 0
 item_count = 2
 popup/item_0/text = "px"
+popup/item_0/id = 0
 popup/item_1/text = "%"
 popup/item_1/id = 1
 
@@ -1170,6 +1173,7 @@ size = Vector2i(202, 224)
 item_count = 6
 item_0/text = "Add Pulse Effect"
 item_0/icon = ExtResource("21_cmowh")
+item_0/id = 0
 item_1/text = "Add Wave Effect"
 item_1/icon = ExtResource("20_h0nhk")
 item_1/id = 1
@@ -1238,8 +1242,8 @@ size_flags_vertical = 3
 bbcode_enabled = true
 text = "Text preview..."
 
-[connection signal="pressed" from="Container/Header/CloseButton" to="." method="_on_close_button_pressed"]
 [connection signal="pressed" from="Container/Header/RunButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="Container/Toolbar/CloseButton" to="." method="_on_close_button_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddBold" to="." method="_on_add_bold_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddItalic" to="." method="_on_add_italic_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddUnderline" to="." method="_on_add_underline_pressed"]

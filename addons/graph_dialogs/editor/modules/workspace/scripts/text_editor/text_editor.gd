@@ -39,7 +39,8 @@ extends Panel
 var _current_option_bar: Control = null
 
 ## Text box opened with text to edit
-var _opened_text_box: TextEdit
+## Can be a LineEdit or TextEdit
+var _opened_text_box: Variant
 
 ## Expand and collapse icons
 var expand_icon: Texture = preload("res://addons/graph_dialogs/icons/interactable/collapse-up.svg")
@@ -51,8 +52,9 @@ func _ready():
 
 
 ## Show the text editor
-func show_text_editor(text_box: TextEdit) -> void:
-	_opened_text_box = text_box ## Set the text box to edit
+## Needs a LineEdit or TextEdit with the text to edit
+func show_text_editor(text_box: Variant) -> void:
+	_opened_text_box = text_box
 	text_input.text = _opened_text_box.text
 	_text_preview.text = _opened_text_box.text
 	visible = true

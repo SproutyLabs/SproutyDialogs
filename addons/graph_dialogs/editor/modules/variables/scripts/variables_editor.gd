@@ -8,6 +8,9 @@ extends MarginContainer
 ## It allows the user to add, remove, rename, filter and save variables.
 # -----------------------------------------------------------------------------
 
+## Emitted when a text editor is called to edit a string variable
+signal open_text_editor(text: String)
+
 ## Variables container
 @onready var _variables_container: VBoxContainer = %VariablesContainer
 ## Empty label to show when there are no variables
@@ -78,6 +81,7 @@ func _load_variables_data(data: Dictionary, parent: Node = _variables_container)
 			)
 			new_item.variable_renamed.connect(_on_item_rename.bind(new_item))
 			new_item.variable_changed.connect(_on_variable_changed)
+			new_item.open_text_editor.connect(open_text_editor.emit)
 		elif value.has("variables") and value.has("color"): # It's a group
 			new_item = _variable_group_scene.instantiate()
 			new_item.ready.connect(func():
@@ -177,6 +181,7 @@ func _on_add_var_button_pressed() -> void:
 	var new_item = _variable_item_scene.instantiate()
 	new_item.variable_renamed.connect(_on_item_rename.bind(new_item))
 	new_item.variable_changed.connect(_on_variable_changed)
+	new_item.open_text_editor.connect(open_text_editor.emit)
 	_variables_container.add_child(new_item)
 
 
@@ -196,16 +201,16 @@ func _on_variable_changed(name: String, type: int, value: Variant) -> void:
 
 ## Save the current variables to the project settings
 func _on_save_button_pressed() -> void:
+	# Unmark all items as modified
 	for child in _variables_container.get_children():
 		if child is GraphDialogsVariableItem:
 			child.show_as_modified(false)
 		if child is GraphDialogsVariableGroup:
 			child.show_items_as_modified(false)
 			child.show_as_modified(false)
-	# Save the variables data to project settings
+	# Save the variables to project settings
 	var data = _get_variables_data()
 	GraphDialogsVariableManager.save_to_project_settings(data)
-	print("Saving variables data: ", data)
 
 
 ## Handle the removal of a group
@@ -232,7 +237,6 @@ func _on_child_order_changed() -> void:
 
 
 #region === Drag and Drop ======================================================
-
 func _get_container_drag_data(at_position: Vector2) -> Variant:
 	return null
 

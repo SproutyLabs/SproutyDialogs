@@ -110,32 +110,54 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 			field.value_changed.connect(on_value_changed)
 			default_value = field.value
 		TYPE_STRING:
-			field = LineEdit.new()
-			field.text_changed.connect(on_value_changed)
-			default_value = field.text
+			field = HBoxContainer.new()
+			var line_edit = LineEdit.new()
+			line_edit.name = "TextEdit"
+			line_edit.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+			line_edit.placeholder_text = "Enter text here..."
+			line_edit.text_changed.connect(on_value_changed)
+			field.add_child(line_edit)
+			var button = Button.new()
+			button.name = "ExpandButton"
+			button.icon = EditorInterface.get_base_control().\
+					get_theme_icon("DistractionFree", "EditorIcons")
+			field.add_child(button)
+			default_value = line_edit.text
 		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
 			var vector_n := int(type_string(type)[-1])
 			var components_names = ["x", "y", "z", "w"]
 			field = HFlowContainer.new()
-			# Create the fields for each component of the vector
+
 			for i in range(0, vector_n):
+				# Create a container for each component
+				var container = HBoxContainer.new()
+				container.name = str(components_names[i]) # x, y, z, w
+				container.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+				field.add_child(container)
+
+				# Add a label and a SpinBox for each component
 				var label = Label.new()
 				label.text = components_names[i]
-				field.add_child(label)
-				var x_field = SpinBox.new()
-				x_field.step = 0.01
-				x_field.allow_greater = true
-				x_field.allow_lesser = true
-				field.add_child(x_field)
-				x_field.value_changed.connect(func():
-					var values = []
-					for child in field.get_children():
-						if child is SpinBox:
-							values.append(child.value)
-					on_value_changed.call(values)
-				)
-			default_value = Vector2.ZERO if type == TYPE_VECTOR2 \
+				container.add_child(label)
+
+				var component_field = SpinBox.new()
+				component_field.name = "Field"
+				component_field.step = 0.01
+				component_field.allow_greater = true
+				component_field.allow_lesser = true
+				container.add_child(component_field)
+
+				default_value = Vector2.ZERO if type == TYPE_VECTOR2 \
 					else Vector3.ZERO if type == TYPE_VECTOR3 else Vector4.ZERO
+				
+				component_field.value_changed.connect(func(value):
+					var vector_value = default_value
+					for j in range(0, vector_n):
+						if field.get_child_count() > j:
+							var component = field.get_child(j).get_node("Field")
+							vector_value[j] = component.value
+					on_value_changed.call(vector_value)
+				)
 		TYPE_COLOR:
 			field = ColorPickerButton.new()
 			field.color_changed.connect(on_value_changed)
@@ -170,11 +192,11 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
 			var vector_n := int(type_string(type)[-1])
 			if field is HFlowContainer:
-				var i = 0
-				for child in field.get_children():
-					if child is SpinBox and i < vector_n:
-						child.value = float(value[i])
-						i += 1
+				for i in range(0, vector_n):
+					if field.get_child_count() > i:
+						var component = field.get_child(i).get_node("Field")
+						if component is SpinBox:
+							component.value = float(value[i])
 		TYPE_COLOR:
 			if field is ColorPickerButton:
 				field.color = Color(value)

@@ -15,6 +15,8 @@ signal variable_changed(name: String, type: int, value: Variant)
 signal variable_renamed(name: String)
 ## Emited when the remove button is pressed
 signal remove_pressed()
+## Emitted when a expand button is pressed to open the text editor
+signal open_text_editor(text_box: LineEdit)
 
 ## The variable name
 @export var _variable_name: String = ""
@@ -112,6 +114,10 @@ func _set_value_field(type: int) -> void:
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	_value_field.add_child(field_data.field)
 	_variable_value = field_data.default_value
+
+	if type == TYPE_STRING: # Connect the expand button to open the text editor
+		field_data.field.get_node("ExpandButton").pressed.connect(
+			open_text_editor.emit.bind(field_data.field.get_node("TextEdit")))
 
 
 ## Handle the name change event
