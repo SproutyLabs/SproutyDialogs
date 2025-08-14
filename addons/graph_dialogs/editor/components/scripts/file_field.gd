@@ -8,8 +8,10 @@ extends MarginContainer
 ##  Component that allows the user to select a file from the file system.
 ## -----------------------------------------------------------------------------
 
-## Triggered when the file path is changed.
+## Emitted when the file path changes.
 signal file_path_changed(path: String)
+## Emitted when the file path is submitted.
+signal file_path_submitted(path: String)
 
 ## Placeholder text to show when the field is empty.
 @export var _placeholder_text: String = "Select a file..."
@@ -27,13 +29,12 @@ signal file_path_changed(path: String)
 ## Field to show the current file path.
 @onready var _path_field: LineEdit = %Field
 
-## Current file path.
-var _current_value: String
-
 
 func _ready():
 	# Connect signals
-	_file_dialog.connect("file_selected", _on_file_dialog_selected)
+	_file_dialog.file_selected.connect(_on_file_dialog_selected)
+	_path_field.text_submitted.connect(_on_field_text_submitted)
+	_path_field.text_changed.connect(_on_field_text_changed)
 	_open_button.button_down.connect(_on_open_pressed)
 	_clear_button.button_up.connect(clear_path)
 
@@ -50,7 +51,6 @@ func get_value() -> String:
 
 ## Set the current value of the field.
 func set_value(value: String) -> void:
-	_current_value = value
 	_path_field.text = value
 
 
@@ -70,14 +70,21 @@ func _on_open_pressed() -> void:
 
 ## Set path of file selected in the file dialog.
 func _on_file_dialog_selected(path: String) -> void:
+	file_path_submitted.emit(path)
 	file_path_changed.emit(path)
 	set_value(path)
 	GraphDialogsFileUtils.set_recent_file_path(_recent_file_type, path)
 
 
-## Triggered when the text of the field changes.
+## Handle the text change event of the field.
 func _on_field_text_changed(new_text: String) -> void:
 	file_path_changed.emit(new_text)
+	set_value(new_text)
+
+
+## Handle the text submission event of the field.
+func _on_field_text_submitted(new_text: String) -> void:
+	file_path_submitted.emit(new_text)
 	set_value(new_text)
 
 

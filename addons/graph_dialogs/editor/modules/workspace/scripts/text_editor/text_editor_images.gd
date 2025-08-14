@@ -58,7 +58,7 @@ func _on_image_options_expand_toggled(toggled_on: bool) -> void:
 
 
 ## Change the selected image
-func _on_image_path_changed(path: String) -> void:
+func _on_image_path_submitted(path: String) -> void:
 	# Find the image tags around the cursor
 	var tags_pos = text_editor.find_tags_around_cursor("[img", "[/img]")
 

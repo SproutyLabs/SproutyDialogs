@@ -39,6 +39,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
 
 [node name="TextEditor" type="Panel"]
+visible = false
 clip_contents = true
 custom_minimum_size = Vector2(500, 0)
 anchors_preset = 15
@@ -1258,7 +1259,7 @@ text = "Text preview..."
 [connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/BGColorBar/BgColorPicker" to="." method="_on_bg_color_picker_changed"]
 [connection signal="text_submitted" from="Container/OptionMenus/VariableBar/VariableNameInput" to="." method="_on_variable_name_input_text_submitted"]
-[connection signal="file_path_changed" from="Container/OptionMenus/ImageBar/PathContainer/ImagePathField" to="Container/OptionMenus/ImageBar" method="_on_image_path_changed"]
+[connection signal="file_path_submitted" from="Container/OptionMenus/ImageBar/PathContainer/ImagePathField" to="Container/OptionMenus/ImageBar" method="_on_image_path_submitted"]
 [connection signal="toggled" from="Container/OptionMenus/ImageBar/OptionsHeader/Label" to="Container/OptionMenus/ImageBar" method="_on_image_options_expand_toggled"]
 [connection signal="toggled" from="Container/OptionMenus/ImageBar/OptionsHeader/ImageOptionsExpandButton" to="Container/OptionMenus/ImageBar" method="_on_image_options_expand_toggled"]
 [connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions/ImageWidth" to="Container/OptionMenus/ImageBar" method="_on_image_width_value_changed"]
