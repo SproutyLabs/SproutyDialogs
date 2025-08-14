@@ -10,57 +10,102 @@ extends Node
 # -----------------------------------------------------------------------------
 
 ## Dictionary to store variable names, types and values
+## Also supports groups of variables, which can contain other variables.
 ## The dictionary structure is as follows:
 ## {
-##     "variable_name": {
+##     "variable_name_1": {
 ##         "type": 0, # TYPE_NIL
 ##         "value": null
+##     },
+##     "group": {
+##         "color": Color(1, 1, 1),
+##         "variables": {
+##             "variable_name_2": {
+##                 "type": 0, # TYPE_NIL
+##                 "value": null
+##             },
+##             ...
+##         }
 ##     },
 ##     ...
 ## }
 static var _variables: Dictionary = {}
 
 
-## Check if a variable exists
-static func has_variable(name: String) -> bool:
-	return _variables.has(name)
+## Returns all variables as a dictionary
+static func get_variables() -> Dictionary:
+	if _variables.is_empty():
+		load_variables() # Load variables if not already loaded
+	return _variables
 
 
-## Get the value of a variable
-static func get_variable(name: String) -> Variant:
-	if has_variable(name):
-		return _variables[name]["value"]
+## Get the type and value of a variable
+## If the variable does not exist, it returns null.
+static func get_variable(name: String, group: Dictionary = _variables) -> Variant:
+	for key in group.keys():
+		if key == name:
+			return group[key]
+		if group[key].has("variables"): # Recursively check in groups
+			var variable = get_variable(name, group[key].variables)
+			if variable:
+				return variable
 	return null
 
 
-## Get the type of a variable
-static func get_variable_type(name: String) -> int:
-	if has_variable(name):
-		return _variables[name]["type"]
-	return TYPE_NIL
+## Set a variable value
+## If the variable exists, it updates its value.
+static func set_variable_value(name: String, value: Variant, group: Dictionary = _variables) -> void:
+	for key in group.keys():
+		if key == name:
+			group[key].value = value
+			return
+		if group[key].has("variables"): # Recursively check in groups
+			set_variable_value(name, value, group[key].variables)
+			return
 
 
-## Set the value of a variable
-static func set_variable(name: String, type: int, value: Variant) -> void:
-	_variables[name] = {
-		"type": type,
-		"value": value
-	}
-
-## Remove a variable
-static func remove_variable(name: String) -> void:
-	if has_variable(name):
-		_variables.erase(name)
+## Check if a variable exists
+static func has_variable(name: String, group: Dictionary = _variables) -> bool:
+	for key in group.keys():
+		if key == name:
+			return true
+		if group[key].has("variables"): # Recursively check in groups
+			if has_variable(name, group[key].variables):
+				return true
+	return false
 
 
 ## Load variables from project settings
-static func load_from_project_settings() -> Dictionary:
-	return GraphDialogsSettings.get_setting("variables")
+static func load_variables() -> void:
+	_variables = GraphDialogsSettings.get_setting("variables")
 
 
 ## Save variables to project settings
-static func save_to_project_settings(data: Dictionary) -> void:
+static func save_variables(data: Dictionary) -> void:
 	GraphDialogsSettings.set_setting("variables", data)
+	_variables = data
+
+
+## Replaces all variables ({}) with their corresponding values in a dialog.
+static func parse_variables(dialog: String) -> String:
+	var regex := RegEx.new()
+	regex.compile("{([^{}]+)}")
+	var results = regex.search_all(dialog)
+	results = results.map(func(val): return val.get_string(1))
+
+	if not results.is_empty():
+		for var_name in results:
+			var variable = get_variable(var_name)
+			if variable:
+				if variable.type == TYPE_STRING: # Recursively parse variables
+					variable.value = parse_variables(variable.value)
+				elif variable.type == TYPE_COLOR and variable.value is Color:
+					variable.value = variable.value.to_html() # Convert to Hex string
+				dialog = dialog.replace("{" + var_name + "}", str(variable.value))
+			else:
+				printerr("[Graph Dialogs] Variable '" + var_name + "' not found. " +
+					"Please check if the variable exists in the Variables Manager.")
+	return dialog
 
 
 #region === Variable Type Fields ===============================================
@@ -161,7 +206,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 		TYPE_COLOR:
 			field = ColorPickerButton.new()
 			field.color_changed.connect(on_value_changed)
-			default_value = field.color
+			default_value = field.color.to_html()
 		
 		# ----------------------------------
 		# Add more types as needed here (!)
@@ -187,8 +232,10 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 			if field is SpinBox:
 				field.value = float(value)
 		TYPE_STRING:
-			if field is LineEdit:
-				field.text = str(value)
+			if field is HBoxContainer:
+				var text_edit = field.get_node("TextEdit")
+				if text_edit is LineEdit:
+					text_edit.text = str(value)
 		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
 			var vector_n := int(type_string(type)[-1])
 			if field is HFlowContainer:

@@ -27,6 +27,9 @@ func _ready():
 	# Make the manager available as a singleton
 	if not Engine.has_singleton("GraphDialogs"):
 		Engine.register_singleton("GraphDialogs", self)
+	
+	# Load the variables from project settings
+	GraphDialogsVariableManager.load_variables()
 
 
 ## Returns the current dialog players instances running.

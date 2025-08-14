@@ -46,7 +46,7 @@ func _ready():
 	if _variables_container.get_child_count() == 1:
 		_empty_label.show() # Show the empty label if there are no variables
 	
-	_load_variables_data(GraphDialogsVariableManager.load_from_project_settings())
+	_load_variables_data(GraphDialogsVariableManager.get_variables())
 
 
 ## Get the variables data from the container
@@ -210,7 +210,7 @@ func _on_save_button_pressed() -> void:
 			child.show_as_modified(false)
 	# Save the variables to project settings
 	var data = _get_variables_data()
-	GraphDialogsVariableManager.save_to_project_settings(data)
+	GraphDialogsVariableManager.save_variables(data)
 
 
 ## Handle the removal of a group

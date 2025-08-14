@@ -44,16 +44,14 @@ func _process_start(node_data: Dictionary) -> void:
 func _process_dialogue(node_data: Dictionary) -> void:
 	print("[Graph Dialogs] Processing dialogue node...")
 	var dialog = _get_translated_dialog(node_data["dialog_key"])
-	dialogue_processed.emit(
-		node_data["character"],
-		_get_translated_character_name(node_data["character"]),
-		node_data["portrait"],
-		_parse_variables(dialog),
-		node_data["to_node"][0]
-	)
+	dialog = GraphDialogsVariableManager.parse_variables(dialog)
+	var display_name = _get_translated_character_name(node_data["character"])
+
+	dialogue_processed.emit(node_data["character"], display_name,
+			node_data["portrait"], dialog, node_data["to_node"][0])
 
 
-#region === Dialog processing ==================================================
+#region === Dialogs translation ================================================
 
 ## Returns the translated dialog text
 func _get_translated_dialog(key: String) -> String:
@@ -77,21 +75,6 @@ func _get_translated_character_name(character: String) -> String:
 			var locale = TranslationServer.get_locale()
 			return get_parent().get_character_data(character).display_name[locale]
 	return character # If no translation is enabled, return the original name
-
-
-# Replaces all {} variables with their corresponding values in the dialog.
-func _parse_variables(value: String) -> String:
-	# Get the list of all the variables in the string denoted in {}.
-	var regex := RegEx.new()
-	regex.compile('{([^{}]+)}')
-	var results = regex.search_all(value)
-	results = results.map(func(val): return val.get_string(1))
-	if not results.is_empty():
-		print("[Graph Dialogs] Variables in dialog: ", results)
-
-	# TODO: Implement variable parsing
-	
-	return value
 
 #endregion
 
