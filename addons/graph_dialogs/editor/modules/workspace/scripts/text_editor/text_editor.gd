@@ -56,7 +56,7 @@ func _ready():
 func show_text_editor(text_box: Variant) -> void:
 	_opened_text_box = text_box
 	text_input.text = _opened_text_box.text
-	_text_preview.text = _opened_text_box.text
+	_text_preview.text = GraphDialogsVariableManager.parse_variables(_opened_text_box.text)
 	visible = true
 
 
@@ -81,7 +81,7 @@ func _on_close_button_pressed() -> void:
 ## Update the text box and preview with the text editor input
 func _on_code_edit_text_changed() -> void:
 	_opened_text_box.text = text_input.text
-	_text_preview.text = text_input.text
+	_text_preview.text = GraphDialogsVariableManager.parse_variables(text_input.text)
 
 
 ## Expsnd or collapse the text preview box
@@ -302,38 +302,38 @@ func _get_tag_atributes(tag: String) -> Dictionary:
 
 ## Add bold text to the selected text
 func _on_add_bold_pressed() -> void:
-	insert_tags_on_selected_text("[b]", "[/b]")
+	insert_tags_on_selected_text("[b]", "[/b]", true)
 
 ## Add italic text to the selected text
 func _on_add_italic_pressed() -> void:
-	insert_tags_on_selected_text("[i]", "[/i]")
+	insert_tags_on_selected_text("[i]", "[/i]", true)
 
 ## Add underline text to the selected text
 func _on_add_underline_pressed() -> void:
-	insert_tags_on_selected_text("[u]", "[/u]")
+	insert_tags_on_selected_text("[u]", "[/u]", true)
 
 ## Add strikethrough text to the selected text
 func _on_add_strikethrough_pressed() -> void:
-	insert_tags_on_selected_text("[s]", "[/s]")
+	insert_tags_on_selected_text("[s]", "[/s]", true)
 #endregion
 
 #region --- Alignment options --------------------------------------------------
 
 ## Align the text to the left
 func _on_align_text_left_pressed() -> void:
-	insert_tags_on_selected_text("[left]", "[/left]", true)
+	insert_tags_on_selected_text("[left]", "[/left]")
 
 ## Align the text to the center
 func _on_align_text_center_pressed() -> void:
-	insert_tags_on_selected_text("[center]", "[/center]", true)
+	insert_tags_on_selected_text("[center]", "[/center]")
 
 ## Align the text to the right
 func _on_align_text_right_pressed() -> void:
-	insert_tags_on_selected_text("[right]", "[/right]", true)
+	insert_tags_on_selected_text("[right]", "[/right]")
 
 ## Align the text to fill the width (justify)
 func _on_align_text_fill_pressed() -> void:
-	insert_tags_on_selected_text("[fill]", "[/fill]", true)
+	insert_tags_on_selected_text("[fill]", "[/fill]")
 #endregion
 
 #region --- Outline options ----------------------------------------------------
@@ -402,13 +402,20 @@ func _on_bg_color_picker_changed(color: Color) -> void:
 
 #region === Embedding options ==================================================
 
+## Add a variable at the cursor position
 func _on_add_variable_pressed() -> void:
 	change_option_bar(4)
+
+
+## Update the variable tags in the selected text
+func _on_variable_name_input_text_submitted(new_text: String) -> void:
+	update_code_tags("{" + new_text, "}", "", true)
+
 
 ## Add a url in the selected text
 func _on_add_url_pressed() -> void:
 	change_option_bar(6)
-	insert_tags_on_selected_text("[url=/insert/an/url]", "[/url]", true, "link")
+
 
 ## Update the url tags in the selected text
 func _on_url_input_submitted(new_text: String) -> void:

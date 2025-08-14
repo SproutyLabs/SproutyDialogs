@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://deethj56qlsml"]
+[gd_scene load_steps=36 format=3 uid="uid://deethj56qlsml"]
 
 [ext_resource type="Script" uid="uid://6s5bseebujdb" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/text_editor/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialogs/icons/interactable/collapse-right.svg" id="2_bd7d8"]
@@ -29,11 +29,7 @@
 [ext_resource type="Texture2D" uid="uid://ckqdg3q4kjmpk" path="res://addons/graph_dialogs/icons/text_editor/shake.svg" id="23_w4102"]
 [ext_resource type="Texture2D" uid="uid://bi8srcf0vhr15" path="res://addons/graph_dialogs/icons/text_editor/ghost.svg" id="24_5moyk"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialogs/editor/components/file_field.tscn" id="25_dx6e2"]
-[ext_resource type="Texture2D" uid="uid://dhd8jsnlvryjv" path="res://addons/graph_dialogs/icons/variable_types/String.svg" id="25_r4ndn"]
-[ext_resource type="Texture2D" uid="uid://neue0asb5wfv" path="res://addons/graph_dialogs/icons/variable_types/int.svg" id="26_b0hwj"]
 [ext_resource type="Script" uid="uid://bvccjdgrn6fpx" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/text_editor/text_editor_effects.gd" id="26_g04n3"]
-[ext_resource type="Texture2D" uid="uid://upk1076i8h2s" path="res://addons/graph_dialogs/icons/variable_types/float.svg" id="27_taqqf"]
-[ext_resource type="Texture2D" uid="uid://b0ytab723ndi" path="res://addons/graph_dialogs/icons/variable_types/bool.svg" id="28_5tt54"]
 [ext_resource type="Script" uid="uid://dpylhhrt6aoaq" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/text_editor/text_editor_images.gd" id="28_qnqd5"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialogs/icons/interactable/collapse-down.svg" id="32_hkfxn"]
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/graph_dialogs/icons/interactable/collapse-up.svg" id="37_phbom"]
@@ -507,31 +503,17 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
-text = "Display Variable"
+text = "Insert Variable"
 icon = ExtResource("13_m5lcx")
 flat = true
 
 [node name="---" type="VSeparator" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
 
-[node name="Type" type="OptionButton" parent="Container/OptionMenus/VariableBar"]
-layout_mode = 2
-selected = 0
-item_count = 4
-popup/item_0/icon = ExtResource("25_r4ndn")
-popup/item_0/id = 0
-popup/item_1/icon = ExtResource("26_b0hwj")
-popup/item_1/id = 1
-popup/item_2/icon = ExtResource("27_taqqf")
-popup/item_2/id = 2
-popup/item_3/icon = ExtResource("28_5tt54")
-popup/item_3/id = 3
-
-[node name="NameInput" type="LineEdit" parent="Container/OptionMenus/VariableBar"]
-custom_minimum_size = Vector2(120, 0)
+[node name="VariableNameInput" type="LineEdit" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Variable name..."
+placeholder_text = "Write a variable name..."
 
 [node name="ImageBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
 visible = false
@@ -1275,6 +1257,7 @@ text = "Text preview..."
 [connection signal="color_changed" from="Container/OptionMenus/OutlineBar/ColorButton" to="." method="_on_outline_color_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/BGColorBar/BgColorPicker" to="." method="_on_bg_color_picker_changed"]
+[connection signal="text_submitted" from="Container/OptionMenus/VariableBar/VariableNameInput" to="." method="_on_variable_name_input_text_submitted"]
 [connection signal="file_path_changed" from="Container/OptionMenus/ImageBar/PathContainer/ImagePathField" to="Container/OptionMenus/ImageBar" method="_on_image_path_changed"]
 [connection signal="toggled" from="Container/OptionMenus/ImageBar/OptionsHeader/Label" to="Container/OptionMenus/ImageBar" method="_on_image_options_expand_toggled"]
 [connection signal="toggled" from="Container/OptionMenus/ImageBar/OptionsHeader/ImageOptionsExpandButton" to="Container/OptionMenus/ImageBar" method="_on_image_options_expand_toggled"]

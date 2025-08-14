@@ -40,16 +40,11 @@ var _region_height: float = 0.0
 ## Region default value
 var _region_default: String = "0.0,0.0,0.0,0.0"
 
-## Image placeholder path
-var _placeholder_path = "res://addons/graph_dialog_system/icons/image.svg"
-
 
 ## Show the images options bar
 func _on_add_image_pressed() -> void:
 	text_editor.change_option_bar(5)
 	_on_image_options_expand_toggled(false)
-	_image_path_field.set_value(_placeholder_path)
-	text_editor.insert_tags_at_cursor_pos("[img]" + _placeholder_path, "[/img]")
 
 
 ## Show the images options bar

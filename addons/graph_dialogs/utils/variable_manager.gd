@@ -32,14 +32,14 @@ extends Node
 static var _variables: Dictionary = {}
 
 
-## Returns all variables as a dictionary
+## Returns variables as a dictionary.
 static func get_variables() -> Dictionary:
 	if _variables.is_empty():
 		load_variables() # Load variables if not already loaded
 	return _variables
 
 
-## Get the type and value of a variable
+## Get the type and value of a variable.
 ## If the variable does not exist, it returns null.
 static func get_variable(name: String, group: Dictionary = _variables) -> Variant:
 	for key in group.keys():
@@ -52,27 +52,47 @@ static func get_variable(name: String, group: Dictionary = _variables) -> Varian
 	return null
 
 
-## Set a variable value
-## If the variable exists, it updates its value.
-static func set_variable_value(name: String, value: Variant, group: Dictionary = _variables) -> void:
+## Get all variables of a specific type.
+## If no variables of the specified type are found, it returns an empty dictionary.
+static func get_variables_by_type(type: int, group: Dictionary = _variables) -> Dictionary:
+	var result: Dictionary = {}
 	for key in group.keys():
-		if key == name:
-			group[key].value = value
-			return
-		if group[key].has("variables"): # Recursively check in groups
-			set_variable_value(name, value, group[key].variables)
-			return
+		var variable = group[key]
+		if variable.has("variables"): # Recursively check in groups
+			var sub_variables = get_variables_by_type(type, variable.variables)
+			if not sub_variables.is_empty():
+				result.merge(sub_variables)
+		elif variable.type == type:
+			result[key] = variable
+	return result
+
+
+## Set a variable in the Variables Manager.
+## If the variable does not exist, it will be created.
+## If the variable exists, it will be updated.
+static func set_variable(name: String, type: int, value: Variant) -> void:
+	var variable = get_variable(name)
+	if not variable: # If variable does not exist, create it
+		_variables[name] = {
+			"type": type,
+			"value": value
+		}
+	else: # Update existing variable
+		variable.type = type
+		variable.value = value
+	save_variables(_variables) # Save changes to project settings
+
+
+## Update the value of a variable.
+## If variable is not found in the Variables Manager, try to find it in
+## global variables and update it.
+static func update_variable(name: String, type: int, value: Variant) -> void:
+	pass
 
 
 ## Check if a variable exists
 static func has_variable(name: String, group: Dictionary = _variables) -> bool:
-	for key in group.keys():
-		if key == name:
-			return true
-		if group[key].has("variables"): # Recursively check in groups
-			if has_variable(name, group[key].variables):
-				return true
-	return false
+	return get_variable(name, group) != null
 
 
 ## Load variables from project settings
@@ -86,11 +106,15 @@ static func save_variables(data: Dictionary) -> void:
 	_variables = data
 
 
-## Replaces all variables ({}) with their corresponding values in a dialog.
-static func parse_variables(dialog: String) -> String:
+## Replaces all variables ({}) in a text with their corresponding values
+static func parse_variables(text: String) -> String:
+	if not "{" in text:
+		return text # No variables to parse
+	
+	# Find all variables in the format {variable_name}
 	var regex := RegEx.new()
 	regex.compile("{([^{}]+)}")
-	var results = regex.search_all(dialog)
+	var results = regex.search_all(text)
 	results = results.map(func(val): return val.get_string(1))
 
 	if not results.is_empty():
@@ -101,11 +125,11 @@ static func parse_variables(dialog: String) -> String:
 					variable.value = parse_variables(variable.value)
 				elif variable.type == TYPE_COLOR and variable.value is Color:
 					variable.value = variable.value.to_html() # Convert to Hex string
-				dialog = dialog.replace("{" + var_name + "}", str(variable.value))
+				text = text.replace("{" + var_name + "}", str(variable.value))
 			else:
 				printerr("[Graph Dialogs] Variable '" + var_name + "' not found. " +
 					"Please check if the variable exists in the Variables Manager.")
-	return dialog
+	return text
 
 
 #region === Variable Type Fields ===============================================
