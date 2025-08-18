@@ -9,6 +9,27 @@ extends Node
 ## It provides methods to get, set, and check variable values.
 # -----------------------------------------------------------------------------
 
+## Assignment operators for variables
+enum ASSIGN_OPS {
+	ASSIGN, ## Direct assignment operator (=)
+	ADD_ASSIGN, ## Addition assignment operator (+=)
+	SUB_ASSIGN, ## Subtraction assignment operator (-=)
+	MUL_ASSIGN, ## Multiplication assignment operator (*=)
+	DIV_ASSIGN, ## Division assignment operator (/=)
+	EXP_ASSIGN, ## Exponentiation assignment operator (**=)
+	MOD_ASSIGN, ## Modulus assignment operator (%=)
+}
+
+## Comparison operators for variables
+enum COMPARISON_OPS {
+	EQUAL, ## Equality operator (==)
+	NOT_EQUAL, ## Inequality operator (!=)
+	LESS_THAN, ## Less than operator (<)
+	GREATER_THAN, ## Greater than operator (>)
+	LESS_EQUAL, ## Less than or equal to operator (<=)
+	GREATER_EQUAL ## Greater than or equal to operator (>=)
+}
+
 ## Dictionary to store variable names, types and values
 ## Also supports groups of variables, which can contain other variables.
 ## The dictionary structure is as follows:
@@ -103,7 +124,7 @@ static func save_variables(data: Dictionary) -> void:
 ## If variable is not found in the Variables Manager, try to find it in
 ## global variables and update it.
 static func update_variable(name: String, type: int, new_value: Variant,
-		operator: String = "=", scene_reference: Node = null) -> void:
+		operator: int = ASSIGN_OPS.ASSIGN, scene_reference: Node = null) -> void:
 	var variable = get_variable(name)
 	if not variable and scene_reference: # Search in global variables
 		var autoloads = get_autoloads(scene_reference)
@@ -303,62 +324,91 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 #region === Variable Type Operators ============================================
 
 ## Returns a list of assignment operators by type
-static func get_assignment_operators(type: int) -> Array:
-	if type == TYPE_BOOL:
-		return ["="] # Boolean assignment
-	elif type == TYPE_INT or type == TYPE_FLOAT:
-		return ["=", "+=", "-=", "*=", "/=", "**=", "%="] # Arithmetic operators
-	elif type == TYPE_STRING:
-		return ["=", "+="] # String concatenation and assignment
-	elif type == TYPE_VECTOR2 or type == TYPE_VECTOR3 or type == TYPE_VECTOR4:
-		return ["=", "+=", "-=", "*=", "/="] # Vector arithmetic operators
-	elif type == TYPE_COLOR:
-		return ["=", "+=", "-="] # Color arithmetic operators
-	else:
-		return ["="] # Default to assignment for unsupported types
+static func get_assignment_operators(type: int) -> Dictionary:
+	match type:
+		TYPE_BOOL:
+			return { # Boolean assignment
+				"=": ASSIGN_OPS.ASSIGN
+				}
+		TYPE_INT, TYPE_FLOAT:
+			return { # Arithmetic operators
+				"=": ASSIGN_OPS.ASSIGN,
+				"+=": ASSIGN_OPS.ADD_ASSIGN,
+				"-=": ASSIGN_OPS.SUB_ASSIGN,
+				"*=": ASSIGN_OPS.MUL_ASSIGN,
+				"/=": ASSIGN_OPS.DIV_ASSIGN,
+				"**=": ASSIGN_OPS.EXP_ASSIGN,
+				"%=": ASSIGN_OPS.MOD_ASSIGN
+			}
+		TYPE_STRING:
+			return { # String assignment and concatenation
+				"=": ASSIGN_OPS.ASSIGN,
+				"+=": ASSIGN_OPS.ADD_ASSIGN,
+			}
+		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
+			return { # Vector arithmetic operators
+				"=": ASSIGN_OPS.ASSIGN,
+				"+=": ASSIGN_OPS.ADD_ASSIGN,
+				"-=": ASSIGN_OPS.SUB_ASSIGN,
+				"*=": ASSIGN_OPS.MUL_ASSIGN,
+				"/=": ASSIGN_OPS.DIV_ASSIGN,
+			}
+		TYPE_COLOR:
+			return { # Color arithmetic operators
+				"=": ASSIGN_OPS.ASSIGN,
+				"+=": ASSIGN_OPS.ADD_ASSIGN,
+				"-=": ASSIGN_OPS.SUB_ASSIGN,
+			}
+		_:
+			return { # Default to assignment for other types
+				"=": ASSIGN_OPS.ASSIGN
+			}
 
 
 ## Returns a list of comparison operators by type
-static func get_comparison_operators(type: int) -> Array:
-	if type == TYPE_BOOL:
-		return ["==", "!="] # Boolean comparison
-	elif type == TYPE_INT or type == TYPE_FLOAT:
-		return ["==", "!=", "<", ">", "<=", ">="] # Arithmetic comparison
-	elif type == TYPE_STRING:
-		return ["==", "!="] # String comparison
-	elif type == TYPE_VECTOR2 or type == TYPE_VECTOR3 or type == TYPE_VECTOR4:
-		return ["==", "!=", "<", ">", "<=", ">="] # Vector comparison
-	elif type == TYPE_COLOR:
-		return ["==", "!="] # Color comparison
-	else:
-		return ["==", "!="] # Default to equality for unsupported types
+static func get_comparison_operators(type: int) -> Dictionary:
+	match type:
+		TYPE_INT, TYPE_FLOAT, TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
+			return { # Numeric comparison
+				"==": COMPARISON_OPS.EQUAL,
+				"!=": COMPARISON_OPS.NOT_EQUAL,
+				"<": COMPARISON_OPS.LESS_THAN,
+				">": COMPARISON_OPS.GREATER_THAN,
+				"<=": COMPARISON_OPS.LESS_EQUAL,
+				">=": COMPARISON_OPS.GREATER_EQUAL
+			}
+		_:
+			return { # Default to equality for other types
+				"==": COMPARISON_OPS.EQUAL,
+				"!=": COMPARISON_OPS.NOT_EQUAL
+			}
 
 
 ## Returns the value resulting from an assignment operation
 ## This function is used to calculate the new value of a variable after an assignment operation.
-static func get_assignment_result(type: int, operator: String, value: Variant, new_value: Variant) -> Variant:
+static func get_assignment_result(type: int, operator: int, value: Variant, new_value: Variant) -> Variant:
 	match operator:
-		"=": # Direct assignment
+		ASSIGN_OPS.ASSIGN: # Direct assignment
 			return new_value
-		"+=": # Addition
+		ASSIGN_OPS.ADD_ASSIGN: # Addition
 			if type == TYPE_STRING:
 				return str(value) + str(new_value)
 			elif type == TYPE_COLOR:
 				return value + Color(new_value)
 			else:
 				return value + new_value
-		"-=": # Subtraction
+		ASSIGN_OPS.SUB_ASSIGN: # Subtraction
 			if type == TYPE_COLOR:
 				return value - Color(new_value)
 			else:
 				return value - new_value
-		"*=": # Multiplication
+		ASSIGN_OPS.MUL_ASSIGN: # Multiplication
 			return value * new_value
-		"/=": # Division
+		ASSIGN_OPS.DIV_ASSIGN: # Division
 			return value / new_value
-		"**=": # Exponentiation
+		ASSIGN_OPS.EXP_ASSIGN: # Exponentiation
 			return value ** new_value
-		"%=": # Modulus
+		ASSIGN_OPS.MOD_ASSIGN: # Modulus
 			if type == TYPE_FLOAT:
 				return fmod(value, new_value)
 			else:

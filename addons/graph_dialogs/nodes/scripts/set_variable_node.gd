@@ -45,7 +45,7 @@ func get_data() -> Dictionary:
 		"node_index": node_index,
 		"var_name": _name_input.get_value(),
 		"var_type": _type_dropdown.get_item_id(_type_dropdown.selected),
-		"operator": _operator_dropdown.get_item_text(_operator_dropdown.selected),
+		"operator": _operator_dropdown.get_item_id(_operator_dropdown.selected),
 		"new_value": _new_var_value,
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
@@ -59,16 +59,33 @@ func set_data(dict: Dictionary) -> void:
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
-
-	_type_dropdown.select(dict["var_type"])
-	_on_type_selected(dict["var_type"])
+	# Set the type on the dropdown
+	var type_index = _type_dropdown.get_item_index(dict["var_type"])
+	_type_dropdown.select(type_index)
+	_on_type_selected(type_index)
+	# Set the variable name, operator and value
 	_name_input.set_value(dict["var_name"])
-	_operator_dropdown.select(dict["operator"])
+	_operator_dropdown.select(_operator_dropdown.get_item_index(dict["operator"]))
 	GraphDialogsVariableManager.set_field_value(
 		$Container/ValueField.get_child(0), dict["var_type"], dict["new_value"])
 	_new_var_value = dict["new_value"]
 
 #endregion
+
+
+## Handle when the type is selected from the dropdown
+func _on_type_selected(index: int) -> void:
+	var type = _type_dropdown.get_item_id(index)
+	# Set the variable dropdown based on the selected type and update the value field
+	var variables = GraphDialogsVariableManager.get_variables_by_type(type)
+	_name_input.set_options(variables.keys())
+	_set_value_field(type)
+	# Set the operator dropdown based on the variable type
+	var operators = GraphDialogsVariableManager.get_assignment_operators(type)
+	_operator_dropdown.clear()
+	for operator in operators.keys():
+		_operator_dropdown.add_item(operator, operators[operator])
+	size.y = 0 # Resize node
 
 
 ## Set the value field based on the variable type
@@ -85,21 +102,6 @@ func _set_value_field(type: int) -> void:
 	if type == TYPE_STRING: # Connect the expand button to open the text editor
 		field_data.field.get_node("ExpandButton").pressed.connect(
 			graph_editor.open_text_editor.emit.bind(field_data.field.get_node("TextEdit")))
-
-
-## Handle when the type is selected from the dropdown
-func _on_type_selected(index: int) -> void:
-	var type = _type_dropdown.get_item_id(index)
-	# Set the variable dropdown based on the selected type and update the value field
-	var variables = GraphDialogsVariableManager.get_variables_by_type(type)
-	_name_input.set_options(variables.keys())
-	_set_value_field(type)
-	# Set the operator dropdown based on the variable type
-	var operators = GraphDialogsVariableManager.get_assignment_operators(type)
-	_operator_dropdown.clear()
-	for operator in operators:
-		_operator_dropdown.add_item(operator)
-	size.y = 0 # Resize node
 
 
 ## Handle when the value in the input field changes
