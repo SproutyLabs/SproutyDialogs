@@ -144,6 +144,7 @@ func _on_color_changed(new_color: Color) -> void:
 
 ## Handle the expandable button toggled event
 func _on_expandable_button_toggled(is_pressed: bool) -> void:
+	$Container/LastSeparator.visible = is_pressed
 	_items_container.get_parent().visible = is_pressed
 	_expandable_button.icon = _collapse_up_icon if is_pressed else _collapse_down_icon
 	_expandable_button.tooltip_text = "Collapse" if is_pressed else "Expand"

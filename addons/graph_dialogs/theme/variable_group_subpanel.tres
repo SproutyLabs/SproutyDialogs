@@ -5,3 +5,5 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 5
 border_width_right = 2
 border_color = Color(1, 0.317647, 0.435294, 1)
+corner_radius_top_left = 5
+corner_radius_bottom_left = 5

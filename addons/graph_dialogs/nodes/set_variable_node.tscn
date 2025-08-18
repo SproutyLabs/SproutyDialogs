@@ -32,7 +32,7 @@ corner_radius_bottom_left = 3
 corner_detail = 5
 
 [node name="SetVariableNode" type="GraphNode"]
-offset_right = 413.0
+offset_right = 537.0
 offset_bottom = 86.0
 theme = ExtResource("1_bouee")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_0am0n")
@@ -62,7 +62,7 @@ theme_override_styles/panel = ExtResource("4_7k7se")
 
 [node name="NameInput" parent="Container" instance=ExtResource("5_oao84")]
 layout_mode = 2
-placeholder_text = "Variable name..."
+placeholder_text = "Variable..."
 
 [node name="OperatorDropdown" type="OptionButton" parent="Container"]
 layout_mode = 2

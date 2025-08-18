@@ -83,13 +83,6 @@ static func set_variable(name: String, type: int, value: Variant) -> void:
 	save_variables(_variables) # Save changes to project settings
 
 
-## Update the value of a variable.
-## If variable is not found in the Variables Manager, try to find it in
-## global variables and update it.
-static func update_variable(name: String, type: int, value: Variant) -> void:
-	pass
-
-
 ## Check if a variable exists
 static func has_variable(name: String, group: Dictionary = _variables) -> bool:
 	return get_variable(name, group) != null
@@ -104,6 +97,28 @@ static func load_variables() -> void:
 static func save_variables(data: Dictionary) -> void:
 	GraphDialogsSettings.set_setting("variables", data)
 	_variables = data
+
+
+## Update the value of a variable.
+## If variable is not found in the Variables Manager, try to find it in
+## global variables and update it.
+static func update_variable(name: String, type: int, new_value: Variant,
+		operator: String = "=", scene_reference: Node = null) -> void:
+	var variable = get_variable(name)
+	if not variable and scene_reference: # Search in global variables
+		var autoloads = get_autoloads(scene_reference)
+		# TODO: Implement global variables update
+		pass
+	else: # Update variable in Variables Manager
+		variable.value = get_assignment_result(type, operator, variable.value, new_value)
+
+
+## Returns a dictionary with the autoloads from a given scene tree.
+static func get_autoloads(from_scene: Node) -> Dictionary:
+	var autoloads := {}
+	for node: Node in from_scene.get_tree().root.get_children():
+		autoloads[node.name] = node
+	return autoloads
 
 
 ## Replaces all variables ({}) in a text with their corresponding values
@@ -135,18 +150,21 @@ static func parse_variables(text: String) -> String:
 #region === Variable Type Fields ===============================================
 
 # Returns an OptionButton with all variable types
-static func get_types_dropdown() -> OptionButton:
+static func get_types_dropdown(label: bool = true) -> OptionButton:
 	var dropdown: OptionButton = OptionButton.new()
 	dropdown.name = "TypeDropdown"
+	dropdown.tooltip_text = "Select variable type"
+	dropdown.mouse_filter = Control.MOUSE_FILTER_PASS
+
 	var root = EditorInterface.get_base_control()
-	dropdown.add_icon_item(root.get_theme_icon("bool", "EditorIcons"), "Bool", TYPE_BOOL)
-	dropdown.add_icon_item(root.get_theme_icon("int", "EditorIcons"), "Int", TYPE_INT)
-	dropdown.add_icon_item(root.get_theme_icon("float", "EditorIcons"), "Float", TYPE_FLOAT)
-	dropdown.add_icon_item(root.get_theme_icon("String", "EditorIcons"), "String", TYPE_STRING)
-	dropdown.add_icon_item(root.get_theme_icon("Vector2", "EditorIcons"), "Vector2", TYPE_VECTOR2)
-	dropdown.add_icon_item(root.get_theme_icon("Vector3", "EditorIcons"), "Vector3", TYPE_VECTOR3)
-	dropdown.add_icon_item(root.get_theme_icon("Vector4", "EditorIcons"), "Vector4", TYPE_VECTOR4)
-	dropdown.add_icon_item(root.get_theme_icon("Color", "EditorIcons"), "Color", TYPE_COLOR)
+	dropdown.add_icon_item(root.get_theme_icon("bool", "EditorIcons"), "Bool" if label else "", TYPE_BOOL)
+	dropdown.add_icon_item(root.get_theme_icon("int", "EditorIcons"), "Int" if label else "", TYPE_INT)
+	dropdown.add_icon_item(root.get_theme_icon("float", "EditorIcons"), "Float" if label else "", TYPE_FLOAT)
+	dropdown.add_icon_item(root.get_theme_icon("String", "EditorIcons"), "String" if label else "", TYPE_STRING)
+	dropdown.add_icon_item(root.get_theme_icon("Vector2", "EditorIcons"), "Vector2" if label else "", TYPE_VECTOR2)
+	dropdown.add_icon_item(root.get_theme_icon("Vector3", "EditorIcons"), "Vector3" if label else "", TYPE_VECTOR3)
+	dropdown.add_icon_item(root.get_theme_icon("Vector4", "EditorIcons"), "Vector4" if label else "", TYPE_VECTOR4)
+	dropdown.add_icon_item(root.get_theme_icon("Color", "EditorIcons"), "Color" if label else "", TYPE_COLOR)
 
 	# ----------------------------------
 	# Add more types as needed here (!)
@@ -183,7 +201,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 			var line_edit = LineEdit.new()
 			line_edit.name = "TextEdit"
 			line_edit.set_h_size_flags(Control.SIZE_EXPAND_FILL)
-			line_edit.placeholder_text = "Enter text here..."
+			line_edit.placeholder_text = "Write text here..."
 			line_edit.text_changed.connect(on_value_changed)
 			field.add_child(line_edit)
 			var button = Button.new()
@@ -279,5 +297,73 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 		_:
 			if field is LineEdit:
 				field.text = str(value)
+
+#endregion
+
+#region === Variable Type Operators ============================================
+
+## Returns a list of assignment operators by type
+static func get_assignment_operators(type: int) -> Array:
+	if type == TYPE_BOOL:
+		return ["="] # Boolean assignment
+	elif type == TYPE_INT or type == TYPE_FLOAT:
+		return ["=", "+=", "-=", "*=", "/=", "**=", "%="] # Arithmetic operators
+	elif type == TYPE_STRING:
+		return ["=", "+="] # String concatenation and assignment
+	elif type == TYPE_VECTOR2 or type == TYPE_VECTOR3 or type == TYPE_VECTOR4:
+		return ["=", "+=", "-=", "*=", "/="] # Vector arithmetic operators
+	elif type == TYPE_COLOR:
+		return ["=", "+=", "-="] # Color arithmetic operators
+	else:
+		return ["="] # Default to assignment for unsupported types
+
+
+## Returns a list of comparison operators by type
+static func get_comparison_operators(type: int) -> Array:
+	if type == TYPE_BOOL:
+		return ["==", "!="] # Boolean comparison
+	elif type == TYPE_INT or type == TYPE_FLOAT:
+		return ["==", "!=", "<", ">", "<=", ">="] # Arithmetic comparison
+	elif type == TYPE_STRING:
+		return ["==", "!="] # String comparison
+	elif type == TYPE_VECTOR2 or type == TYPE_VECTOR3 or type == TYPE_VECTOR4:
+		return ["==", "!=", "<", ">", "<=", ">="] # Vector comparison
+	elif type == TYPE_COLOR:
+		return ["==", "!="] # Color comparison
+	else:
+		return ["==", "!="] # Default to equality for unsupported types
+
+
+## Returns the value resulting from an assignment operation
+## This function is used to calculate the new value of a variable after an assignment operation.
+static func get_assignment_result(type: int, operator: String, value: Variant, new_value: Variant) -> Variant:
+	match operator:
+		"=": # Direct assignment
+			return new_value
+		"+=": # Addition
+			if type == TYPE_STRING:
+				return str(value) + str(new_value)
+			elif type == TYPE_COLOR:
+				return value + Color(new_value)
+			else:
+				return value + new_value
+		"-=": # Subtraction
+			if type == TYPE_COLOR:
+				return value - Color(new_value)
+			else:
+				return value - new_value
+		"*=": # Multiplication
+			return value * new_value
+		"/=": # Division
+			return value / new_value
+		"**=": # Exponentiation
+			return value ** new_value
+		"%=": # Modulus
+			if type == TYPE_FLOAT:
+				return fmod(value, new_value)
+			else:
+				return value % new_value
+		_: # Unsupported operator, return the new value as is
+			return new_value
 
 #endregion
