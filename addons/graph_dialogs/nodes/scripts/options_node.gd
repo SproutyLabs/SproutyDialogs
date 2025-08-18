@@ -27,7 +27,7 @@ func _ready():
 func get_data() -> Dictionary:
 	var dict := {}
 	var connections: Array = get_parent().get_node_connections(name)
-	
+
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
@@ -35,15 +35,16 @@ func get_data() -> Dictionary:
 		"to_node": [],
 		"offset": position_offset
 	}
+	var data = dict[name.to_snake_case()]
+	
 	for child in get_children():
 		if child is GraphDialogsOptionContainer:
-			dict[name.to_snake_case()]["options_keys"].insert(
-				child.option_index, child.get_dialog_key())
-			if connections.size() > 0 and connections.size() - 1 >= child.option_index:
-				dict[name.to_snake_case()]["to_node"].append(
-					connections[child.option_index]["to_node"].to_snake_case())
-			else:
-				dict[name.to_snake_case()]["to_node"].append("END")
+			data["options_keys"].insert(child.option_index, child.get_dialog_key())
+			data["to_node"].append("END") # Connections default to END
+	
+	for connection in connections: # Set the connections to each option
+		data["to_node"].set(connection["from_port"], connection["to_node"].to_snake_case())
+	
 	return dict
 
 

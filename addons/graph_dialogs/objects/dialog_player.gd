@@ -436,6 +436,8 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 
 ## Handle when the options node is processed
 func _on_options_processed(options: Array, next_nodes: Array) -> void:
+	if not _current_dialog_box:
+		_update_dialog_box("") # Use default dialog box
 	_current_dialog_box.display_options(options)
 	_next_options = next_nodes
 
