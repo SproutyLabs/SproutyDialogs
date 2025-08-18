@@ -33,8 +33,6 @@ const NODES_PATH = "res://addons/graph_dialogs/nodes/"
 
 ## Nodes references
 var _nodes_references: Dictionary
-## Nodes type count
-var _nodes_type_count: Dictionary = {}
 
 ## Selected nodes
 var _selected_nodes: Array[GraphNode] = []
@@ -76,8 +74,6 @@ func _ready():
 	_node_actions_menu.id_pressed.connect(_on_node_actions_menu_selected)
 
 	_nodes_references = _get_nodes_references(NODES_PATH)
-	for node in _nodes_references: # Initialize nodes count array
-		_nodes_type_count[node] = 0
 	set_node_actions_menu()
 	set_add_node_menu()
 
@@ -105,8 +101,6 @@ func on_translation_enabled_changed(enabled: bool):
 
 # Create a new node of a given type
 func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_count: bool = true) -> GraphNode:
-	if add_to_count:
-		_nodes_type_count[node_type] += 1
 	var new_node = _nodes_references[node_type].instantiate()
 	new_node.name = node_type + "_" + str(node_index)
 	new_node.title += ' #' + str(node_index)
@@ -131,6 +125,20 @@ func _get_nodes_references(path: String) -> Dictionary:
 			var node_name = node.replace(".tscn", "")
 			nodes_dict[node_name] = load(NODES_PATH + node)
 	return nodes_dict
+
+
+## Get the next available index for a node type
+## This is used to ensure that the node index is unique
+func get_next_available_index(node_type: String) -> int:
+	var used_indices := []
+	for child in get_children():
+		if child is BaseNode and child.node_type == node_type:
+			used_indices.append(child.node_index)
+	# Find the lowest missing index starting from 1
+	var idx := 1
+	while idx in used_indices:
+		idx += 1
+	return idx
 
 
 #region === Graph Data =========================================================
@@ -323,7 +331,8 @@ func _on_right_click(pos: Vector2) -> void:
 
 ## Add a new node to the graph
 func add_new_node(node_type: String) -> void:
-	var new_node = _new_node(node_type, _nodes_type_count[node_type] + 1, _cursor_pos)
+	var new_index = get_next_available_index(node_type)
+	var new_node = _new_node(node_type, new_index, _cursor_pos)
 	new_node.selected = true
 	on_modified()
 	
@@ -347,7 +356,6 @@ func delete_node(node: GraphNode) -> void:
 	for connection in node_connections: # Disconnect all connections
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
-	_nodes_type_count[node.node_type] -= 1
 	_selected_nodes.erase(node)
 	node.queue_free()
 	on_modified()
@@ -357,7 +365,7 @@ func delete_node(node: GraphNode) -> void:
 func copy_node(node: GraphNode) -> GraphNode:
 	var new_node = _new_node(
 		node.node_type,
-		_nodes_type_count[node.node_type] + (1 * _copied_nodes.size()) + 1,
+		get_next_available_index(node.node_type),
 		node.position_offset,
 		false # Do not add to count here, it will be added later
 	)
@@ -388,9 +396,13 @@ func _on_duplicate_nodes() -> void:
 		return
 	var _duplicate_nodes = _selected_nodes.duplicate()
 	for node in _duplicate_nodes:
+		var new_index = get_next_available_index(node.node_type)
 		var new_node = copy_node(node)
-		_nodes_type_count[node.node_type] += 1
-		new_node.position_offset += Vector2(20, 20) # Offset duplicated nodes
+		new_node.node_index = new_index
+		new_node.name = node.node_type + "_" + str(new_index)
+		new_node.title = new_node.title.split("#")[0] + "#" + str(new_index)
+		_rename_if_exists(new_node)
+		new_node.position_offset += Vector2(20, 20)
 		add_child(new_node, true)
 		new_node.selected = true
 		node.selected = false
@@ -430,7 +442,6 @@ func _on_cut_nodes() -> void:
 		_copied_nodes[node.name] = node
 		_nodes_copy.append(node)
 		remove_child(node)
-		_nodes_type_count[node.node_type] -= 1
 	_selected_nodes.clear()
 	on_modified()
 
@@ -454,7 +465,10 @@ func _on_paste_nodes() -> void:
 		if _copied_nodes[node.name]: # Deselect original nodes
 			_copied_nodes[node.name].selected = false
 		
-		_nodes_type_count[node.node_type] += 1
+		var new_index = get_next_available_index(node.node_type)
+		node.node_index = new_index
+		node.name = node.node_type + "_" + str(new_index)
+		node.title = node.title.split("#")[0] + "#" + str(new_index)
 		_rename_if_exists(node)
 		add_child(node, true)
 		node.selected = true
@@ -470,8 +484,10 @@ func _on_paste_nodes() -> void:
 ## Rename the node if it already exists
 func _rename_if_exists(node: GraphNode) -> void:
 	if get_node_or_null(NodePath(node.name)) != null:
-		node.name = node.node_type + "_" + str(_nodes_type_count[node.node_type])
-		node.title = node.title.split("#")[0] + "#" + str(_nodes_type_count[node.node_type])
+		var new_index = get_next_available_index(node.node_type)
+		node.name = node.node_type + "_" + str(new_index)
+		node.title = node.title.split("#")[0] + "#" + str(new_index)
+		node.node_index = new_index
 
 
 ## Reconnect nodes after a paste operation
