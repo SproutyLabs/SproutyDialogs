@@ -342,10 +342,10 @@ func add_new_node(node_type: String) -> void:
 		if prev_connection.size() > 0:
 			disconnect_node(_request_node, _request_port,
 				prev_connection[0]['to_node'], prev_connection[0]['to_port'])
-			get_node(prev_connection[0]["to_node"]).start_node = null
+			get_node(NodePath(prev_connection[0]["to_node"])).start_node = null
 		
 		connect_node(_request_node, _request_port, new_node.name, 0)
-		new_node.start_node = get_node(_request_node).start_node
+		new_node.start_node = get_node(NodePath(_request_node)).start_node
 		_request_node = ""
 		_request_port = -1
 
@@ -560,7 +560,7 @@ func disconnect_node_on_port(node: String, port: int) -> void:
 	for connection in port_connections:
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
-		get_node(connection["to_node"]).start_node = null
+		get_node(NodePath(connection["to_node"])).start_node = null
 	on_modified()
 
 
@@ -571,11 +571,11 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 	if prev_connection.size() > 0:
 		# Limit the connections to one, diconnecting the old one
 		disconnect_node(from_node, from_port, prev_connection[0]["to_node"], prev_connection[0]["to_port"])
-		get_node(prev_connection[0]["to_node"]).start_node = null
+		get_node(NodePath(prev_connection[0]["to_node"])).start_node = null
 	
 	# Handle nodes connection and assign the node to the connected dialog tree
 	connect_node(from_node, from_port, to_node, to_port)
-	get_node(to_node).start_node = get_node(from_node).start_node
+	get_node(NodePath(to_node)).start_node = get_node(NodePath(from_node)).start_node
 	on_modified()
 
 
@@ -583,6 +583,7 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 func _on_connection_to_empty(from_node: String, from_port: int, release_position: Vector2):
 	_request_node = from_node
 	_request_port = from_port
+	disconnect_node_on_port(from_node, from_port) # Remove the connection
 	_show_popup_menu(_add_node_menu, release_position)
 
 #endregion
