@@ -8,18 +8,33 @@ extends BaseNode
 ## Node to add branches conditions to the dialog tree.
 ## -----------------------------------------------------------------------------
 
-## Type of variable to compare
-@onready var type_selector: OptionButton = $Container/Type
-## Variable dropdown selector
-@onready var var_selector: OptionButton = $Container/Variable
+## Emitted when press the expand button in the string value field
+signal open_text_editor(text_edit: TextEdit)
+
 ## Operator dropdown selector
-@onready var operator_selector: OptionButton = $Container/Operator
-## Value input field
-@onready var value_input: VariableInputField = $Container/ValueInput
+@onready var operator_selector: OptionButton = $Container/OperatorDropdown
+
+## Both variable type dropdown selectors
+var _type_dropdowns: Array = []
+## Variable values for the condition
+var _var_values: Array = ["", ""]
 
 
 func _ready():
 	super ()
+	_set_type_dropdown($Container/FirstVar/TypeField, 0)
+	_set_type_dropdown($Container/SecondVar/TypeField, 1)
+
+
+## Set the type dropdowns and connect their signals
+func _set_type_dropdown(dropdown_field: Node, field_index: int) -> void:
+	var types_dropdown = GraphDialogsVariableManager.get_types_dropdown(true, true)
+	dropdown_field.add_child(types_dropdown)
+	_type_dropdowns.insert(field_index, dropdown_field.get_node("TypeDropdown"))
+	_type_dropdowns[field_index].item_selected.connect(_on_type_selected.bind(0))
+	_type_dropdowns[field_index].select(4) # Default type (String)
+	_on_type_selected(4, field_index) # Default type (String)
+
 
 #region === Overridden Methods =================================================
 
@@ -30,40 +45,74 @@ func get_data() -> Dictionary:
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
-		"var_name": var_selector.get_item_text(var_selector.selected),
-		"var_type": type_selector.selected,
-		"operator": operator_selector.selected,
-		"var_value": value_input.get_value(),
-		"to_node": [] if connections.size() > 0 else ["END"],
+		"first_type": _type_dropdowns[0].get_item_id(_type_dropdowns[0].selected),
+		"first_value": _var_values[0],
+		"operator": operator_selector.get_item_id(operator_selector.selected),
+		"second_type": _type_dropdowns[1].get_item_id(_type_dropdowns[1].selected),
+		"second_value": _var_values[1],
+		"to_node": ["END", "END"], # Default to END in case no connections
 		"offset": position_offset
 	}
-	if dict["to_node"][0] != "END":
-		for connection in connections:
-			dict[name.to_snake_case()]["to_node"].append(
-				connection["to_node"].to_snake_case()
-			)
-	
+	for connection in connections:
+		dict[name.to_snake_case()]["to_node"].set(
+			connection["from_port"], connection["to_node"].to_snake_case())
 	return dict
 
 
 func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
-	type_selector.select(dict["var_type"])
-	value_input.change_var_type(dict["var_type"])
-	# TODO: filter variables by type
-	for item_index in var_selector.item_count:
-		if var_selector.get_item_text(item_index) == dict["var_name"]:
-			var_selector.select(item_index)
-			break
-	operator_selector.select(dict["operator"])
-	value_input.set_value(dict["var_value"])
-	
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
+	# Set the types on the dropdowns
+	var first_type_index = _type_dropdowns[0].get_item_index(dict["first_type"])
+	_type_dropdowns[0].select(first_type_index)
+	_on_type_selected(first_type_index, 0)
+	var second_type_index = _type_dropdowns[1].get_item_index(dict["second_type"])
+	_type_dropdowns[1].select(second_type_index)
+	_on_type_selected(second_type_index, 1)
+	# Set the operator and values
+	operator_selector.select(operator_selector.get_item_index(dict["operator"]))
+	GraphDialogsVariableManager.set_field_value(
+		$Container/FirstVar/ValueField.get_child(0), dict["first_type"], dict["first_value"])
+	GraphDialogsVariableManager.set_field_value(
+		$Container/SecondVar/ValueField.get_child(0), dict["second_type"], dict["second_value"])
+	_var_values = [dict["first_value"], dict["second_value"]]
 
 #endregion
 
-## Update the variable selector with the available variables
-func _on_type_item_selected(index: int) -> void:
-	value_input.change_var_type(index)
+## Handle when a type is selected from the dropdown
+func _on_type_selected(type_index: int, field_index: int) -> void:
+	# Set the type on the dropdown
+	var type = _type_dropdowns[field_index].get_item_id(type_index)
+	_set_value_field(type, field_index)
+	# Set the operator dropdown based on the variable type
+	var operators = GraphDialogsVariableManager.get_comparison_operators(type)
+	operator_selector.clear()
+	for operator in operators.keys():
+		operator_selector.add_item(operator, operators[operator])
+	size.y = 0 # Resize node
+
+
+## Set a value field based on the variable type
+func _set_value_field(type: int, field_index: int) -> void:
+	var value_field = $Container/FirstVar/ValueField if field_index == 0 \
+			else $Container/SecondVar/ValueField
+	# Remove the previous value field if it exists
+	if value_field.get_child_count() > 0:
+		var field = value_field.get_child(0)
+		value_field.remove_child(field)
+		field.queue_free()
+	# Set the value field based on the variable type
+	var field_data = GraphDialogsVariableManager.get_field_by_type(type, _on_value_changed.bind(field_index))
+	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
+	value_field.add_child(field_data.field)
+
+	if type == TYPE_STRING: # Connect the expand button to open the text editor
+		field_data.field.get_node("ExpandButton").pressed.connect(
+			graph_editor.open_text_editor.emit.bind(field_data.field.get_node("TextEdit")))
+
+
+## Handle when the value changes in any of the value fields
+func _on_value_changed(value: Variant, field_index: int) -> void:
+	_var_values[field_index] = value

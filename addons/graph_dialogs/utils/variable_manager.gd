@@ -51,9 +51,12 @@ enum COMPARISON_OPS {
 ##     ...
 ## }
 static var _variables: Dictionary = {}
+## Variable icon
+static var _variable_icon = preload("res://addons/graph_dialogs/icons/variable.svg")
 
 
 ## Returns variables as a dictionary.
+## If the variables are not loaded, it will load them from project settings.
 static func get_variables() -> Dictionary:
 	if _variables.is_empty():
 		load_variables() # Load variables if not already loaded
@@ -73,20 +76,22 @@ static func get_variable(name: String, group: Dictionary = _variables) -> Varian
 	return null
 
 
-## Get all variables of a specific type.
-## If no variables of the specified type are found, it returns an empty dictionary.
-static func get_variables_by_type(type: int, group: Dictionary = _variables) -> Dictionary:
-	var result: Dictionary = {}
+## Returns a list of the variable names.
+## If a type is specified, it returns only the variables of that type.
+## If no type is specified, it returns all variables.
+## If no variables are found, it returns an empty array.
+static func get_variable_list(type: int = -1, group: Dictionary = _variables) -> Array:
+	var variable_list: Array = []
 	for key in group.keys():
-		var variable = group[key]
-		if variable.has("variables"): # Recursively check in groups
-			var sub_variables = get_variables_by_type(type, variable.variables)
-			if not sub_variables.is_empty():
-				result.merge(sub_variables)
-		elif variable.type == type:
-			result[key] = variable
-	return result
-
+		if group[key].has("variables"): # Recursively check in groups
+			var sub_variables = get_variable_list(type, group[key].variables)
+			for sub_key in sub_variables:
+				variable_list.append(key + "/" + sub_key)
+		# Check if the variable type matches or if no type is specified
+		elif type == -1 or group[key].type == type:
+			variable_list.append(key)
+	return variable_list
+	
 
 ## Set a variable in the Variables Manager.
 ## If the variable does not exist, it will be created.
@@ -171,13 +176,15 @@ static func parse_variables(text: String) -> String:
 #region === Variable Type Fields ===============================================
 
 # Returns an OptionButton with all variable types
-static func get_types_dropdown(label: bool = true) -> OptionButton:
+static func get_types_dropdown(label: bool = true, include_var: bool = false) -> OptionButton:
 	var dropdown: OptionButton = OptionButton.new()
 	dropdown.name = "TypeDropdown"
 	dropdown.tooltip_text = "Select variable type"
 	dropdown.mouse_filter = Control.MOUSE_FILTER_PASS
 
 	var root = EditorInterface.get_base_control()
+	if include_var: # Add variable as a type option
+		dropdown.add_icon_item(_variable_icon, "Variable" if label else "", TYPE_NIL)
 	dropdown.add_icon_item(root.get_theme_icon("bool", "EditorIcons"), "Bool" if label else "", TYPE_BOOL)
 	dropdown.add_icon_item(root.get_theme_icon("int", "EditorIcons"), "Int" if label else "", TYPE_INT)
 	dropdown.add_icon_item(root.get_theme_icon("float", "EditorIcons"), "Float" if label else "", TYPE_FLOAT)
@@ -199,6 +206,15 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 	var field = null
 	var default_value = null
 	match type:
+		TYPE_NIL: # Variable field
+			field = GraphDialogsComboBox.new()
+			var popup = PopupMenu.new()
+			popup.name = "DropdownPopup"
+			field.add_child(popup)
+			field.set_placeholder("Variable name...")
+			field.set_options(get_variable_list())
+			field.option_selected.connect(on_value_changed)
+			default_value = ""
 		TYPE_BOOL:
 			field = CheckBox.new()
 			field.toggled.connect(on_value_changed)
@@ -288,6 +304,9 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 ## Sets the value in the given field based on its type
 static func set_field_value(field: Control, type: int, value: Variant) -> void:
 	match type:
+		TYPE_NIL:
+			if field is GraphDialogsComboBox:
+				field.set_value(value) # Set the variable name
 		TYPE_BOOL:
 			if field is CheckBox:
 				field.button_pressed = bool(value)
@@ -368,8 +387,8 @@ static func get_assignment_operators(type: int) -> Dictionary:
 ## Returns a list of comparison operators by type
 static func get_comparison_operators(type: int) -> Dictionary:
 	match type:
-		TYPE_INT, TYPE_FLOAT, TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
-			return { # Numeric comparison
+		TYPE_INT, TYPE_FLOAT, TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4, TYPE_NIL:
+			return { # All comparison operators
 				"==": COMPARISON_OPS.EQUAL,
 				"!=": COMPARISON_OPS.NOT_EQUAL,
 				"<": COMPARISON_OPS.LESS_THAN,

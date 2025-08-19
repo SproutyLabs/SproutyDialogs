@@ -77,8 +77,7 @@ func set_data(dict: Dictionary) -> void:
 func _on_type_selected(index: int) -> void:
 	var type = _type_dropdown.get_item_id(index)
 	# Set the variable dropdown based on the selected type and update the value field
-	var variables = GraphDialogsVariableManager.get_variables_by_type(type)
-	_name_input.set_options(variables.keys())
+	_name_input.set_options(GraphDialogsVariableManager.get_variable_list(type))
 	_set_value_field(type)
 	# Set the operator dropdown based on the variable type
 	var operators = GraphDialogsVariableManager.get_assignment_operators(type)
