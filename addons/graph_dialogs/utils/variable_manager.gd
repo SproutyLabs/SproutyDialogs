@@ -53,6 +53,17 @@ enum COMPARISON_OPS {
 static var _variables: Dictionary = {}
 ## Variable icon
 static var _variable_icon = preload("res://addons/graph_dialogs/icons/variable.svg")
+## Reference to the root node of the scene tree
+## This is used to access autoloads and other global nodes.
+## It is set in the _ready() function of the GraphDialogsManager.
+static var _root_reference: Node = null
+
+
+## Sets the root reference for the Variable Manager.
+## This is used to access autoloads and other global nodes.
+## It should be called ONLY in the _ready() function of the GraphDialogsManager.
+static func set_root_reference(root: Node) -> void:
+	_root_reference = root
 
 
 ## Returns variables as a dictionary.
@@ -61,19 +72,6 @@ static func get_variables() -> Dictionary:
 	if _variables.is_empty():
 		load_variables() # Load variables if not already loaded
 	return _variables
-
-
-## Get the type and value of a variable.
-## If the variable does not exist, it returns null.
-static func get_variable(name: String, group: Dictionary = _variables) -> Variant:
-	for key in group.keys():
-		if key == name:
-			return group[key]
-		if group[key].has("variables"): # Recursively check in groups
-			var variable = get_variable(name, group[key].variables)
-			if variable:
-				return variable
-	return null
 
 
 ## Returns a list of the variable names.
@@ -91,27 +89,81 @@ static func get_variable_list(type: int = -1, group: Dictionary = _variables) ->
 		elif type == -1 or group[key].type == type:
 			variable_list.append(key)
 	return variable_list
+
+
+## Get a variable from the Variables Manager or from the autoloads.
+## If the variable is found, it returns a dictionary with the variable name, type and value
+## If the variable does not exist, it returns null.
+static func get_variable(name: String) -> Variant:
+	if _variables.has(name): # If the variable is a directly in the dictionary
+		var variable = _variables[name]
+		return {
+			"name": name,
+			"type": variable.type,
+			"value": variable.value
+		}
+	elif "/" in name: # If the variable is inside a group
+		var parts = name.split("/")
+		var current_group = _variables
+		for part in parts:
+			if current_group.has(part):
+				if current_group[part].has("variables"): # Check inside
+					current_group = current_group[part].variables
+				else: # Variable found
+					return {
+						"name": part,
+						"type": current_group[part].type,
+						"value": current_group[part].value
+					}
+	elif "." in name: # If the variable is in an autoload
+		var from = name.get_slice(".", 0)
+		var autoloads = get_autoloads()
+		if autoloads.has(from):
+			var variable_name = name.get_slice(".", 1)
+			var variable_value = autoloads[from].get(variable_name)
+			return {
+			"name": variable_name,
+			"type": typeof(variable_value),
+			"value": variable_value
+		}
+	return null
 	
 
-## Set a variable in the Variables Manager.
-## If the variable does not exist, it will be created.
-## If the variable exists, it will be updated.
-static func set_variable(name: String, type: int, value: Variant) -> void:
-	var variable = get_variable(name)
-	if not variable: # If variable does not exist, create it
-		_variables[name] = {
-			"type": type,
-			"value": value
-		}
-	else: # Update existing variable
-		variable.type = type
-		variable.value = value
-	save_variables(_variables) # Save changes to project settings
+## Set or update a variable in the Variables Manager or in the autoloads.
+## The variable must already exist in the Variables Manager or in the autoloads.
+static func set_variable(name: String, value: Variant) -> void:
+	if _variables.has(name): # If the variable is a directly in the dictionary
+		_variables[name].value = value
+		return
+	elif "/" in name: # If the variable is inside a group
+		var parts = name.split("/")
+		var current_group = _variables
+		for part in parts:
+			if current_group.has(part):
+				if current_group[part].has("variables"): # Check inside
+					current_group = current_group[part].variables
+				else: # Variable found
+					current_group[part].value = value
+					return
+	elif "." in name: # If the variable is in an autoload
+		var from = name.get_slice(".", 0)
+		var autoloads = get_autoloads()
+		if autoloads.has(from):
+			var variable_name = name.get_slice(".", 1)
+			if autoloads[from].get(variable_name):
+				autoloads[from].set(variable_name, value)
+				return
+			else:
+				printerr("[Graph Dialogs] Cannot set variable '" + variable_name +
+						"'. Variable not found in autoload '" + from + "'.")
+				return
+	
+	printerr("[Graph Dialogs] Cannot set variable '" + name + "'. Variable not found.")
 
 
 ## Check if a variable exists
 static func has_variable(name: String, group: Dictionary = _variables) -> bool:
-	return get_variable(name, group) != null
+	return get_variable(name) != null
 
 
 ## Load variables from project settings
@@ -123,28 +175,6 @@ static func load_variables() -> void:
 static func save_variables(data: Dictionary) -> void:
 	GraphDialogsSettings.set_setting("variables", data)
 	_variables = data
-
-
-## Update the value of a variable.
-## If variable is not found in the Variables Manager, try to find it in
-## global variables and update it.
-static func update_variable(name: String, type: int, new_value: Variant,
-		operator: int = ASSIGN_OPS.ASSIGN, scene_reference: Node = null) -> void:
-	var variable = get_variable(name)
-	if not variable and scene_reference: # Search in global variables
-		var autoloads = get_autoloads(scene_reference)
-		# TODO: Implement global variables update
-		pass
-	else: # Update variable in Variables Manager
-		variable.value = get_assignment_result(type, operator, variable.value, new_value)
-
-
-## Returns a dictionary with the autoloads from a given scene tree.
-static func get_autoloads(from_scene: Node) -> Dictionary:
-	var autoloads := {}
-	for node: Node in from_scene.get_tree().root.get_children():
-		autoloads[node.name] = node
-	return autoloads
 
 
 ## Replaces all variables ({}) in a text with their corresponding values
@@ -168,9 +198,17 @@ static func parse_variables(text: String) -> String:
 					variable.value = variable.value.to_html() # Convert to Hex string
 				text = text.replace("{" + var_name + "}", str(variable.value))
 			else:
-				printerr("[Graph Dialogs] Variable '" + var_name + "' not found. " +
-					"Please check if the variable exists in the Variables Manager.")
+				printerr("[Graph Dialogs] Cannot parse variable {" + var_name + "} not found. " +
+					"Please check if the variable exists in the Variables Manager or in the autoloads.")
 	return text
+
+
+## Returns a dictionary with the autoloads from a given scene tree.
+static func get_autoloads() -> Dictionary:
+	var autoloads := {}
+	for node: Node in _root_reference.get_children():
+		autoloads[node.name] = node
+	return autoloads
 
 
 #region === Variable Type Fields ===============================================
@@ -432,22 +470,32 @@ static func get_assignment_result(type: int, operator: int, value: Variant, new_
 
 ## Returns the result of comparing two values based on the specified operator.
 static func get_comparison_result(first_type: int, first_value: Variant,
-		second_type: int, second_value: Variant, operator: int) -> bool:
+		second_type: int, second_value: Variant, operator: int) -> Variant:
 	# Get the variable values if any is a variable
 	if first_type == TYPE_NIL:
 		var variable = get_variable(first_value)
-		first_value = variable.value
-		first_type = variable.type
+		if variable:
+			first_value = variable.value
+			first_type = variable.type
+		else:
+			printerr("[Graph Dialogs] Cannot check condition. Variable '" + str(first_value) + "' not found. " +
+				"Please check if the variable exists in the Variables Manager or in the autoloads.")
+			return null
 	if second_type == TYPE_NIL:
 		var variable = get_variable(second_value)
-		second_value = variable.value
-		second_type = variable.type
+		if variable:
+			second_value = variable.value
+			second_type = variable.type
+		else:
+			printerr("[Graph Dialogs] Cannot check condition. Variable '" + str(second_value) + "' not found. " +
+				"Please check if the variable exists in the Variables Manager or in the autoloads.")
+			return null
 
 	if first_type != second_type: # If types do not match, cannot compare
 		printerr("[Graph Dialogs] Cannot compare variables of type '" +
 			type_string(first_type) + "' and '" + type_string(second_type) + "'.")
 		printerr("Values '" + str(first_value) + "' and '" + str(second_value) + "' are not comparable.")
-		return false
+		return null
 
 	match operator:
 		COMPARISON_OPS.EQUAL:

@@ -105,13 +105,18 @@ func _process_options(node_data: Dictionary) -> void:
 
 func _process_set_variable(node_data: Dictionary) -> void:
 	print("[Graph Dialogs] Processing set variable node...")
-	GraphDialogsVariableManager.update_variable(
-		node_data.var_name, # Variable name
+	var variable = GraphDialogsVariableManager.get_variable(node_data.var_name)
+	if not variable:
+		printerr("[Graph Dialogs] Cannot set variable '" + node_data.var_name + "' not found. " +
+			"Please check if the variable exists in the Variables Manager or in the autoloads.")
+		return
+	var assignment_result = GraphDialogsVariableManager.get_assignment_result(
 		node_data.var_type, # Variable type
-		node_data.new_value, # New value
-		node_data.operator, # Operator
-		self # Scene reference to get root tree and update global variables if needed
+		node_data.operator, # Assignment operator
+		variable.value, # Current variable value
+		node_data.new_value # New value to assign
 	)
+	GraphDialogsVariableManager.set_variable(node_data.var_name, assignment_result)
 	continue_to_node.emit(node_data.to_node[0])
 
 

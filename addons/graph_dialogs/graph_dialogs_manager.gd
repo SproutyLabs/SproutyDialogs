@@ -28,7 +28,8 @@ func _ready():
 	if not Engine.has_singleton("GraphDialogs"):
 		Engine.register_singleton("GraphDialogs", self)
 	
-	# Load the variables from project settings
+	# Set up variables manager
+	GraphDialogsVariableManager.set_root_reference(get_tree().root)
 	GraphDialogsVariableManager.load_variables()
 
 
