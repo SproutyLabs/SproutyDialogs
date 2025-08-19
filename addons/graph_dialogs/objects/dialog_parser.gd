@@ -80,9 +80,18 @@ func _get_translated_character_name(character: String) -> String:
 
 
 func _process_condition(node_data: Dictionary) -> void:
-	# TODO: Process the node
 	print("[Graph Dialogs] Processing condition node...")
-	continue_to_node.emit(node_data.to_node[0])
+	var comparison_result = GraphDialogsVariableManager.get_comparison_result(
+		node_data.first_type, # First variable type
+		node_data.first_value, # First variable value
+		node_data.second_type, # Second variable type
+		node_data.second_value, # Second variable value
+		node_data.operator # Comparison operator
+	)
+	if comparison_result: # If is true, continue to the first connection
+		continue_to_node.emit(node_data.to_node[0])
+	else: # If is false, continue to the second connection
+		continue_to_node.emit(node_data.to_node[1])
 
 
 func _process_options(node_data: Dictionary) -> void:

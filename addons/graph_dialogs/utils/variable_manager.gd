@@ -429,4 +429,41 @@ static func get_assignment_result(type: int, operator: int, value: Variant, new_
 		_: # Unsupported operator, return the new value as is
 			return new_value
 
+
+## Returns the result of comparing two values based on the specified operator.
+static func get_comparison_result(first_type: int, first_value: Variant,
+		second_type: int, second_value: Variant, operator: int) -> bool:
+	# Get the variable values if any is a variable
+	if first_type == TYPE_NIL:
+		var variable = get_variable(first_value)
+		first_value = variable.value
+		first_type = variable.type
+	if second_type == TYPE_NIL:
+		var variable = get_variable(second_value)
+		second_value = variable.value
+		second_type = variable.type
+
+	if first_type != second_type: # If types do not match, cannot compare
+		printerr("[Graph Dialogs] Cannot compare variables of type '" +
+			type_string(first_type) + "' and '" + type_string(second_type) + "'.")
+		printerr("Values '" + str(first_value) + "' and '" + str(second_value) + "' are not comparable.")
+		return false
+
+	match operator:
+		COMPARISON_OPS.EQUAL:
+			return first_value == second_value
+		COMPARISON_OPS.NOT_EQUAL:
+			return first_value != second_value
+		COMPARISON_OPS.LESS_THAN:
+			return first_value < second_value
+		COMPARISON_OPS.GREATER_THAN:
+			return first_value > second_value
+		COMPARISON_OPS.LESS_EQUAL:
+			return first_value <= second_value
+		COMPARISON_OPS.GREATER_EQUAL:
+			return first_value >= second_value
+		_:
+			printerr("[Graph Dialogs] Unsupported comparison operator: " + str(operator))
+			return false
+
 #endregion

@@ -111,6 +111,7 @@ func _set_value_field(type: int, field_index: int) -> void:
 	var field_data = GraphDialogsVariableManager.get_field_by_type(type, _on_value_changed.bind(field_index))
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	value_field.add_child(field_data.field)
+	_var_values[field_index] = field_data.default_value
 
 	if type == TYPE_STRING: # Connect the expand button to open the text editor
 		field_data.field.get_node("ExpandButton").pressed.connect(
