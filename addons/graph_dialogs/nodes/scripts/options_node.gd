@@ -33,7 +33,8 @@ func get_data() -> Dictionary:
 		"node_index": node_index,
 		"options_keys": [],
 		"to_node": [],
-		"offset": position_offset
+		"offset": position_offset,
+		"size": size
 	}
 	var data = dict[name.to_snake_case()]
 	
@@ -51,9 +52,10 @@ func get_data() -> Dictionary:
 func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
+	_options_keys = dict["options_keys"]
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
-	_options_keys = dict["options_keys"]
+	size = dict["size"]
 #endregion
 
 

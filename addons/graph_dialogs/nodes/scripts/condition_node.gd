@@ -12,7 +12,7 @@ extends BaseNode
 signal open_text_editor(text_edit: TextEdit)
 
 ## Operator dropdown selector
-@onready var operator_selector: OptionButton = $Container/OperatorDropdown
+@onready var operator_dropdown: OptionButton = $Container/OperatorDropdown
 
 ## Both variable type dropdown selectors
 var _type_dropdowns: Array = []
@@ -31,9 +31,9 @@ func _set_type_dropdown(dropdown_field: Node, field_index: int) -> void:
 	var types_dropdown = GraphDialogsVariableManager.get_types_dropdown(true, true)
 	dropdown_field.add_child(types_dropdown)
 	_type_dropdowns.insert(field_index, dropdown_field.get_node("TypeDropdown"))
-	_type_dropdowns[field_index].item_selected.connect(_on_type_selected.bind(0))
-	_type_dropdowns[field_index].select(4) # Default type (String)
-	_on_type_selected(4, field_index) # Default type (String)
+	_type_dropdowns[field_index].item_selected.connect(_on_type_selected.bind(field_index))
+	_type_dropdowns[field_index].select(0) # Default type (Variable)
+	_on_type_selected(0, field_index) # Default type (Variable)
 
 
 #region === Overridden Methods =================================================
@@ -47,11 +47,12 @@ func get_data() -> Dictionary:
 		"node_index": node_index,
 		"first_type": _type_dropdowns[0].get_item_id(_type_dropdowns[0].selected),
 		"first_value": _var_values[0],
-		"operator": operator_selector.get_item_id(operator_selector.selected),
+		"operator": operator_dropdown.get_item_id(operator_dropdown.selected),
 		"second_type": _type_dropdowns[1].get_item_id(_type_dropdowns[1].selected),
 		"second_value": _var_values[1],
 		"to_node": ["END", "END"], # Default to END in case no connections
-		"offset": position_offset
+		"offset": position_offset,
+		"size": size
 	}
 	for connection in connections:
 		dict[name.to_snake_case()]["to_node"].set(
@@ -64,6 +65,8 @@ func set_data(dict: Dictionary) -> void:
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
+	size = dict["size"]
+
 	# Set the types on the dropdowns
 	var first_type_index = _type_dropdowns[0].get_item_index(dict["first_type"])
 	_type_dropdowns[0].select(first_type_index)
@@ -71,8 +74,9 @@ func set_data(dict: Dictionary) -> void:
 	var second_type_index = _type_dropdowns[1].get_item_index(dict["second_type"])
 	_type_dropdowns[1].select(second_type_index)
 	_on_type_selected(second_type_index, 1)
+
 	# Set the operator and values
-	operator_selector.select(operator_selector.get_item_index(dict["operator"]))
+	operator_dropdown.select(operator_dropdown.get_item_index(dict["operator"]))
 	GraphDialogsVariableManager.set_field_value(
 		$Container/FirstVar/ValueField.get_child(0), dict["first_type"], dict["first_value"])
 	GraphDialogsVariableManager.set_field_value(
@@ -88,9 +92,9 @@ func _on_type_selected(type_index: int, field_index: int) -> void:
 	_set_value_field(type, field_index)
 	# Set the operator dropdown based on the variable type
 	var operators = GraphDialogsVariableManager.get_comparison_operators(type)
-	operator_selector.clear()
+	operator_dropdown.clear()
 	for operator in operators.keys():
-		operator_selector.add_item(operator, operators[operator])
+		operator_dropdown.add_item(operator, operators[operator])
 	size.y = 0 # Resize node
 
 

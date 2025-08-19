@@ -29,7 +29,8 @@ func get_data() -> Dictionary:
 		"time": time_value,
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
-		"offset": position_offset
+		"offset": position_offset,
+		"size": size
 	}
 	return dict
 
@@ -37,11 +38,12 @@ func get_data() -> Dictionary:
 func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
-	time_value = dict["time"]
-	time_input.value = dict["time"]
-	
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
+	size = dict["size"]
+
+	time_value = dict["time"]
+	time_input.value = dict["time"]
 
 #endregion
 

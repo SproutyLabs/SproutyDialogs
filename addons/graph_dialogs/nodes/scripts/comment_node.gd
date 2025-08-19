@@ -24,7 +24,8 @@ func get_data() -> Dictionary:
 		"node_type": node_type,
 		"node_index": node_index,
 		"comment_text": comment_text,
-		"offset": position_offset
+		"offset": position_offset,
+		"size": size
 	}
 	return dict
 
@@ -35,6 +36,7 @@ func set_data(dict: Dictionary) -> void:
 	comment_text = dict["comment_text"]
 	text_input.text = dict["comment_text"]
 	position_offset = dict["offset"]
+	size = dict["size"]
 
 
 func _on_input_text_changed() -> void:

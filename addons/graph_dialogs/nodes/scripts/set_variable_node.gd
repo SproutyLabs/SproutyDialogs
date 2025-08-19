@@ -49,7 +49,8 @@ func get_data() -> Dictionary:
 		"new_value": _new_var_value,
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
-		"offset": position_offset
+		"offset": position_offset,
+		"size": size
 	}
 	return dict
 
@@ -59,10 +60,13 @@ func set_data(dict: Dictionary) -> void:
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
+	size = dict["size"]
+
 	# Set the type on the dropdown
 	var type_index = _type_dropdown.get_item_index(dict["var_type"])
 	_type_dropdown.select(type_index)
 	_on_type_selected(type_index)
+	
 	# Set the variable name, operator and value
 	_name_input.set_value(dict["var_name"])
 	_operator_dropdown.select(_operator_dropdown.get_item_index(dict["operator"]))
