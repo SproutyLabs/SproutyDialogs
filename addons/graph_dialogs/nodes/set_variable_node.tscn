@@ -52,20 +52,25 @@ script = ExtResource("5_5o0bh")
 node_color = Color(0.396078, 0.572549, 0, 1)
 node_icon = ExtResource("6_sx7hg")
 
-[node name="Container" type="HBoxContainer" parent="."]
+[node name="Container" type="HFlowContainer" parent="."]
 layout_mode = 2
 
-[node name="TypeField" type="PanelContainer" parent="Container"]
+[node name="VarField" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypeField" type="PanelContainer" parent="Container/VarField"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = ExtResource("4_7k7se")
 
-[node name="NameInput" parent="Container" instance=ExtResource("5_oao84")]
+[node name="NameInput" parent="Container/VarField" instance=ExtResource("5_oao84")]
 layout_mode = 2
-placeholder_text = "Variable..."
+placeholder_text = "Variable name..."
 
 [node name="OperatorDropdown" type="OptionButton" parent="Container"]
 layout_mode = 2
+size_flags_horizontal = 3
 tooltip_text = "The type of the value to set."
 selected = 0
 item_count = 2

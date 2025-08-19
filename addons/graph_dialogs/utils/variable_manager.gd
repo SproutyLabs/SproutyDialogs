@@ -284,6 +284,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 				)
 		TYPE_COLOR:
 			field = ColorPickerButton.new()
+			field.custom_minimum_size = Vector2(60, 60)
 			field.color_changed.connect(on_value_changed)
 			default_value = field.color.to_html()
 		
@@ -384,23 +385,16 @@ static func get_assignment_operators(type: int) -> Dictionary:
 			}
 
 
-## Returns a list of comparison operators by type
-static func get_comparison_operators(type: int) -> Dictionary:
-	match type:
-		TYPE_INT, TYPE_FLOAT, TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4, TYPE_NIL:
-			return { # All comparison operators
-				"==": COMPARISON_OPS.EQUAL,
-				"!=": COMPARISON_OPS.NOT_EQUAL,
-				"<": COMPARISON_OPS.LESS_THAN,
-				">": COMPARISON_OPS.GREATER_THAN,
-				"<=": COMPARISON_OPS.LESS_EQUAL,
-				">=": COMPARISON_OPS.GREATER_EQUAL
-			}
-		_:
-			return { # Default to equality for other types
-				"==": COMPARISON_OPS.EQUAL,
-				"!=": COMPARISON_OPS.NOT_EQUAL
-			}
+## Returns the comparison operators as a dictionary
+static func get_comparison_operators() -> Dictionary:
+	return {
+		"==": COMPARISON_OPS.EQUAL,
+		"!=": COMPARISON_OPS.NOT_EQUAL,
+		"<": COMPARISON_OPS.LESS_THAN,
+		">": COMPARISON_OPS.GREATER_THAN,
+		"<=": COMPARISON_OPS.LESS_EQUAL,
+		">=": COMPARISON_OPS.GREATER_EQUAL
+	}
 
 
 ## Returns the value resulting from an assignment operation

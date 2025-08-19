@@ -81,6 +81,7 @@ func _on_close_button_pressed() -> void:
 ## Update the text box and preview with the text editor input
 func _on_code_edit_text_changed() -> void:
 	_opened_text_box.text = text_input.text
+	_opened_text_box.text_changed.emit(text_input.text)
 	_text_preview.text = GraphDialogsVariableManager.parse_variables(text_input.text)
 
 

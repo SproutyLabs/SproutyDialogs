@@ -12,7 +12,7 @@ extends BaseNode
 signal open_text_editor(text_edit: TextEdit)
 
 ## Variable name dropdown selector
-@onready var _name_input: GraphDialogsComboBox = $Container/NameInput
+@onready var _name_input: GraphDialogsComboBox = $Container/VarField/NameInput
 ## Operator dropdown selector
 @onready var _operator_dropdown: OptionButton = $Container/OperatorDropdown
 
@@ -27,8 +27,8 @@ var _new_var_value: Variant = ""
 
 func _ready():
 	super ()
-	$Container/TypeField.add_child(GraphDialogsVariableManager.get_types_dropdown(false))
-	_type_dropdown = $Container/TypeField/TypeDropdown
+	$Container/VarField/TypeField.add_child(GraphDialogsVariableManager.get_types_dropdown())
+	_type_dropdown = $Container/VarField/TypeField/TypeDropdown
 	_type_dropdown.item_selected.connect(_on_type_selected)
 	_type_dropdown.select(3) # Default type (String)
 	_on_type_selected(3) # Default type (String)
@@ -105,6 +105,9 @@ func _set_value_field(type: int) -> void:
 	if type == TYPE_STRING: # Connect the expand button to open the text editor
 		field_data.field.get_node("ExpandButton").pressed.connect(
 			graph_editor.open_text_editor.emit.bind(field_data.field.get_node("TextEdit")))
+	
+	if type == TYPE_BOOL: # Adjust size horizontally
+		size.x += field_data.field.get_size().x
 
 
 ## Handle when the value in the input field changes

@@ -24,6 +24,11 @@ func _ready():
 	super ()
 	_set_type_dropdown($Container/FirstVar/TypeField, 0)
 	_set_type_dropdown($Container/SecondVar/TypeField, 1)
+	# Set the operators in the operator dropdown
+	var operators = GraphDialogsVariableManager.get_comparison_operators()
+	operator_dropdown.clear()
+	for operator in operators.keys():
+		operator_dropdown.add_item(operator, operators[operator])
 
 
 ## Set the type dropdowns and connect their signals
@@ -85,16 +90,11 @@ func set_data(dict: Dictionary) -> void:
 
 #endregion
 
+
 ## Handle when a type is selected from the dropdown
 func _on_type_selected(type_index: int, field_index: int) -> void:
-	# Set the type on the dropdown
 	var type = _type_dropdowns[field_index].get_item_id(type_index)
 	_set_value_field(type, field_index)
-	# Set the operator dropdown based on the variable type
-	var operators = GraphDialogsVariableManager.get_comparison_operators(type)
-	operator_dropdown.clear()
-	for operator in operators.keys():
-		operator_dropdown.add_item(operator, operators[operator])
 	size.y = 0 # Resize node
 
 
