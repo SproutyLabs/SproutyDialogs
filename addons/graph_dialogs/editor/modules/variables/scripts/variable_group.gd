@@ -46,7 +46,7 @@ func _ready() -> void:
 	_name_input.editing_toggled.connect(_on_name_changed)
 	_color_picker.color_changed.connect(_on_color_changed)
 	_expandable_button.toggled.connect(_on_expandable_button_toggled)
-	_expandable_button.tooltip_text = "Expand"
+	_expandable_button.tooltip_text = "Expand Group"
 	_expandable_button.button_pressed = true
 	
 	%RemoveButton.pressed.connect(remove_pressed.emit)
@@ -68,20 +68,30 @@ func _ready() -> void:
 	_on_mouse_exited() # Hide the drop highlight
 
 
+## Return the group path in the variables tree
+func get_item_path() -> String:
+	var group = find_parent("VariableGroup")
+	if group:
+		return group.get_item_path() + "/" + _group_name
+	else:
+		return _group_name
+
+
 ## Returns the group name
-func get_group_name() -> String:
+func get_item_name() -> String:
 	return _group_name
 
 
-## Returns the group color
-func get_group_color() -> Color:
-	return _group_color
-
-
 ## Set the group name
-func set_name(new_name: String) -> void:
+func set_item_name(new_name: String) -> void:
 	_group_name = new_name
 	_name_input.text = new_name
+	update_path_tooltip()
+
+
+## Returns the group color
+func get_color() -> Color:
+	return _group_color
 
 
 ## Set the group color
@@ -120,6 +130,12 @@ func show_items_as_modified(show: bool) -> void:
 ## Show the modified indicator for the group
 func show_as_modified(show: bool) -> void:
 	%ModifiedIndicator.visible = show
+
+
+## Update the tooltip with the current group path
+func update_path_tooltip() -> void:
+	var path = get_item_path()
+	_name_input.tooltip_text = path
 
 
 ## Handle the name change event
@@ -193,6 +209,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	var from_group = data.group
 	from_group.remove_child(item)
 	to_group.add_child(data.item)
+	data.item.update_path_tooltip()
 
 
 ## Handle mouse exit event to hide drop highlight

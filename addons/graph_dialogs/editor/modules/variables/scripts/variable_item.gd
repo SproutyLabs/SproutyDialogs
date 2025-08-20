@@ -64,10 +64,35 @@ func get_variable_data() -> Dictionary:
 	}
 
 
+## Return the item path in the variables tree
+func get_item_path() -> String:
+	var group = find_parent("VariableGroup")
+	if group:
+		return group.get_item_path() + "/" + _variable_name
+	else:
+		return _variable_name
+
+
+## Returns the variable name
+func get_item_name() -> String:
+	return _variable_name
+
+
+## Returns the variable type
+func get_type() -> int:
+	return _variable_type
+
+
+## Returns the variable value
+func get_value() -> Variant:
+	return _variable_value
+
+
 ## Rename the variable item
-func set_name(new_name: String) -> void:
+func set_item_name(new_name: String) -> void:
 	_variable_name = new_name
 	_name_input.text = new_name
+	update_path_tooltip()
 
 
 ## Set the variable type
@@ -91,6 +116,13 @@ func set_value(value: Variant) -> void:
 ## Show the modified indicator
 func show_as_modified(show: bool) -> void:
 	_modified_indicator.visible = show
+
+
+## Update the tooltip with the current item path
+func update_path_tooltip() -> void:
+	var path = get_item_path()
+	_name_input.tooltip_text = path
+	$Container/Icon.tooltip_text = path
 
 
 ## Set the types dropdown
@@ -204,5 +236,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		# Insert at the bottom
 		to_group.add_child(data.item)
 		to_group.move_child(data.item, index + 1)
+	
+	data.item.update_path_tooltip()
 
 #endregion
