@@ -1,12 +1,12 @@
-class_name DialogParser
+class_name DialogInterpreter
 extends Node
 
 # -----------------------------------------------------------------------------
-## Dialog Parser
+## Dialog Interpreter
 ##
 ## This class is responsible for processing the dialog nodes from the graph.
-## The parsers can be access by the [param node_processors] dictionary, that is
-## used by the [DialogPlayer] to process the nodes by their type.
+## The processors can be access by the [param node_processors] dictionary, that
+## is used by the [DialogPlayer] to process the nodes by their type.
 # -----------------------------------------------------------------------------
 
 ## Emitted when the node is processed and is ready to continue to the next node.
@@ -34,21 +34,8 @@ var node_processors: Dictionary = {
 	"signal_node": _process_signal,
 	"wait_node": _process_wait
 }
-
-
-func _process_start(node_data: Dictionary) -> void:
-	print("[Graph Dialogs] Processing start node...")
-	continue_to_node.emit(node_data.to_node[0])
-
-
-func _process_dialogue(node_data: Dictionary) -> void:
-	print("[Graph Dialogs] Processing dialogue node...")
-	var dialog = _get_translated_dialog(node_data["dialog_key"])
-	dialog = GraphDialogsVariableManager.parse_variables(dialog)
-	var display_name = _get_translated_character_name(node_data["character"])
-
-	dialogue_processed.emit(node_data["character"], display_name,
-			node_data["portrait"], dialog, node_data["to_node"][0])
+## # If true, will print debug messages to the console
+var print_debug: bool = true
 
 
 #region === Dialogs translation ================================================
@@ -79,8 +66,24 @@ func _get_translated_character_name(character: String) -> String:
 #endregion
 
 
+func _process_start(node_data: Dictionary) -> void:
+	if print_debug: print("[Graph Dialogs] Processing start node...")
+	continue_to_node.emit(node_data.to_node[0])
+
+
+func _process_dialogue(node_data: Dictionary) -> void:
+	if print_debug: print("[Graph Dialogs] Processing dialogue node...")
+	# Get the translated dialog and character name to display
+	var dialog = _get_translated_dialog(node_data["dialog_key"])
+	dialog = GraphDialogsVariableManager.parse_variables(dialog)
+	var display_name = _get_translated_character_name(node_data["character"])
+
+	dialogue_processed.emit(node_data["character"], display_name,
+			node_data["portrait"], dialog, node_data["to_node"][0])
+
+
 func _process_condition(node_data: Dictionary) -> void:
-	print("[Graph Dialogs] Processing condition node...")
+	if print_debug: print("[Graph Dialogs] Processing condition node...")
 	var comparison_result = GraphDialogsVariableManager.get_comparison_result(
 		node_data.first_type, # First variable type
 		node_data.first_value, # First variable value
@@ -95,7 +98,7 @@ func _process_condition(node_data: Dictionary) -> void:
 
 
 func _process_options(node_data: Dictionary) -> void:
-	print("[Graph Dialogs] Processing options node...")
+	if print_debug: print("[Graph Dialogs] Processing options node...")
 	options_processed.emit(node_data.options_keys.map(
 		func(key): # Return the translated and parsed options
 			return GraphDialogsVariableManager.parse_variables(
@@ -104,9 +107,9 @@ func _process_options(node_data: Dictionary) -> void:
 
 
 func _process_set_variable(node_data: Dictionary) -> void:
-	print("[Graph Dialogs] Processing set variable node...")
+	if print_debug: print("[Graph Dialogs] Processing set variable node...")
 	var variable = GraphDialogsVariableManager.get_variable(node_data.var_name)
-	if not variable:
+	if not variable: # If the variable is not found, print an error and return
 		printerr("[Graph Dialogs] Cannot set variable '" + node_data.var_name + "' not found. " +
 			"Please check if the variable exists in the Variables Manager or in the autoloads.")
 		return
@@ -121,11 +124,11 @@ func _process_set_variable(node_data: Dictionary) -> void:
 
 
 func _process_signal(node_data: Dictionary) -> void:
-	print("[Graph Dialogs] Processing signal node...")
+	if print_debug: print("[Graph Dialogs] Processing signal node...")
 	signal_processed.emit(node_data.signal_argument, node_data.to_node[0])
 
 
 func _process_wait(node_data: Dictionary) -> void:
-	print("[Graph Dialogs] Processing wait node...")
+	if print_debug: print("[Graph Dialogs] Processing wait node...")
 	await get_tree().create_timer(node_data.time).timeout
 	continue_to_node.emit(node_data.to_node[0])

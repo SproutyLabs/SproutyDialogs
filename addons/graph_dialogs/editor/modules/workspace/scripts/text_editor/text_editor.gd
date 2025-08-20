@@ -56,7 +56,7 @@ func _ready():
 func show_text_editor(text_box: Variant) -> void:
 	_opened_text_box = text_box
 	text_input.text = _opened_text_box.text
-	_text_preview.text = GraphDialogsVariableManager.parse_variables(_opened_text_box.text)
+	_text_preview.text = GraphDialogsVariableManager.parse_variables(_opened_text_box.text, true)
 	visible = true
 
 
@@ -82,7 +82,7 @@ func _on_close_button_pressed() -> void:
 func _on_code_edit_text_changed() -> void:
 	_opened_text_box.text = text_input.text
 	_opened_text_box.text_changed.emit(text_input.text)
-	_text_preview.text = GraphDialogsVariableManager.parse_variables(text_input.text)
+	_text_preview.text = GraphDialogsVariableManager.parse_variables(text_input.text, true)
 
 
 ## Expsnd or collapse the text preview box

@@ -52,4 +52,3 @@ func set_text(text: String) -> void:
 ## Handle the option selection
 func _on_option_selected() -> void:
 	option_selected.emit(option_index)
-	print("[GraphDialogs] Option selected: ", option_index)

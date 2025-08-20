@@ -23,6 +23,10 @@ var _current_dialog_players: Array[DialogPlayer] = []
 var _resource_manager: GraphDialogsResourceManager = null
 
 
+func get_text() -> String:
+	return "example text"
+
+
 func _ready():
 	# Make the manager available as a singleton
 	if not Engine.has_singleton("GraphDialogs"):

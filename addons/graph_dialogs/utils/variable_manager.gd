@@ -6,7 +6,10 @@ extends Node
 ## Variable Manager
 ##
 ## This class manages the variables for the Graph Dialogs plugin.
-## It provides methods to get, set, and check variable values.
+## It provides methods to get, set, check, load and save variables.
+## Also provides methods to parse variables in strings, get the UI fields and
+## components needed to edit them in the editor, and to get the assignment
+## and comparison operators available for each variable type.
 # -----------------------------------------------------------------------------
 
 ## Assignment operators for variables
@@ -178,7 +181,7 @@ static func save_variables(data: Dictionary) -> void:
 
 
 ## Replaces all variables ({}) in a text with their corresponding values
-static func parse_variables(text: String) -> String:
+static func parse_variables(text: String, ignore_error: bool = false) -> String:
 	if not "{" in text:
 		return text # No variables to parse
 	
@@ -197,7 +200,7 @@ static func parse_variables(text: String) -> String:
 				elif variable.type == TYPE_COLOR and variable.value is Color:
 					variable.value = variable.value.to_html() # Convert to Hex string
 				text = text.replace("{" + var_name + "}", str(variable.value))
-			else:
+			elif not ignore_error:
 				printerr("[Graph Dialogs] Cannot parse variable {" + var_name + "} not found. " +
 					"Please check if the variable exists in the Variables Manager or in the autoloads.")
 	return text
@@ -206,9 +209,11 @@ static func parse_variables(text: String) -> String:
 ## Returns a dictionary with the autoloads from a given scene tree.
 static func get_autoloads() -> Dictionary:
 	var autoloads := {}
-	for node: Node in _root_reference.get_children():
-		autoloads[node.name] = node
-	return autoloads
+	if _root_reference: # If root reference is set, get autoloads from it
+		for node: Node in _root_reference.get_children():
+			autoloads[node.name] = node
+		return autoloads
+	return {}
 
 
 #region === Variable Type Fields ===============================================

@@ -233,7 +233,7 @@ func display_options(options: Array) -> void:
 			Please set the _options_container property on the inspector.")
 		return
 	if not _option_template:
-		push_error("[GraphDialogs] Dialog option template is not set. 
+		printerr("[GraphDialogs] Dialog option template is not set. 
 			Please set the _option_template property on the inspector.")
 		return
 	# Clear previous options

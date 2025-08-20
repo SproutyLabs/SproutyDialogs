@@ -52,6 +52,9 @@ var _play_on_ready: bool = false
 ## If true, the player will be freed from the scene tree when the dialog ends.
 ## If false, the player will remain in the scene tree to be reused later.
 var _destroy_on_end: bool = true
+## If true, will print debug messages to the console.
+## This is used to debug the dialog processing flow while is running.
+var _print_debug: bool = false
 
 ## Array to store the start IDs of the dialogues.
 var _starts_ids: Array[String] = []
@@ -98,8 +101,8 @@ var _portraits_displayed: Dictionary = {}
 ## Name of the dialog file being played.
 var _dialog_file_name: String = ""
 
-## Dialog parser instance to process the dialog nodes.
-var _dialog_parser: DialogParser
+## Dialog interpreter instance to process the dialog nodes.
+var _dialog_interpreter: DialogInterpreter
 ## Resource manager instance used to load resources for the dialogs.
 var _resource_manager: GraphDialogsResourceManager
 
@@ -123,12 +126,13 @@ var _is_running: bool = false
 
 func _enter_tree() -> void:
 	if not Engine.is_editor_hint():
-		_dialog_parser = DialogParser.new() # Initialize dialog parser
-		add_child(_dialog_parser)
-		_dialog_parser.continue_to_node.connect(_process_node)
-		_dialog_parser.dialogue_processed.connect(_on_dialogue_processed)
-		_dialog_parser.options_processed.connect(_on_options_processed)
-		_dialog_parser.signal_processed.connect(_on_signal_processed)
+		_dialog_interpreter = DialogInterpreter.new()
+		_dialog_interpreter.print_debug = _print_debug
+		add_child(_dialog_interpreter)
+		_dialog_interpreter.continue_to_node.connect(_process_node)
+		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
+		_dialog_interpreter.options_processed.connect(_on_options_processed)
+		_dialog_interpreter.signal_processed.connect(_on_signal_processed)
 		_resource_manager = get_node("/root/GraphDialogs").get_resource_manager()
 
 
@@ -257,6 +261,12 @@ func _get_property_list():
 				"hint": PROPERTY_HINT_NONE,
 				"usage": PROPERTY_USAGE_DEFAULT
 			})
+			props.append({
+				"name": &"_print_debug",
+				"type": TYPE_BOOL,
+				"hint": PROPERTY_HINT_NONE,
+				"usage": PROPERTY_USAGE_DEFAULT
+			})
 			# Set characters options by dialog
 			if not _start_id.is_empty() and _start_id in _dialog_data.characters:
 				props.append({
@@ -331,7 +341,8 @@ func start() -> void:
 	# Search for start node and start processing from there
 	for node in _dialog_data.graph_data[_start_id]:
 		if node.contains("start_node"):
-			print("[Graph Dialogs] Starting dialog with ID: " + _start_id)
+			if print_debug:
+				print("[Graph Dialogs] Starting dialog with ID: " + _start_id)
 			_is_running = true
 			_process_node(node)
 			get_node("/root/GraphDialogs").set_dialog_player_as_running(self)
@@ -341,6 +352,7 @@ func start() -> void:
 
 ## Pause processing the dialog tree
 func pause() -> void:
+	if print_debug: print("[Graph Dialogs] Dialog paused.")
 	_is_running = false
 	# If there is a current dialog box, pause it
 	if _current_dialog_box:
@@ -355,6 +367,7 @@ func pause() -> void:
 
 ## Resume processing the dialog tree
 func resume() -> void:
+	if print_debug: print("[Graph Dialogs] Dialog resumed.")
 	_is_running = true
 	# If there is a current dialog box, resume it
 	if _current_dialog_box:
@@ -370,6 +383,7 @@ func resume() -> void:
 
 ## Stop processing the dialog tree
 func stop() -> void:
+	if print_debug: print("[Graph Dialogs] Dialog ended.")
 	_is_running = false
 	_current_portrait = null
 	_current_node = ""
@@ -420,7 +434,7 @@ func _process_node(node_name: String) -> void:
 	_current_node = node_name
 	# Get the node type to process
 	var node_type = node_name.split("_node_")[0] + "_node"
-	_dialog_parser.node_processors[node_type].call(
+	_dialog_interpreter.node_processors[node_type].call(
 		_dialog_data.graph_data[_start_id][node_name]
 		)
 

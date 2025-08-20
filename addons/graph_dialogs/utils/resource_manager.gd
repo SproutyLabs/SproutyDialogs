@@ -72,7 +72,7 @@ func get_character_data(character_name: String) -> GraphDialogsCharacterData:
 	if _characters_data.has(character_name):
 		return _characters_data[character_name]
 	else:
-		printerr("[GraphDialogs] No character data found for '" + character_name + "'.")
+		printerr("[Graph Dialogs] No character data found for '" + character_name + "'.")
 		return null
 
 
@@ -84,7 +84,7 @@ func get_dialog_box(start_id: String, character_name: String) -> DialogBox:
 		return _dialog_boxes_canvas.get_node("DefaultDialogBox")
 	
 	if (not _dialog_boxes.has(character_name)) or (not _dialog_boxes[character_name].has(start_id)):
-		printerr("[GraphDialogs] No dialog box found for character '" + character_name \
+		printerr("[Graph Dialogs] No dialog box found for character '" + character_name \
 				 +"'. Dialog '" + start_id + "' is not in the current scene.")
 		return null
 	
@@ -154,7 +154,7 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 			# Get the portrait data from the character resource
 			var portrait_data = _characters_data[character_name].get_portrait_from_path_name(portrait_name)
 			if not portrait_data:
-				printerr("[GraphDialogs] No portrait data found for '" + portrait_name \
+				printerr("[Graph Dialogs] No portrait data found for '" + portrait_name \
 						+"' in character " + character_name)
 				continue
 			# If the portrait UID is set, load the portrait scene
@@ -163,7 +163,7 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 				if portrait_scene:
 					_portraits_scenes[character_name][portrait_name] = portrait_scene
 				else:
-					printerr("[GraphDialogs] Failed to load '" + portrait_name \
+					printerr("[Graph Dialogs] Failed to load '" + portrait_name \
 							+"' portrait scene for character " + character_name)
 			else: # If no portrait UID is set, there is no portrait scene
 				_portraits_scenes[character_name][portrait_name] = null
@@ -180,7 +180,7 @@ func instantiate_portrait(start_id: String, character_name: String,
 		return null
 	
 	if (not _portraits_scenes.has(character_name)) or (not _portraits_scenes[character_name].has(portrait_name)):
-		printerr("[GraphDialogs] No '" + portrait_name + " portrait scene found " \
+		printerr("[Graph Dialogs] No '" + portrait_name + " portrait scene found " \
 				+"' from character " + character_name \
 				+". The character or portrait are not in a dialog of the current scene.")
 		return null
@@ -224,13 +224,13 @@ func _new_portrait_parent(character_name: String, parent: Node) -> Control:
 func _set_portrait_properties(character_name: String,
 		portrait_name: String, portrait_scene: DialogPortrait) -> void:
 	if not _characters_data.has(character_name):
-		printerr("[GraphDialogs] No character data found for '" + character_name + "'." \
+		printerr("[Graph Dialogs] No character data found for '" + character_name + "'." \
 				+" Cannot set portrait properties.")
 		return
 	
 	var portrait_data = _characters_data[character_name].get_portrait_from_path_name(portrait_name)
 	if not portrait_data:
-		printerr("[GraphDialogs] No portrait data found for '" + portrait_name \
+		printerr("[Graph Dialogs] No portrait data found for '" + portrait_name \
 				+"' in character " + character_name + ". Cannot set portrait properties.")
 		return
 	

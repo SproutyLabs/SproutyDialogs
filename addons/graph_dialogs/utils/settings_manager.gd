@@ -61,7 +61,7 @@ static func get_setting(setting_name: String) -> Variant:
 	if ProjectSettings.has_setting(_settings_paths[setting_name]):
 		return ProjectSettings.get_setting(_settings_paths[setting_name])
 	else:
-		printerr("[GraphDialogs] Setting '" + setting_name + "' not found.")
+		printerr("[Graph Dialogs] Setting '" + setting_name + "' not found.")
 		return null
 
 
@@ -72,13 +72,13 @@ static func set_setting(setting_name: String, value: Variant) -> void:
 		ProjectSettings.set_setting(_settings_paths[setting_name], value)
 		ProjectSettings.save()
 	else:
-		printerr("[GraphDialogs] Setting '" + setting_name + "' not found. Cannot set value.")
+		printerr("[Graph Dialogs] Setting '" + setting_name + "' not found. Cannot set value.")
 
 
 ## Checks if a setting exists in the plugin settings.
 static func has_setting(setting_name: String) -> bool:
 	if not _settings_paths.has(setting_name):
-		printerr("[GraphDialogs] Setting '" + setting_name + "' does not exist in the plugin.")
+		printerr("[Graph Dialogs] Setting '" + setting_name + "' does not exist in the plugin.")
 		return false
 	return ProjectSettings.has_setting(_settings_paths[setting_name])
 
