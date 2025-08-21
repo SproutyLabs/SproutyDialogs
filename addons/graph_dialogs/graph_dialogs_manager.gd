@@ -23,10 +23,6 @@ var _current_dialog_players: Array[DialogPlayer] = []
 var _resource_manager: GraphDialogsResourceManager = null
 
 
-func get_text() -> String:
-	return "example text"
-
-
 func _ready():
 	# Make the manager available as a singleton
 	if not Engine.has_singleton("GraphDialogs"):
@@ -35,6 +31,8 @@ func _ready():
 	# Set up variables manager
 	GraphDialogsVariableManager.set_root_reference(get_tree().root)
 	GraphDialogsVariableManager.load_variables()
+
+	get_resource_manager() # Ensure the resource manager is created
 
 
 ## Returns the current dialog players instances running.
@@ -62,8 +60,9 @@ func get_resource_manager() -> GraphDialogsResourceManager:
 		# Create a new resource manager instance if it doesn't exist
 		_resource_manager = GraphDialogsResourceManager.new()
 		_resource_manager.name = "ResourcesManager"
-		add_child.call_deferred(_resource_manager)
+		add_child(_resource_manager)
 	return _resource_manager
+
 
 #region === Run dialog =========================================================
 
@@ -73,8 +72,10 @@ func get_resource_manager() -> GraphDialogsResourceManager:
 ## dialog boxes, and portraits, before starting the dialog player.[/b][br][br]
 ##
 ## [color=red][b]This may cause a slowdown if resources are large.[/b][/color]
-## It is recommended to start the dialog from a [DialogPlayer] instance, 
-## instead of calling this method from here.
+## It is recommended to start the dialog from a previously created
+## [DialogPlayer] instance instead of calling this method from here. 
+## The dialog player will handle the resource loading on _ready(), loading the
+## resources only once and reusing them for the dialog.
 func start_dialog(data: GraphDialogsDialogueData, start_id: String) -> DialogPlayer:
 	# Create a new dialog player instance
 	var new_dialog_player = DialogPlayer.new()
@@ -83,7 +84,7 @@ func start_dialog(data: GraphDialogsDialogueData, start_id: String) -> DialogPla
 	add_child(new_dialog_player)
 
 	# Set the dialog data and start running the dialog
-	new_dialog_player.set_dialog_data(data, start_id)
+	new_dialog_player.set_dialog(data, start_id)
 	new_dialog_player.start()
 	return new_dialog_player
 

@@ -6,6 +6,7 @@ extends Node
 # -----------------------------------------------------------------------------
 ## Dialog Player
 ##
+## This class is responsible for playing a dialog from the Graph Dialogs plugin.
 ## It reads a dialog data file and processes a dialog tree to play the dialogues.
 ## The dialog tree is composed of nodes that represent dialogues and actions.
 ## The player processes the nodes and plays the dialogues in [DialogBox] nodes.
@@ -58,6 +59,7 @@ var _print_debug: bool = false
 
 ## Array to store the start IDs of the dialogues.
 var _starts_ids: Array[String] = []
+
 ## Dictionary to store the portrait parent nodes by character.
 ## The keys are character names and the values are the parent nodes where
 ## the portraits will be displayed.
@@ -82,11 +84,20 @@ var _portrait_parents: Dictionary = {}
 ##   ...
 ## }[/codeblock]
 var _dialog_box_parents: Dictionary = {}
+
+## Dictionary to store the dialog boxes displayed by character.
+## The keys are character names and the values are the [DialogBox] instances.
+## The dictionary structure is:
+## [codeblock]
+## {
+##   "character_name_1": DialogBox instance,
+##   "character_name_2": DialogBox instance,
+##   ...
+## }[/codeblock]
+var _dialog_box_instances: Dictionary = {}
 ## Dictionary to store the portraits displayed by character.
-## This is used if you want to display portraits in some scene node
-## instead of the default canvas layer to portraits (override parent node).
-## The keys are character names and the values are dictionaries with portrait names
-## as keys and [DialogPortrait] scenes loaded as values.
+## The keys are character names and the values are dictionaries with portrait
+## names as keys and [DialogPortrait] instances as values.
 ## The dictionary structure is:
 ## [codeblock]
 ## {
@@ -97,7 +108,8 @@ var _dialog_box_parents: Dictionary = {}
 ##   },
 ##   ...
 ## }[/codeblock]
-var _portraits_displayed: Dictionary = {}
+var _portraits_instances: Dictionary = {}
+
 ## Name of the dialog file being played.
 var _dialog_file_name: String = ""
 
@@ -127,17 +139,18 @@ var _is_running: bool = false
 func _enter_tree() -> void:
 	if not Engine.is_editor_hint():
 		_dialog_interpreter = DialogInterpreter.new()
-		_dialog_interpreter.print_debug = _print_debug
-		add_child(_dialog_interpreter)
 		_dialog_interpreter.continue_to_node.connect(_process_node)
 		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
 		_dialog_interpreter.options_processed.connect(_on_options_processed)
 		_dialog_interpreter.signal_processed.connect(_on_signal_processed)
+		_dialog_interpreter.print_debug = _print_debug
+		add_child(_dialog_interpreter)
+
 		_resource_manager = get_node("/root/GraphDialogs").get_resource_manager()
 
 
 func _exit_tree() -> void:
-	pass
+	_resource_manager.release_resources(_dialog_data, _start_id)
 
 
 func _ready() -> void:
@@ -145,7 +158,7 @@ func _ready() -> void:
 		# Load the dialog resources if the dialog data and start ID are set
 		if _dialog_data and _starts_ids.has(_start_id):
 			await _resource_manager.ready
-			_resource_manager.load_resources(_dialog_data, _start_id, _dialog_box_parents)
+			_resource_manager.load_resources(_dialog_data, _start_id)
 			# Start processing the dialog tree if the play on ready is enabled
 			if _play_on_ready:
 				if _start_id == "(Select a dialog)":
@@ -191,12 +204,9 @@ func get_current_portrait() -> DialogPortrait:
 	return _current_portrait
 
 
-## Returns the character data for a given character name.
-## This will return the character data from the dialog data resource
-## being processed, if the character exists in the dialog data.
-## If the character does not exist, it will return null.
-func get_character_data(character: String) -> GraphDialogsCharacterData:
-	return _resource_manager.get_character_data(character)
+## Returns the current dialog box being displayed
+func get_current_dialog_box() -> DialogBox:
+	return _current_dialog_box
 
 
 ## Set the dialog data and start ID to play a dialog tree.
@@ -222,7 +232,7 @@ func set_dialog(data: GraphDialogsDialogueData, start_id: String,
 		_dialog_box_parents = dialog_box_parents
 	
 	# Load the resources
-	_resource_manager.load_resources(_dialog_data, _start_id, _dialog_box_parents)
+	_resource_manager.load_resources(_dialog_data, _start_id)
 
 
 #region === Editor properties ==================================================
@@ -395,21 +405,26 @@ func stop() -> void:
 		_current_dialog_box = null
 	
 	# Exit all active portraits
-	for char in _portraits_displayed.keys():
-		for portrait in _portraits_displayed[char].values():
+	for char in _portraits_instances.keys():
+		for portrait in _portraits_instances[char].values():
 			if portrait.is_visible():
 				await portrait.on_portrait_exit()
 	
 	# Free all portraits displayed
-	for char in _portraits_displayed.keys():
-		for portrait in _portraits_displayed[char].values():
+	for char in _portraits_instances.keys():
+		for portrait in _portraits_instances[char].values():
 			portrait.get_parent().queue_free()
 	
-	if _current_dialog_box:
+	if _current_dialog_box: # If there is a current dialog box, stop it
 		await _current_dialog_box.stop_dialog(true)
 		_current_dialog_box = null
 	
-	_portraits_displayed.clear()
+	# Free all dialog boxes displayed
+	for dialog_box in _dialog_box_instances.values():
+		dialog_box.queue_free()
+	
+	_portraits_instances.clear()
+	_dialog_box_instances.clear()
 	dialog_ended.emit(_dialog_file_name, _start_id)
 	dialog_player_stop.emit(self)
 	if _destroy_on_end:
@@ -480,7 +495,15 @@ func _on_continue_dialog() -> void:
 
 ## Update the dialog box for the current character
 func _update_dialog_box(character_name: String) -> void:
-	var dialog_box = _resource_manager.get_dialog_box(_start_id, character_name)
+	var dialog_box = null
+
+	# Check if the dialog box is already loaded
+	if _dialog_box_instances.has(character_name):
+		dialog_box = _dialog_box_instances[character_name]
+	else: # If the dialog box is not loaded, instantiate it
+		dialog_box = _resource_manager.instantiate_dialog_box(
+				character_name, _dialog_box_parents.get(character_name, null))
+		_dialog_box_instances[character_name] = dialog_box
 	
 	# Check if the dialog box is already playing a dialog
 	if _current_dialog_box and dialog_box != _current_dialog_box:
@@ -505,23 +528,23 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 
 	var is_joining = false
 	# Check if the character is joining the dialog
-	if not _portraits_displayed.has(character_name):
-		_portraits_displayed[character_name] = {}
+	if not _portraits_instances.has(character_name):
+		_portraits_instances[character_name] = {}
 		is_joining = true
 	
 	# If the portrait is already loaded, use it
-	if _portraits_displayed[character_name].has(portrait_name):
-		_current_portrait = _portraits_displayed[character_name][portrait_name]
+	if _portraits_instances[character_name].has(portrait_name):
+		_current_portrait = _portraits_instances[character_name][portrait_name]
 
 	else: # Instantiate the portrait scene if not already loaded
-		_current_portrait = _resource_manager.instantiate_portrait(_start_id,
-			character_name, portrait_name, _portrait_parents)
-		_portraits_displayed[character_name][portrait_name] = _current_portrait
+		_current_portrait = _resource_manager.instantiate_portrait(
+			character_name, portrait_name, _portrait_parents.get(character_name, null))
+		_portraits_instances[character_name][portrait_name] = _current_portrait
 	
 	_current_portrait.set_portrait()
 	
 	# Hide all other portraits of the character
-	for portrait in _portraits_displayed[character_name].values():
+	for portrait in _portraits_instances[character_name].values():
 		if portrait != _current_portrait:
 			portrait.hide()
 		else:
