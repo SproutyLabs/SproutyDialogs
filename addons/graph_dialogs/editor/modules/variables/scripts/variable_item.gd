@@ -34,6 +34,9 @@ signal open_text_editor(text_box: LineEdit)
 ## Modified indicator to show if the variable has been modified
 @onready var _modified_indicator: Label = $Container/ModifiedIndicator
 
+## Parent group of the item
+var parent_group: Node = null
+
 
 func _ready() -> void:
 	_set_types_dropdown()
@@ -66,9 +69,8 @@ func get_variable_data() -> Dictionary:
 
 ## Return the item path in the variables tree
 func get_item_path() -> String:
-	var group = find_parent("VariableGroup")
-	if group:
-		return group.get_item_path() + "/" + _variable_name
+	if parent_group is GraphDialogsVariableGroup:
+		return parent_group.get_item_path() + "/" + _variable_name
 	else:
 		return _variable_name
 
@@ -237,6 +239,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		to_group.add_child(data.item)
 		to_group.move_child(data.item, index + 1)
 	
+	data.item.parent_group = parent_group
 	data.item.update_path_tooltip()
 
 #endregion

@@ -76,6 +76,7 @@ func _load_variables_data(data: Dictionary, parent: Node = _variables_container)
 		var new_item = null
 		if value.has("type") and value.has("value"): # It's a variable
 			new_item = _variable_item_scene.instantiate()
+			new_item.parent_group = parent
 			new_item.ready.connect(func():
 				new_item.set_item_name(name)
 				new_item.set_type(value.type)
@@ -86,6 +87,7 @@ func _load_variables_data(data: Dictionary, parent: Node = _variables_container)
 			new_item.open_text_editor.connect(open_text_editor.emit)
 		elif value.has("variables") and value.has("color"): # It's a group
 			new_item = _variable_group_scene.instantiate()
+			new_item.parent_group = parent
 			new_item.ready.connect(func():
 				new_item.set_item_name(name)
 				new_item.set_color(value.color)
@@ -161,18 +163,17 @@ func _on_item_rename(name: String, item: Variant) -> void:
 	if result: # Remove the suffix like " (1)" if exists
 		clean_name = regex.sub(name, "").strip_edges()
 
-	# Check if the name already exists in the group
-	var group = item.get_parent()
+	# Check if the name is already in the group
+	var group = item.parent_group
 	var group_items = []
-
-	if group == _variables_container: # Check items in the main container
+	
+	if group is GraphDialogsVariableGroup: # Check items in a group
+		group_items = group.get_items().filter(
+			func(sub_item): return sub_item != item)
+	else: # Check items in the main container
 		group_items = _variables_container.get_children().filter(func(sub_item):
 			return sub_item != item and (sub_item is GraphDialogsVariableItem \
 				or sub_item is GraphDialogsVariableGroup))
-	else: # Check items in a group
-		group = group.find_parent("VariableGroup")
-		group_items = group.get_items().filter(
-			func(sub_item): return sub_item != item)
 	
 	group_items = group_items.map(func(sub_item): return sub_item.get_item_name())
 	if group_items.has(clean_name): # If the name already exists in the group
@@ -188,6 +189,7 @@ func _on_add_var_button_pressed() -> void:
 	new_item.variable_renamed.connect(_on_item_rename.bind(new_item))
 	new_item.variable_changed.connect(_on_variable_changed)
 	new_item.open_text_editor.connect(open_text_editor.emit)
+	new_item.parent_group = _variables_container
 	_variables_container.add_child(new_item)
 
 
@@ -196,6 +198,7 @@ func _on_add_folder_button_pressed() -> void:
 	var new_item = _variable_group_scene.instantiate()
 	new_item.group_renamed.connect(_on_item_rename.bind(new_item))
 	new_item.remove_pressed.connect(_on_remove_group.bind(new_item))
+	new_item.parent_group = _variables_container
 	_variables_container.add_child(new_item)
 
 
@@ -255,6 +258,7 @@ func _drop_data_in_container(at_position: Vector2, data: Variant) -> void:
 	var from_group = data.group
 	from_group.remove_child(item)
 	_variables_container.add_child(item)
+	data.item.parent_group = _variables_container
 	data.item.update_path_tooltip()
 
 #endregion

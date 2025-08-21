@@ -40,6 +40,9 @@ var _collapse_down_icon: Texture2D = preload("res://addons/graph_dialogs/icons/i
 ## Preloaded style for the group
 var _group_style: StyleBoxFlat = preload("res://addons/graph_dialogs/theme/variable_group_subpanel.tres")
 
+## Parent group of the item
+var parent_group: Node = null
+
 
 func _ready() -> void:
 	_items_container.child_order_changed.connect(_on_child_order_changed)
@@ -70,9 +73,8 @@ func _ready() -> void:
 
 ## Return the group path in the variables tree
 func get_item_path() -> String:
-	var group = find_parent("VariableGroup")
-	if group:
-		return group.get_item_path() + "/" + _group_name
+	if parent_group is GraphDialogsVariableGroup:
+		return parent_group.get_item_path() + "/" + _group_name
 	else:
 		return _group_name
 
@@ -87,6 +89,8 @@ func set_item_name(new_name: String) -> void:
 	_group_name = new_name
 	_name_input.text = new_name
 	update_path_tooltip()
+	for item in get_items():
+		item.update_path_tooltip()
 
 
 ## Returns the group color
@@ -146,6 +150,9 @@ func _on_name_changed(toggled_on: bool) -> void:
 	_group_name = new_name
 	group_renamed.emit(_group_name)
 	show_as_modified(true)
+	update_path_tooltip()
+	for item in get_items():
+		item.update_path_tooltip()
 
 
 ## Handle the color change event
@@ -209,6 +216,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	var from_group = data.group
 	from_group.remove_child(item)
 	to_group.add_child(data.item)
+	data.item.parent_group = self
 	data.item.update_path_tooltip()
 
 
@@ -216,4 +224,5 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 func _on_mouse_exited() -> void:
 	_empty_label.get_child(0).hide()
 	_drop_highlight.hide()
+
 #endregion
