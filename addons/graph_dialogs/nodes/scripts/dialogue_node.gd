@@ -37,17 +37,17 @@ var _collapse_down_icon = preload("res://addons/graph_dialogs/icons/interactable
 
 func _ready():
 	super ()
-	_character_expand_button.toggled.connect(_on_expand_character_button_toggled)
 	# Connect signal to open text editor from graph
 	if graph_editor is GraphEdit:
 		_translation_boxes.open_text_editor.connect(graph_editor.open_text_editor.emit)
 		_default_text_box.open_text_editor.connect(graph_editor.open_text_editor.emit)
+		_translation_boxes.modified.connect(graph_editor.on_modified)
+		_default_text_box.text_changed.connect(graph_editor.on_modified.unbind(1))
+		_portrait_dropdown.item_selected.connect(graph_editor.on_modified.unbind(1))
 		open_character_file_request.connect(
 			graph_editor.open_character_file_request.emit.bind(get_character_path())
 		)
-	_translation_boxes.modified.connect(graph_editor.on_modified)
-	_default_text_box.text_changed.connect(graph_editor.on_modified.unbind(1))
-	_portrait_dropdown.item_selected.connect(graph_editor.on_modified.unbind(1))
+	_character_expand_button.toggled.connect(_on_expand_character_button_toggled)
 	_character_file_field.file_path_changed.connect(load_character)
 	_set_translation_text_boxes()
 	_character_name_button.disabled = true
@@ -65,6 +65,7 @@ func get_data() -> Dictionary:
 		"dialog_key": get_dialog_translation_key(),
 		"character": get_character_name(),
 		"portrait": get_portrait(),
+		"char_expand": _character_expand_button.button_pressed,
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
 		"offset": position_offset,
@@ -77,6 +78,8 @@ func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
+	# Show or hide character section
+	_character_expand_button.button_pressed = dict["char_expand"]
 	position_offset = dict["offset"]
 	size = dict["size"]
 
@@ -187,12 +190,13 @@ func _find_dropdown_item(dropdown: OptionButton, item: String) -> int:
 
 
 ## Handle the expand character button pressed signal
-func _on_expand_character_button_toggled(toggled: bool) -> void:
-	$CharacterContainer.visible = toggled
-	if toggled:
+func _on_expand_character_button_toggled(toggled_on: bool) -> void:
+	$CharacterContainer/Content.visible = toggled_on
+	if toggled_on:
 		_character_expand_button.icon = _collapse_up_icon
 	else:
 		_character_expand_button.icon = _collapse_down_icon
+	position_offset.y += -size.y / 4 if toggled_on else size.y / 4
 	_on_resized()
 
 

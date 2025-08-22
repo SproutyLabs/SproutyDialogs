@@ -23,6 +23,10 @@ func _ready():
 		_first_option.open_text_editor.connect(graph_editor.open_text_editor.emit)
 		_first_option.option_removed.connect(_on_option_removed)
 		_first_option.modified.connect(graph_editor.on_modified)
+		_first_option.resized.connect(func():
+			position_offset.y += 0.01
+			_on_resized()
+			)
 
 
 #region === Overridden Methods =================================================
@@ -111,7 +115,10 @@ func _add_new_option() -> GraphDialogsOptionContainer:
 	new_option.open_text_editor.connect(get_parent().open_text_editor.emit)
 	new_option.option_removed.connect(_on_option_removed)
 	new_option.modified.connect(graph_editor.on_modified)
-	new_option.resized.connect(_on_resized)
+	new_option.resized.connect(func():
+		position_offset.y += 0.01
+		_on_resized()
+		)
 	graph_editor.on_modified()
 	return new_option
 

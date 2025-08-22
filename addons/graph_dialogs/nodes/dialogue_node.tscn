@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_05qy5"]
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/graph_dialogs/icons/nodes/dialogue.svg" id="4_hljjc"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialogs/editor/components/file_field.tscn" id="4_ujava"]
-[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialogs/icons/interactable/collapse-down.svg" id="4_urrmu"]
+[ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/graph_dialogs/icons/interactable/collapse-up.svg" id="4_urrmu"]
 [ext_resource type="Texture2D" uid="uid://c80u5yueu7wit" path="res://addons/graph_dialogs/icons/character.svg" id="5_hoe8b"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/graph_dialogs/editor/components/translations_container.tscn" id="5_kt63k"]
 [ext_resource type="Script" uid="uid://bbxvuya7njed5" path="res://addons/graph_dialogs/nodes/scripts/dialogue_node.gd" id="5_v7cqa"]
@@ -45,7 +45,7 @@ image = SubResource("Image_gui6w")
 [node name="DialogueNode" type="GraphNode"]
 custom_minimum_size = Vector2(250, 0)
 offset_right = 250.0
-offset_bottom = 450.0
+offset_bottom = 439.0
 size_flags_vertical = 3
 theme = ExtResource("1_05qy5")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_lcatj")
@@ -76,14 +76,14 @@ slot/2/left_color = Color(1, 1, 1, 1)
 slot/2/left_icon = null
 slot/2/right_enabled = false
 slot/2/right_type = 0
-slot/2/right_color = Color(1, 1, 1, 1)
+slot/2/right_color = Color(1, 0.490196, 0.52549, 1)
 slot/2/right_icon = null
 slot/2/draw_stylebox = true
 slot/3/left_enabled = false
 slot/3/left_type = 0
 slot/3/left_color = Color(1, 1, 1, 1)
 slot/3/left_icon = null
-slot/3/right_enabled = false
+slot/3/right_enabled = true
 slot/3/right_type = 0
 slot/3/right_color = Color(1, 0.490196, 0.52549, 1)
 slot/3/right_icon = null
@@ -92,48 +92,43 @@ slot/4/left_enabled = false
 slot/4/left_type = 0
 slot/4/left_color = Color(1, 1, 1, 1)
 slot/4/left_icon = null
-slot/4/right_enabled = true
+slot/4/right_enabled = false
 slot/4/right_type = 0
 slot/4/right_color = Color(1, 0.490196, 0.52549, 1)
 slot/4/right_icon = null
 slot/4/draw_stylebox = true
-slot/5/left_enabled = false
-slot/5/left_type = 0
-slot/5/left_color = Color(1, 1, 1, 1)
-slot/5/left_icon = null
-slot/5/right_enabled = false
-slot/5/right_type = 0
-slot/5/right_color = Color(1, 1, 1, 1)
-slot/5/right_icon = null
-slot/5/draw_stylebox = true
 script = ExtResource("5_v7cqa")
 node_color = Color(0.827451, 0.27451, 0.262745, 1)
 node_icon = ExtResource("4_hljjc")
 
-[node name="CharacterHeader" type="HBoxContainer" parent="."]
+[node name="CharacterContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterHeader"]
+[node name="Header" type="HBoxContainer" parent="CharacterContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CharacterContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Character"
 
-[node name="CharacterExpandButton" type="Button" parent="CharacterHeader"]
+[node name="CharacterExpandButton" type="Button" parent="CharacterContainer/Header"]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
+button_pressed = true
 icon = ExtResource("4_urrmu")
 flat = true
 
-[node name="CharacterContainer" type="VBoxContainer" parent="."]
+[node name="Content" type="VBoxContainer" parent="CharacterContainer"]
 layout_mode = 2
 
-[node name="CharacterFileField" parent="CharacterContainer" instance=ExtResource("4_ujava")]
+[node name="CharacterFileField" parent="CharacterContainer/Content" instance=ExtResource("4_ujava")]
 unique_name_in_owner = true
 layout_mode = 2
 file_filters = PackedStringArray("*.tres", "*.res")
 
-[node name="CharacterNameButton" type="Button" parent="CharacterContainer/CharacterFileField/HBox" index="0"]
+[node name="CharacterNameButton" type="Button" parent="CharacterContainer/Content/CharacterFileField/HBox" index="0"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -142,24 +137,24 @@ disabled = true
 text = "(No one)"
 icon = ExtResource("5_hoe8b")
 
-[node name="Field" parent="CharacterContainer/CharacterFileField/HBox" index="1"]
+[node name="Field" parent="CharacterContainer/Content/CharacterFileField/HBox" index="1"]
 visible = false
 
-[node name="OpenButton" parent="CharacterContainer/CharacterFileField/HBox" index="2"]
+[node name="OpenButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="2"]
 icon = SubResource("ImageTexture_a547j")
 
-[node name="ClearButton" parent="CharacterContainer/CharacterFileField/HBox" index="3"]
+[node name="ClearButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="3"]
 size_flags_horizontal = 8
 icon = SubResource("ImageTexture_a547j")
 
-[node name="PortraitContainer" type="VBoxContainer" parent="CharacterContainer"]
+[node name="PortraitContainer" type="VBoxContainer" parent="CharacterContainer/Content"]
 layout_mode = 2
 
-[node name="PortraitLabel" type="Label" parent="CharacterContainer/PortraitContainer"]
+[node name="PortraitLabel" type="Label" parent="CharacterContainer/Content/PortraitContainer"]
 layout_mode = 2
 text = "Portrait"
 
-[node name="PortraitSelect" type="OptionButton" parent="CharacterContainer/PortraitContainer"]
+[node name="PortraitSelect" type="OptionButton" parent="CharacterContainer/Content/PortraitContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 selected = 0
@@ -168,7 +163,7 @@ item_count = 1
 popup/item_0/text = "(No one)"
 popup/item_0/id = 0
 
-[node name="---" type="HSeparator" parent="."]
+[node name="Separator" type="HSeparator" parent="."]
 layout_mode = 2
 
 [node name="DialogContainer" type="VBoxContainer" parent="."]
@@ -215,4 +210,4 @@ theme_override_constants/margin_top = 0
 [connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="resized" from="DialogContainer" to="." method="_on_resized"]
 
-[editable path="CharacterContainer/CharacterFileField"]
+[editable path="CharacterContainer/Content/CharacterFileField"]

@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://v2lbmduypj25"
+uid="uid://dutvcwiqufcor"
 path="res://.godot/imported/comment.svg-dde4d921e3eb93c9732acf746234d00a.ctex"
 metadata={
 "has_editor_variant": true,
@@ -33,6 +33,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
+svg/scale=0.5
 editor/scale_with_editor_scale=true
 editor/convert_colors_with_editor_theme=true

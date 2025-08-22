@@ -264,7 +264,6 @@ func set_node_actions_menu(has_selection: bool = false, paste_enabled: bool = fa
 	if paste_enabled:
 		_node_actions_menu.add_icon_item(get_theme_icon("ActionPaste", "EditorIcons"),
 			"Paste Nodes" if _nodes_copy.size() > 1 else "Paste Node", 5)
-	_node_actions_menu.size.y = 0 # Reset the height to fit the items
 
 
 ## Rename the node actions menu items based on the number of selected nodes
@@ -281,6 +280,7 @@ func _show_popup_menu(menu: PopupMenu, pos: Vector2) -> void:
 	var pop_pos := pos + global_position + Vector2(get_window().position)
 	menu.popup(Rect2(pop_pos.x, pop_pos.y, _add_node_menu.size.x, _add_node_menu.size.y))
 	_cursor_pos = (pos + scroll_offset) / zoom
+	menu.reset_size()
 
 
 ## Add node from pop-up menu

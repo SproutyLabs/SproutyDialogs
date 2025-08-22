@@ -25,11 +25,13 @@ signal open_text_editor(text_box: TextEdit)
 ## Text boxes container
 @onready var _text_boxes: Container = %TextBoxes
 
-## Translation box scene
+## Translation text box and text line scene resources
 var _translation_box = preload("res://addons/graph_dialogs/editor/components/translation_box.tscn")
-
-## Translation line scene
 var _translation_line = preload("res://addons/graph_dialogs/editor/components/translation_line.tscn")
+
+## Collapse/Expand icon resources
+var collapse_up_icon = preload("res://addons/graph_dialogs/icons/interactable/collapse-up.svg")
+var collapse_down_icon = preload("res://addons/graph_dialogs/icons/interactable/collapse-down.svg")
 
 
 func _ready():
@@ -80,6 +82,8 @@ func load_translations_text(dialogs: Dictionary) -> void:
 func _on_expand_button_toggled(toggled_on: bool) -> void:
 	if _text_boxes.get_parent() != self:
 		_text_boxes.get_parent().visible = toggled_on
-	_text_boxes.visible = toggled_on
 	if _extra_to_show:
 		_extra_to_show.visible = toggled_on
+	
+	_text_boxes.visible = toggled_on
+	$Header/ExpandButton.icon = collapse_up_icon if toggled_on else collapse_down_icon

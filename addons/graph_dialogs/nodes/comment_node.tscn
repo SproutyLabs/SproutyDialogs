@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://hxn726na6i6v"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_0q2mk"]
-[ext_resource type="Texture2D" uid="uid://v2lbmduypj25" path="res://addons/graph_dialogs/icons/nodes/comment.svg" id="3_g6856"]
+[ext_resource type="Texture2D" uid="uid://dutvcwiqufcor" path="res://addons/graph_dialogs/icons/nodes/comment.svg" id="3_g6856"]
 [ext_resource type="Script" uid="uid://cybxpd2fvt5vq" path="res://addons/graph_dialogs/nodes/scripts/comment_node.gd" id="5_achcx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42b30"]
@@ -48,13 +48,13 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("5_achcx")
-node_type = ""
 node_color = Color(0.154876, 0.154876, 0.154876, 1)
 node_icon = ExtResource("3_g6856")
 
 [node name="TextInput" type="TextEdit" parent="."]
-custom_minimum_size = Vector2(150, 50)
+custom_minimum_size = Vector2(150, 100)
 layout_mode = 2
 size_flags_vertical = 3
+placeholder_text = "Write a comment..."
 
 [connection signal="text_changed" from="TextInput" to="." method="_on_input_text_changed"]
