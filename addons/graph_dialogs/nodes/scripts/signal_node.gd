@@ -2,11 +2,11 @@
 class_name SignalNode
 extends BaseNode
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Signal Node
 ##
 ## Node to emit a signal between dialog nodes.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Signal argument text input
 @onready var _text_input: LineEdit = $Input
@@ -49,4 +49,4 @@ func set_data(dict: Dictionary) -> void:
 
 func _on_input_text_changed(new_text: String) -> void:
 	_signal_argument = new_text
-	get_parent().on_modified()
+	graph_editor.on_modified()

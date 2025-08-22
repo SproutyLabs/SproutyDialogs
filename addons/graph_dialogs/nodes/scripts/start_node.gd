@@ -2,11 +2,11 @@
 class_name StartNode
 extends BaseNode
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Start Node
 ##
 ## Node to start a dialog tree and assign an ID to it.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## ID input text field
 @onready var id_input_text: LineEdit = %IDInput
@@ -75,7 +75,7 @@ func _on_id_input_changed(new_text: String) -> void:
 	id_input_text.text = new_text.to_upper()
 	id_input_text.caret_column = caret_pos
 	start_id = new_text
-	get_parent().on_modified()
+	graph_editor.on_modified()
 
 
 ## Show an error alert when the ID input is empty

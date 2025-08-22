@@ -2,11 +2,11 @@
 class_name SetVariableNode
 extends BaseNode
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Set Variable Node
 ##
 ## Node to set a variable value.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Emitted when press the expand button in the string value field
 signal open_text_editor(text_edit: TextEdit)
@@ -27,6 +27,7 @@ var _new_var_value: Variant = ""
 
 func _ready():
 	super ()
+	_name_input.text_changed.connect(graph_editor.on_modified)
 	$Container/VarField/TypeField.add_child(GraphDialogsVariableManager.get_types_dropdown())
 	_type_dropdown = $Container/VarField/TypeField/TypeDropdown
 	_type_dropdown.item_selected.connect(_on_type_selected)
@@ -88,7 +89,8 @@ func _on_type_selected(index: int) -> void:
 	_operator_dropdown.clear()
 	for operator in operators.keys():
 		_operator_dropdown.add_item(operator, operators[operator])
-	size.y = 0 # Resize node
+	graph_editor.on_modified()
+	_on_resized()
 
 
 ## Set the value field based on the variable type
@@ -113,3 +115,4 @@ func _set_value_field(type: int) -> void:
 ## Handle when the value in the input field changes
 func _on_value_changed(value: Variant) -> void:
 	_new_var_value = value
+	graph_editor.on_modified()

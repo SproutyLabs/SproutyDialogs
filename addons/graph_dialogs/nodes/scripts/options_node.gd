@@ -2,31 +2,34 @@
 class_name OptionsNode
 extends BaseNode
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Options Node
 ##
 ## Node to display dialog options in the dialog tree.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
+## First option container
+@onready var _first_option: GraphDialogsOptionContainer = $OptionContainer
 ## Option container template
 @onready var _option_scene := preload("res://addons/graph_dialogs/editor/components/option_container.tscn")
-@onready var _first_option: GraphDialogsOptionContainer = $OptionContainer
 
-var _options_keys: Array = [] ## List of options keys
+## List of options keys
+var _options_keys: Array = []
 
 func _ready():
 	super ()
 	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
 	if _first_option: # Connect signals for the first option container
-		_first_option.open_text_editor.connect(get_parent().open_text_editor.emit)
+		_first_option.open_text_editor.connect(graph_editor.open_text_editor.emit)
 		_first_option.option_removed.connect(_on_option_removed)
+		_first_option.modified.connect(graph_editor.on_modified)
 
 
 #region === Overridden Methods =================================================
 
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = get_parent().get_node_connections(name)
+	var connections: Array = graph_editor.get_node_connections(name)
 
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
@@ -107,7 +110,9 @@ func _add_new_option() -> GraphDialogsOptionContainer:
 	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
 	new_option.open_text_editor.connect(get_parent().open_text_editor.emit)
 	new_option.option_removed.connect(_on_option_removed)
+	new_option.modified.connect(graph_editor.on_modified)
 	new_option.resized.connect(_on_resized)
+	graph_editor.on_modified()
 	return new_option
 
 
@@ -133,7 +138,8 @@ func _on_option_removed(index: int) -> void:
 	
 	# Remove the last remaining port
 	set_slot(get_child_count() - 3, false, 0, Color.WHITE, false, 0, Color.WHITE)
-	
+	graph_editor.on_modified()
+
 	# Wait to delete the option node
 	await get_child(index).tree_exited
 	_on_resized() # Resize container vertically

@@ -2,11 +2,11 @@
 class_name BaseNode
 extends GraphNode
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Base Node
 ##
 ## It provides the basic implementation to every node for the dialog system.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Node color to display on the node titlebar.
 @export_color_no_alpha var node_color: Color

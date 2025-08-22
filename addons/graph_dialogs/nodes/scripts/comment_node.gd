@@ -1,11 +1,11 @@
 @tool
 extends BaseNode
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Comment Node
 ##
 ## Node to add comments to the graph.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Text input box reference
 @onready var text_input: TextEdit = $TextInput
@@ -41,4 +41,4 @@ func set_data(dict: Dictionary) -> void:
 
 func _on_input_text_changed() -> void:
 	comment_text = text_input.text
-	get_parent().on_modified()
+	graph_editor.on_modified()

@@ -2,44 +2,52 @@
 class_name DialogueNode
 extends BaseNode
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Dialogue Node
 ##
-## Node to display dialogues in the dialog system.
-## Allows to set dialog text and translations for different characters.
-## -----------------------------------------------------------------------------
+## Node to add dialog lines to the graph. It allows to set the character,
+## portrait, dialog text and its translations.
+# -----------------------------------------------------------------------------
 
 ## Emitted when is requesting to open a character file
 signal open_character_file_request(path: String)
 
 ## Character data resource field
 @onready var _character_file_field: GraphDialogsFileField = %CharacterFileField
+## Character expand/collapse button
+@onready var _character_expand_button: Button = %CharacterExpandButton
 ## Character name label
 @onready var _character_name_button: Button = %CharacterNameButton
 ## Portrait dropdown selector
 @onready var _portrait_dropdown: OptionButton = %PortraitSelect
 ## Text box for dialog in default locale
-@onready var _default_text_box: HBoxContainer = %DefaultTextBox
+@onready var _default_text_box: GraphDialogsExpandableTextBox = %DefaultTextBox
 ## Text boxes container for translations
-@onready var _translation_boxes: VBoxContainer = %Translations
+@onready var _translation_boxes: GraphDialogsTranslationsContainer = %Translations
 
 ## Default locale for dialog text
 var _default_locale: String = ""
 ## Character data resource
 var _character_data: GraphDialogsCharacterData
 
+## Collapse/Expand icons
+var _collapse_up_icon = preload("res://addons/graph_dialogs/icons/interactable/collapse-up.svg")
+var _collapse_down_icon = preload("res://addons/graph_dialogs/icons/interactable/collapse-down.svg")
+
 
 func _ready():
 	super ()
+	_character_expand_button.toggled.connect(_on_expand_character_button_toggled)
 	# Connect signal to open text editor from graph
 	if graph_editor is GraphEdit:
 		_translation_boxes.open_text_editor.connect(graph_editor.open_text_editor.emit)
-		_default_text_box.open_text_editor.connect(
-			graph_editor.open_text_editor.emit.bind(_default_text_box.text_box)
-		)
+		_default_text_box.open_text_editor.connect(graph_editor.open_text_editor.emit)
 		open_character_file_request.connect(
 			graph_editor.open_character_file_request.emit.bind(get_character_path())
 		)
+	_translation_boxes.modified.connect(graph_editor.on_modified)
+	_default_text_box.text_changed.connect(graph_editor.on_modified.unbind(1))
+	_portrait_dropdown.item_selected.connect(graph_editor.on_modified.unbind(1))
 	_character_file_field.file_path_changed.connect(load_character)
 	_set_translation_text_boxes()
 	_character_name_button.disabled = true
@@ -117,6 +125,7 @@ func load_character(path: String) -> void:
 	_character_name_button.pressed.connect(open_character_file_request.emit.bind(path))
 	_set_portrait_dropdown(character)
 	_character_data = character
+	graph_editor.on_modified()
 
 
 ## Load the character portrait
@@ -175,6 +184,17 @@ func _find_dropdown_item(dropdown: OptionButton, item: String) -> int:
 		if dropdown.get_item_text(i).to_lower() == item.to_lower():
 			return i
 	return -1
+
+
+## Handle the expand character button pressed signal
+func _on_expand_character_button_toggled(toggled: bool) -> void:
+	$CharacterContainer.visible = toggled
+	if toggled:
+		_character_expand_button.icon = _collapse_up_icon
+	else:
+		_character_expand_button.icon = _collapse_down_icon
+	_on_resized()
+
 
 #endregion
 

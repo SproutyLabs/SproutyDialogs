@@ -2,11 +2,11 @@
 class_name WaitNode
 extends BaseNode
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Wait Node
 ##
 ## Node to add a wait time to the dialog.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Time input spin box
 @onready var time_input: SpinBox = $Container/SpinBox
@@ -49,4 +49,4 @@ func set_data(dict: Dictionary) -> void:
 
 func _on_time_value_changed(value: float) -> void:
 	time_value = value
-	get_parent().on_modified()
+	graph_editor.on_modified()

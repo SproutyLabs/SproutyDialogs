@@ -2,11 +2,11 @@
 class_name ConditionNode
 extends BaseNode
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Condition Node 
 ##
 ## Node to add branches conditions to the dialog tree.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Emitted when press the expand button in the string value field
 signal open_text_editor(text_edit: TextEdit)
@@ -95,7 +95,8 @@ func set_data(dict: Dictionary) -> void:
 func _on_type_selected(type_index: int, field_index: int) -> void:
 	var type = _type_dropdowns[field_index].get_item_id(type_index)
 	_set_value_field(type, field_index)
-	size.y = 0 # Resize node
+	graph_editor.on_modified()
+	_on_resized()
 
 
 ## Set a value field based on the variable type
@@ -121,3 +122,4 @@ func _set_value_field(type: int, field_index: int) -> void:
 ## Handle when the value changes in any of the value fields
 func _on_value_changed(value: Variant, field_index: int) -> void:
 	_var_values[field_index] = value
+	graph_editor.on_modified()
