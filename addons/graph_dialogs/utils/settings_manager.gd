@@ -10,16 +10,19 @@ extends Node
 ## -----------------------------------------------------------------------------
 
 ## Default dialog box path to load if no dialog box is specified.
-const DEFAULT_BOX_PATH = "res://addons/graph_dialogs/objects/defaults/default_dialog_box.tscn"
+const DEFAULT_DIALOG_BOX_PATH = "res://addons/graph_dialogs/objects/defaults/default_dialog_box.tscn"
+## Default portrait scene path to load when creating a new portrait.
+const DEFAULT_PORTRAIT_PATH = "res://addons/graph_dialogs/objects/defaults/default_portrait.tscn"
 
 ## Settings paths used in the plugin.
 ## This dictionary maps setting names to their paths in the project settings.
 static var _settings_paths: Dictionary = {
 	# --- General settings -----------------------------------------------------
-	"continue_input_action": "graph_dialogs/general/continue_input_action",
-	"default_dialog_box": "graph_dialogs/general/default_dialog_box",
-	"dialog_box_canvas_layer": "graph_dialogs/general/dialog_box_canvas_layer",
-	"portraits_canvas_layer": "graph_dialogs/general/portraits_canvas_layer",
+	"continue_input_action": "graph_dialogs/general/input/continue_input_action",
+	"default_dialog_box": "graph_dialogs/general/defaults/default_dialog_box",
+	"default_portrait_scene": "graph_dialogs/general/defaults/default_portrait_scene",
+	"dialog_box_canvas_layer": "graph_dialogs/general/canvas/dialog_box_canvas_layer",
+	"portraits_canvas_layer": "graph_dialogs/general/canvas/portraits_canvas_layer",
 	
 	# --- Text settings --------------------------------------------------------
 	"default_typing_speed": "graph_dialogs/text/default_typing_speed",
@@ -47,7 +50,7 @@ static var _settings_paths: Dictionary = {
 
 	# Translation/Localization settings
 	"default_locale": "graph_dialogs/translation/localization/default_locale",
-	"testing_locale": "graph_dialogs/translation/localization/testing_locale",
+	"testing_locale": "internationalization/locale/test",
 	"locales": "graph_dialogs/translation/localization/locales",
 
 	# -- Variable settings -----------------------------------------------------
@@ -58,7 +61,7 @@ static var _settings_paths: Dictionary = {
 ## Returns a setting value from the plugin settings.
 ## If the setting is not found, it returns null and prints an error message.
 static func get_setting(setting_name: String) -> Variant:
-	if ProjectSettings.has_setting(_settings_paths[setting_name]):
+	if has_setting(setting_name):
 		return ProjectSettings.get_setting(_settings_paths[setting_name])
 	else:
 		printerr("[Graph Dialogs] Setting '" + setting_name + "' not found.")
@@ -68,7 +71,7 @@ static func get_setting(setting_name: String) -> Variant:
 ## Sets a setting value in the plugin settings.
 ## If the setting is not found, it prints an error message.
 static func set_setting(setting_name: String, value: Variant) -> void:
-	if ProjectSettings.has_setting(_settings_paths[setting_name]):
+	if has_setting(setting_name):
 		ProjectSettings.set_setting(_settings_paths[setting_name], value)
 		ProjectSettings.save()
 	else:
@@ -80,7 +83,8 @@ static func has_setting(setting_name: String) -> bool:
 	if not _settings_paths.has(setting_name):
 		printerr("[Graph Dialogs] Setting '" + setting_name + "' does not exist in the plugin.")
 		return false
-	return ProjectSettings.has_setting(_settings_paths[setting_name])
+	return ProjectSettings.has_setting(_settings_paths[setting_name]) \
+			or setting_name == "testing_locale" # Special case for testing_locale
 
 
 ## Initializes the default settings for the plugin.
@@ -90,7 +94,9 @@ static func initialize_default_settings() -> void:
 	ProjectSettings.set_setting(_settings_paths["continue_input_action"],
 			"dialogs_continue_action")
 	ProjectSettings.set_setting(_settings_paths["default_dialog_box"],
-			ResourceSaver.get_resource_id_for_path(DEFAULT_BOX_PATH))
+			ResourceSaver.get_resource_id_for_path(DEFAULT_DIALOG_BOX_PATH))
+	ProjectSettings.set_setting(_settings_paths["default_portrait_scene"],
+			ResourceSaver.get_resource_id_for_path(DEFAULT_PORTRAIT_PATH))
 	ProjectSettings.set_setting(_settings_paths["dialog_box_canvas_layer"], 2)
 	ProjectSettings.set_setting(_settings_paths["portraits_canvas_layer"], 1)
 
@@ -110,14 +116,14 @@ static func initialize_default_settings() -> void:
 	ProjectSettings.set_setting(_settings_paths["csv_translations_folder"], "")
 	ProjectSettings.set_setting(_settings_paths["translate_character_names"], false)
 	ProjectSettings.set_setting(_settings_paths["use_csv_for_character_names"], false)
-	ProjectSettings.set_setting(_settings_paths["character_names_csv"], "")
+	ProjectSettings.set_setting(_settings_paths["character_names_csv"], -1)
 
 	# Set the editor locale as the default locale
 	var settings = EditorInterface.get_editor_settings()
 	var editor_lang = settings.get_setting("interface/editor/editor_language")
 	ProjectSettings.set_setting(_settings_paths["default_locale"], editor_lang)
-	ProjectSettings.set_setting(_settings_paths["testing_locale"], editor_lang)
 	ProjectSettings.set_setting(_settings_paths["locales"], [editor_lang])
+	ProjectSettings.set_setting(_settings_paths["testing_locale"], "")
 
 	# Variable settings
 	ProjectSettings.set_setting(_settings_paths["variables"], {})

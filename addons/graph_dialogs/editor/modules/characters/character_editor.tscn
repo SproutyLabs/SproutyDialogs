@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://d3oeow8nbwcfm" path="res://addons/graph_dialogs/editor/modules/characters/scripts/character_portrait_tree.gd" id="7_7kmf4"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/graph_dialogs/theme/empty_panel.tres" id="9_a1fcc"]
 
-[sub_resource type="Image" id="Image_dou7m"]
+[sub_resource type="Image" id="Image_cjvps"]
 data = {
 "data": PackedByteArray(255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 42, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 93, 93, 41, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 92, 92, 0, 255, 92, 92, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 93, 93, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0),
 "format": "RGBA8",
@@ -19,8 +19,8 @@ data = {
 "width": 16
 }
 
-[sub_resource type="ImageTexture" id="ImageTexture_0aje5"]
-image = SubResource("Image_dou7m")
+[sub_resource type="ImageTexture" id="ImageTexture_xiqtq"]
+image = SubResource("Image_cjvps")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f8fk6"]
 
@@ -81,15 +81,17 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Insert character name..."
 
-[node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container" node_paths=PackedStringArray("extra_to_show")]
+[node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Translations of the name to display."
 script = ExtResource("2_tpd02")
-use_text_boxes = false
-extra_to_show = NodePath("Separator")
+_use_text_boxes = false
 
-[node name="ExpandButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
+[node name="Header" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
+layout_mode = 2
+
+[node name="ExpandButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Header"]
 layout_mode = 2
 toggle_mode = true
 text = "Translations"
@@ -98,7 +100,7 @@ flat = true
 alignment = 2
 icon_alignment = 2
 
-[node name="Separator" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
+[node name="Separator" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Header"]
 visible = false
 layout_mode = 2
 
@@ -114,6 +116,7 @@ visible = false
 custom_minimum_size = Vector2(100, 120)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
@@ -157,13 +160,13 @@ text = "Dialog Box"
 [node name="NewDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBox"]
 unique_name_in_owner = true
 layout_mode = 2
-icon = SubResource("ImageTexture_0aje5")
+icon = SubResource("ImageTexture_xiqtq")
 
 [node name="ToDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBox"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-icon = SubResource("ImageTexture_0aje5")
+icon = SubResource("ImageTexture_xiqtq")
 
 [node name="DialogBoxSceneField" parent="CharacterSettings/ScrollContainer/Container/DialogBox" instance=ExtResource("5_x3nyu")]
 unique_name_in_owner = true
@@ -213,20 +216,20 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search portraits..."
-right_icon = SubResource("ImageTexture_0aje5")
+right_icon = SubResource("ImageTexture_xiqtq")
 
 [node name="AddPortraitButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/TopBar"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
-icon = SubResource("ImageTexture_0aje5")
+icon = SubResource("ImageTexture_xiqtq")
 icon_alignment = 2
 
 [node name="AddFolderButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/TopBar"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
-icon = SubResource("ImageTexture_0aje5")
+icon = SubResource("ImageTexture_xiqtq")
 icon_alignment = 2
 
 [node name="PortraitsPanel" type="PanelContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
@@ -246,13 +249,13 @@ script = ExtResource("7_7kmf4")
 size = Vector2i(110, 100)
 item_count = 3
 item_0/text = "Rename"
-item_0/icon = SubResource("ImageTexture_0aje5")
+item_0/icon = SubResource("ImageTexture_xiqtq")
 item_0/id = 0
 item_1/text = "Duplicate"
-item_1/icon = SubResource("ImageTexture_0aje5")
+item_1/icon = SubResource("ImageTexture_xiqtq")
 item_1/id = 1
 item_2/text = "Remove"
-item_2/icon = SubResource("ImageTexture_0aje5")
+item_2/icon = SubResource("ImageTexture_xiqtq")
 item_2/id = 2
 
 [node name="RemoveGroupDialog" type="ConfirmationDialog" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree"]
@@ -301,7 +304,7 @@ size = Vector2i(600, 400)
 ok_button_text = "Create here"
 filters = PackedStringArray("*.tscn", "*.scn")
 
-[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/ExpandButton" to="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer" method="_on_expand_button_toggled"]
+[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Header/ExpandButton" to="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer" method="_on_expand_button_toggled"]
 [connection signal="text_changed" from="CharacterSettings/ScrollContainer/Container/Portraits/TopBar/PortraitSearchBar" to="." method="_on_portrait_search_bar_text_changed"]
 [connection signal="pressed" from="CharacterSettings/ScrollContainer/Container/Portraits/TopBar/AddPortraitButton" to="." method="_on_add_portrait_button_pressed"]
 [connection signal="pressed" from="CharacterSettings/ScrollContainer/Container/Portraits/TopBar/AddFolderButton" to="." method="_on_add_folder_button_pressed"]

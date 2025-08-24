@@ -150,7 +150,8 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
-	_resource_manager.release_resources(_dialog_data, _start_id)
+	if _resource_manager:
+		_resource_manager.release_resources(_dialog_data, _start_id)
 
 
 func _ready() -> void:

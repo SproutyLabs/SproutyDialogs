@@ -37,11 +37,6 @@ extends VBoxContainer
 ## Portrait offset section
 @onready var _portrait_offset_section: Container = %PortraitOffset
 
-## Default portrait scene template
-var _default_portrait_scene := preload("res://addons/graph_dialogs/objects/defaults/default_portrait.tscn")
-## Default portrait script template
-var _default_portrait_script := "res://addons/graph_dialogs/objects/defaults/default_portrait.gd"
-
 
 func _ready():
 	_new_portrait_scene_button.visible = true
@@ -201,13 +196,24 @@ func _on_new_portrait_scene_button_pressed() -> void:
 
 ## Create a new portrait scene file
 func _new_portrait_scene(scene_path: String) -> void:
-	var new_scene := _default_portrait_scene.instantiate()
+	var default_uid = GraphDialogsSettings.get_setting("default_portrait_scene")
+	var default_path = ""
+	
+	if default_uid == -1: # If no default portrait is set
+		default_path = GraphDialogsSettings.DEFAULT_PORTRAIT_PATH
+		# Use and set the setting to the built-in default
+		GraphDialogsSettings.set_setting("default_portrait_scene",
+				ResourceSaver.get_resource_id_for_path(default_path))
+	else: # Use the user-defined default portrait scene
+		default_path = ResourceUID.get_id_path(default_uid)
+	
+	var new_scene = load(default_path).instantiate()
 	new_scene.name = scene_path.get_file().split(".")[0].to_pascal_case()
 
 	# Creates and set a template script for the new scene
 	var script_path := scene_path.get_basename() + ".gd"
 	var script = GDScript.new()
-	script.source_code = FileAccess.get_file_as_string(_default_portrait_script)
+	script.source_code = new_scene.get_script().source_code
 	ResourceSaver.save(script, script_path)
 	new_scene.set_script(load(script_path))
 

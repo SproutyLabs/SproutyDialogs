@@ -1,12 +1,12 @@
 @tool
 extends MarginContainer
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ##  Locale Field Component
 ##
 ##  Component that allows the user to select a locale from the translation server
 ##  selecting the language and country using dropdowns or manual input.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Triggered when the locale is removed.
 signal locale_removed(locale_code: String)

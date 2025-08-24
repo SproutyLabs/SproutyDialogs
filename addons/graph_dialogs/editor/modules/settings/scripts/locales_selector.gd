@@ -1,12 +1,12 @@
 @tool
 extends VBoxContainer
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ##  Locales Selector Component
 ##
 ##  Component that contains a list of locale fields to select the locales
 ##  to be used in the translations of the dialog system.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Triggered when the locales are changed.
 signal locales_changed

@@ -1,13 +1,13 @@
 @tool
 extends HSplitContainer
 
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 ## Translation settings
 ##
 ## This script handles the translation settings in settings tab. It allows to
 ## select the locales in the project, the default and testing locales, and the 
 ## folder where the CSV files are stored.
-## -----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
 ## Emitted when the translation enabled setting changes
 signal translation_enabled_changed(enabled: bool)
@@ -63,37 +63,40 @@ func _ready() -> void:
 
 	locales_selector.locales_changed.connect(_on_locales_changed)
 	csv_folder_field.folder_path_changed.connect(_on_csv_files_path_changed)
-	char_names_csv_field.file_path_changed.connect(_on_char_names_csv_path_changed)
+	char_names_csv_field.file_path_submitted.connect(_on_char_names_csv_path_changed)
 
-	await get_tree().create_timer(0.1).timeout # Wait for the settings to be loaded
+	_csv_folder_warning.visible = false
+	_char_csv_warning.visible = false
+
+	await get_tree().process_frame # Wait a frame to ensure settings are loaded
 	_load_settings()
 
 
 ## Load settings and set the values in the UI
 func _load_settings() -> void:
-	_enable_translations_toggle.set_pressed(
+	_enable_translations_toggle.button_pressed = \
 		GraphDialogsSettings.get_setting("enable_translations")
-	)
-	_use_csv_files_toggle.set_pressed(
+	_use_csv_files_toggle.button_pressed = \
 		GraphDialogsSettings.get_setting("use_csv")
-	)
-	_translate_names_toggle.set_pressed(
+	_translate_names_toggle.button_pressed = \
 		GraphDialogsSettings.get_setting("translate_character_names")
-	)
-	_use_csv_for_names_toggle.set_pressed(
+	_use_csv_for_names_toggle.button_pressed = \
 		GraphDialogsSettings.get_setting("use_csv_for_character_names")
-	)
 	csv_folder_field.set_value(
 		GraphDialogsSettings.get_setting("csv_translations_folder")
 	)
-	char_names_csv_field.set_value(
-		GraphDialogsSettings.get_setting("character_names_csv")
-	)
-	_on_use_translation_toggled(_enable_translations_toggle.is_pressed())
-	_on_use_csv_files_toggled(_use_csv_files_toggle.is_pressed())
-	_on_translate_names_toggled(_translate_names_toggle.is_pressed())
-	_on_use_csv_for_names_toggled(_use_csv_for_names_toggle.is_pressed())
-	
+	if GraphDialogsSettings.get_setting("character_names_csv") == -1:
+		char_names_csv_field.set_value("") # No CSV set
+	else:
+		char_names_csv_field.set_value(ResourceUID.get_id_path(
+				GraphDialogsSettings.get_setting("character_names_csv")
+			)
+		)
+	_csv_folder_warning.visible = ( # Show warning if folder is invalid
+		not DirAccess.dir_exists_absolute(csv_folder_field.get_value())
+		and not csv_folder_field.get_value().is_empty()
+	) # Show warning if character names CSV path is invalid
+	_char_csv_warning.visible = not _valid_csv_path(char_names_csv_field.get_value())
 	_set_locales_on_dropdown(default_locale_dropdown, true)
 	_set_locales_on_dropdown(testing_locale_dropdown, false)
 	locales_selector.set_locale_list()
@@ -106,7 +109,7 @@ func _set_locales_on_dropdown(dropdown: OptionButton, default: bool) -> void:
 	dropdown.clear()
 	var locales = GraphDialogsSettings.get_setting("locales")
 
-	if locales == null or locales.is_empty():
+	if not default or locales == null or locales.is_empty():
 		dropdown.add_item("(no one)")
 	
 	var default_locale = GraphDialogsSettings.get_setting("default_locale")
@@ -130,9 +133,10 @@ func _on_default_locale_selected(index: int) -> void:
 
 ## Select the testing locale from the dropdown
 func _on_testing_locale_selected(index: int) -> void:
+	var locale = testing_locale_dropdown.get_item_text(index)
 	GraphDialogsSettings.set_setting(
 		"testing_locale",
-		testing_locale_dropdown.get_item_text(index)
+		locale if locale != "(no one)" else ""
 	)
 	testing_locale_changed.emit()
 
@@ -246,7 +250,8 @@ func _on_char_names_csv_path_changed(path: String) -> void:
 		_char_csv_warning.visible = true
 		return
 	_char_csv_warning.visible = false
-	GraphDialogsSettings.set_setting("character_names_csv", path)
+	GraphDialogsSettings.set_setting("character_names_csv",
+			ResourceSaver.get_resource_id_for_path(path))
 
 
 ## Create a new CSV template file for character names
@@ -259,7 +264,8 @@ func _new_character_names_csv() -> void:
 	
 	_char_csv_warning.visible = false
 	char_names_csv_field.set_value(path)
-	GraphDialogsSettings.set_setting("character_names_csv", path)
+	GraphDialogsSettings.set_setting("character_names_csv",
+			ResourceSaver.get_resource_id_for_path(path))
 
 
 ## Check if the CSV path is valid

@@ -196,7 +196,12 @@ static func save_character_names_on_csv(name_data: Dictionary) -> void:
 ##    }
 ## }
 static func load_character_names_from_csv(key_name: String) -> Dictionary:
-	var path: String = GraphDialogsSettings.get_setting("character_names_csv")
+	var char_names_csv = GraphDialogsSettings.get_setting("character_names_csv")
+	if char_names_csv == -1:
+		printerr("[Graph Dialogs] Cannot load character names, no CSV file set.")
+		return {}
+	# Load the CSV file
+	var path: String = ResourceUID.get_id_path(char_names_csv)
 	var data := load_file(path)
 	if data.is_empty():
 		printerr("[Graph Dialogs] Cannot load character names from CSV file.")

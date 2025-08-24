@@ -89,8 +89,8 @@ func new_dialog_file(path: String) -> void:
 	var resource = GraphDialogsDialogueData.new()
 	var csv_path = ""
 	
-	if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
-		and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
+	if GraphDialogsSettings.get_setting("enable_translations") \
+		and GraphDialogsSettings.get_setting("use_csv"):
 		# Create a new CSV file for translations
 		csv_path = GraphDialogsCSVFileManager.new_csv_template_file(path.get_file())
 		if csv_path.is_empty(): return
@@ -118,8 +118,8 @@ func _new_graph_from_resource(resource: GraphDialogsDialogueData) -> GraphEdit:
 	graph.modified.connect(_on_data_modified)
 	var dialogs = resource.dialogs if resource.dialogs else {}
 	# Load dialogs from CSV file if translation is enabled
-	if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
-		and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
+	if GraphDialogsSettings.get_setting("usenable_translationse_csv") \
+		and GraphDialogsSettings.get_setting("use_csv"):
 		if ResourceUID.has_id(resource.csv_translation_file):
 			dialogs = GraphDialogsCSVFileManager.load_dialogs_from_csv(
 					ResourceUID.get_id_path(resource.csv_translation_file))
@@ -206,8 +206,8 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		file_metadata["data"] = data
 
 		# Save the CSV file with the dialogs
-		if ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
-			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
+		if GraphDialogsSettings.get_setting("enable_translations") \
+			and GraphDialogsSettings.get_setting("use_csv"):
 			if ResourceUID.has_id(data.csv_translation_file):
 				GraphDialogsCSVFileManager.save_dialogs_on_csv(
 					graph_editor_data["dialogs"],
@@ -220,10 +220,10 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		file_metadata["data"] = data
 
 		# Save character names on csv file
-		if ProjectSettings.get_setting("graph_dialogs/translation/translate_character_names") \
-			and ProjectSettings.get_setting("graph_dialogs/translation/use_csv_for_names") \
-			and ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv") \
-			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled"):
+		if GraphDialogsSettings.get_setting("translate_character_names") \
+			and GraphDialogsSettings.get_setting("use_csv_for_character_names") \
+			and GraphDialogsSettings.get_setting("enable_translations") \
+			and GraphDialogsSettings.get_setting("use_csv"):
 			GraphDialogsCSVFileManager.save_character_names_on_csv(data.display_name)
 	
 	# Save file on the given path

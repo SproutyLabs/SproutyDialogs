@@ -14,7 +14,7 @@ func _enable_plugin() -> void:
 	add_dialogs_input_actions()
 	
 	# Initialize the default settings if they don't exist.
-	if not ProjectSettings.has_setting("graph_dialogs/general/default_dialog_box"):
+	if not ProjectSettings.has_setting("graph_dialogs/general/input/continue_input_action"):
 		GraphDialogsSettings.initialize_default_settings()
 
 

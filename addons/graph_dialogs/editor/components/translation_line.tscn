@@ -13,6 +13,7 @@ script = ExtResource("1_4gyl1")
 
 [node name="Header" type="HBoxContainer" parent="."]
 layout_mode = 2
+size_flags_horizontal = 0
 
 [node name="LanguageLabel" type="Label" parent="Header"]
 layout_mode = 2

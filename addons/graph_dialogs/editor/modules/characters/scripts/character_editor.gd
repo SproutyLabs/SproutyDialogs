@@ -45,11 +45,6 @@ signal modified
 ## Portrait settings panel scene
 var portrait_editor_scene := preload("res://addons/graph_dialogs/editor/modules/characters/portrait_editor.tscn")
 
-## Default dialog box scene template
-var _default_dialog_box_scene := preload("res://addons/graph_dialogs/objects/defaults/default_dialog_box.tscn")
-## Default dialog box script template
-var _default_dialog_box_script := "res://addons/graph_dialogs/objects/defaults/default_dialog_box.gd"
-
 ## Current portrait selected
 var _current_portrait: TreeItem = null
 
@@ -226,13 +221,24 @@ func _on_new_dialog_box_scene_pressed() -> void:
 
 ## Create a new text box scene file
 func _on_new_dialog_box_path_selected(path: String) -> void:
-	var new_scene = _default_dialog_box_scene.instantiate()
+	var default_uid = GraphDialogsSettings.get_setting("default_dialog_box")
+	var default_path = ""
+	
+	if default_uid == -1: # If no default dialog box is set
+		default_path = GraphDialogsSettings.DEFAULT_DIALOG_BOX_PATH
+		# Use and set the setting to the built-in default
+		GraphDialogsSettings.set_setting("default_dialog_box",
+				ResourceSaver.get_resource_id_for_path(default_path))
+	else: # Use the user-defined default dialog box
+		default_path = ResourceUID.get_id_path(default_uid)
+	
+	var new_scene = load(default_path).instantiate()
 	new_scene.name = path.get_file().split(".")[0].to_pascal_case()
 
 	# Creates and set a template script for the new scene
 	var script_path := path.get_basename() + ".gd"
 	var script = GDScript.new()
-	script.source_code = FileAccess.get_file_as_string(_default_dialog_box_script)
+	script.source_code = new_scene.get_script().source_code
 	ResourceSaver.save(script, script_path)
 	new_scene.set_script(load(script_path))
 

@@ -20,28 +20,34 @@ script = ExtResource("1_dnk3v")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Container" type="VBoxContainer" parent="TranslationSettings"]
+[node name="ScrollContainer" type="ScrollContainer" parent="TranslationSettings"]
 layout_mode = 2
 
-[node name="EnableTranslationsToggle" type="CheckButton" parent="TranslationSettings/Container"]
+[node name="Container" type="VBoxContainer" parent="TranslationSettings/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EnableTranslationsToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable/disable translations for dialogues."
-button_pressed = true
 text = "Enable translations"
 icon = ExtResource("2_2wqnh")
 
-[node name="--" type="HSeparator" parent="TranslationSettings/Container"]
+[node name="--" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="UseCSVFilesToggle" type="CheckButton" parent="TranslationSettings/Container"]
+[node name="UseCSVFilesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for translations. Otherwise, translations will be saved in the dialog file or in the character file for character names."
+disabled = true
+button_pressed = true
 text = "Use CSV files for translation"
 icon = ExtResource("2_qeqd1")
 
-[node name="CSVFolderWarning" type="RichTextLabel" parent="TranslationSettings/Container"]
+[node name="CSVFolderWarning" type="RichTextLabel" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -49,36 +55,40 @@ bbcode_enabled = true
 text = "[color=tomato]Please select a valid directory for the CSV files."
 fit_content = true
 
-[node name="CSVFolder" type="HBoxContainer" parent="TranslationSettings/Container"]
+[node name="CSVFolder" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "Path to the directory of the CSV translation files. This directory must contain all the CSV files used for the dialogs. It is necessary to collect all translations in godot."
 
-[node name="Label" type="Label" parent="TranslationSettings/Container/CSVFolder"]
+[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/CSVFolder"]
 layout_mode = 2
 text = "CSV Translations Folder"
 
-[node name="CSVFolderField" parent="TranslationSettings/Container/CSVFolder" instance=ExtResource("4_01lks")]
+[node name="CSVFolderField" parent="TranslationSettings/ScrollContainer/Container/CSVFolder" instance=ExtResource("4_01lks")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="---" type="HSeparator" parent="TranslationSettings/Container"]
+[node name="---" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="TranslateNamesToggle" type="CheckButton" parent="TranslationSettings/Container"]
+[node name="TranslateNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable translation for the character names."
+disabled = true
+button_pressed = true
 text = "Translate character names"
 icon = ExtResource("3_rjao7")
 
-[node name="UseCSVForNamesToggle" type="CheckButton" parent="TranslationSettings/Container"]
+[node name="UseCSVForNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable translation for the character names."
+disabled = true
+button_pressed = true
 text = "Use a CSV file for character names"
 
-[node name="CharCSVWarning" type="RichTextLabel" parent="TranslationSettings/Container"]
+[node name="CharCSVWarning" type="RichTextLabel" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -86,25 +96,25 @@ bbcode_enabled = true
 text = "[color=tomato]Please select a valid CSV file for character name translation [i](It must be inside the CSV file directory)."
 fit_content = true
 
-[node name="CharCSVFile" type="HBoxContainer" parent="TranslationSettings/Container"]
+[node name="CharCSVFile" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV file directory."
 
-[node name="Label" type="Label" parent="TranslationSettings/Container/CharCSVFile"]
+[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile"]
 layout_mode = 2
 text = "Character Names CSV"
 
-[node name="CharNamesCSVField" parent="TranslationSettings/Container/CharCSVFile" instance=ExtResource("4_erkog")]
+[node name="CharNamesCSVField" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile" instance=ExtResource("4_erkog")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _placeholder_text = "Select a CSV file..."
 file_filters = PackedStringArray("*.csv")
 
-[node name="----" type="HSeparator" parent="TranslationSettings/Container"]
+[node name="----" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="CollectTranslations" type="Button" parent="TranslationSettings/Container"]
+[node name="CollectTranslations" type="Button" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Collect Translations"
@@ -114,54 +124,72 @@ icon = ExtResource("2_2wqnh")
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Container" type="VBoxContainer" parent="LocalesSettings"]
+[node name="ScrollContainer" type="ScrollContainer" parent="LocalesSettings"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="LocalesSettings/Container"]
+[node name="Container" type="VBoxContainer" parent="LocalesSettings/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Title" type="Label" parent="LocalesSettings/ScrollContainer/Container"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Localization Settings"
 
-[node name="DefaultLocale" type="HBoxContainer" parent="LocalesSettings/Container"]
+[node name="DefaultLocale" type="HBoxContainer" parent="LocalesSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "The locale in which the dialogues are going to be written by default in the plugin."
 
-[node name="Label" type="Label" parent="LocalesSettings/Container/DefaultLocale"]
+[node name="Label" type="Label" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale"]
 layout_mode = 2
 text = "Default Locale"
 
-[node name="OptionButton" type="OptionButton" parent="LocalesSettings/Container/DefaultLocale"]
+[node name="OptionButton" type="OptionButton" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale"]
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 0
-item_count = 1
+selected = 1
+item_count = 3
 popup/item_0/text = "en"
 popup/item_0/id = 0
+popup/item_1/text = "es"
+popup/item_1/id = 1
+popup/item_2/text = "ja"
+popup/item_2/id = 2
 
-[node name="TestingLocale" type="HBoxContainer" parent="LocalesSettings/Container"]
+[node name="TestingLocale" type="HBoxContainer" parent="LocalesSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "The locale that will be used to test the dialogue when the game is run.
+If no one is selected, the automatically detected system language will be used."
 
-[node name="Label" type="Label" parent="LocalesSettings/Container/TestingLocale"]
+[node name="Label" type="Label" parent="LocalesSettings/ScrollContainer/Container/TestingLocale"]
 layout_mode = 2
 text = "Testing Locale"
 
-[node name="OptionButton" type="OptionButton" parent="LocalesSettings/Container/TestingLocale"]
+[node name="OptionButton" type="OptionButton" parent="LocalesSettings/ScrollContainer/Container/TestingLocale"]
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
-item_count = 1
-popup/item_0/text = "en"
+item_count = 4
+popup/item_0/text = "(no one)"
 popup/item_0/id = 0
+popup/item_1/text = "en"
+popup/item_1/id = 1
+popup/item_2/text = "es"
+popup/item_2/id = 2
+popup/item_3/text = "ja"
+popup/item_3/id = 3
 
-[node name="HSeparator" type="HSeparator" parent="LocalesSettings/Container"]
+[node name="HSeparator" type="HSeparator" parent="LocalesSettings/ScrollContainer/Container"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LocalesSelector" parent="LocalesSettings/Container" instance=ExtResource("2_qh116")]
+[node name="LocalesSelector" parent="LocalesSettings/ScrollContainer/Container" instance=ExtResource("2_qh116")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[connection signal="pressed" from="TranslationSettings/Container/CollectTranslations" to="." method="_on_collect_translations_pressed"]
-[connection signal="item_selected" from="LocalesSettings/Container/DefaultLocale/OptionButton" to="." method="_on_default_locale_selected"]
-[connection signal="item_selected" from="LocalesSettings/Container/TestingLocale/OptionButton" to="." method="_on_testing_locale_selected"]
+[connection signal="pressed" from="TranslationSettings/ScrollContainer/Container/CollectTranslations" to="." method="_on_collect_translations_pressed"]
+[connection signal="item_selected" from="LocalesSettings/ScrollContainer/Container/DefaultLocale/OptionButton" to="." method="_on_default_locale_selected"]
+[connection signal="item_selected" from="LocalesSettings/ScrollContainer/Container/TestingLocale/OptionButton" to="." method="_on_testing_locale_selected"]
