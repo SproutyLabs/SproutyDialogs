@@ -15,6 +15,8 @@ extends Container
 signal text_changed(text: String)
 ## Emitted when pressing the expand button to open the text editor
 signal open_text_editor(text_box: TextEdit)
+## Emitted when the text box focus is changed while the text editor is open
+signal update_text_editor(text_box: TextEdit)
 
 ## Language label of the translation
 @onready var _language_label: Label = $Header/LanguageLabel
@@ -30,6 +32,7 @@ var _locale_code: String = ""
 func _ready():
 	if _text_box is GraphDialogsExpandableTextBox:
 		_text_box.open_text_editor.connect(open_text_editor.emit)
+		_text_box.update_text_editor.connect(update_text_editor.emit)
 	_text_box.text_changed.connect(text_changed.emit)
 
 

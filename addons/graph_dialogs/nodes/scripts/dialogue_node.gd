@@ -37,12 +37,18 @@ var _collapse_down_icon = preload("res://addons/graph_dialogs/icons/interactable
 
 func _ready():
 	super ()
-	# Connect signal to open text editor from graph
 	if graph_editor is GraphEdit:
+		# Connect signals to open and update text editor
 		_translation_boxes.open_text_editor.connect(graph_editor.open_text_editor.emit)
 		_default_text_box.open_text_editor.connect(graph_editor.open_text_editor.emit)
+		_translation_boxes.update_text_editor.connect(graph_editor.update_text_editor.emit)
+		_default_text_box.update_text_editor.connect(graph_editor.update_text_editor.emit)
+
+		# Connect signals to mark the graph as modified
 		_translation_boxes.modified.connect(graph_editor.on_modified)
-		_default_text_box.text_changed.connect(graph_editor.on_modified.unbind(1))
+		_default_text_box.text_changed.connect(graph_editor.on_modified)
+
+		# Connect signals for character selection
 		_portrait_dropdown.item_selected.connect(graph_editor.on_modified.unbind(1))
 		open_character_file_request.connect(
 			graph_editor.open_character_file_request.emit.bind(get_character_path())

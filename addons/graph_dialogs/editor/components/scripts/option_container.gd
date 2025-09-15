@@ -12,6 +12,8 @@ extends VBoxContainer
 signal modified
 ## Emitted when pressing the expand button to open the text editor
 signal open_text_editor(text_box: TextEdit)
+## Emitted when change the focus to another text box while the text editor is open
+signal update_text_editor(text_box: TextEdit)
 ## Triggered when the option is removed
 signal option_removed(index)
 
@@ -34,7 +36,9 @@ var _default_locale: String = ""
 func _ready() -> void:
 	_default_text_box.open_text_editor.connect(open_text_editor.emit)
 	_translation_boxes.open_text_editor.connect(open_text_editor.emit)
-	_default_text_box.text_changed.connect(modified.emit.unbind(1))
+	_default_text_box.update_text_editor.connect(update_text_editor.emit)
+	_translation_boxes.update_text_editor.connect(update_text_editor.emit)
+	_default_text_box.text_changed.connect(modified.emit)
 	_translation_boxes.modified.connect(modified.emit)
 	_remove_button.pressed.connect(_on_remove_button_pressed)
 	_remove_button.icon = get_theme_icon("Remove", "EditorIcons")

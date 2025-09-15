@@ -105,8 +105,11 @@ func _set_value_field(type: int) -> void:
 	_new_var_value = field_data.default_value
 
 	if type == TYPE_STRING: # Connect the expand button to open the text editor
+		var text_box = field_data.field.get_node("TextEdit")
 		field_data.field.get_node("ExpandButton").pressed.connect(
-			graph_editor.open_text_editor.emit.bind(field_data.field.get_node("TextEdit")))
+			graph_editor.open_text_editor.emit.bind(text_box))
+		text_box.focus_entered.connect(
+			graph_editor.update_text_editor.emit.bind(text_box))
 	
 	if type == TYPE_BOOL: # Adjust size horizontally
 		size.x += field_data.field.get_size().x

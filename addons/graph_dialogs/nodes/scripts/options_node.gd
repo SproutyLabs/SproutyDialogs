@@ -19,8 +19,9 @@ var _options_keys: Array = []
 func _ready():
 	super ()
 	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
-	if _first_option: # Connect signals for the first option container
+	if graph_editor is GraphEdit and _first_option: # Connect signals for the first option container
 		_first_option.open_text_editor.connect(graph_editor.open_text_editor.emit)
+		_first_option.update_text_editor.connect(graph_editor.update_text_editor.emit)
 		_first_option.option_removed.connect(_on_option_removed)
 		_first_option.modified.connect(graph_editor.on_modified)
 		_first_option.resized.connect(func():
@@ -113,6 +114,7 @@ func _add_new_option() -> GraphDialogsOptionContainer:
 	# Add slot to connect the option
 	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
 	new_option.open_text_editor.connect(get_parent().open_text_editor.emit)
+	new_option.update_text_editor.connect(get_parent().update_text_editor.emit)
 	new_option.option_removed.connect(_on_option_removed)
 	new_option.modified.connect(graph_editor.on_modified)
 	new_option.resized.connect(func():

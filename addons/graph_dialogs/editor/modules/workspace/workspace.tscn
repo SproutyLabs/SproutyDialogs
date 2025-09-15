@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://ydw8d8wnxyoq" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/workspace.gd" id="2_yu0sn"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/graph_dialogs/theme/empty_panel.tres" id="3_jcsqd"]
 [ext_resource type="PackedScene" uid="uid://cr20rw0unyne0" path="res://addons/graph_dialogs/editor/modules/workspace/graph.tscn" id="5_yj855"]
-[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialogs/editor/modules/workspace/text_editor.tscn" id="6_00hgx"]
+[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialogs/editor/modules/text_editor/text_editor.tscn" id="6_00hgx"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gxvii"]
 

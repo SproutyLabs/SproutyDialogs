@@ -14,6 +14,8 @@ extends VBoxContainer
 signal modified
 ## Emitted when pressing the expand button of a text box to open the text editor
 signal open_text_editor(text_box: TextEdit)
+## Emitted when change the focus to another text box while the text editor is open
+signal update_text_editor(text_box: TextEdit)
 
 ## Flag to indicate if is using text boxes for translation
 ## True for use expandable text boxes for translation, false for use line edits
@@ -67,7 +69,8 @@ func set_translation_boxes(locales: Array) -> void:
 		_text_boxes.add_child(box)
 		box.set_locale(locale)
 		box.open_text_editor.connect(open_text_editor.emit)
-		box.text_changed.connect(modified.emit.unbind(1))
+		box.update_text_editor.connect(open_text_editor.emit)
+		box.text_changed.connect(modified.emit)
 	self.visible = true
 
 

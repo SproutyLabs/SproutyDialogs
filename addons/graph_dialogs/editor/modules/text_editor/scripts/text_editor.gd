@@ -56,8 +56,20 @@ func _ready():
 func show_text_editor(text_box: Variant) -> void:
 	_opened_text_box = text_box
 	text_input.text = _opened_text_box.text
+	if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
+		_opened_text_box.text_changed.connect(_on_text_box_text_changed)
 	_text_preview.text = GraphDialogsVariableManager.parse_variables(_opened_text_box.text, true)
 	visible = true
+
+
+## Update the text editor with the text box content
+func update_text_editor(text_box: Variant) -> void:
+	if visible and text_box != _opened_text_box:
+		_opened_text_box = text_box
+		text_input.text = _opened_text_box.text
+		if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
+			_opened_text_box.text_changed.connect(_on_text_box_text_changed)
+		_text_preview.text = GraphDialogsVariableManager.parse_variables(_opened_text_box.text, true)
 
 
 ## Hide the text editor
@@ -76,6 +88,17 @@ func change_option_bar(bar_index: int) -> void:
 ## Close the text editor
 func _on_close_button_pressed() -> void:
 	hide_text_editor()
+
+
+## Update text on text editor with the text box content when it changes
+func _on_text_box_text_changed(_arg: Variant = null) -> void:
+	if text_input.text == _opened_text_box.text:
+		return # If the text is the same, do nothing
+	var caret_line = text_input.get_caret_line()
+	var caret_column = text_input.get_caret_column()
+	text_input.text = _opened_text_box.text
+	text_input.set_caret_line(caret_line)
+	text_input.set_caret_column(caret_column)
 
 
 ## Update the text box and preview with the text editor input
@@ -190,7 +213,8 @@ func update_code_tags(
 		open_tag: String,
 		close_tag: String,
 		remove_attr: String = "",
-		add_on_empty: bool = false
+		add_on_empty: bool = false,
+		add_another_tag: Array = []
 		) -> void:
 	# Get open tag without attributes
 	var open_tag_begin = open_tag.split("=")[0].split(" ")[0].replace("]", "")
@@ -217,14 +241,20 @@ func update_code_tags(
 				tags_pos = find_tags_around_cursor(open_tag_begin, close_tag)
 			else:
 				# If the selected text does not contain the open tag
-				if add_on_empty: insert_tags_on_selected_text(open_tag, close_tag)
+				if add_on_empty:
+					insert_tags_on_selected_text(open_tag, close_tag)
+					if not add_another_tag.is_empty():
+						insert_tags_on_selected_text(add_another_tag[0], add_another_tag[1])
 				return
 	else:
 		# Find the tags around the cursor position if there are no tags selected
 		tags_pos = find_tags_around_cursor(open_tag_begin, close_tag)
 		
 		if tags_pos.is_empty(): # If there are no tags around the cursor
-			if add_on_empty: insert_tags_at_cursor_pos(open_tag, close_tag)
+			if add_on_empty:
+				insert_tags_at_cursor_pos(open_tag, close_tag)
+				if not add_another_tag.is_empty():
+					insert_tags_at_cursor_pos(add_another_tag[0], add_another_tag[1])
 			return
 	
 	# Get open tag with attributes and update it
@@ -303,38 +333,38 @@ func _get_tag_atributes(tag: String) -> Dictionary:
 
 ## Add bold text to the selected text
 func _on_add_bold_pressed() -> void:
-	insert_tags_on_selected_text("[b]", "[/b]", true)
+	insert_tags_on_selected_text("[b]", "[/b]", true, "text")
 
 ## Add italic text to the selected text
 func _on_add_italic_pressed() -> void:
-	insert_tags_on_selected_text("[i]", "[/i]", true)
+	insert_tags_on_selected_text("[i]", "[/i]", true, "text")
 
 ## Add underline text to the selected text
 func _on_add_underline_pressed() -> void:
-	insert_tags_on_selected_text("[u]", "[/u]", true)
+	insert_tags_on_selected_text("[u]", "[/u]", true, "text")
 
 ## Add strikethrough text to the selected text
 func _on_add_strikethrough_pressed() -> void:
-	insert_tags_on_selected_text("[s]", "[/s]", true)
+	insert_tags_on_selected_text("[s]", "[/s]", true, "text")
 #endregion
 
 #region --- Alignment options --------------------------------------------------
 
 ## Align the text to the left
 func _on_align_text_left_pressed() -> void:
-	insert_tags_on_selected_text("[left]", "[/left]")
+	insert_tags_on_selected_text("[left]", "[/left]", true, "text")
 
 ## Align the text to the center
 func _on_align_text_center_pressed() -> void:
-	insert_tags_on_selected_text("[center]", "[/center]")
+	insert_tags_on_selected_text("[center]", "[/center]", true, "text")
 
 ## Align the text to the right
 func _on_align_text_right_pressed() -> void:
-	insert_tags_on_selected_text("[right]", "[/right]")
+	insert_tags_on_selected_text("[right]", "[/right]", true, "text")
 
 ## Align the text to fill the width (justify)
 func _on_align_text_fill_pressed() -> void:
-	insert_tags_on_selected_text("[fill]", "[/fill]")
+	insert_tags_on_selected_text("[fill]", "[/fill]", true, "text")
 #endregion
 
 #region --- Outline options ----------------------------------------------------
@@ -354,14 +384,15 @@ func _on_add_text_outline_pressed() -> void:
 
 ## Update the outline size tags in the selected text
 func _on_outline_size_value_changed(value: float) -> void:
-	update_code_tags("[outline_size=" + str(value) + "]", "[/outline_size]")
+	update_code_tags("[outline_size=" + str(value) + "]", "[/outline_size]", "", true,
+			["[outline_color=" + _outline_color_sample_hex.text.split("]")[-1] + "]", "[/outline_color]"])
 
 
 ## Update the outline color tags in the selected text
 func _on_outline_color_changed(color: Color) -> void:
 	var open_tag = "[outline_color=" + color.to_html() + "]"
 	_outline_color_sample_hex.text = "Hex: #[outline_size=5]" + open_tag + color.to_html()
-	update_code_tags(open_tag, "[/color]")
+	update_code_tags(open_tag, "[/outline_color]", "", true, ["[outline_size=5]", "[/outline_size]"])
 
 #endregion
 #endregion
@@ -381,7 +412,7 @@ func _on_change_text_color_pressed() -> void:
 func _on_text_color_picker_changed(color: Color) -> void:
 	var open_tag = "[color=" + color.to_html() + "]"
 	_text_color_sample_hex.text = "Hex: #" + open_tag + color.to_html()
-	update_code_tags(open_tag, "[/color]")
+	update_code_tags(open_tag, "[/color]", "", true)
 
 
 ## Change the background color of the selected text
@@ -397,7 +428,7 @@ func _on_change_bg_color_pressed() -> void:
 func _on_bg_color_picker_changed(color: Color) -> void:
 	var open_tag = "[bgcolor=" + color.to_html() + "]"
 	_bg_color_sample_hex.text = "Hex: #" + open_tag + color.to_html()
-	update_code_tags(open_tag, "[/bgcolor]")
+	update_code_tags(open_tag, "[/bgcolor]", "", true)
 
 #endregion
 

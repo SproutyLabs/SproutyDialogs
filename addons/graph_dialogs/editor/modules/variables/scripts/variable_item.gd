@@ -17,6 +17,8 @@ signal variable_renamed(name: String)
 signal remove_pressed()
 ## Emitted when a expand button is pressed to open the text editor
 signal open_text_editor(text_box: LineEdit)
+## Emitted when change the focus to another text box to update the text editor
+signal update_text_editor(text_box: LineEdit)
 
 ## The variable name
 @export var _variable_name: String = ""
@@ -150,9 +152,11 @@ func _set_value_field(type: int) -> void:
 	_variable_value = field_data.default_value
 
 	if type == TYPE_STRING: # Connect the expand button to open the text editor
+		var text_box = field_data.field.get_node("TextEdit")
 		field_data.field.get_node("ExpandButton").pressed.connect(
-			open_text_editor.emit.bind(field_data.field.get_node("TextEdit")))
-
+			open_text_editor.emit.bind(text_box))
+		text_box.focus_entered.connect(update_text_editor.emit.bind(text_box))
+		
 
 ## Handle the name change event
 func _on_name_changed(toggled_on: bool) -> void:

@@ -16,6 +16,8 @@ signal nodes_loaded
 signal open_character_file_request(path: String)
 ## Emitted when a expand button to open the text editor is pressed
 signal open_text_editor(text_box: TextEdit)
+## Emitted when change the focus to another text box while the text editor is open
+signal update_text_editor(text_box: TextEdit)
 ## Emitted when the locales are changed
 signal locales_changed
 ## Emitted when the translation enabled state is changed
@@ -85,7 +87,7 @@ func _input(_event):
 
 
 ## Emit the modified signal
-func on_modified():
+func on_modified(_arg: Variant = null) -> void:
 	modified.emit()
 
 

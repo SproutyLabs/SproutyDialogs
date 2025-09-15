@@ -12,6 +12,8 @@ extends MarginContainer
 signal variable_changed(name: String, type: int, value: Variant)
 ## Emitted when a text editor is called to edit a string variable
 signal open_text_editor(text: String)
+## Emitted when change the focus to another text box to update the text editor
+signal update_text_editor(text: String)
 
 ## Variables container
 @onready var _variables_container: VBoxContainer = %VariablesContainer
@@ -85,6 +87,7 @@ func _load_variables_data(data: Dictionary, parent: Node = _variables_container)
 			new_item.variable_renamed.connect(_on_item_rename.bind(new_item))
 			new_item.variable_changed.connect(_on_variable_changed)
 			new_item.open_text_editor.connect(open_text_editor.emit)
+			new_item.update_text_editor.connect(update_text_editor.emit)
 		elif value.has("variables") and value.has("color"): # It's a group
 			new_item = _variable_group_scene.instantiate()
 			new_item.parent_group = parent
@@ -189,6 +192,7 @@ func _on_add_var_button_pressed() -> void:
 	new_item.variable_renamed.connect(_on_item_rename.bind(new_item))
 	new_item.variable_changed.connect(_on_variable_changed)
 	new_item.open_text_editor.connect(open_text_editor.emit)
+	new_item.update_text_editor.connect(update_text_editor.emit)
 	new_item.parent_group = _variables_container
 	_variables_container.add_child(new_item)
 

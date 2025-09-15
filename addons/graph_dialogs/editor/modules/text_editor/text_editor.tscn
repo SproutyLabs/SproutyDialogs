@@ -1,8 +1,8 @@
 [gd_scene load_steps=36 format=3 uid="uid://deethj56qlsml"]
 
-[ext_resource type="Script" uid="uid://6s5bseebujdb" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/text_editor/text_editor.gd" id="1_v143h"]
+[ext_resource type="Script" uid="uid://6s5bseebujdb" path="res://addons/graph_dialogs/editor/modules/text_editor/scripts/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialogs/icons/interactable/collapse-right.svg" id="2_bd7d8"]
-[ext_resource type="CodeHighlighter" uid="uid://dfy2njb4ljtel" path="res://addons/graph_dialogs/editor/modules/workspace/code_highlighter.tres" id="3_3nqnv"]
+[ext_resource type="CodeHighlighter" uid="uid://dfy2njb4ljtel" path="res://addons/graph_dialogs/editor/modules/text_editor/text_highlighter.tres" id="3_3nqnv"]
 [ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/graph_dialogs/icons/nodes/play.svg" id="3_b12sr"]
 [ext_resource type="Texture2D" uid="uid://ban62atjybm0o" path="res://addons/graph_dialogs/icons/text_editor/text-bold.svg" id="4_8loe6"]
 [ext_resource type="Texture2D" uid="uid://cag0gxuqt8qwx" path="res://addons/graph_dialogs/icons/text_editor/text-italic.svg" id="5_gd2p5"]
@@ -23,14 +23,14 @@
 [ext_resource type="Texture2D" uid="uid://3ygkqeueqkrd" path="res://addons/graph_dialogs/icons/text_editor/magic-wand.svg" id="18_do7oi"]
 [ext_resource type="Texture2D" uid="uid://5g3wml1xcuwa" path="res://addons/graph_dialogs/icons/text_editor/rainbow.svg" id="19_djbmw"]
 [ext_resource type="Texture2D" uid="uid://cyjfhon6vx11l" path="res://addons/graph_dialogs/icons/text_editor/waves.svg" id="20_h0nhk"]
-[ext_resource type="Script" uid="uid://ddxkopvjta4wl" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/text_editor/text_editor_font_options.gd" id="20_krlt7"]
+[ext_resource type="Script" uid="uid://ddxkopvjta4wl" path="res://addons/graph_dialogs/editor/modules/text_editor/scripts/text_editor_font_options.gd" id="20_krlt7"]
 [ext_resource type="Texture2D" uid="uid://drhigy8q8yvor" path="res://addons/graph_dialogs/icons/text_editor/pulse.svg" id="21_cmowh"]
 [ext_resource type="Texture2D" uid="uid://bu4fhmasoepps" path="res://addons/graph_dialogs/icons/text_editor/tornado.svg" id="22_2gb2p"]
 [ext_resource type="Texture2D" uid="uid://ckqdg3q4kjmpk" path="res://addons/graph_dialogs/icons/text_editor/shake.svg" id="23_w4102"]
 [ext_resource type="Texture2D" uid="uid://bi8srcf0vhr15" path="res://addons/graph_dialogs/icons/text_editor/ghost.svg" id="24_5moyk"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialogs/editor/components/file_field.tscn" id="25_dx6e2"]
-[ext_resource type="Script" uid="uid://bvccjdgrn6fpx" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/text_editor/text_editor_effects.gd" id="26_g04n3"]
-[ext_resource type="Script" uid="uid://dpylhhrt6aoaq" path="res://addons/graph_dialogs/editor/modules/workspace/scripts/text_editor/text_editor_images.gd" id="28_qnqd5"]
+[ext_resource type="Script" uid="uid://bvccjdgrn6fpx" path="res://addons/graph_dialogs/editor/modules/text_editor/scripts/text_editor_effects.gd" id="26_g04n3"]
+[ext_resource type="Script" uid="uid://dpylhhrt6aoaq" path="res://addons/graph_dialogs/editor/modules/text_editor/scripts/text_editor_images.gd" id="28_qnqd5"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialogs/icons/interactable/collapse-down.svg" id="32_hkfxn"]
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/graph_dialogs/icons/interactable/collapse-up.svg" id="37_phbom"]
 
@@ -39,7 +39,6 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
 
 [node name="TextEditor" type="Panel"]
-visible = false
 clip_contents = true
 custom_minimum_size = Vector2(500, 0)
 anchors_preset = 15
@@ -196,7 +195,7 @@ layout_mode = 2
 [node name="Label" type="Button" parent="Container/OptionMenus/FontBar/HFlowContainer"]
 layout_mode = 2
 tooltip_text = "Change the font of the selected text."
-text = "Change Font"
+text = "Font Style"
 icon = ExtResource("8_vunvl")
 flat = true
 
@@ -437,7 +436,7 @@ layout_mode = 2
 [node name="Label" type="Button" parent="Container/OptionMenus/TextColorBar"]
 layout_mode = 2
 tooltip_text = "Change the color of the selected text."
-text = "Change Text Color"
+text = "Text Color"
 icon = ExtResource("10_3icwq")
 flat = true
 
@@ -471,7 +470,7 @@ layout_mode = 2
 [node name="Label" type="Button" parent="Container/OptionMenus/BGColorBar"]
 layout_mode = 2
 tooltip_text = "Change the background color of the selected text."
-text = "Change Background Color"
+text = "Background Color"
 icon = ExtResource("9_hslfk")
 flat = true
 
@@ -1252,8 +1251,8 @@ text = "Text preview..."
 [connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions/SpSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_sp_space_value_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions/TopSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_top_space_value_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions/BottomSpaceField" to="Container/OptionMenus/FontBar" method="_on_font_bottom_space_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions/EmboldenField" to="." method="_on_font_embolden_value_changed"]
-[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions/SlantField" to="." method="_on_font_slant_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions/EmboldenField" to="Container/OptionMenus/FontBar" method="_on_font_embolden_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions/SlantField" to="Container/OptionMenus/FontBar" method="_on_font_slant_value_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/OutlineBar/SizeField" to="." method="_on_outline_size_value_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/OutlineBar/ColorButton" to="." method="_on_outline_color_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]

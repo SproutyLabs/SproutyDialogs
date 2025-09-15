@@ -1,10 +1,10 @@
 [gd_scene load_steps=11 format=3 uid="uid://dpscdg0f7o6ft"]
 
-[ext_resource type="Script" uid="uid://cv23xnc0v5l0t" path="res://addons/graph_dialogs/editor/scripts/file_manager.gd" id="1_3v21c"]
+[ext_resource type="Script" uid="uid://cv23xnc0v5l0t" path="res://addons/graph_dialogs/editor/modules/file_manager/scripts/file_manager.gd" id="1_3v21c"]
 [ext_resource type="Script" uid="uid://xuu4omf67pq3" path="res://addons/graph_dialogs/editor/scripts/side_bar_controller.gd" id="1_avlcx"]
 [ext_resource type="Texture2D" uid="uid://dv53yhmd7k3d5" path="res://addons/graph_dialogs/icons/add-dialog.svg" id="2_fjick"]
 [ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/graph_dialogs/icons/add-char.svg" id="3_ljhu2"]
-[ext_resource type="Script" uid="uid://dlco4x1xmoek0" path="res://addons/graph_dialogs/editor/scripts/file_list_manager.gd" id="4_r5dun"]
+[ext_resource type="Script" uid="uid://dlco4x1xmoek0" path="res://addons/graph_dialogs/editor/modules/file_manager/scripts/file_list_manager.gd" id="4_r5dun"]
 [ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/graph_dialogs/icons/interactable/collapse-left.svg" id="8_72tq1"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/graph_dialogs/editor/components/file_field.tscn" id="8_wehoa"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/graph_dialogs/icons/interactable/collapse-right.svg" id="9_xltsg"]

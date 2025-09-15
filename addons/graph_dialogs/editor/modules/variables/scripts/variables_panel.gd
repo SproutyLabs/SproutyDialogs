@@ -17,6 +17,7 @@ extends Container
 func _ready():
 	# Connect signals
 	_variables_editor.open_text_editor.connect(_on_open_text_editor)
+	_variables_editor.update_text_editor.connect(_text_editor.update_text_editor)
 	_text_editor.hide()
 
 

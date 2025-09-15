@@ -54,6 +54,7 @@ func switch_current_graph(new_graph: GraphEdit) -> void:
 	# Asign text editor reference to the new graph
 	if not new_graph.is_connected("open_text_editor", _text_editor.show_text_editor):
 		new_graph.open_text_editor.connect(_text_editor.show_text_editor)
+		new_graph.update_text_editor.connect(_text_editor.update_text_editor)
 		new_graph.open_character_file_request.connect(open_character_file_request.emit)
 	_graph_editor.add_child(new_graph)
 	show_graph_editor()

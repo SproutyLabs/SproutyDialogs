@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/graph_dialogs/theme/main_theme.tres" id="1_j5uel"]
 [ext_resource type="Script" uid="uid://vupjsrwi1ij8" path="res://addons/graph_dialogs/editor/modules/variables/scripts/variables_editor.gd" id="2_dou7m"]
 [ext_resource type="Script" uid="uid://ciksa7eamoeq4" path="res://addons/graph_dialogs/editor/modules/variables/scripts/variables_panel.gd" id="2_jxvjv"]
-[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialogs/editor/modules/workspace/text_editor.tscn" id="3_6jwro"]
+[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/graph_dialogs/editor/modules/text_editor/text_editor.tscn" id="3_6jwro"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/graph_dialogs/icons/interactable/collapse-down.svg" id="5_dou7m"]
 
 [sub_resource type="Image" id="Image_6jwro"]
