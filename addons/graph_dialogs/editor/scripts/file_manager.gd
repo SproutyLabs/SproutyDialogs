@@ -118,7 +118,7 @@ func _new_graph_from_resource(resource: GraphDialogsDialogueData) -> GraphEdit:
 	graph.modified.connect(_on_data_modified)
 	var dialogs = resource.dialogs if resource.dialogs else {}
 	# Load dialogs from CSV file if translation is enabled
-	if GraphDialogsSettings.get_setting("usenable_translationse_csv") \
+	if GraphDialogsSettings.get_setting("enable_translations") \
 		and GraphDialogsSettings.get_setting("use_csv"):
 		if ResourceUID.has_id(resource.csv_translation_file):
 			dialogs = GraphDialogsCSVFileManager.load_dialogs_from_csv(

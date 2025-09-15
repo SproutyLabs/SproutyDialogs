@@ -28,15 +28,24 @@ signal option_selected(current_node: String, option_index: int)
 ## Emitted when a signal event is emitted.
 signal signal_event(argument: String)
 
+## UID of the Dialog Data resource to play.
+@export_storage var _dialog_data_uid: int = -1
+## Name of the Dialog Data file being played.
+@export_storage var _dialog_file_name: String = ""
 ## Dialog Data resource to play.
 var _dialog_data: GraphDialogsDialogueData:
 	set(value):
 		_dialog_data = value
 		_start_id = "(Select a dialog)"
-		if value: _starts_ids = value.get_start_ids()
-		_dialog_file_name = value.resource_path.get_file().get_basename()
+		if value:
+			_dialog_data_uid = ResourceLoader.get_resource_uid(value.resource_path)
+			_dialog_file_name = value.resource_path.get_file().get_basename()
+			_starts_ids = value.get_start_ids()
+		else:
+			_dialog_data_uid = -1
+			_dialog_file_name = ""
+			_starts_ids = []
 		notify_property_list_changed()
-
 ## Start ID of the dialog tree to play.
 var _start_id: String:
 	set(value):
@@ -110,9 +119,6 @@ var _dialog_box_instances: Dictionary = {}
 ## }[/codeblock]
 var _portraits_instances: Dictionary = {}
 
-## Name of the dialog file being played.
-var _dialog_file_name: String = ""
-
 ## Dialog interpreter instance to process the dialog nodes.
 var _dialog_interpreter: DialogInterpreter
 ## Resource manager instance used to load resources for the dialogs.
@@ -137,7 +143,7 @@ var _is_running: bool = false
 
 
 func _enter_tree() -> void:
-	if not Engine.is_editor_hint():
+	if not Engine.is_editor_hint(): # Only run in game
 		_dialog_interpreter = DialogInterpreter.new()
 		_dialog_interpreter.continue_to_node.connect(_process_node)
 		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
@@ -155,9 +161,21 @@ func _exit_tree() -> void:
 
 
 func _ready() -> void:
-	if not Engine.is_editor_hint():
-		# Load the dialog resources if the dialog data and start ID are set
-		if _dialog_data and _starts_ids.has(_start_id):
+	if Engine.is_editor_hint():
+		# In editor, check if the dialog data resource exists
+		if _dialog_data_uid != -1 and not ResourceUID.has_id(_dialog_data_uid):
+			printerr("[Graph Dialogs] Dialog Player '" + name + "' cannot find the Dialog Data resource '" +
+				_dialog_file_name + "'. Check if it was deleted.")
+			_dialog_data = null
+			_dialog_data_uid = -1
+			_dialog_file_name = ""
+			_start_id = "(Select a dialog)"
+			_starts_ids = []
+	else: # In game, load the dialog data resources
+		if not _dialog_data:
+			_dialog_data = load(ResourceUID.get_id_path(_dialog_data_uid))
+			_starts_ids = _dialog_data.get_start_ids()
+		if _starts_ids.has(_start_id):
 			await _resource_manager.ready
 			_resource_manager.load_resources(_dialog_data, _start_id)
 			# Start processing the dialog tree if the play on ready is enabled
@@ -216,13 +234,13 @@ func get_current_dialog_box() -> DialogBox:
 func set_dialog(data: GraphDialogsDialogueData, start_id: String,
 		portrait_parents: Dictionary = {}, dialog_box_parents: Dictionary = {}) -> void:
 	if not data:
-		printerr("[Graph Dialogs] No dialog data provided to set.")
+		printerr("[Graph Dialogs] No Dialog Data provided to set.")
 		return
 	_dialog_data = data
 	_start_id = start_id
 
 	if not _starts_ids.has(_start_id): # Check if the dialog with given id exists
-		printerr("[Graph Dialogs] Cannot find '" + _start_id + "' ID on dialog file.")
+		printerr("[Graph Dialogs] Cannot find'" + _start_id + "'ID on Dialog Data.")
 		_start_id = "(Select a dialog)"
 		_dialog_data = null
 		return
@@ -253,7 +271,7 @@ func _get_property_list():
 			for id in _starts_ids:
 				id_list += id
 				if id != _starts_ids[-1]:
-					id_list += ","
+					id_list += ", "
 			props.append({
 				"name": &"_start_id",
 				"type": TYPE_STRING,
@@ -281,7 +299,7 @@ func _get_property_list():
 			# Set characters options by dialog
 			if not _start_id.is_empty() and _start_id in _dialog_data.characters:
 				props.append({
-				"name": "Override Display Parents",
+				"name": "OverrideDisplayParents",
 				"type": TYPE_STRING,
 				"usage": PROPERTY_USAGE_GROUP,
 				"hint_string": "char_",
@@ -296,12 +314,14 @@ func _get_property_list():
 					props.append({ # Set portrait parent node path by character
 						"name": char + "_portraits_parent",
 						"type": TYPE_OBJECT,
+						"usage": PROPERTY_USAGE_DEFAULT,
 						"hint": PROPERTY_HINT_NODE_TYPE,
 						"hint_string": "Node",
 					})
 					props.append({ # Set dialogue box node path by character
 						"name": char + "_dialog_box_parent",
 						"type": TYPE_OBJECT,
+						"usage": PROPERTY_USAGE_DEFAULT,
 						"hint": PROPERTY_HINT_NODE_TYPE,
 						"hint_string": "Node",
 					})
@@ -346,7 +366,7 @@ func start() -> void:
 		printerr("[Graph Dialogs] No dialog data set to play.")
 		return
 	if not _starts_ids.has(_start_id): # Check if the dialog with given id exists
-		printerr("[Graph Dialogs] Cannot find '" + _start_id + "' ID on dialog file.")
+		printerr("[Graph Dialogs] Cannot find'" + _start_id + "'ID on Dialog Data.")
 		return
 	
 	# Search for start node and start processing from there
