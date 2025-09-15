@@ -101,7 +101,11 @@ func load_character(data: GraphDialogsCharacterData, name_data: Dictionary) -> v
 
 	# Character name and its translations
 	_set_translation_text_boxes()
-	_load_name_translations(name_data[_key_name])
+	if name_data.is_empty(): # Load from character data
+		if data.display_name.has(_key_name):
+			_load_name_translations(data.display_name[_key_name])
+	else: # Load from provided name CSV data
+		_load_name_translations(name_data[_key_name])
 	_update_translations_state()
 
 	# Text box scene file

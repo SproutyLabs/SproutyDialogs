@@ -150,7 +150,12 @@ func _new_character_from_resource(resource: GraphDialogsCharacterData) -> Contro
 	var char_editor = _char_scene.instantiate()
 	add_child(char_editor)
 	char_editor.modified.connect(_on_data_modified)
-	var name_data = GraphDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
+	var name_data = {}
+	if GraphDialogsSettings.get_setting("enable_translations") \
+		and GraphDialogsSettings.get_setting("translate_character_names") \
+		and GraphDialogsSettings.get_setting("use_csv_for_character_names") \
+		and GraphDialogsSettings.get_setting("use_csv"): # Load character names from CSV file
+		name_data = GraphDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
 	char_editor.load_character(resource, name_data)
 	char_editor.name = "CharacterEditor"
 	remove_child(char_editor)
