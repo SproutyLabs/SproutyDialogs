@@ -113,21 +113,51 @@ static func new_csv_template_file(name: String) -> String:
 
 
 ## Save all graph dialogs on CSV file
+## Update existing rows or add new ones if the dialog key does not exist
+## and save the file with all the dialogs without removing any existing data.
 static func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 	var header = ["key"]
-	var content = []
+	var csv_data = []
 	
+	# Collect all locales for the header
+	for dialog_key in dialogs:
+		for locale in dialogs[dialog_key]:
+			if not header.has(locale):
+				header.append(locale)
+	
+	# Load existing data if file exists
+	if FileAccess.file_exists(path):
+		csv_data = load_file(path)
+	else:
+		csv_data = [header]
+
+	# Build a dictionary for fast lookup
+	var existing_rows := {}
+	for row in csv_data.slice(1, csv_data.size()):
+		if row.size() > 0:
+			existing_rows[row[0]] = row
+	
+	# Update or add each dialog row
 	for dialog_key in dialogs:
 		var row = [dialog_key]
-		for locale in dialogs[dialog_key]:
-			if header.size() < dialogs[dialog_key].size() + 1:
-				header.append(locale) # Set header
-			row.append(dialogs[dialog_key][locale])
-		content.append(row)
+		for i in range(1, header.size()):
+			var locale = header[i]
+			if dialogs[dialog_key].has(locale):
+				row.append(dialogs[dialog_key][locale])
+			else:
+				row.append("EMPTY")
+			existing_rows[dialog_key] = row
+    
+    # Prepare final content
+	var content = []
+	for key in existing_rows.keys():
+		content.append(existing_rows[key])
 	
+	# remove empty rows
+	content = content.filter(func(x): return x != [""])
 	save_file(header, content, path)
 
-
+	
 ## Load all dialogs from a CSV file to a dictionary.
 ## Returns a dictionary with the dialog data as:
 ## { dialog_key: {
