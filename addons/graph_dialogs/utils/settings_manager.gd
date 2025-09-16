@@ -40,10 +40,13 @@ static var _settings_paths: Dictionary = {
 	
 	# -- Translation settings --------------------------------------------------
 	"enable_translations": "graph_dialogs/translation/enable_translations",
-	"use_csv": "graph_dialogs/translation/csv_files/use_csv",
-	"csv_translations_folder": "graph_dialogs/translation/csv_files/csv_translations_folder",
 
 	# Translation/CSV files settings
+	"use_csv": "graph_dialogs/translation/csv_files/use_csv",
+	"csv_translations_folder": "graph_dialogs/translation/csv_files/csv_translations_folder",
+	"fallback_to_resource": "graph_dialogs/translation/csv_files/fallback_to_resource",
+
+	# Translation/Characters settings
 	"translate_character_names": "graph_dialogs/translation/characters/translate_character_names",
 	"use_csv_for_character_names": "graph_dialogs/translation/characters/use_csv_for_character_names",
 	"character_names_csv": "graph_dialogs/translation/characters/character_names_csv",
@@ -114,6 +117,7 @@ static func initialize_default_settings() -> void:
 	ProjectSettings.set_setting(_settings_paths["enable_translations"], false)
 	ProjectSettings.set_setting(_settings_paths["use_csv"], false)
 	ProjectSettings.set_setting(_settings_paths["csv_translations_folder"], "")
+	ProjectSettings.set_setting(_settings_paths["fallback_to_resource"], true)
 	ProjectSettings.set_setting(_settings_paths["translate_character_names"], false)
 	ProjectSettings.set_setting(_settings_paths["use_csv_for_character_names"], false)
 	ProjectSettings.set_setting(_settings_paths["character_names_csv"], -1)

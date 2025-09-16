@@ -20,8 +20,8 @@ func _ready():
 func csv_path_field_visible(visible: bool) -> void:
 	if _csv_file_field:
 		_csv_file_field.visible = (visible
-			and ProjectSettings.get_setting("graph_dialogs/translation/translation_enabled")
-			and ProjectSettings.get_setting("graph_dialogs/translation/translation_with_csv")
+			and GraphDialogsSettings.get_setting("enable_translations")
+			and GraphDialogsSettings.get_setting("use_csv")
 		)
 
 

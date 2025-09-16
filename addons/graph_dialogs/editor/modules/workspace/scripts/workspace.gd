@@ -36,6 +36,8 @@ func _ready() -> void:
 	
 	_new_dialog_button.icon = get_theme_icon("Add", "EditorIcons")
 	_open_dialog_button.icon = get_theme_icon("Folder", "EditorIcons")
+	if _graph_editor.get_child_count() > 0: # Destroy the placeholder graph
+		_graph_editor.get_child(0).queue_free()
 	show_start_panel()
 
 

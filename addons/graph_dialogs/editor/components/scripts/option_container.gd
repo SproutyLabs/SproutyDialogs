@@ -49,10 +49,10 @@ func _ready() -> void:
 ## Return the dialog key for this option
 func get_dialog_key() -> String:
 	if get_parent().start_node:
-		# <start id>_OPTIONS_<options node index>_<option index> -> START_OPTION_1_1
-		return (get_parent().get_start_id() + "_OPTION_"
-			+ str(get_parent().node_index) + "_" + str(option_index))
-	return "OPTION_" + str(get_parent().node_index) + "_" + str(option_index)
+		# <start id>_OPTIONS<options node index>_<option index> -> START_OPTIONS1_1
+		return (get_parent().get_start_id() + "_OPTIONS"
+			+ str(get_parent().node_index) + "_" + str(option_index + 1))
+	return "OPTIONS" + str(get_parent().node_index) + "_" + str(option_index + 1)
 
 
 ## Get dialog text and its translations

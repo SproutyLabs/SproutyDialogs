@@ -32,6 +32,8 @@ const CHAR_NAMES_CSV_NAME: String = "character_names.csv"
 @onready var _enable_translations_toggle: CheckButton = %EnableTranslationsToggle
 ## Use CSV files toggle
 @onready var _use_csv_files_toggle: CheckButton = %UseCSVFilesToggle
+## Fallback to resource if key not found toggle
+@onready var _fallback_to_resource_toggle: CheckButton = %FallbackToResourceToggle
 ## Translate character names toggle
 @onready var _translate_names_toggle: CheckButton = %TranslateNamesToggle
 ## Use CSV for names toggle
@@ -58,6 +60,7 @@ func _ready() -> void:
 	# Connect signals
 	_enable_translations_toggle.toggled.connect(_on_use_translation_toggled)
 	_use_csv_files_toggle.toggled.connect(_on_use_csv_files_toggled)
+	_fallback_to_resource_toggle.toggled.connect(_on_fallback_to_resource_toggled)
 	_translate_names_toggle.toggled.connect(_on_translate_names_toggled)
 	_use_csv_for_names_toggle.toggled.connect(_on_use_csv_for_names_toggled)
 
@@ -78,6 +81,8 @@ func _load_settings() -> void:
 		GraphDialogsSettings.get_setting("enable_translations")
 	_use_csv_files_toggle.button_pressed = \
 		GraphDialogsSettings.get_setting("use_csv")
+	_fallback_to_resource_toggle.button_pressed = \
+		GraphDialogsSettings.get_setting("fallback_to_resource")
 	_translate_names_toggle.button_pressed = \
 		GraphDialogsSettings.get_setting("translate_character_names")
 	_use_csv_for_names_toggle.button_pressed = \
@@ -167,6 +172,7 @@ func _on_use_translation_toggled(checked: bool) -> void:
 	_use_csv_files_toggle.disabled = not checked
 	_translate_names_toggle.disabled = not checked
 	_use_csv_for_names_toggle.disabled = not checked
+	_fallback_to_resource_toggle.disabled = not checked
 	csv_folder_field.disable_field(not (checked and _use_csv_files_toggle.is_pressed()))
 	char_names_csv_field.disable_field(
 		not (checked and _translate_names_toggle.is_pressed())
@@ -193,6 +199,8 @@ func _on_use_translation_toggled(checked: bool) -> void:
 func _on_use_csv_files_toggled(checked: bool) -> void:
 	GraphDialogsSettings.set_setting("use_csv", checked)
 
+	_translate_names_toggle.disabled = not (checked and _enable_translations_toggle.is_pressed())
+	_translate_names_toggle.visible = checked
 	csv_folder_field.disable_field(not (checked and _enable_translations_toggle.is_pressed()))
 	csv_folder_field.get_parent().visible = checked
 	char_names_csv_field.get_parent().visible = (checked
@@ -206,6 +214,11 @@ func _on_use_csv_files_toggled(checked: bool) -> void:
 			or not DirAccess.dir_exists_absolute(csv_folder_field.get_value()))
 	)
 	use_csv_files_changed.emit(checked)
+
+
+## Toggle the fallback to resource dialogs if key not found in CSV
+func _on_fallback_to_resource_toggled(checked: bool) -> void:
+	GraphDialogsSettings.set_setting("fallback_to_resource", checked)
 
 
 ## Toggle the translation of character names

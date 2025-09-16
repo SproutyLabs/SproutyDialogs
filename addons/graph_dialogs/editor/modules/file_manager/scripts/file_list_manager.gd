@@ -210,9 +210,9 @@ func close_all() -> void:
 		return
 	
 	# Close all if none are modified
-	_current_file_index = -1
 	for index in range(_file_list.item_count):
 		close_file(index)
+	_current_file_index = -1
 
 
 ## Set a file as modified or unsaved
@@ -314,6 +314,7 @@ func _on_confirm_closing_action(action) -> void:
 		"discard_file":
 			for index in range(_file_list.item_count):
 				close_file(index)
+			_current_file_index = -1
 	_closing_queue.clear()
 
 

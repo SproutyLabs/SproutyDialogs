@@ -98,7 +98,8 @@ func _on_tab_selected(tab: int):
 	match tab:
 		0: # Graph dialog tab
 			if side_bar:
-				side_bar.csv_path_field_visible(true)
+				if workspace.get_current_graph() != null:
+					side_bar.csv_path_field_visible(true)
 				file_manager.switch_to_file_on_tab(
 						tab, workspace.get_current_graph())
 		1: # Character tab

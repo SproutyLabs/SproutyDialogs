@@ -191,17 +191,21 @@ func get_graph_data() -> Dictionary:
 
 
 ## Load graph data from a dictionary
-func load_graph_data(data: Dictionary, dialogs: Dictionary, characters: Dictionary) -> void:
-	for dialogue_id in data.keys():
+func load_graph_data(data: GraphDialogsDialogueData, dialogs: Dictionary) -> void:
+	var characters = data.characters
+	var graph_data = data.graph_data
+	# Flag to fallback to resource dialogs if key not found in CSV
+	var fallback_to_resource = GraphDialogsSettings.get_setting("fallback_to_resource")
+	for dialogue_id in graph_data.keys():
 		# Find the start node for the current dialogue
 		var current_start_node = ""
-		for node_name in data[dialogue_id].keys():
-			if data[dialogue_id][node_name]["node_type"] == "start_node":
+		for node_name in graph_data[dialogue_id].keys():
+			if graph_data[dialogue_id][node_name]["node_type"] == "start_node":
 				current_start_node = node_name
 				break
 		# Load nodes for the current dialogue
-		for node_name in data[dialogue_id].keys():
-			var node_data = data[dialogue_id][node_name]
+		for node_name in graph_data[dialogue_id].keys():
+			var node_data = graph_data[dialogue_id][node_name]
 
 			# Create node and set data
 			var new_node = _new_node(
@@ -215,9 +219,16 @@ func load_graph_data(data: Dictionary, dialogs: Dictionary, characters: Dictiona
 			# Load dialogs and characters on dialogue nodes
 			if node_data["node_type"] == "dialogue_node":
 				if not dialogs.has(node_data["dialog_key"]):
-					printerr("[GraphDialogs] No dialog found for key: " + node_data["dialog_key"] \
-						+".\n\t- If you are using CSV files, check that the key exists in it." \
-						+"\n\t- Also, check that the CSV file associated with the dialog is correct.")
+					# Print error if no dialog is found for the dialogue node
+					printerr("[Graph Dialogs] No dialogue found for Dialogue Node #" + str(node_data["node_index"]) \
+						+" in the CSV file: " + ResourceUID.get_id_path(data.csv_translation_file) \
+						+". Check that the key '" + node_data["dialog_key"] \
+						+"' exists in the CSV translation file and that it is the correct CSV file." \
+						+ (" Loading '" + node_data["dialog_key"] + "' dialogue from '" \
+						+ data.resource_path.get_file() + "' dialog file instead.") \
+						if fallback_to_resource else "")
+					if fallback_to_resource and data.dialogs.has(node_data["dialog_key"]):
+						new_node.load_dialogs(data.dialogs[node_data["dialog_key"]])
 				else:
 					new_node.load_dialogs(dialogs[node_data["dialog_key"]])
 				var character_name = node_data["character"]
@@ -228,7 +239,22 @@ func load_graph_data(data: Dictionary, dialogs: Dictionary, characters: Dictiona
 						new_node.load_portrait(node_data["portrait"])
 			# Load options on options nodes
 			elif node_data["node_type"] == "options_node":
-				new_node.load_options_text(dialogs)
+				var options_dialogs = dialogs.duplicate()
+				for option_key in node_data["options_keys"]:
+					if not dialogs.has(option_key):
+						# Print error if no dialog is found for the option
+						printerr("[Graph Dialogs] No dialogue found for Option #" \
+							+ str(int(option_key.split("_")[-1]) + 1) + " of Option Node #" \
+							+ str(node_data["node_index"]) + " in the CSV file:\n" \
+							+ ResourceUID.get_id_path(data.csv_translation_file) \
+							+". Check that the key '" + option_key \
+							+"' exists in the CSV translation file and that it is the correct CSV file." \
+							+ (" Loading '" + option_key + "' dialogue from '" \
+							+ data.resource_path.get_file() + "' dialog file instead.") \
+							if fallback_to_resource else "")
+						if fallback_to_resource and data.dialogs.has(option_key):
+							options_dialogs[option_key] = data.dialogs[option_key]
+				new_node.load_options_text(options_dialogs)
 	
 	# When all the nodes are loaded, notify the nodes to connect each other
 	nodes_loaded.emit()

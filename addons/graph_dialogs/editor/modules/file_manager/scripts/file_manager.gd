@@ -123,7 +123,7 @@ func _new_graph_from_resource(resource: GraphDialogsDialogueData) -> GraphEdit:
 		if ResourceUID.has_id(resource.csv_translation_file):
 			dialogs = GraphDialogsCSVFileManager.load_dialogs_from_csv(
 					ResourceUID.get_id_path(resource.csv_translation_file))
-	graph.load_graph_data(resource.graph_data, dialogs, resource.characters)
+	graph.load_graph_data(resource, dialogs)
 	graph.name = "Graph"
 	remove_child(graph)
 	return graph
@@ -172,8 +172,11 @@ func load_file(path: String) -> void:
 		if resource is GraphDialogsDialogueData:
 			GraphDialogsFileUtils.set_recent_file_path("dialogue_files", path)
 			var graph = _new_graph_from_resource(resource)
-			_file_list.new_file_item(path, resource, graph,
-					ResourceUID.get_id_path(resource.csv_translation_file))
+			var csv_path_uid = resource.csv_translation_file
+			var csv_path = ""
+			if csv_path_uid != -1:
+				csv_path = ResourceUID.get_id_path(csv_path_uid)
+			_file_list.new_file_item(path, resource, graph, csv_path)
 			request_to_switch_tab.emit(0)
 		
 		elif resource is GraphDialogsCharacterData:
