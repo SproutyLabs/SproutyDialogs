@@ -50,6 +50,7 @@ func _ready():
 	if _variables_container.get_child_count() == 1:
 		_empty_label.show() # Show the empty label if there are no variables
 	
+	await get_tree().process_frame # Wait a frame to ensure settings are loaded
 	_load_variables_data(GraphDialogsVariableManager.get_variables())
 
 
@@ -60,11 +61,13 @@ func _get_variables_data(variables_array: Array = _variables_container.get_child
 		if child is GraphDialogsVariableItem:
 			var data = child.get_variable_data()
 			variables_data[data.name] = {
+				"index": child.get_index() - 1,
 				"type": data.type,
 				"value": data.value
 			}
 		elif child is GraphDialogsVariableGroup:
 			variables_data[child.get_item_name()] = {
+				"index": child.get_index() - 1,
 				"color": child.get_color(),
 				"variables": _get_variables_data(child.get_items())
 			}
@@ -73,7 +76,13 @@ func _get_variables_data(variables_array: Array = _variables_container.get_child
 
 ## Load variables data into the editor
 func _load_variables_data(data: Dictionary, parent: Node = _variables_container) -> void:
-	for name in data.keys():
+	# Sort keys by their index value
+	var sorted_keys := data.keys()
+	sorted_keys.sort_custom(func(a, b):
+		return data[a]["index"] < data[b]["index"]
+	)
+	# Create items in the index order
+	for name in sorted_keys:
 		var value = data[name]
 		var new_item = null
 		if value.has("type") and value.has("value"): # It's a variable
