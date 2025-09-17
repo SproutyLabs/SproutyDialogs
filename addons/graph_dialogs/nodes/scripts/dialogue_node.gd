@@ -131,7 +131,8 @@ func load_character(path: String) -> void:
 	_character_file_field.set_value(path)
 	_character_name_button.disabled = false
 	_character_name_button.text = character.key_name.capitalize()
-	_character_name_button.pressed.connect(open_character_file_request.emit.bind(path))
+	if not _character_name_button.pressed.is_connected(open_character_file_request.emit.bind(path)):
+		_character_name_button.pressed.connect(open_character_file_request.emit.bind(path))
 	_set_portrait_dropdown(character)
 	_character_data = character
 	graph_editor.on_modified()
