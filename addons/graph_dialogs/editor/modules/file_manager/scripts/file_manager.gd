@@ -81,6 +81,12 @@ func _ready() -> void:
 	_save_file_button.disabled = true # Disable save button
 
 
+## Get the current open file path
+func get_current_file_path() -> String:
+	var file_metadata = _file_list.get_item_metadata(_file_list.get_current_index())
+	return file_metadata["file_path"] if file_metadata else ""
+
+
 #region === New Files ==========================================================
 
 ## Create a new dialog file

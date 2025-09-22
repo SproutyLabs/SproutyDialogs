@@ -172,18 +172,19 @@ func _ready() -> void:
 			_start_id = "(Select a dialog)"
 			_starts_ids = []
 	else: # In game, load the dialog data resources
-		if not _dialog_data:
+		if not _dialog_data and _dialog_data_uid != -1 and ResourceUID.has_id(_dialog_data_uid):
 			_dialog_data = load(ResourceUID.get_id_path(_dialog_data_uid))
 			_starts_ids = _dialog_data.get_start_ids()
 		if _starts_ids.has(_start_id):
-			await _resource_manager.ready
+			if not _resource_manager.is_node_ready():
+				await _resource_manager.ready
 			_resource_manager.load_resources(_dialog_data, _start_id)
 			# Start processing the dialog tree if the play on ready is enabled
 			if _play_on_ready:
-				if _start_id == "(Select a dialog)":
-					printerr("[Graph Dialogs] No dialog ID selected to play.")
-					return
 				start()
+		elif _start_id == "(Select a dialog)":
+			printerr("[Graph Dialogs] No dialog ID selected to play.")
+			return
 
 
 ## Set play on ready flag to play the dialog when the node is ready.
@@ -299,7 +300,7 @@ func _get_property_list():
 			# Set characters options by dialog
 			if not _start_id.is_empty() and _start_id in _dialog_data.characters:
 				props.append({
-				"name": "OverrideDisplayParents",
+				"name": "Override Display Parents",
 				"type": TYPE_STRING,
 				"usage": PROPERTY_USAGE_GROUP,
 				"hint_string": "char_",
@@ -558,8 +559,8 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 		_current_portrait = _portraits_instances[character_name][portrait_name]
 
 	else: # Instantiate the portrait scene if not already loaded
-		_current_portrait = _resource_manager.instantiate_portrait(
-			character_name, portrait_name, _portrait_parents.get(character_name, null))
+		_current_portrait = _resource_manager.instantiate_portrait(character_name,
+		portrait_name, _portrait_parents.get(character_name, null), _current_dialog_box)
 		_portraits_instances[character_name][portrait_name] = _current_portrait
 	
 	_current_portrait.set_portrait()

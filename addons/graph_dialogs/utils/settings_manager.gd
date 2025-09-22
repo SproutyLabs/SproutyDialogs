@@ -19,8 +19,12 @@ const DEFAULT_PORTRAIT_PATH = "res://addons/graph_dialogs/objects/defaults/defau
 static var _settings_paths: Dictionary = {
 	# --- General settings -----------------------------------------------------
 	"continue_input_action": "graph_dialogs/general/input/continue_input_action",
+
+	# Default scenes
 	"default_dialog_box": "graph_dialogs/general/defaults/default_dialog_box",
 	"default_portrait_scene": "graph_dialogs/general/defaults/default_portrait_scene",
+
+	# Canvas layers
 	"dialog_box_canvas_layer": "graph_dialogs/general/canvas/dialog_box_canvas_layer",
 	"portraits_canvas_layer": "graph_dialogs/general/canvas/portraits_canvas_layer",
 	
@@ -57,7 +61,11 @@ static var _settings_paths: Dictionary = {
 	"locales": "graph_dialogs/translation/localization/locales",
 
 	# -- Variable settings -----------------------------------------------------
-	"variables": "graph_dialogs/variables/variables"
+	"variables": "graph_dialogs/variables/variables",
+
+	# -- Internal settings (not exposed in the UI) -----------------------------
+	"play_dialog_path": "graph_dialogs/internal/play_dialog_path",
+	"play_start_id": "graph_dialogs/internal/play_start_id"
 }
 
 

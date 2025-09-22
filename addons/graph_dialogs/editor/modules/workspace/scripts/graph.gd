@@ -12,12 +12,17 @@ extends GraphEdit
 signal modified
 ## Triggered when all the nodes are loaded
 signal nodes_loaded
+
 ## Emitted when is requesting to open a character file
 signal open_character_file_request(path: String)
+## Emitted when is requesting to play a dialog from a start node
+signal play_dialog_request(start_id: String)
+
 ## Emitted when a expand button to open the text editor is pressed
 signal open_text_editor(text_box: TextEdit)
 ## Emitted when change the focus to another text box while the text editor is open
 signal update_text_editor(text_box: TextEdit)
+
 ## Emitted when the locales are changed
 signal locales_changed
 ## Emitted when the translation enabled state is changed

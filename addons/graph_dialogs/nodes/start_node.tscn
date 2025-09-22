@@ -28,7 +28,7 @@ corner_radius_top_right = 5
 [node name="StartNode" type="GraphNode"]
 custom_minimum_size = Vector2(180, 0)
 offset_right = 180.0
-offset_bottom = 79.0
+offset_bottom = 88.0
 size_flags_vertical = 4
 theme = ExtResource("1_jdnrk")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_3wpa2")
@@ -52,12 +52,12 @@ node_icon = ExtResource("6_6olnj")
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PlayButton" type="TextureButton" parent="Container"]
+[node name="PlayButton" type="Button" parent="Container"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(20, 0)
 layout_mode = 2
-texture_normal = ExtResource("6_6olnj")
-stretch_mode = 5
+tooltip_text = "Play dialogue"
+icon = ExtResource("6_6olnj")
+flat = true
 
 [node name="IDLabel" type="Label" parent="Container"]
 layout_mode = 2

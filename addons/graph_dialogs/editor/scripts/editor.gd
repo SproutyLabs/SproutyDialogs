@@ -52,6 +52,7 @@ func _ready():
 	workspace.new_dialog_file_pressed.connect(file_manager.on_new_dialog_pressed)
 	workspace.open_dialog_file_pressed.connect(file_manager.on_open_file_pressed)
 	workspace.open_character_file_request.connect(file_manager.load_file.unbind(1))
+	workspace.play_dialog_request.connect(play_dialog_scene)
 
 	# Character panel signals
 	character_panel.new_character_file_pressed.connect(
@@ -80,6 +81,19 @@ func _connect_settings_panel_signals() -> void:
 			character_panel.on_locales_changed)
 	settings_panel.translation_settings.default_locale_changed.connect(
 			character_panel.on_locales_changed)
+
+
+## Play a dialog from the current graph starting from the given ID
+func play_dialog_scene(start_id: String, dialog_path: String = "") -> void:
+	file_manager.save_file()
+	if dialog_path.is_empty(): # Use the current open dialog
+		dialog_path = file_manager.get_current_file_path()
+		if dialog_path.is_empty():
+			printerr("[Graph Dialogs] Cannot play dialog: No dialog file is open.")
+			return
+	GraphDialogsSettings.set_setting("play_dialog_path", dialog_path)
+	GraphDialogsSettings.set_setting("play_start_id", start_id)
+	EditorInterface.play_custom_scene("res://addons/graph_dialogs/objects/test_scene/dialog_test_scene.tscn")
 
 
 ## Set the tab menu icons

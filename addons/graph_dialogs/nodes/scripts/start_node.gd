@@ -13,7 +13,7 @@ extends BaseNode
 ## Start ID value
 @onready var start_id: String = id_input_text.text
 ## Play button to run the dialog
-@onready var play_button: TextureButton = %PlayButton
+@onready var play_button: Button = %PlayButton
 
 ## Empty field error style for input text
 var input_error_style := preload("res://addons/graph_dialogs/theme/input_text_error.tres")
@@ -25,6 +25,7 @@ var id_error_alert: GraphDialogsAlert
 
 func _ready():
 	super ()
+	play_button.pressed.connect(_on_play_button_pressed)
 	start_node = self # Assign as start dialog node
 
 #region === Overridden Methods =================================================
@@ -89,11 +90,16 @@ func _on_id_input_focus_exited() -> void:
 		displaying_error = true
 
 
+## Active error alert when ID input is empty on node deselected
 func _on_node_deselected() -> void:
-	# Active error alert when ID input is empty on node deselected
 	_on_id_input_focus_exited()
 
 
+## Hide active error alert on node destroy
 func _on_tree_exiting() -> void:
-	# Hide active error alert on node destroy
 	graph_editor.alerts.hide_alert(id_error_alert)
+
+
+## Play the dialog from the current graph starting from the given ID
+func _on_play_button_pressed() -> void:
+	graph_editor.play_dialog_request.emit(get_start_id())

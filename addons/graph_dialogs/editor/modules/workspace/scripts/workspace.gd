@@ -10,12 +10,16 @@ extends Control
 
 ## Emitted when the graph editor is visible
 signal graph_editor_visible(visible: bool)
+
 ## Emitted when the new dialog file button is pressed
 signal new_dialog_file_pressed
 ## Emitted when the open dialog file button is pressed
 signal open_dialog_file_pressed
+
 ## Emitted when is requesting to open a character file
 signal open_character_file_request(path: String)
+## Emitted when is requesting to play a dialog from a start node
+signal play_dialog_request(start_id: String)
 
 ## Start panel reference
 @onready var _start_panel: Panel = $StartPanel
@@ -58,6 +62,7 @@ func switch_current_graph(new_graph: GraphEdit) -> void:
 		new_graph.open_text_editor.connect(_text_editor.show_text_editor)
 		new_graph.update_text_editor.connect(_text_editor.update_text_editor)
 		new_graph.open_character_file_request.connect(open_character_file_request.emit)
+		new_graph.play_dialog_request.connect(play_dialog_request.emit)
 	_graph_editor.add_child(new_graph)
 	show_graph_editor()
 

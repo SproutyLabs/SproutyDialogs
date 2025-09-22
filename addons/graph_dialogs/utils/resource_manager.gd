@@ -236,8 +236,8 @@ func instantiate_dialog_box(character_name: String, dialog_box_parent: Node) -> 
 ## Instantiate a character portrait.
 ## Instantiate from the loaded portraits for the dialogs in the current scene.
 ## Cannot instantiate a portrait that was not previously loaded.
-func instantiate_portrait(character_name: String,
-		portrait_name: String, portrait_parent: Node) -> DialogPortrait:
+func instantiate_portrait(character_name: String, portrait_name: String,
+		portrait_parent: Node, dialog_box: DialogBox = null) -> DialogPortrait:
 	if character_name.is_empty() or portrait_name.is_empty():
 		return null # If no character or portrait name is provided, return null
 	
@@ -251,16 +251,16 @@ func instantiate_portrait(character_name: String,
 	_set_portrait_properties(character_name, portrait_name, portrait_scene)
 	portrait_scene.name = portrait_name
 	
-	# If the portrait is set to be displayed on the dialog box, display it there
-	if _characters_data[character_name].portrait_on_dialog_box and portrait_parent is DialogBox:
-			var char_parent = _new_portrait_parent(character_name, portrait_parent)
-			portrait_parent.display_portrait(char_parent, portrait_scene)
-	# If there is a parent for the portrait, add it to the parent
-	elif portrait_parent != null:
+	# If there is a override parent for the portrait, add it to the parent
+	if portrait_parent != null:
 		var char_parent = _new_portrait_parent(character_name, portrait_parent)
-		if portrait_parent.has_node(NodePath(character_name)):
+		if not portrait_parent.has_node(NodePath(character_name)):
 			portrait_parent.add_child(char_parent)
 		char_parent.add_child(portrait_scene)
+	# If the portrait is set to be displayed on the dialog box, display it there
+	elif _characters_data[character_name].portrait_on_dialog_box and dialog_box:
+		var char_parent = _new_portrait_parent(character_name, dialog_box)
+		dialog_box.display_portrait(char_parent, portrait_scene)
 	else: # If no parent is set, add it to the default canvas
 		var char_parent = _new_portrait_parent(character_name, _portraits_canvas)
 		if not _portraits_canvas.has_node(NodePath(char_parent.name)):
