@@ -1,54 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Uploaded to: SVG Repo, www.svgrepo.com, Transformed by: SVG Repo Mixer Tools -->
-
-<svg
-   height="16.000002"
-   width="9.5036497"
-   version="1.1"
-   id="Capa_1"
-   viewBox="0 0 9.0091629 15.167502"
-   xml:space="preserve"
-   fill="#ffffff"
-   stroke="#ffffff"
-   stroke-width="0.00060671"
-   sodipodi:docname="Character.svg"
-   inkscape:export-filename="Character.svg"
-   inkscape:export-xdpi="24"
-   inkscape:export-ydpi="24"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg"><defs
-   id="defs2" /><sodipodi:namedview
-   id="namedview2"
-   pagecolor="#505050"
-   bordercolor="#eeeeee"
-   borderopacity="1"
-   inkscape:showpageshadow="0"
-   inkscape:pageopacity="0"
-   inkscape:pagecheckerboard="0"
-   inkscape:deskcolor="#505050" />
-
-
-
-
-
-<g
-   id="SVGRepo_iconCarrier"
-   transform="matrix(0.24999338,0,0,0.24999338,-3.079093,7.5917969e-5)"
-   inkscape:export-filename="Character.svg"
-   inkscape:export-xdpi="57.0219"
-   inkscape:export-ydpi="57.0219"> <g
-   id="g2"> <g
-   id="g1"> <ellipse
-   style="fill:#ffffff"
-   cx="30.336"
-   cy="12.097"
-   rx="11.997"
-   ry="12.097"
-   id="ellipse1" /> <path
-   style="fill:#ffffff"
-   d="M 35.64,30.079 H 25.031 c -7.021,0 -12.714,5.739 -12.714,12.821 V 60.671 H 48.354 V 42.9 c 0,-7.082 -5.693,-12.821 -12.714,-12.821 z"
-   id="path1" /> </g> </g> </g>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9px" height="16px" viewBox="0 0 9 16" version="1.1">
+<g id="surface1">
+<path style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.00060671;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:4;" d="M 42.336468 12.101421 C 42.336468 5.421032 36.954633 -0.00030368 30.338431 -0.00030368 C 23.70577 -0.00030368 18.340393 5.421032 18.340393 12.101421 C 18.340393 18.78181 23.70577 24.188333 30.338431 24.188333 C 36.954633 24.188333 42.336468 18.78181 42.336468 12.101421 Z M 42.336468 12.101421 " transform="matrix(0.237343,0,0,0.263715,-2.923285,0.0000800849)"/>
+<path style="fill-rule:nonzero;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.00060671;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:4;" d="M 35.637975 30.083665 L 25.022428 30.083665 C 18.011228 30.083665 12.316686 35.816061 12.316686 42.896384 L 12.316686 60.671255 L 48.360175 60.671255 L 48.360175 42.896384 C 48.360175 35.816061 42.665633 30.083665 35.637975 30.083665 Z M 35.637975 30.083665 " transform="matrix(0.237343,0,0,0.263715,-2.923285,0.0000800849)"/>
+</g>
 </svg>

@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://ryk2rxuf4sbx"]
+[gd_scene load_steps=5 format=3 uid="uid://ryk2rxuf4sbx"]
 
 [ext_resource type="Script" uid="uid://dmsryopl4atwi" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/text_settings.gd" id="1_22qb6"]
+[ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/icons/text_editor/text.svg" id="2_fgisi"]
+[ext_resource type="Texture2D" uid="uid://pbcwemf3054" path="res://addons/sprouty_dialogs/icons/icon.svg" id="3_kpe8y"]
+[ext_resource type="Texture2D" uid="uid://co8x6yovoum6i" path="res://addons/sprouty_dialogs/icons/fast-forward.svg" id="4_kpwi1"]
 
 [node name="TextSettings" type="HSplitContainer"]
 anchors_preset = 15
@@ -22,7 +25,16 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TitleLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="TextTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/TextTitle"]
+layout_mode = 2
+icon = ExtResource("2_fgisi")
+flat = true
+
+[node name="TitleLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/TextTitle"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_type_variation = &"HeaderSmall"
@@ -30,6 +42,8 @@ text = "Text Behavior"
 
 [node name="TypingSpeed" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Time in seconds that the text takes to reveal each character. 
+The higher the number, the longer it will take to reveal the next character."
 
 [node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed"]
 layout_mode = 2
@@ -41,17 +55,32 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 step = 0.001
+value = 0.05
 allow_greater = true
+suffix = "s"
 
 [node name="OpenUrlOnMetaToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Open the URL hyperlink when clicking on a URL tag during the dialogue.
+By default the URL tags are handled by 'meta_clicked' signal on RichTextLabels.
+You can do the same with the 'meta_clicked' signal in a DialogBox to more advanced use cases."
+button_pressed = true
 text = "Open URL on meta tag click"
 
 [node name="---" type="HSeparator" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="DisplayLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="DisplayTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/DisplayTitle"]
+layout_mode = 2
+icon = ExtResource("3_kpe8y")
+flat = true
+
+[node name="DisplayLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/DisplayTitle"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_type_variation = &"HeaderSmall"
@@ -60,15 +89,22 @@ text = "Dialogue Display"
 [node name="NewLineToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Line breaks will be considered paragraphs. Each paragraph is displayed as a new dialog (or block of text in the dialog box).
+Otherwise, the text is displayed all at once."
+button_pressed = true
 text = "New line as new dialogue"
 
 [node name="SplitDialogToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "The text is divided into paragraphs according to a max character limit.
+Otherwise, it is displayed all at once."
 text = "Split dialogue by max characters "
 
 [node name="MaxCharacters" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Maximum character limit.
+This is only used if the dialogue is splited by max characters."
 
 [node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters"]
 layout_mode = 2
@@ -84,7 +120,16 @@ allow_greater = true
 [node name="----" type="HSeparator" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="SkipLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="SkipTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SkipTitle"]
+layout_mode = 2
+icon = ExtResource("4_kpwi1")
+flat = true
+
+[node name="SkipLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SkipTitle"]
 layout_mode = 2
 size_flags_vertical = 1
 theme_type_variation = &"HeaderSmall"
@@ -93,10 +138,14 @@ text = "Skip Text Reveal"
 [node name="AllowSkipRevealToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Allows to skip text reveal and display everything at once."
+button_pressed = true
 text = "Allow skip text reveal"
 
 [node name="CanSkipDelay" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Time in seconds during which the text cannot be skipped again. 
+This is necessary to prevent the entire text from being skipped."
 
 [node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay"]
 layout_mode = 2
@@ -108,10 +157,13 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 step = 0.001
+value = 0.1
 allow_greater = true
+suffix = "s"
 
 [node name="SkipContinueDelay" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Time in seconds during which you must wait for the dialogue to continue after skipping the text reveal."
 
 [node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay"]
 layout_mode = 2
@@ -123,7 +175,9 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 step = 0.001
+value = 0.1
 allow_greater = true
+suffix = "s"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 visible = false

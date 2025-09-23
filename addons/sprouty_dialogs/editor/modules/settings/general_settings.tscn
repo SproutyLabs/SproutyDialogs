@@ -1,8 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://bbabgt3yvpmw5"]
+[gd_scene load_steps=7 format=3 uid="uid://bbabgt3yvpmw5"]
 
 [ext_resource type="Script" uid="uid://d0js6iit3n6uq" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/general_settings.gd" id="1_il2y2"]
 [ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="2_0s7dw"]
+[ext_resource type="Texture2D" uid="uid://c30bvh5pxcwpi" path="res://addons/sprouty_dialogs/icons/cursor-arrow.svg" id="2_kixug"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="3_hokrq"]
+[ext_resource type="Texture2D" uid="uid://t7ujqvnbwl36" path="res://addons/sprouty_dialogs/icons/settings.svg" id="4_kixug"]
+[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/icons/text_editor/image.svg" id="5_kixug"]
 
 [node name="GeneralSettings" type="HSplitContainer"]
 anchors_preset = 15
@@ -24,13 +27,23 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="InputLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="InputTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/InputTitle"]
+layout_mode = 2
+icon = ExtResource("2_kixug")
+flat = true
+
+[node name="InputLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/InputTitle"]
 layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Input"
 
 [node name="ContinueInputAction" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "The input action that allows dialogue to continue."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction"]
 layout_mode = 2
@@ -47,13 +60,24 @@ _placeholder_text = "Input action name..."
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="DefaultsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="DefaultsTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultsTitle"]
+layout_mode = 2
+icon = ExtResource("4_kixug")
+flat = true
+
+[node name="DefaultsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultsTitle"]
 layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Defaults"
 
 [node name="DefaultDialogBox" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Default dialog box that will be displayed when no character is selected.
+It will also be used as a template when creating a new dialog box for a character."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
 layout_mode = 2
@@ -64,11 +88,13 @@ text = "Default dialog box"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+_open_directory = false
 _placeholder_text = "Select a dialog box scene..."
 file_filters = PackedStringArray("*.tscn")
 
 [node name="DefaultPortraitScene" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Default portrait scene that will be used as a template when creating a new portrait for a character."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
 layout_mode = 2
@@ -79,19 +105,30 @@ text = "Default portrait scene"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+_open_directory = false
 _placeholder_text = "Select a portrait scene..."
 file_filters = PackedStringArray("*.tscn")
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="CanvasLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="CanvasTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CanvasTitle"]
+layout_mode = 2
+icon = ExtResource("5_kixug")
+flat = true
+
+[node name="CanvasLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CanvasTitle"]
 layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Canvas Layers"
 
 [node name="DialogBoxCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Layer index for draw order in the canvas layer when dialog boxes are displayed by default."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
 layout_mode = 2
@@ -108,6 +145,7 @@ allow_lesser = true
 
 [node name="PortraitsCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "Layer index for draw order in the canvas layer when portraits are displayed by default."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
 layout_mode = 2
