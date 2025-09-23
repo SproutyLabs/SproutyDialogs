@@ -78,15 +78,29 @@ func _on_id_input_changed(new_text: String) -> void:
 	graph_editor.on_modified()
 
 
-## Show an error alert when the ID input is empty
+## Show error alerts when the ID input loses focus
 func _on_id_input_focus_exited() -> void:
+	# Show error if the ID input is empty
 	if id_input_text.text.is_empty():
 		id_input_text.add_theme_stylebox_override("normal", input_error_style)
 		if id_error_alert == null:
 			id_error_alert = graph_editor.alerts.show_alert(
-				"Start node #" + str(node_index) + " needs an ID", "ERROR")
+				"Start Node #" + str(node_index) + " needs an ID", "ERROR")
 		else: graph_editor.alerts.focus_alert(id_error_alert)
 		displaying_error = true
+	else: # Show error if the ID already exists in another node
+		var nodes: Array = get_parent().get_children()
+		for node in nodes:
+			if node is SproutyDialogsBaseNode and node.node_type == "start_node" \
+					and node != self and node.get_start_id() == id_input_text.text:
+				id_input_text.add_theme_stylebox_override("normal", input_error_style)
+				if id_error_alert == null:
+					id_error_alert = graph_editor.alerts.show_alert(
+						"Start Node #" + str(node.node_index) + " already has the ID '" \
+						+ id_input_text.text + "'", "ERROR")
+				else: graph_editor.alerts.focus_alert(id_error_alert)
+				displaying_error = true
+				break
 
 
 ## Active error alert when ID input is empty on node deselected

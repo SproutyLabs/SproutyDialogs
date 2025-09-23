@@ -220,8 +220,8 @@ func get_dialogs_text() -> Dictionary:
 
 ## Create the dialog key for translation reference in the CSV file
 func get_dialog_translation_key() -> String:
-	if start_node != null: return get_start_id() + "_" + str(node_index)
-	else: return "DIALOG_NODE_" + str(node_index)
+	if start_node != null: return get_start_id() + "_DIALOG_" + str(node_index)
+	else: return "UNPLUGGED_DIALOG_" + str(node_index)
 
 
 ## Load dialog and translations
