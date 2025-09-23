@@ -39,15 +39,19 @@ extends VBoxContainer
 
 
 func _ready():
-	_new_portrait_scene_button.visible = true
-	_to_portrait_scene_button.visible = false
+	_to_portrait_scene_button.button_down.connect(_on_to_portrait_scene_button_pressed)
+	_new_portrait_scene_button.button_down.connect(_on_new_portrait_scene_button_pressed)
+	_portrait_scene_field.path_changed.connect(_on_portrait_scene_path_changed)
+	_portrait_export_properties.property_changed.connect(_on_export_property_changed)
+
 	%ReloadSceneButton.icon = get_theme_icon("Reload", "EditorIcons")
 	%PreviewPivot.texture = get_theme_icon("EditorPivot", "EditorIcons")
 	_new_portrait_scene_button.icon = get_theme_icon("Add", "EditorIcons")
 	_to_portrait_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_portrait_scale_section.get_node("LockRatioButton").icon = get_theme_icon("Instance", "EditorIcons")
-	
-	_portrait_export_properties.property_changed.connect(_on_export_property_changed)
+
+	_new_portrait_scene_button.visible = true
+	_to_portrait_scene_button.visible = false
 
 
 ## Get the portrait data from the editor

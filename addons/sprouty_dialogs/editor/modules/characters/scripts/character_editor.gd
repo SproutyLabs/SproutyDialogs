@@ -59,7 +59,7 @@ var _portrait_on_dialog_box: bool = false
 
 func _ready() -> void:
 	# Connect signals
-	_dialog_box_scene_field.file_path_changed.connect(_on_dialog_box_scene_path_changed)
+	_dialog_box_scene_field.path_changed.connect(_on_dialog_box_scene_path_changed)
 	_to_dialog_box_scene_button.pressed.connect(_on_dialog_box_scene_button_pressed)
 	_new_dialog_box_scene_button.pressed.connect(_on_new_dialog_box_scene_pressed)
 	%PortraitOnDialogBoxToggle.toggled.connect(_on_portrait_dialog_box_toggled)

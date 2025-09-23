@@ -11,8 +11,6 @@ extends VBoxContainer
 ## Text editor reference
 @export var text_editor: Panel
 
-## Image path field
-@onready var _image_path_field: MarginContainer = %ImagePathField
 ## Image other options bar
 @onready var _image_other_options: Control = %ImageOptions
 ## Image other options expand button

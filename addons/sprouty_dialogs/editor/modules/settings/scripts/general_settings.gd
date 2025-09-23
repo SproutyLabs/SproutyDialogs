@@ -22,8 +22,8 @@ extends HSplitContainer
 
 func _ready():
 	_continue_input_action_field.input_submitted.connect(_on_continue_input_action_changed)
-	_default_dialog_box_field.file_path_submitted.connect(_on_default_dialog_box_path_changed)
-	_default_potrait_scene_field.file_path_submitted.connect(_on_default_portrait_scene_path_changed)
+	_default_dialog_box_field.path_submitted.connect(_on_default_dialog_box_path_changed)
+	_default_potrait_scene_field.path_submitted.connect(_on_default_portrait_scene_path_changed)
 	_dialog_box_canvas_layer_field.value_changed.connect(_on_dialog_box_canvas_layer_changed)
 	_portrait_canvas_layer_field.value_changed.connect(_on_portrait_canvas_layer_changed)
 	_continue_input_action_field.set_options(InputMap.get_actions().filter(

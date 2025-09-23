@@ -40,7 +40,7 @@ const CHAR_NAMES_CSV_NAME: String = "character_names.csv"
 @onready var _use_csv_for_names_toggle: CheckButton = %UseCSVForNamesToggle
 
 ## CSV folder path field
-@onready var csv_folder_field: EditorSproutyDialogsFolderField = %CSVFolderField
+@onready var csv_folder_field: EditorSproutyDialogsFileField = %CSVFolderField
 ## Character names CSV path field
 @onready var char_names_csv_field: EditorSproutyDialogsFileField = %CharNamesCSVField
 ## CSV folder warning message
@@ -65,8 +65,8 @@ func _ready() -> void:
 	_use_csv_for_names_toggle.toggled.connect(_on_use_csv_for_names_toggled)
 
 	locales_selector.locales_changed.connect(_on_locales_changed)
-	csv_folder_field.folder_path_changed.connect(_on_csv_files_path_changed)
-	char_names_csv_field.file_path_submitted.connect(_on_char_names_csv_path_changed)
+	csv_folder_field.path_submitted.connect(_on_csv_files_path_changed)
+	char_names_csv_field.path_submitted.connect(_on_char_names_csv_path_changed)
 
 	_csv_folder_warning.visible = false
 	_char_csv_warning.visible = false

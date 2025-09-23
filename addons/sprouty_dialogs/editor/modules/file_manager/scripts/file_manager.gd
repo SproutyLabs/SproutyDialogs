@@ -41,7 +41,7 @@ signal all_character_files_closed
 ## File list manager
 @onready var _file_list: Control = $FileList
 ## CSV file path field
-@onready var _csv_file_field: Control = $CSVFileField/FileField
+@onready var _csv_file_field: EditorSproutyDialogsFileField = $CSVFileField/FileField
 
 ## Icons for new dialog and character buttons
 var _new_dialog_icon := preload("res://addons/sprouty_dialogs/icons/add-dialog.svg")
@@ -69,7 +69,7 @@ func _ready() -> void:
 	_file_list.request_save_file.connect(save_file)
 	_file_list.request_save_file_as.connect(save_file_dialog.popup_centered)
 
-	_csv_file_field.file_path_changed.connect(_on_csv_file_path_changed)
+	_csv_file_field.path_changed.connect(_on_csv_file_path_changed)
 
 	# Set icons for buttons
 	_open_file_button.icon = get_theme_icon("Folder", "EditorIcons")

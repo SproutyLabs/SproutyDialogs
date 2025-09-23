@@ -53,7 +53,7 @@ func _ready():
 			graph_editor.open_character_file_request.emit.bind(get_character_path())
 		)
 	_character_expand_button.toggled.connect(_on_expand_character_button_toggled)
-	_character_file_field.file_path_changed.connect(load_character)
+	_character_file_field.path_changed.connect(load_character)
 	_set_translation_text_boxes()
 	_character_name_button.disabled = true
 

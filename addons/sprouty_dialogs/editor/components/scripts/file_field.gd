@@ -5,14 +5,17 @@ extends MarginContainer
 # -----------------------------------------------------------------------------
 #  Sprouty Dialogs File Field Component
 # -----------------------------------------------------------------------------
-##  Component that allows the user to select a file from the file system.
+## Component that allows the user to select a file from the file system.
+## Also can be configured to select a directory instead of a file.
 # -----------------------------------------------------------------------------
 
-## Emitted when the file path changes.
-signal file_path_changed(path: String)
-## Emitted when the file path is submitted.
-signal file_path_submitted(path: String)
+## Emitted when the file or folder path changes.
+signal path_changed(path: String)
+## Emitted when the file or folder path is submitted.
+signal path_submitted(path: String)
 
+## Flag to open a directory instead of a file.
+@export var _open_directory: bool = false
 ## Placeholder text to show when the field is empty.
 @export var _placeholder_text: String = "Select a file..."
 ## File type to load the last used path.
@@ -21,18 +24,17 @@ signal file_path_submitted(path: String)
 @export var file_filters: PackedStringArray
 
 ## File dialog to select a file.
-@onready var _file_dialog: FileDialog = $OpenFileDialog
+@onready var _open_dialog: FileDialog = $OpenDialog
+## Field to show the current file path.
+@onready var _path_field: LineEdit = %PathField
 ## Open button to show the file dialog.
 @onready var _open_button: Button = %OpenButton
 ## Clear button to clear the current file path.
 @onready var _clear_button: Button = %ClearButton
-## Field to show the current file path.
-@onready var _path_field: LineEdit = %Field
 
 
 func _ready():
 	# Connect signals
-	_file_dialog.file_selected.connect(_on_file_dialog_selected)
 	_path_field.text_submitted.connect(_on_field_text_submitted)
 	_path_field.text_changed.connect(_on_field_text_changed)
 	_open_button.button_down.connect(_on_open_pressed)
@@ -42,6 +44,7 @@ func _ready():
 	_clear_button.icon = get_theme_icon("Clear", "EditorIcons")
 	
 	_path_field.placeholder_text = _placeholder_text
+	open_directory(_open_directory)
 
 
 ## Get the current value of the field.
@@ -54,6 +57,21 @@ func set_value(value: String) -> void:
 	_path_field.text = value
 
 
+## Configure the field to open a directory instead of a file.
+func open_directory(open_dir: bool) -> void:
+	_open_directory = open_dir
+	if _open_directory:
+		_open_dialog.dir_selected.connect(_on_path_dialog_selected)
+		_open_dialog.file_mode = _open_dialog.FILE_MODE_OPEN_DIR
+		_open_dialog.ok_button_text = "Select Current Folder"
+		_open_dialog.title = "Select a Directory"
+	else:
+		_open_dialog.file_selected.connect(_on_path_dialog_selected)
+		_open_dialog.file_mode = _open_dialog.FILE_MODE_OPEN_FILE
+		_open_dialog.ok_button_text = "Open File"
+		_open_dialog.title = "Open a File"
+
+
 ## Disable the field for editing.
 func disable_field(disable: bool) -> void:
 	_path_field.editable = not disable
@@ -63,32 +81,32 @@ func disable_field(disable: bool) -> void:
 
 ## Show the file dialog to select a file.
 func _on_open_pressed() -> void:
-	_file_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path(_recent_file_type))
-	_file_dialog.filters = file_filters
-	_file_dialog.popup_centered()
+	_open_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path(_recent_file_type))
+	_open_dialog.filters = file_filters
+	_open_dialog.popup_centered()
 
 
-## Set path of file selected in the file dialog.
-func _on_file_dialog_selected(path: String) -> void:
-	file_path_submitted.emit(path)
-	file_path_changed.emit(path)
+## Set path of file or folder selected in the file dialog.
+func _on_path_dialog_selected(path: String) -> void:
+	path_submitted.emit(path)
+	path_changed.emit(path)
 	set_value(path)
 	EditorSproutyDialogsFileUtils.set_recent_file_path(_recent_file_type, path)
 
 
 ## Handle the text change event of the field.
 func _on_field_text_changed(new_text: String) -> void:
-	file_path_changed.emit(new_text)
+	path_changed.emit(new_text)
 	set_value(new_text)
 
 
 ## Handle the text submission event of the field.
 func _on_field_text_submitted(new_text: String) -> void:
-	file_path_submitted.emit(new_text)
+	path_submitted.emit(new_text)
 	set_value(new_text)
 
 
 ## Clear the current value of the field.
 func clear_path() -> void:
-	file_path_changed.emit("")
+	path_changed.emit("")
 	set_value("")

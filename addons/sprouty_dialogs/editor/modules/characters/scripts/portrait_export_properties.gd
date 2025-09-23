@@ -18,8 +18,6 @@ signal property_changed(name: String, value: Variant)
 
 ## File field scene
 var _file_field_path := "res://addons/sprouty_dialogs/editor/components/file_field.tscn"
-## Folder field scene
-var _folder_field_path := "res://addons/sprouty_dialogs/editor/components/folder_field.tscn"
 ## Dictionary field scene
 var _dict_field_path := "res://addons/sprouty_dialogs/editor/components/dictionary_field.tscn"
 ## Array field scene
@@ -213,17 +211,18 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 					)
 				if value != null:
 					field.ready.connect(func(): field.set_value(value))
-				field.file_path_changed.connect(
+				field.path_changed.connect(
 						_on_property_changed.bind(property_data["name"], type))
 			# Directory path string
 			elif property_data["hint"] == PROPERTY_HINT_DIR:
-				field = load(_folder_field_path).instantiate()
+				field = load(_file_field_path).instantiate()
+				field.open_directory(true)
 				field.file_filters = PackedStringArray(
 					property_data["hint_string"].split(",")
 					)
 				if value != null:
 					field.ready.connect(func(): field.set_value(value))
-				field.file_path_changed.connect(
+				field.path_changed.connect(
 						_on_property_changed.bind(property_data["name"], type))
 			# Enum string
 			elif property_data["hint"] == PROPERTY_HINT_ENUM:

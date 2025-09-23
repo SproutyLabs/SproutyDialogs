@@ -1,11 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bk5rchg4mt0js"]
+[gd_scene load_steps=7 format=3 uid="uid://bk5rchg4mt0js"]
 
 [ext_resource type="Script" uid="uid://r7iw7h16gilr" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/translation_settings.gd" id="1_dnk3v"]
 [ext_resource type="Texture2D" uid="uid://djj6crqjqkqpu" path="res://addons/sprouty_dialogs/icons/translation.svg" id="2_2wqnh"]
 [ext_resource type="Texture2D" uid="uid://bvlhrp4lgb3vy" path="res://addons/sprouty_dialogs/icons/csv_table.svg" id="2_qeqd1"]
 [ext_resource type="PackedScene" uid="uid://secb1eoygm27" path="res://addons/sprouty_dialogs/editor/modules/settings/locales_selector.tscn" id="2_qh116"]
 [ext_resource type="Texture2D" uid="uid://c80u5yueu7wit" path="res://addons/sprouty_dialogs/icons/character.svg" id="3_rjao7"]
-[ext_resource type="PackedScene" uid="uid://bceidtkw07484" path="res://addons/sprouty_dialogs/editor/components/folder_field.tscn" id="4_01lks"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="4_erkog"]
 
 [node name="TranslationSettings" type="HSplitContainer"]
@@ -32,6 +31,7 @@ size_flags_vertical = 3
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable/disable translations for dialogues."
+button_pressed = true
 text = "Enable translations"
 icon = ExtResource("2_2wqnh")
 
@@ -43,7 +43,7 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for translations.
 Otherwise, translations will be saved in the dialog file."
-disabled = true
+button_pressed = true
 text = "Use CSV files for translation"
 icon = ExtResource("2_qeqd1")
 
@@ -56,7 +56,6 @@ text = "[color=tomato]Please select a valid directory for the CSV files."
 fit_content = true
 
 [node name="CSVFolder" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
-visible = false
 layout_mode = 2
 tooltip_text = "Path to the directory of the CSV translation files.
 This directory must contain all the CSV files used for the dialogs. 
@@ -66,17 +65,18 @@ This directory must contain all the CSV files used for the dialogs.
 layout_mode = 2
 text = "CSV Translations Folder"
 
-[node name="CSVFolderField" parent="TranslationSettings/ScrollContainer/Container/CSVFolder" instance=ExtResource("4_01lks")]
+[node name="CSVFolderField" parent="TranslationSettings/ScrollContainer/Container/CSVFolder" instance=ExtResource("4_erkog")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+_open_directory = true
+_placeholder_text = "Select a folder..."
 
 [node name="FallbackToResourceToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "When a dialog key is not found in the CSV file, the dialog will be loaded from the dialog file.
 (This only applies when opening a dialog file in the editor, not when running the dialog)."
-disabled = true
 button_pressed = true
 text = "Fallback to resource if key is not in CSV"
 
@@ -85,21 +85,17 @@ layout_mode = 2
 
 [node name="TranslateNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 tooltip_text = "Enable translation for the character names."
-disabled = true
 button_pressed = true
 text = "Translate character names"
 icon = ExtResource("3_rjao7")
 
 [node name="UseCSVForNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for character name translations.
 Otherwise, translations will be saved in the character file."
-disabled = true
 button_pressed = true
 text = "Use a CSV file for character names"
 
@@ -112,7 +108,6 @@ text = "[color=tomato]Please select a valid CSV file for character name translat
 fit_content = true
 
 [node name="CharCSVFile" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
-visible = false
 layout_mode = 2
 tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV file directory."
 
@@ -124,6 +119,7 @@ text = "Character Names CSV"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+_open_directory = null
 _placeholder_text = "Select a CSV file..."
 file_filters = PackedStringArray("*.csv")
 
