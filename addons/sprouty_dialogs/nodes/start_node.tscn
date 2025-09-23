@@ -1,0 +1,76 @@
+[gd_scene load_steps=6 format=3 uid="uid://cu41jslmdjohb"]
+
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/theme/main_theme.tres" id="1_jdnrk"]
+[ext_resource type="Script" uid="uid://kgje42uy42vb" path="res://addons/sprouty_dialogs/nodes/scripts/start_node.gd" id="5_3ppuo"]
+[ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/sprouty_dialogs/icons/nodes/play.svg" id="6_6olnj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3wpa2"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.803922, 0.498039, 0, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5e6e1"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.803922, 0.498039, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+
+[node name="StartNode" type="GraphNode"]
+custom_minimum_size = Vector2(180, 0)
+offset_right = 180.0
+offset_bottom = 88.0
+size_flags_vertical = 4
+theme = ExtResource("1_jdnrk")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_3wpa2")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_5e6e1")
+resizable = true
+title = "Start Node"
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("5_3ppuo")
+node_color = Color(0.803922, 0.498039, 0, 1)
+node_icon = ExtResource("6_6olnj")
+
+[node name="Container" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PlayButton" type="Button" parent="Container"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Play dialogue"
+icon = ExtResource("6_6olnj")
+flat = true
+
+[node name="IDLabel" type="Label" parent="Container"]
+layout_mode = 2
+text = "ID"
+
+[node name="IDInput" type="LineEdit" parent="Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Label..."
+
+[connection signal="node_deselected" from="." to="." method="_on_node_deselected"]
+[connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]
+[connection signal="focus_exited" from="Container/IDInput" to="." method="_on_id_input_focus_exited"]
+[connection signal="text_changed" from="Container/IDInput" to="." method="_on_id_input_changed"]

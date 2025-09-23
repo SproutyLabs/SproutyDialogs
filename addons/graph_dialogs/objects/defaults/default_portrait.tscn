@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cdj77v25htco0"]
-
-[ext_resource type="Script" uid="uid://cs0xh7sfg8qfj" path="res://addons/graph_dialogs/objects/defaults/default_portrait.gd" id="1_jgi4u"]
-
-[node name="DefaultPortrait" type="Node2D"]
-script = ExtResource("1_jgi4u")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]

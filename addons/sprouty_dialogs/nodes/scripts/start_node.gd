@@ -1,0 +1,104 @@
+@tool
+extends SproutyDialogsBaseNode
+
+# -----------------------------------------------------------------------------
+# Sprouty Dialogs Start Node
+# -----------------------------------------------------------------------------
+## Node to start a dialog tree and assign an ID to it.
+# -----------------------------------------------------------------------------
+
+## ID input text field
+@onready var id_input_text: LineEdit = %IDInput
+## Start ID value
+@onready var start_id: String = id_input_text.text
+## Play button to run the dialog
+@onready var play_button: Button = %PlayButton
+
+## Empty field error style for input text
+var input_error_style := preload("res://addons/sprouty_dialogs/theme/input_text_error.tres")
+## Flag to check if the error alert is displaying
+var displaying_error: bool = false
+## Error alert to show when the ID input is empty
+var id_error_alert: EditorSproutyDialogsAlert
+
+
+func _ready():
+	super ()
+	play_button.pressed.connect(_on_play_button_pressed)
+	start_node = self # Assign as start dialog node
+
+#region === Overridden Methods =================================================
+
+func get_data() -> Dictionary:
+	var dict := {}
+	var connections: Array = get_parent().get_node_connections(name)
+	
+	dict[name.to_snake_case()] = {
+		"node_type": node_type,
+		"node_index": node_index,
+		"start_id": start_id.to_upper(),
+		"to_node": [connections[0]["to_node"].to_snake_case()]
+				if connections.size() > 0 else ["END"],
+		"offset": position_offset,
+		"size": size
+	}
+	return dict
+
+
+func set_data(dict: Dictionary) -> void:
+	node_type = dict["node_type"]
+	node_index = dict["node_index"]
+	to_node = dict["to_node"]
+	position_offset = dict["offset"]
+	size = dict["size"]
+
+	start_id = dict["start_id"]
+	id_input_text.text = dict["start_id"]
+
+#endregion
+
+## Return the dialog ID
+func get_start_id() -> String:
+	return start_id.to_upper()
+
+
+## Update the dialog ID and become it to uppercase
+func _on_id_input_changed(new_text: String) -> void:
+	if displaying_error:
+		# Remove error style and hide alert when input is changed
+		id_input_text.remove_theme_stylebox_override("normal")
+		graph_editor.alerts.hide_alert(id_error_alert)
+		id_error_alert = null
+		displaying_error = false
+	# Keep the caret position when uppercase the text
+	var caret_pos = id_input_text.caret_column
+	id_input_text.text = new_text.to_upper()
+	id_input_text.caret_column = caret_pos
+	start_id = new_text
+	graph_editor.on_modified()
+
+
+## Show an error alert when the ID input is empty
+func _on_id_input_focus_exited() -> void:
+	if id_input_text.text.is_empty():
+		id_input_text.add_theme_stylebox_override("normal", input_error_style)
+		if id_error_alert == null:
+			id_error_alert = graph_editor.alerts.show_alert(
+				"Start node #" + str(node_index) + " needs an ID", "ERROR")
+		else: graph_editor.alerts.focus_alert(id_error_alert)
+		displaying_error = true
+
+
+## Active error alert when ID input is empty on node deselected
+func _on_node_deselected() -> void:
+	_on_id_input_focus_exited()
+
+
+## Hide active error alert on node destroy
+func _on_tree_exiting() -> void:
+	graph_editor.alerts.hide_alert(id_error_alert)
+
+
+## Play the dialog from the current graph starting from the given ID
+func _on_play_button_pressed() -> void:
+	graph_editor.play_dialog_request.emit(get_start_id())

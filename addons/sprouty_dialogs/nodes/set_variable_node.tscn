@@ -1,0 +1,87 @@
+[gd_scene load_steps=8 format=3 uid="uid://b80xoq50othk8"]
+
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/theme/main_theme.tres" id="1_bouee"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/theme/empty_panel.tres" id="4_7k7se"]
+[ext_resource type="Script" uid="uid://b317lbp1qvjyu" path="res://addons/sprouty_dialogs/nodes/scripts/set_variable_node.gd" id="5_5o0bh"]
+[ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="5_oao84"]
+[ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/sprouty_dialogs/icons/nodes/set-variable.svg" id="6_sx7hg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0am0n"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.396078, 0.572549, 0, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5130m"]
+content_margin_left = 18.0
+content_margin_top = 12.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+bg_color = Color(0.396078, 0.572549, 0, 1)
+border_color = Color(0.325, 0.325, 0.325, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="SetVariableNode" type="GraphNode"]
+offset_right = 537.0
+offset_bottom = 86.0
+theme = ExtResource("1_bouee")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_0am0n")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_5130m")
+resizable = true
+title = "Set Variable Node"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("5_5o0bh")
+node_color = Color(0.396078, 0.572549, 0, 1)
+node_icon = ExtResource("6_sx7hg")
+
+[node name="Container" type="HFlowContainer" parent="."]
+layout_mode = 2
+
+[node name="VarField" type="HBoxContainer" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypeField" type="PanelContainer" parent="Container/VarField"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = ExtResource("4_7k7se")
+
+[node name="NameInput" parent="Container/VarField" instance=ExtResource("5_oao84")]
+layout_mode = 2
+placeholder_text = "Variable name..."
+
+[node name="OperatorDropdown" type="OptionButton" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "The type of the value to set."
+selected = 0
+item_count = 2
+popup/item_0/text = "="
+popup/item_0/id = 0
+popup/item_1/text = "+="
+popup/item_1/id = 1
+
+[node name="ValueField" type="PanelContainer" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("4_7k7se")
+
+[connection signal="resized" from="." to="." method="_on_resized"]

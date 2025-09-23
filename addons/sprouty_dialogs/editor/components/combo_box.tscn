@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://drlmb1kt08wlv"]
+
+[ext_resource type="Script" uid="uid://buqxffyjrln1a" path="res://addons/sprouty_dialogs/editor/components/scripts/combo_box.gd" id="1_dldon"]
+
+[node name="ComboBox" type="LineEdit"]
+custom_minimum_size = Vector2(150, 0)
+offset_right = 68.5625
+offset_bottom = 31.0
+size_flags_horizontal = 3
+placeholder_text = "Write something..."
+script = ExtResource("1_dldon")
+
+[node name="DropdownPopup" type="PopupMenu" parent="."]

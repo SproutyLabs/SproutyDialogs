@@ -1,0 +1,128 @@
+[gd_scene load_steps=4 format=3 uid="uid://bbabgt3yvpmw5"]
+
+[ext_resource type="Script" uid="uid://d0js6iit3n6uq" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/general_settings.gd" id="1_il2y2"]
+[ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="2_0s7dw"]
+[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="3_hokrq"]
+
+[node name="GeneralSettings" type="HSplitContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_il2y2")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="InputLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "Input"
+
+[node name="ContinueInputAction" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Continue input action"
+
+[node name="ContinueInputActionField" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction" instance=ExtResource("2_0s7dw")]
+unique_name_in_owner = true
+layout_mode = 2
+text = "dialogs_continue_action"
+placeholder_text = "Input action..."
+_placeholder_text = "Input action name..."
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="DefaultsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "Defaults"
+
+[node name="DefaultDialogBox" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Default dialog box"
+
+[node name="DefaultDialogBoxField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" instance=ExtResource("3_hokrq")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+_placeholder_text = "Select a dialog box scene..."
+file_filters = PackedStringArray("*.tscn")
+
+[node name="DefaultPortraitScene" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Default portrait scene"
+
+[node name="DefaultPortraitSceneField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" instance=ExtResource("3_hokrq")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+_placeholder_text = "Select a portrait scene..."
+file_filters = PackedStringArray("*.tscn")
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CanvasLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "Canvas Layers"
+
+[node name="DialogBoxCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Dialog box canvas layer"
+
+[node name="DialogBoxCanvasLayerField" type="SpinBox" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+value = 2.0
+allow_greater = true
+allow_lesser = true
+
+[node name="PortraitsCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Portrait canvas layer"
+
+[node name="PortraitCanvasLayerField" type="SpinBox" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+value = 1.0
+allow_greater = true
+allow_lesser = true
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3

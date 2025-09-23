@@ -1,0 +1,80 @@
+[gd_scene load_steps=9 format=3 uid="uid://chmw64xy0cmck"]
+
+[ext_resource type="Script" uid="uid://cqis4e6pcwteo" path="res://addons/sprouty_dialogs/editor/scripts/editor.gd" id="1_gu2d1"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/theme/main_theme.tres" id="1_h283m"]
+[ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/sprouty_dialogs/editor/modules/file_manager/file_manager.tscn" id="1_qbi36"]
+[ext_resource type="PackedScene" uid="uid://d0gf52rcd1hn" path="res://addons/sprouty_dialogs/editor/modules/characters/character_panel.tscn" id="3_7mghu"]
+[ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/sprouty_dialogs/editor/modules/workspace/workspace.tscn" id="4_yuhh0"]
+[ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/sprouty_dialogs/editor/modules/variables/variables_panel.tscn" id="6_4jako"]
+[ext_resource type="PackedScene" uid="uid://pdcicn3rbwbs" path="res://addons/sprouty_dialogs/editor/modules/settings/settings_panel.tscn" id="7_xlq8u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_22uar"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme = ExtResource("1_h283m")
+script = ExtResource("1_gu2d1")
+
+[node name="MainContainer" type="HSplitContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+
+[node name="SideBar" parent="MainContainer" instance=ExtResource("1_qbi36")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="TabContainer" type="TabContainer" parent="MainContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_styles/tabbar_background = SubResource("StyleBoxEmpty_22uar")
+current_tab = 0
+
+[node name="Dialogue" type="TabBar" parent="MainContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Workspace" parent="MainContainer/TabContainer/Dialogue" instance=ExtResource("4_yuhh0")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="Characters" type="TabBar" parent="MainContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="CharacterPanel" parent="MainContainer/TabContainer/Characters" instance=ExtResource("3_7mghu")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="Variables" type="TabBar" parent="MainContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="VariablesPanel" parent="MainContainer/TabContainer/Variables" instance=ExtResource("6_4jako")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[node name="Settings" type="TabBar" parent="MainContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="SettingsPanel" parent="MainContainer/TabContainer/Settings" instance=ExtResource("7_xlq8u")]
+unique_name_in_owner = true
+layout_mode = 1
+
+[connection signal="tab_selected" from="MainContainer/TabContainer" to="." method="_on_tab_selected"]
