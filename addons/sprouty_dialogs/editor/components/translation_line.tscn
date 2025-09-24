@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://csswxs6vp2557"]
 
 [ext_resource type="Script" uid="uid://cqjqe1p3pc3kw" path="res://addons/sprouty_dialogs/editor/components/scripts/translation_box.gd" id="1_4gyl1"]
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/theme/main_theme.tres" id="2_1awyv"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/editor/theme/main_theme.tres" id="2_1awyv"]
 
 [node name="TranslationLine" type="HBoxContainer"]
 custom_minimum_size = Vector2(150, 0)

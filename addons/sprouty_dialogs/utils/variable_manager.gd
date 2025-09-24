@@ -56,7 +56,7 @@ enum COMPARISON_OPS {
 ## }
 static var _variables: Dictionary = {}
 ## Variable icon
-static var _variable_icon = preload("res://addons/sprouty_dialogs/icons/variable.svg")
+static var _variable_icon = preload("res://addons/sprouty_dialogs/editor/icons/variable.svg")
 ## Reference to the root node of the scene tree
 ## This is used to access autoloads and other global nodes.
 ## It is set in the _ready() function of the SproutyDialogsManager.

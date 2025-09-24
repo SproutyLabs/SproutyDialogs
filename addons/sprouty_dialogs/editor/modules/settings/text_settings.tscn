@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://ryk2rxuf4sbx"]
 
 [ext_resource type="Script" uid="uid://dmsryopl4atwi" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/text_settings.gd" id="1_22qb6"]
-[ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/icons/text_editor/text.svg" id="2_fgisi"]
-[ext_resource type="Texture2D" uid="uid://pbcwemf3054" path="res://addons/sprouty_dialogs/icons/icon.svg" id="3_kpe8y"]
-[ext_resource type="Texture2D" uid="uid://co8x6yovoum6i" path="res://addons/sprouty_dialogs/icons/fast-forward.svg" id="4_kpwi1"]
+[ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/editor/editor/icons/text_editor/text.svg" id="2_fgisi"]
+[ext_resource type="Texture2D" uid="uid://b7nifwp3mwmc3" path="res://addons/sprouty_dialogs/editor/editor/icons/dialog_nodes/dialog_box.svg" id="3_kpwi1"]
+[ext_resource type="Texture2D" uid="uid://co8x6yovoum6i" path="res://addons/sprouty_dialogs/editor/editor/icons/fast-forward.svg" id="4_kpwi1"]
 
 [node name="TextSettings" type="HSplitContainer"]
 anchors_preset = 15
@@ -77,7 +77,7 @@ theme_override_constants/separation = 0
 
 [node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/DisplayTitle"]
 layout_mode = 2
-icon = ExtResource("3_kpe8y")
+icon = ExtResource("3_kpwi1")
 flat = true
 
 [node name="DisplayLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/DisplayTitle"]

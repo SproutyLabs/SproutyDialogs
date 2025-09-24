@@ -17,9 +17,9 @@ extends TabContainer
 
 ## Tab icons
 @onready var tab_icons: Array[Texture2D] = [
-	preload("res://addons/sprouty_dialogs/icons/settings.svg"),
-	preload("res://addons/sprouty_dialogs/icons/text_editor/text.svg"),
-	preload("res://addons/sprouty_dialogs/icons/translation.svg")
+	preload("res://addons/sprouty_dialogs/editor/icons/settings.svg"),
+	preload("res://addons/sprouty_dialogs/editor/icons/text_editor/text.svg"),
+	preload("res://addons/sprouty_dialogs/editor/icons/translation.svg")
 ]
 
 

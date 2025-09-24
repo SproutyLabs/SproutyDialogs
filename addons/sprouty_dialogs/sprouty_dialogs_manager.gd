@@ -4,11 +4,11 @@ extends Node
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Manager
 # -----------------------------------------------------------------------------
-## This is an autoload singleton that manages the Sprouty Dialogs plugin.
-## Keep track of dialogs running and provides access to the resource manager
-## to the dialog players.
+## This class is used as the autoload that manages the Sprouty Dialogs plugin.
 ##
-## Also, allows to start a dialog from a given dialogue data and start ID directly
+## Keep track of the running dialog players and dialog states by signals.
+##
+## Also, allows to start a dialog with the [method start_dialog] method directly
 ## from code, without needing to create a dialog player instance in the scene.
 # -----------------------------------------------------------------------------
 

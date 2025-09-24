@@ -1,5 +1,5 @@
 @tool
-@icon("res://addons/sprouty_dialogs/icons/character.svg")
+@icon("res://addons/sprouty_dialogs/editor/icons/character.svg")
 @abstract
 class_name DialogPortrait
 extends Node
@@ -7,10 +7,11 @@ extends Node
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Dialog Portrait
 # -----------------------------------------------------------------------------
-## This class is used to handle the behavior of a portrait for a character.
+## Abstract class for dialog portraits from Sprouty Dialogs plugin.
 ## 
-## It is an abstract class that should be inherited by other classes to define
-## specific portrait behaviors.
+## It provides the basic methods to handle the portrait behavior during a dialog.
+##
+## [br][br]You should inherit from this class to create your own dialog portraits.
 # -----------------------------------------------------------------------------
 
 

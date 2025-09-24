@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://wl8xuktm0hrq"]
 
 [ext_resource type="Script" uid="uid://dedmq04uacl5g" path="res://addons/sprouty_dialogs/objects/defaults/default_dialog_box.gd" id="1_et7ao"]
-[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/icons/interactable/collapse-down.svg" id="2_7fxrt"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/editor/icons/interactable/collapse-down.svg" id="2_7fxrt"]
 [ext_resource type="Script" uid="uid://cdtkvrnke623v" path="res://addons/sprouty_dialogs/objects/dialog_option.gd" id="3_wdbrv"]
 
 [node name="DialogBox" type="Panel" node_paths=PackedStringArray("_dialog_display", "_name_display", "_continue_indicator", "_options_container", "_option_template")]

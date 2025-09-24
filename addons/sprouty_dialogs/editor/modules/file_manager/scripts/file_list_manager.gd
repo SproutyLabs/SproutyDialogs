@@ -32,7 +32,7 @@ signal request_save_file_as()
 ## Dialog icon
 @onready var _dialog_icon := get_theme_icon('Script', 'EditorIcons')
 ## Character icon
-var _char_icon := preload("res://addons/sprouty_dialogs/icons/character.svg")
+var _char_icon := preload("res://addons/sprouty_dialogs/editor/icons/character.svg")
 
 ## Current file index
 var _current_file_index: int = -1

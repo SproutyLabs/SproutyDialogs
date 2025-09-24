@@ -1,11 +1,11 @@
-@icon("res://addons/sprouty_dialogs/icons/icon.svg")
+@icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_option.svg")
 class_name DialogOption
 extends Button
 
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Dialog Option
 # ------------------------------------------------------------------------------
-## This component render a dialog option in a [DialogBox].
+## Component that render a dialog option in a [DialogBox] from Sprouty Dialogs plugin.
 ##
 ## It extends the Button class to provide a clickable option in the dialog.
 # -----------------------------------------------------------------------------

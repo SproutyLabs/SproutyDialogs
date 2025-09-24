@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cqjqe1p3pc3kw" path="res://addons/sprouty_dialogs/editor/components/scripts/translation_box.gd" id="1_6gyal"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/sprouty_dialogs/editor/components/expandable_text_box.tscn" id="1_iud00"]
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/theme/main_theme.tres" id="2_aj56n"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme//theme/main_theme.tres" id="2_aj56n"]
 
 [node name="TranslationBox" type="VBoxContainer"]
 custom_minimum_size = Vector2(150, 0)

@@ -4,7 +4,10 @@ extends Node
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Dialog Interpreter
 # -----------------------------------------------------------------------------
-## This class is responsible for processing the dialog nodes from the graph.
+## Node that process the nodes of a dialog tree from the Sprouty Dialogs plugin.
+##
+## This node is used by the [DialogPlayer] to process the nodes of a dialog tree.
+## You should not need to use this node directly.[br]
 ##
 ## The processors can be access by the [param node_processors] dictionary, that
 ## is used by the [DialogPlayer] to process the nodes by their type.

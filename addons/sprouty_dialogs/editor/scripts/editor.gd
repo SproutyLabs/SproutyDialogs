@@ -30,9 +30,9 @@ extends Control
 ## Tab icons
 @onready var tab_icons: Array[Texture2D] = [
 	get_theme_icon('Script', 'EditorIcons'),
-	preload("res://addons/sprouty_dialogs/icons/character.svg"),
-	preload("res://addons/sprouty_dialogs/icons/variable.svg"),
-	preload("res://addons/sprouty_dialogs/icons/settings.svg")
+	preload("res://addons/sprouty_dialogs/editor/icons/character.svg"),
+	preload("res://addons/sprouty_dialogs/editor/icons/variable.svg"),
+	preload("res://addons/sprouty_dialogs/editor/icons/settings.svg")
 ]
 
 

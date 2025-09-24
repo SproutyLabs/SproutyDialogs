@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://dols4gqjh3n6g"]
 
 [ext_resource type="Script" uid="uid://buomet8kjtn54" path="res://addons/sprouty_dialogs/editor/modules/variables/scripts/variable_item.gd" id="1_bg4en"]
-[ext_resource type="Texture2D" uid="uid://dr1gdp63atsvl" path="res://addons/sprouty_dialogs/icons/drag-handle.svg" id="2_bg4en"]
-[ext_resource type="Texture2D" uid="uid://by1ux7iacms26" path="res://addons/sprouty_dialogs/icons/variable.svg" id="3_re83m"]
-[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/theme/empty_panel.tres" id="4_l5q3k"]
+[ext_resource type="Texture2D" uid="uid://dr1gdp63atsvl" path="res://addons/sprouty_dialogs/editor/icons/interactable/drag-handle.svg" id="2_bg4en"]
+[ext_resource type="Texture2D" uid="uid://by1ux7iacms26" path="res://addons/sprouty_dialogs/editor/icons/variable.svg" id="3_re83m"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/editor/theme/empty_panel.tres" id="4_l5q3k"]
 
 [sub_resource type="Image" id="Image_gui6w"]
 data = {

@@ -19,7 +19,7 @@ signal portrait_item_selected(item: TreeItem)
 @onready var _remove_group_dialog: ConfirmationDialog = $RemoveGroupDialog
 
 ## Icon of the character portrait
-var _portrait_icon: Texture2D = preload("res://addons/sprouty_dialogs/icons/character.svg")
+var _portrait_icon: Texture2D = preload("res://addons/sprouty_dialogs/editor/icons/character.svg")
 
 
 func _ready() -> void:

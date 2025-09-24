@@ -3,7 +3,7 @@ extends EditorPlugin
 
 const MAIN_PANEL = preload("res://addons/sprouty_dialogs/editor/editor.tscn")
 const AUTOLOAD_NAME := "SproutyDialogs"
-const PLUGIN_ICON_PATH := "res://addons/sprouty_dialogs/icons/icon.svg"
+const PLUGIN_ICON_PATH := "res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg"
 const PLUGIN_MANAGER_PATH := "res://addons/sprouty_dialogs/sprouty_dialogs_manager.gd"
 
 var main_panel_instance
@@ -14,7 +14,7 @@ func _enable_plugin() -> void:
 	add_dialogs_input_actions()
 	
 	# Initialize the default settings if they don't exist.
-	if not ProjectSettings.has_setting("graph_dialogs/general/input/continue_input_action"):
+	if not ProjectSettings.has_setting("graph_dialogs/variables/variables"):
 		EditorSproutyDialogsSettingsManager.initialize_default_settings()
 
 

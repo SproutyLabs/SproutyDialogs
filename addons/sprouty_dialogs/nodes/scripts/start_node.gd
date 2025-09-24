@@ -15,7 +15,7 @@ extends SproutyDialogsBaseNode
 @onready var play_button: Button = %PlayButton
 
 ## Empty field error style for input text
-var input_error_style := preload("res://addons/sprouty_dialogs/theme/input_text_error.tres")
+var input_error_style := preload("res://addons/sprouty_dialogs/editor/theme/input_text_error.tres")
 ## Flag to check if the error alert is displaying
 var displaying_error: bool = false
 ## Error alert to show when the ID input is empty

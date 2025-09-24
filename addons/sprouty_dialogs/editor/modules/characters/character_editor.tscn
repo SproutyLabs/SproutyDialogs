@@ -1,14 +1,14 @@
 [gd_scene load_steps=13 format=3 uid="uid://b3dunt76vknsq"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/theme/main_theme.tres" id="1_mqdqa"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/editor/theme/main_theme.tres" id="1_mqdqa"]
 [ext_resource type="Script" uid="uid://dwueatpn41rq8" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/character_editor.gd" id="2_8cc8c"]
 [ext_resource type="Script" uid="uid://ctcy3vj10t15i" path="res://addons/sprouty_dialogs/editor/components/scripts/translations_container.gd" id="2_tpd02"]
-[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/icons/interactable/collapse-down.svg" id="3_3q8bw"]
-[ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/sprouty_dialogs/theme/expander_subpanel_highlight.tres" id="5_k1upw"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="3_3q8bw"]
+[ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/sprouty_dialogs/editor/editor/theme/expander_subpanel_highlight.tres" id="5_k1upw"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="5_x3nyu"]
 [ext_resource type="PackedScene" uid="uid://881twee1nau2" path="res://addons/sprouty_dialogs/editor/modules/characters/portrait_editor.tscn" id="7_4rves"]
 [ext_resource type="Script" uid="uid://d3oeow8nbwcfm" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/character_portrait_tree.gd" id="7_7kmf4"]
-[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/theme/empty_panel.tres" id="9_a1fcc"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/editor/theme/empty_panel.tres" id="9_a1fcc"]
 
 [sub_resource type="Image" id="Image_cjvps"]
 data = {

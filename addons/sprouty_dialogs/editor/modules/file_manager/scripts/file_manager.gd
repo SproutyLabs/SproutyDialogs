@@ -44,8 +44,8 @@ signal all_character_files_closed
 @onready var _csv_file_field: EditorSproutyDialogsFileField = $CSVFileField/FileField
 
 ## Icons for new dialog and character buttons
-var _new_dialog_icon := preload("res://addons/sprouty_dialogs/icons/add-dialog.svg")
-var _new_char_icon := preload("res://addons/sprouty_dialogs/icons/add-char.svg")
+var _new_dialog_icon := preload("res://addons/sprouty_dialogs/editor/icons/add-dialog.svg")
+var _new_char_icon := preload("res://addons/sprouty_dialogs/editor/icons/add-char.svg")
 
 ## Prefab scenes reference
 var _graph_scene := preload("res://addons/sprouty_dialogs/editor/modules/workspace/graph.tscn")

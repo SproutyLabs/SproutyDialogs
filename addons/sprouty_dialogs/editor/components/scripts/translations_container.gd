@@ -32,8 +32,8 @@ var _translation_box = preload("res://addons/sprouty_dialogs/editor/components/t
 var _translation_line = preload("res://addons/sprouty_dialogs/editor/components/translation_line.tscn")
 
 ## Collapse/Expand icon resources
-var collapse_up_icon = preload("res://addons/sprouty_dialogs/icons/interactable/collapse-up.svg")
-var collapse_down_icon = preload("res://addons/sprouty_dialogs/icons/interactable/collapse-down.svg")
+var collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
+var collapse_down_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg")
 
 
 func _ready():

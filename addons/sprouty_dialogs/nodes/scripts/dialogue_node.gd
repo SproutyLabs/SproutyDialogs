@@ -30,8 +30,8 @@ var _default_locale: String = ""
 var _character_data: SproutyDialogsCharacterData
 
 ## Collapse/Expand icons
-var _collapse_up_icon = preload("res://addons/sprouty_dialogs/icons/interactable/collapse-up.svg")
-var _collapse_down_icon = preload("res://addons/sprouty_dialogs/icons/interactable/collapse-down.svg")
+var _collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
+var _collapse_down_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg")
 
 
 func _ready():

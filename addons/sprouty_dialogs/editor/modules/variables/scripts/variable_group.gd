@@ -34,11 +34,11 @@ signal remove_pressed()
 @onready var _empty_label: Label = %EmptyLabel
 
 ## Collapse icons for the expandable button
-var _collapse_up_icon: Texture2D = preload("res://addons/sprouty_dialogs/icons/interactable/collapse-up.svg")
-var _collapse_down_icon: Texture2D = preload("res://addons/sprouty_dialogs/icons/interactable/collapse-down.svg")
+var _collapse_up_icon: Texture2D = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
+var _collapse_down_icon: Texture2D = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg")
 
 ## Preloaded style for the group
-var _group_style: StyleBoxFlat = preload("res://addons/sprouty_dialogs/theme/variable_group_subpanel.tres")
+var _group_style: StyleBoxFlat = preload("res://addons/sprouty_dialogs/editor/theme/variable_group_subpanel.tres")
 
 ## Parent group of the item
 var parent_group: Node = null

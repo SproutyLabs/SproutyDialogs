@@ -1,13 +1,12 @@
 @tool
-@icon("res://addons/sprouty_dialogs/icons/icon.svg")
+@icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_player.svg")
 class_name DialogPlayer
 extends Node
 
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Dialog Player
 # -----------------------------------------------------------------------------
-## This class is responsible for run a dialogue from the Sprouty Dialogs plugin.
-## Instance this node in your scene to play dialogues.
+## Node that plays dialog trees from Sprouty Dialogs plugin.
 ##
 ## It reads a dialog file and processes a dialog tree by ID to play the dialog.
 ## The dialog tree is composed of nodes that represent dialogues and actions.

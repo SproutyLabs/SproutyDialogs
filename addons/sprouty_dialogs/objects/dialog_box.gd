@@ -1,4 +1,4 @@
-@icon("res://addons/sprouty_dialogs/icons/icon.svg")
+@icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_box.svg")
 @abstract
 class_name DialogBox
 extends Panel
@@ -6,12 +6,13 @@ extends Panel
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Dialog Box
 # -----------------------------------------------------------------------------
-## This class is responsible for displaying the dialogues in the game.
-## It handles the display of the text and options in the dialog box.
+## Abstract class for dialog boxes from Sprouty Dialogs plugin.
 ##
-## This class is used by a [DialogPlayer] to display the dialog.
-## [color=red]You should not instantiate a DialogBox to play a dialog.[/color]
-## Instead, you should instantiate a [DialogPlayer] to play a dialog.
+## This class is used by a [DialogPlayer] to display a dialog. It provides the
+## basic functionality to display dialog text, character names, portraits, and
+## options.
+##
+## [br][br]You should inherit from this class to create your own dialog boxes.
 # -----------------------------------------------------------------------------
 
 ## Emitted when the dialog is started.

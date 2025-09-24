@@ -6,12 +6,13 @@ extends GraphNode
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Base Node
 # -----------------------------------------------------------------------------
-## It provides the basic implementation to every node in the graph editor.
-## You should inherit from this class to create your own nodes.
+## Abstract class for graph nodes from Sprouty Dialogs plugin.
 ##
 ## It handles the node color, icon, titlebar, and connections.
 ## It also provides methods to get and set the node data that should be 
-## overridden in each node.
+## overridden in each child node class.
+##
+## [br][br]You should inherit from this class to create your own dialog nodes.
 # -----------------------------------------------------------------------------
 
 ## Node color to display on the node titlebar.
