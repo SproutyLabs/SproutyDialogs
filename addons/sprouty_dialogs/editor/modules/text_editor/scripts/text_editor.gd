@@ -74,6 +74,8 @@ func update_text_editor(text_box: Variant) -> void:
 
 ## Hide the text editor
 func hide_text_editor() -> void:
+	_text_preview.text = ""
+	text_input.text = ""
 	visible = false
 
 
@@ -99,10 +101,14 @@ func _on_text_box_text_changed(_arg: Variant = null) -> void:
 	text_input.text = _opened_text_box.text
 	text_input.set_caret_line(caret_line)
 	text_input.set_caret_column(caret_column)
+	_text_preview.text = EditorSproutyDialogsVariableManager.parse_variables(text_input.text, true)
 
 
 ## Update the text box and preview with the text editor input
 func _on_code_edit_text_changed() -> void:
+	if not _opened_text_box:
+		hide_text_editor()
+		return
 	_opened_text_box.text = text_input.text
 	_opened_text_box.text_changed.emit(text_input.text)
 	_text_preview.text = EditorSproutyDialogsVariableManager.parse_variables(text_input.text, true)

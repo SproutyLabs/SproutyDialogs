@@ -235,16 +235,20 @@ func load_graph_data(data: SproutyDialogsDialogueData, dialogs: Dictionary) -> v
 					if fallback_to_resource and data.dialogs.has(node_data["dialog_key"]):
 						new_node.load_dialogs(data.dialogs[node_data["dialog_key"]])
 				else:
+					if not dialogs[node_data["dialog_key"]].has("default"): # Ensure that the default dialog exists
+						dialogs[node_data["dialog_key"]]["default"] = data.dialogs[node_data["dialog_key"]]["default"]
 					new_node.load_dialogs(dialogs[node_data["dialog_key"]])
+				
+				# Load character if exists
 				var character_name = node_data["character"]
 				if character_name != "":
 					var character_uid = characters[dialogue_id][character_name]
 					if character_uid != -1:
 						new_node.load_character(ResourceUID.get_id_path(character_uid))
 						new_node.load_portrait(node_data["portrait"])
+				
 			# Load options on options nodes
 			elif node_data["node_type"] == "options_node":
-				var options_dialogs = dialogs.duplicate()
 				for option_key in node_data["options_keys"]:
 					if not dialogs.has(option_key):
 						# Print error if no dialog is found for the option
@@ -258,8 +262,11 @@ func load_graph_data(data: SproutyDialogsDialogueData, dialogs: Dictionary) -> v
 							+ data.resource_path.get_file() + "' dialog file instead.") \
 							if fallback_to_resource else "")
 						if fallback_to_resource and data.dialogs.has(option_key):
-							options_dialogs[option_key] = data.dialogs[option_key]
-				new_node.load_options_text(options_dialogs)
+							dialogs[option_key] = data.dialogs[option_key]
+					else:
+						if not dialogs[option_key].has("default"): # Ensure that the default dialog exists
+							dialogs[option_key]["default"] = data.dialogs[option_key]["default"]
+				new_node.load_options_text(dialogs)
 	
 	# When all the nodes are loaded, notify the nodes to connect each other
 	nodes_loaded.emit()

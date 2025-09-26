@@ -1,6 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://n6xtq0g0yp1m"]
+[gd_scene load_steps=12 format=3 uid="uid://n6xtq0g0yp1m"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/editor/theme/main_theme.tres" id="1_05qy5"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_05qy5"]
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/sprouty_dialogs/editor/icons/nodes/dialogue.svg" id="4_hljjc"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="4_ujava"]
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg" id="4_urrmu"]
@@ -30,9 +30,13 @@ border_width_right = 2
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
+[sub_resource type="DPITexture" id="DPITexture_ab75r"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
 [node name="DialogueNode" type="GraphNode"]
 custom_minimum_size = Vector2(250, 0)
-offset_right = 273.0
+offset_right = 250.0
 offset_bottom = 430.0
 size_flags_vertical = 3
 theme = ExtResource("1_05qy5")
@@ -114,6 +118,7 @@ layout_mode = 2
 [node name="CharacterFileField" parent="CharacterContainer/Content" instance=ExtResource("4_ujava")]
 unique_name_in_owner = true
 layout_mode = 2
+_open_directory = false
 file_filters = PackedStringArray("*.tres", "*.res")
 
 [node name="CharacterNameButton" type="Button" parent="CharacterContainer/Content/CharacterFileField/HBox" index="0"]
@@ -128,8 +133,12 @@ icon = ExtResource("5_hoe8b")
 [node name="PathField" parent="CharacterContainer/Content/CharacterFileField/HBox" index="1"]
 visible = false
 
+[node name="OpenButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="2"]
+icon = SubResource("DPITexture_ab75r")
+
 [node name="ClearButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="3"]
 size_flags_horizontal = 8
+icon = SubResource("DPITexture_ab75r")
 
 [node name="OpenDialog" parent="CharacterContainer/Content/CharacterFileField" index="1"]
 ok_button_text = "Open File"

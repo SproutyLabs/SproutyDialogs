@@ -122,7 +122,7 @@ static func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 	# Collect all locales for the header
 	for dialog_key in dialogs:
 		for locale in dialogs[dialog_key]:
-			if not header.has(locale):
+			if not header.has(locale) and locale != "default":
 				header.append(locale)
 	
 	# Load existing data if file exists
@@ -209,7 +209,7 @@ static func save_character_names_on_csv(name_data: Dictionary) -> void:
 	
 	# The locales that not exist in header are added to the end of the row
 	for i in range(name_data[key_name].size()):
-		if not header.has(name_data[key_name].keys()[i]):
+		if not header.has(name_data[key_name].keys()[i]) and name_data[key_name].keys()[i] != "default":
 			row.append(name_data[key_name].values()[i])
 			header.append(name_data[key_name].keys()[i])
 

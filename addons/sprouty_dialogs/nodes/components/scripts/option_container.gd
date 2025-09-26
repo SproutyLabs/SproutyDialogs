@@ -27,10 +27,15 @@ signal option_removed(index)
 ## Translations container to handle the dialog translations
 @onready var _translation_boxes: Control = $TranslationsContainer
 
-## Option position index
-var option_index: int = 0
 ## Default locale for dialog text
 var _default_locale: String = ""
+## Flag to indicate if translations are enabled
+var _translations_enabled: bool = false
+
+## Dialog texts and their translations
+var _dialogs_text: Dictionary = {}
+## Option position index
+var option_index: int = 0
 
 
 func _ready() -> void:
@@ -44,6 +49,9 @@ func _ready() -> void:
 	_remove_button.icon = get_theme_icon("Remove", "EditorIcons")
 	_show_remove_button()
 	_set_translation_text_boxes()
+	on_translation_enabled_changed( # Enable/disable translation section
+			EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
+		)
 
 
 ## Return the dialog key for this option
@@ -57,41 +65,62 @@ func get_dialog_key() -> String:
 
 ## Get dialog text and its translations
 func get_dialogs_text() -> Dictionary:
-	var dialogs = {}
-	dialogs[_default_locale] = _default_text_box.get_text()
-	dialogs.merge(_translation_boxes.get_translations_text())
+	var dialogs = _dialogs_text
+	dialogs["default"] = _default_text_box.get_text()
+	if _translations_enabled:
+		if _default_locale != "":
+			dialogs[_default_locale] = _default_text_box.get_text()
+		dialogs.merge(_translation_boxes.get_translations_text())
 	return dialogs
 
 
 ## Load dialog and translations
 func load_dialogs(dialogs: Dictionary) -> void:
-	_default_text_box.set_text(dialogs[_default_locale])
+	_dialogs_text = dialogs
+	if _translations_enabled and dialogs.has(_default_locale):
+		_default_text_box.set_text(dialogs[_default_locale])
+	else: # Use default if translations disabled or no default locale dialog
+		_default_text_box.set_text(dialogs["default"])
 	_translation_boxes.load_translations_text(dialogs)
 
 
 ## Update the locale text boxes
 func on_locales_changed() -> void:
 	var dialogs = get_dialogs_text()
+	var previous_default_locale = _default_locale
 	_set_translation_text_boxes()
+	# Handle when the default locale changes
+	if previous_default_locale != _default_locale:
+		dialogs[previous_default_locale] = dialogs["default"]
+		dialogs["default"] = dialogs[_default_locale] if dialogs.has(_default_locale) else dialogs["default"]
+		_dialogs_text = dialogs
 	load_dialogs(dialogs)
 
 
 ## Handle the translation enabled setting change
 func on_translation_enabled_changed(enabled: bool) -> void:
+	_translations_enabled = enabled
+	if enabled: on_locales_changed()
 	%DefaultLocaleLabel.visible = enabled
 	_translation_boxes.visible = enabled
 
 
 ## Set translation text boxes
 func _set_translation_text_boxes() -> void:
+	_translations_enabled = EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
 	_default_locale = EditorSproutyDialogsSettingsManager.get_setting("default_locale")
+	var locales = EditorSproutyDialogsSettingsManager.get_setting("locales")
+	_translations_enabled = _translations_enabled and locales.size() > 0
+	_default_locale = _default_locale if _translations_enabled else ""
 	%DefaultLocaleLabel.text = "(" + _default_locale + ")"
 	_default_text_box.set_text("")
 	_translation_boxes.set_translation_boxes(
-			EditorSproutyDialogsSettingsManager.get_setting("locales").filter(
-				func(locale): return locale != _default_locale
+			locales.filter(
+				func(locale): return locale != (_default_locale if _translations_enabled else "")
 			)
 		)
+	%DefaultLocaleLabel.visible = _translations_enabled and _default_locale != ""
+	_translation_boxes.visible = _translations_enabled
 
 
 ## Update the option position index

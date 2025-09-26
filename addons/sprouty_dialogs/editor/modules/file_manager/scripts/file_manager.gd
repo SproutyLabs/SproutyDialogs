@@ -156,12 +156,13 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 	var char_editor = _char_scene.instantiate()
 	add_child(char_editor)
 	char_editor.modified.connect(_on_data_modified)
-	var name_data = {}
+	var name_data = resource.display_name if resource.display_name else {}
 	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
 		and EditorSproutyDialogsSettingsManager.get_setting("translate_character_names") \
 		and EditorSproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
 		and EditorSproutyDialogsSettingsManager.get_setting("use_csv"): # Load character names from CSV file
 		name_data = EditorSproutyDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
+		name_data[resource.key_name]["default"] = resource.display_name[resource.key_name]["default"]
 	char_editor.load_character(resource, name_data)
 	char_editor.name = "CharacterEditor"
 	remove_child(char_editor)
@@ -227,7 +228,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 					graph_editor_data["dialogs"],
 					ResourceUID.get_id_path(data.csv_translation_file)
 				)
-				EditorSproutyDialogsFileUtils.collect_translations()
+				EditorSproutyDialogsTranslationManager.collect_translations()
 
 	elif data is SproutyDialogsCharacterData:
 		data = file_metadata["cache_node"].get_character_data()

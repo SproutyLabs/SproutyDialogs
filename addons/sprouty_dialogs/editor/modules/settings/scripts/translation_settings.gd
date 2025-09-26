@@ -114,7 +114,7 @@ func _set_locales_on_dropdown(dropdown: OptionButton, default: bool) -> void:
 	dropdown.clear()
 	var locales = EditorSproutyDialogsSettingsManager.get_setting("locales")
 
-	if not default or locales == null or locales.is_empty():
+	if not default or (locales == null or locales.is_empty()):
 		dropdown.add_item("(no one)")
 	
 	var default_locale = EditorSproutyDialogsSettingsManager.get_setting("default_locale")
@@ -128,12 +128,14 @@ func _set_locales_on_dropdown(dropdown: OptionButton, default: bool) -> void:
 
 
 ## Select the default locale from the dropdown
-func _on_default_locale_selected(index: int) -> void:
+func _on_default_locale_selected(index: int, no_emit: bool = false) -> void:
+	var locale = default_locale_dropdown.get_item_text(index)
 	EditorSproutyDialogsSettingsManager.set_setting(
 		"default_locale",
-		default_locale_dropdown.get_item_text(index)
+		locale if locale != "(no one)" else ""
 	)
-	default_locale_changed.emit()
+	if not no_emit:
+		default_locale_changed.emit()
 
 
 ## Select the testing locale from the dropdown
@@ -155,7 +157,7 @@ func _on_locales_changed() -> void:
 	# If the default or testing locales are removed, select the first locale
 	var new_locales = EditorSproutyDialogsSettingsManager.get_setting("locales")
 	if not new_locales.has(EditorSproutyDialogsSettingsManager.get_setting("default_locale")):
-		_on_default_locale_selected(0)
+		_on_default_locale_selected(0, true)
 	if not new_locales.has(EditorSproutyDialogsSettingsManager.get_setting("testing_locale")):
 		_on_testing_locale_selected(0)
 	
@@ -293,6 +295,6 @@ func _valid_csv_path(path: String) -> bool:
 
 ## Collect the translations from the CSV files
 func _on_collect_translations_pressed() -> void:
-	EditorSproutyDialogsFileUtils.collect_translations()
+	EditorSproutyDialogsTranslationManager.collect_translations()
 
 #endregion

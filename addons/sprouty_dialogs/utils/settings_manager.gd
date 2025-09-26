@@ -139,4 +139,8 @@ static func initialize_default_settings() -> void:
 
 	# Variable settings
 	ProjectSettings.set_setting(_settings_paths["variables"], {})
+
+	# Internal settings
+	ProjectSettings.set_setting(_settings_paths["play_dialog_path"], "")
+	ProjectSettings.set_setting(_settings_paths["play_start_id"], "")
 	ProjectSettings.save()

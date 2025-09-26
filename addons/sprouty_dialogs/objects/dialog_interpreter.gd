@@ -42,34 +42,6 @@ var node_processors: Dictionary = {
 var print_debug: bool = true
 
 
-#region === Dialogs translation ================================================
-
-## Returns the translated dialog text
-func _get_translated_dialog(key: String) -> String:
-	# If translation is enabled and using CSV, use the translation server
-	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
-			and EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
-		return tr(key)
-	else: # Otherwise, get the dialog from the dialog resource
-		var locale = TranslationServer.get_locale()
-		return get_parent().get_dialog_data().dialogs[key][locale]
-
-
-## Returns the translated character name
-func _get_translated_character_name(character: String) -> String:
-	# If translation is enabled and using CSV, use the translation server
-	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
-			and EditorSproutyDialogsSettingsManager.get_setting("translate_character_names"):
-		if EditorSproutyDialogsSettingsManager.get_setting("use_csv_for_character_names"):
-			return tr(character)
-		else: # Otherwise, get the dialog from the dialog resource
-			var locale = TranslationServer.get_locale()
-			return get_parent().get_character_data(character).display_name[locale]
-	return character # If no translation is enabled, return the original name
-
-#endregion
-
-
 func _process_start(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing start node...")
 	continue_to_node.emit(node_data.to_node[0])
@@ -77,10 +49,15 @@ func _process_start(node_data: Dictionary) -> void:
 
 func _process_dialogue(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing dialogue node...")
-	# Get the translated dialog and character name to display
-	var dialog = _get_translated_dialog(node_data["dialog_key"])
+
+	# Get the translated dialog and parse variables
+	var dialog = EditorSproutyDialogsTranslationManager.get_translated_dialog(
+		node_data["dialog_key"], get_parent().get_dialog_data())
 	dialog = EditorSproutyDialogsVariableManager.parse_variables(dialog)
-	var display_name = _get_translated_character_name(node_data["character"])
+
+	# Get the translated character name
+	var display_name = EditorSproutyDialogsTranslationManager.get_translated_character_name(
+		node_data["character"], get_parent().get_character_data(node_data["character"]))
 
 	dialogue_processed.emit(node_data["character"], display_name,
 			node_data["portrait"], dialog, node_data["to_node"][0])
@@ -106,7 +83,8 @@ func _process_options(node_data: Dictionary) -> void:
 	options_processed.emit(node_data.options_keys.map(
 		func(key): # Return the translated and parsed options
 			return EditorSproutyDialogsVariableManager.parse_variables(
-				_get_translated_dialog(key))
+				EditorSproutyDialogsTranslationManager.get_translated_dialog(
+					key, get_parent().get_dialog_data()))
 	), node_data.to_node)
 
 

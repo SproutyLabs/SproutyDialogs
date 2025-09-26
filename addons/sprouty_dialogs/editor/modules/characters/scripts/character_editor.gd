@@ -50,8 +50,12 @@ var _current_portrait: TreeItem = null
 
 ## Key name of the character (file name)
 var _key_name: String = ""
+## Character name translations
+var _name_translations = {}
 ## Default locale for dialog text
 var _default_locale: String = ""
+## Flag to indicate if translations are enabled
+var _translations_enabled: bool = false
 
 ## Portrait display on dialog box option
 var _portrait_on_dialog_box: bool = false
@@ -71,6 +75,10 @@ func _ready() -> void:
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
+
+	on_translation_enabled_changed( # Enable/disable translation section
+			EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
+		)
 
 
 ## Emit the modified signal
@@ -147,12 +155,19 @@ func open_scene_in_editor(path: String) -> void:
 func on_locales_changed() -> void:
 	if _key_name != "":
 		var translations = _get_name_translations()
+		var previous_default_locale = _default_locale
 		_set_translation_text_boxes()
+		# Handle when the default locale changes
+		if previous_default_locale != _default_locale:
+			translations[previous_default_locale] = translations["default"]
+			translations["default"] = translations[_default_locale] if translations.has(_default_locale) else translations["default"]
+			_name_translations = translations
 		_load_name_translations(translations)
 
 
 ## Handle the translation enabled change
 func on_translation_enabled_changed(enabled: bool) -> void:
+	_translations_enabled = enabled
 	if enabled: on_locales_changed()
 	_name_default_locale_label.visible = enabled
 	_name_translations_container.visible = enabled
@@ -171,28 +186,41 @@ func _update_translations_state() -> void:
 
 ## Get character name translations
 func _get_name_translations() -> Dictionary:
-	var translations = {}
-	translations[_default_locale] = _name_default_locale_field.text
-	translations.merge(_name_translations_container.get_translations_text())
+	var translations = _name_translations
+	translations["default"] = _name_default_locale_field.text
+	if _translations_enabled:
+		if _default_locale != "":
+			translations[_default_locale] = _name_default_locale_field.text
+		translations.merge(_name_translations_container.get_translations_text())
 	return translations
 
 
 ## Load character name translations
 func _load_name_translations(translations: Dictionary) -> void:
-	_name_default_locale_field.text = translations[_default_locale]
+	_name_translations = translations
+	if _translations_enabled and translations.has(_default_locale):
+		_name_default_locale_field.text = translations[_default_locale]
+	else: # Use default if translations disabled or no default locale translation
+		_name_default_locale_field.text = translations["default"]
 	_name_translations_container.load_translations_text(translations)
 
 
 ## Set character name translations text boxes
 func _set_translation_text_boxes() -> void:
+	_translations_enabled = EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
 	_default_locale = EditorSproutyDialogsSettingsManager.get_setting("default_locale")
+	var locales = EditorSproutyDialogsSettingsManager.get_setting("locales")
+	_translations_enabled = _translations_enabled and locales.size() > 0
+	_default_locale = _default_locale if _translations_enabled else ""
 	_name_default_locale_label.text = "(" + _default_locale + ")"
 	_name_default_locale_field.text = ""
 	_name_translations_container.set_translation_boxes(
-			EditorSproutyDialogsSettingsManager.get_setting("locales").filter(
-				func(locale): return locale != _default_locale
+			locales.filter(
+				func(locale): return locale != (_default_locale if _translations_enabled else "")
 			)
 		)
+	_name_default_locale_label.visible = _translations_enabled and _default_locale != ""
+	_name_translations_container.visible = _translations_enabled
 
 #endregion
 

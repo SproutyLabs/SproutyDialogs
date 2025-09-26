@@ -62,3 +62,4 @@ func set_locale(locale: String) -> void:
 	_locale_code = locale
 	_code_label.text = "(" + locale + ")"
 	_language_label.text = TranslationServer.get_locale_name(locale)
+	_language_label.get_parent().tooltip_text = _language_label.text
