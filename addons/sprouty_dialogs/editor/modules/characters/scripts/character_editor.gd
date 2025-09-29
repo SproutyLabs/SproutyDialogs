@@ -56,6 +56,8 @@ var _name_translations = {}
 var _default_locale: String = ""
 ## Flag to indicate if translations are enabled
 var _translations_enabled: bool = false
+## Flag to indicate if the dialog has no translation (only default)
+var _name_without_translation: bool = true
 
 ## Portrait display on dialog box option
 var _portrait_on_dialog_box: bool = false
@@ -157,10 +159,16 @@ func on_locales_changed() -> void:
 		var translations = _get_name_translations()
 		var previous_default_locale = _default_locale
 		_set_translation_text_boxes()
+		# Handle when there was no translation before
+		if _name_without_translation and _default_locale != "":
+			translations[_default_locale] = translations["default"]
+			_name_without_translation = false
 		# Handle when the default locale changes
-		if previous_default_locale != _default_locale:
-			translations[previous_default_locale] = translations["default"]
-			translations["default"] = translations[_default_locale] if translations.has(_default_locale) else translations["default"]
+		elif previous_default_locale != _default_locale:
+			if previous_default_locale != "":
+				translations[previous_default_locale] = translations["default"]
+			translations["default"] = translations[_default_locale] \
+					if translations.has(_default_locale) else translations["default"]
 			_name_translations = translations
 		_load_name_translations(translations)
 
@@ -198,6 +206,9 @@ func _get_name_translations() -> Dictionary:
 ## Load character name translations
 func _load_name_translations(translations: Dictionary) -> void:
 	_name_translations = translations
+	if translations.size() > 1: # There are translations
+		_name_without_translation = false
+
 	if _translations_enabled and translations.has(_default_locale):
 		_name_default_locale_field.text = translations[_default_locale]
 	else: # Use default if translations disabled or no default locale translation

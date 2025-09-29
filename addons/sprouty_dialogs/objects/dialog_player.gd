@@ -215,11 +215,13 @@ func get_start_id() -> String:
 	return _start_id
 
 
-## Returns the current character name being processed
-func get_current_character() -> String:
-	if _current_portrait:
-		return _current_portrait.get_parent().name
-	return ""
+## Returns character data for a given character key name
+func get_character_data(key_name: String) -> SproutyDialogsCharacterData:
+	if _resource_manager:
+		var character_data = _resource_manager.get_character_data(key_name)
+		if character_data:
+			return character_data
+	return null
 
 
 ## Returns the current portrait being displayed

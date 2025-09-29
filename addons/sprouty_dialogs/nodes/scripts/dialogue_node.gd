@@ -28,6 +28,8 @@ signal open_character_file_request(path: String)
 var _default_locale: String = ""
 ## Flag to indicate if translations are enabled
 var _translations_enabled: bool = false
+## Flag to indicate if the dialog has no translation (only default)
+var _dialog_without_translation: bool = true
 
 ## Dialog texts and their translations
 var _dialogs_text: Dictionary = {}
@@ -235,6 +237,9 @@ func get_dialogs_text() -> Dictionary:
 ## Load dialog and translations
 func load_dialogs(dialogs: Dictionary) -> void:
 	_dialogs_text = dialogs
+	if dialogs.size() > 1: # There are translations
+		_dialog_without_translation = false
+	
 	if _translations_enabled and dialogs.has(_default_locale):
 		_default_text_box.set_text(dialogs[_default_locale])
 	else: # Use default if translations disabled or no default locale dialog
@@ -247,10 +252,16 @@ func on_locales_changed() -> void:
 	var dialogs = get_dialogs_text()
 	var previous_default_locale = _default_locale
 	_set_translation_text_boxes()
+	# Handle when there was no translation before
+	if _dialog_without_translation and _default_locale != "":
+		dialogs[_default_locale] = dialogs["default"]
+		_dialog_without_translation = false
 	# Handle when the default locale changes
-	if previous_default_locale != _default_locale:
-		dialogs[previous_default_locale] = dialogs["default"]
-		dialogs["default"] = dialogs[_default_locale] if dialogs.has(_default_locale) else dialogs["default"]
+	elif previous_default_locale != _default_locale:
+		if previous_default_locale != "":
+			dialogs[previous_default_locale] = dialogs["default"]
+		dialogs["default"] = dialogs[_default_locale] \
+				if dialogs.has(_default_locale) else dialogs["default"]
 		_dialogs_text = dialogs
 	load_dialogs(dialogs)
 

@@ -160,6 +160,7 @@ func play_dialog(character_name: String, display_name: String, dialog: String) -
 
 	if _name_display: # Set the character name
 		_name_display.text = character_name
+		_name_display.visible = display_name != ""
 	_current_character = character_name
 	_dialog_display.text = dialog
 	_current_sentence = 0

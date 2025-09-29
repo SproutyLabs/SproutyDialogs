@@ -92,6 +92,14 @@ func _enter_tree() -> void:
 	_dialog_boxes[default_box_uid] = load(ResourceUID.get_id_path(default_box_uid))
 
 
+## Returns character data for a given character key name
+## If the character is not loaded, returns null.
+func get_character_data(key_name: String) -> SproutyDialogsCharacterData:
+	if _characters_data.has(key_name):
+		return _characters_data[key_name]
+	return null
+
+
 ## Releases the resources used by a dialog player.
 ## This will remove the character data, dialog boxes, and portraits
 ## that are no longer needed by any dialog player.

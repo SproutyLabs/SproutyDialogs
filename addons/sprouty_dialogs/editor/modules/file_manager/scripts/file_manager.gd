@@ -93,19 +93,21 @@ func get_current_file_path() -> String:
 func new_dialog_file(path: String) -> void:
 	# Create a new dialogue data resource
 	var resource = SproutyDialogsDialogueData.new()
-	var csv_path = ""
+	var csv_path = EditorSproutyDialogsSettingsManager.get_setting("csv_translations_folder") \
+			+"/" + path.get_file().get_basename() + ".csv"
 	
 	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
 		and EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
-		# Create a new CSV file for translations
-		csv_path = EditorSproutyDialogsCSVFileManager.new_csv_template_file(path.get_file())
-		if csv_path.is_empty(): return
+		if not FileAccess.file_exists(csv_path):
+			# Create a new CSV file for translations
+			csv_path = EditorSproutyDialogsCSVFileManager.new_csv_template_file(path.get_file())
+			if csv_path.is_empty(): return
+			# Refresh the filesystem to ensure the CSV file is imported
+			EditorInterface.get_resource_filesystem().scan()
+			await EditorInterface.get_resource_filesystem().resources_reimported
+		
 		_csv_file_field.set_value(csv_path)
 		_csv_file_field.get_parent().show()
-		
-		# Refresh the filesystem to ensure the CSV file is imported
-		EditorInterface.get_resource_filesystem().scan()
-		await EditorInterface.get_resource_filesystem().resources_reimported
 		resource.csv_translation_file = ResourceSaver.get_resource_id_for_path(csv_path, true)
 	
 	ResourceSaver.save(resource, path)
@@ -162,7 +164,9 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 		and EditorSproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
 		and EditorSproutyDialogsSettingsManager.get_setting("use_csv"): # Load character names from CSV file
 		name_data = EditorSproutyDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
-		name_data[resource.key_name]["default"] = resource.display_name[resource.key_name]["default"]
+		name_data[resource.key_name]["default"] = resource.display_name[resource.key_name]["default"] \
+			if resource.display_name.has(resource.key_name) \
+				and resource.display_name[resource.key_name].has("default") else ""
 	char_editor.load_character(resource, name_data)
 	char_editor.name = "CharacterEditor"
 	remove_child(char_editor)
