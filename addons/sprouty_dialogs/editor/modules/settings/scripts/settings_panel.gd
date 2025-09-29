@@ -25,9 +25,21 @@ extends TabContainer
 
 func _ready():
 	set_tabs_icons()
+	tab_changed.connect(_on_tab_changed)
 
 
 ## Set the tab menu icons
 func set_tabs_icons() -> void:
 	for index in tab_icons.size():
 		set_tab_icon(index, tab_icons[index])
+
+
+## Handle when the tab is changed
+func _on_tab_changed(tab_index: int) -> void:
+	match tab_index:
+		0:
+			general_settings.update_settings()
+		1:
+			text_settings.update_settings()
+		2:
+			translation_settings.update_settings()

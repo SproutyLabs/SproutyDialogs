@@ -64,6 +64,11 @@ func _load_settings() -> void:
 			EditorSproutyDialogsSettingsManager.get_setting("skip_continue_delay")
 
 
+## Update settings when the panel is selected
+func update_settings() -> void:
+	pass
+
+
 ## Handle when the typing speed is changed
 func _on_typing_speed_changed(value: float) -> void:
 	EditorSproutyDialogsSettingsManager.set_setting("default_typing_speed", value)

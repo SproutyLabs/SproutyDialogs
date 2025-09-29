@@ -48,6 +48,9 @@ const CHAR_NAMES_CSV_NAME: String = "character_names.csv"
 ## Character names CSV warning message
 @onready var _char_csv_warning: RichTextLabel = %CharCSVWarning
 
+## Collect translations button
+@onready var _collect_translations_button: Button = %CollectTranslationsButton
+
 ## Default locale dropdown
 @onready var default_locale_dropdown: OptionButton = %DefaultLocale/OptionButton
 ## Testing locale dropdown
@@ -58,6 +61,7 @@ const CHAR_NAMES_CSV_NAME: String = "character_names.csv"
 
 func _ready() -> void:
 	# Connect signals
+	_collect_translations_button.pressed.connect(_on_collect_translations_pressed)
 	_enable_translations_toggle.toggled.connect(_on_use_translation_toggled)
 	_use_csv_files_toggle.toggled.connect(_on_use_csv_files_toggled)
 	_fallback_to_resource_toggle.toggled.connect(_on_fallback_to_resource_toggled)
@@ -65,8 +69,8 @@ func _ready() -> void:
 	_use_csv_for_names_toggle.toggled.connect(_on_use_csv_for_names_toggled)
 
 	locales_selector.locales_changed.connect(_on_locales_changed)
-	csv_folder_field.path_submitted.connect(_on_csv_files_path_changed)
-	char_names_csv_field.path_submitted.connect(_on_char_names_csv_path_changed)
+	csv_folder_field.path_changed.connect(_on_csv_files_path_changed)
+	char_names_csv_field.path_changed.connect(_on_char_names_csv_path_changed)
 
 	_csv_folder_warning.visible = false
 	_char_csv_warning.visible = false
@@ -97,14 +101,33 @@ func _load_settings() -> void:
 				EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
 			)
 		)
-	_csv_folder_warning.visible = ( # Show warning if folder is invalid
-		not DirAccess.dir_exists_absolute(csv_folder_field.get_value())
-		and not csv_folder_field.get_value().is_empty()
-	) # Show warning if character names CSV path is invalid
-	_char_csv_warning.visible = not _valid_csv_path(char_names_csv_field.get_value())
+	_update_csv_folder_warning()
+	_update_character_csv_warning()
 	_set_locales_on_dropdown(default_locale_dropdown, true)
 	_set_locales_on_dropdown(testing_locale_dropdown, false)
 	locales_selector.set_locale_list()
+
+
+## Update settings when the panel is selected
+func update_settings() -> void:
+	# If the CSV character names warning is visible, reset the path
+	if _char_csv_warning.visible:
+		if EditorSproutyDialogsSettingsManager.get_setting("character_names_csv") == -1:
+			char_names_csv_field.set_value("")
+		else:
+			char_names_csv_field.set_value(ResourceUID.get_id_path(
+					EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
+				)
+			)
+		_char_csv_warning.visible = false
+	 # If the CSV folder warning is visible, reset the path
+	if _csv_folder_warning.visible:
+		csv_folder_field.set_value(
+			EditorSproutyDialogsSettingsManager.get_setting("csv_translations_folder")
+		)
+		_csv_folder_warning.visible = false
+		_collect_translations_button.disabled = not (_enable_translations_toggle.is_pressed()
+				and _use_csv_files_toggle.is_pressed())
 
 
 #region === Locales ============================================================
@@ -180,41 +203,41 @@ func _on_use_translation_toggled(checked: bool) -> void:
 		not (checked and _translate_names_toggle.is_pressed())
 		and _use_csv_files_toggle.is_pressed()
 	)
-	# Set warnings visibility
-	_csv_folder_warning.visible = (checked
+	_collect_translations_button.disabled = not (checked
 			and _use_csv_files_toggle.is_pressed()
-			and (csv_folder_field.get_value().is_empty()
-			or not DirAccess.dir_exists_absolute(csv_folder_field.get_value()))
-	)
-	_char_csv_warning.visible = (checked
-			and _translate_names_toggle.is_pressed()
-			and _use_csv_for_names_toggle.is_pressed() \
-			and not _valid_csv_path(char_names_csv_field.get_value())
-	)
+			and not _csv_folder_warning.visible)
+	# Set warnings visibility
+	_update_csv_folder_warning()
+	_update_character_csv_warning()
+
 	translation_enabled_changed.emit(checked)
 	translate_character_names_changed.emit(
 		checked and _translate_names_toggle.is_pressed()
 	)
 
+#region --- CSV Settings -------------------------------------------------------
 
 ## Toggle the use of CSV files for translations
 func _on_use_csv_files_toggled(checked: bool) -> void:
 	EditorSproutyDialogsSettingsManager.set_setting("use_csv", checked)
-
-	_translate_names_toggle.disabled = not (checked and _enable_translations_toggle.is_pressed())
-	_translate_names_toggle.visible = checked
+	
 	csv_folder_field.disable_field(not (checked and _enable_translations_toggle.is_pressed()))
 	csv_folder_field.get_parent().visible = checked
+
+	_fallback_to_resource_toggle.disabled = not (checked and _enable_translations_toggle.is_pressed())
+	_fallback_to_resource_toggle.visible = checked
+
+	_collect_translations_button.disabled = not (checked
+			and _enable_translations_toggle.is_pressed()
+			and not _csv_folder_warning.visible)
+
 	char_names_csv_field.get_parent().visible = (checked
 			and _translate_names_toggle.is_pressed()
 			and _use_csv_for_names_toggle.is_pressed()
 	)
 	_use_csv_for_names_toggle.disabled = not (checked and _enable_translations_toggle.is_pressed())
 	_use_csv_for_names_toggle.visible = checked and _translate_names_toggle.is_pressed()
-	_csv_folder_warning.visible = (checked
-			and (csv_folder_field.get_value().is_empty()
-			or not DirAccess.dir_exists_absolute(csv_folder_field.get_value()))
-	)
+	_update_csv_folder_warning()
 	use_csv_files_changed.emit(checked)
 
 
@@ -223,17 +246,50 @@ func _on_fallback_to_resource_toggled(checked: bool) -> void:
 	EditorSproutyDialogsSettingsManager.set_setting("fallback_to_resource", checked)
 
 
+## Set the path to the CSV translation files
+func _on_csv_files_path_changed(path: String) -> void:
+	# Check if the path is empty or doesn't exist
+	if path.is_empty() or not DirAccess.dir_exists_absolute(path):
+		_csv_folder_warning.visible = true
+		_collect_translations_button.disabled = true
+		return
+	_csv_folder_warning.visible = false
+	_collect_translations_button.disabled = not (_enable_translations_toggle.is_pressed()
+			and _use_csv_files_toggle.is_pressed())
+	EditorSproutyDialogsSettingsManager.set_setting("csv_translations_folder", path)
+
+
+## Check if the CSV path is valid
+func _valid_csv_path(path: String) -> bool:
+	# Check if the path is empty or doesn't exist
+	if not EditorSproutyDialogsFileUtils.check_valid_extension(path, ["*.csv"]):
+		return false
+	if not path.begins_with(EditorSproutyDialogsSettingsManager.get_setting("csv_translations_folder")):
+		return false
+	return true
+
+
+## Collect the translations from the CSV files
+func _on_collect_translations_pressed() -> void:
+	EditorSproutyDialogsTranslationManager.collect_translations()
+
+
+#endregion
+
+#region --- Character Names Settings -------------------------------------------
+
 ## Toggle the translation of character names
 func _on_translate_names_toggled(checked: bool) -> void:
 	EditorSproutyDialogsSettingsManager.set_setting("translate_character_names", checked)
 	
 	_use_csv_for_names_toggle.disabled = not (checked and _enable_translations_toggle.is_pressed())
 	_use_csv_for_names_toggle.visible = checked and _use_csv_files_toggle.is_pressed()
-	char_names_csv_field.get_parent().visible = checked and _use_csv_for_names_toggle.is_pressed()
-	_char_csv_warning.visible = (checked
+	char_names_csv_field.get_parent().visible = (checked
 			and _use_csv_for_names_toggle.is_pressed()
-			and not _valid_csv_path(char_names_csv_field.get_value())
-	)
+			and _use_csv_files_toggle.is_pressed()
+		)
+	_update_character_csv_warning()
+
 	translate_character_names_changed.emit(checked)
 
 
@@ -245,18 +301,9 @@ func _on_use_csv_for_names_toggled(checked: bool) -> void:
 		_new_character_names_csv() # Create a new CSV template if the path is empty
 	
 	char_names_csv_field.get_parent().visible = checked
-	_char_csv_warning.visible = checked and not _valid_csv_path(char_names_csv_field.get_value())
+	_update_character_csv_warning()
+
 	use_csv_for_names_changed.emit(checked)
-
-
-## Set the path to the CSV translation files
-func _on_csv_files_path_changed(path: String) -> void:
-	# Check if the path is empty or doesn't exist
-	if path.is_empty() or not DirAccess.dir_exists_absolute(path):
-		_csv_folder_warning.visible = true
-		return
-	_csv_folder_warning.visible = false
-	EditorSproutyDialogsSettingsManager.set_setting("csv_translations_folder", path)
 
 
 ## Set the path to the CSV with character names translations
@@ -271,6 +318,10 @@ func _on_char_names_csv_path_changed(path: String) -> void:
 
 ## Create a new CSV template file for character names
 func _new_character_names_csv() -> void:
+	var csv_folder = EditorSproutyDialogsSettingsManager.get_setting("csv_translations_folder")
+	if csv_folder.is_empty() or not DirAccess.dir_exists_absolute(csv_folder):
+		_csv_folder_warning.visible = true
+		return
 	var path = EditorSproutyDialogsSettingsManager.get_setting(
 			"csv_translations_folder") + "/" + CHAR_NAMES_CSV_NAME
 
@@ -282,19 +333,25 @@ func _new_character_names_csv() -> void:
 	EditorSproutyDialogsSettingsManager.set_setting("character_names_csv",
 			ResourceSaver.get_resource_id_for_path(path))
 
+#endregion
 
-## Check if the CSV path is valid
-func _valid_csv_path(path: String) -> bool:
-	# Check if the path is empty or doesn't exist
-	if not EditorSproutyDialogsFileUtils.check_valid_extension(path, ["*.csv"]):
-		return false
-	if not path.get_base_dir() == EditorSproutyDialogsSettingsManager.get_setting("csv_translations_folder"):
-		return false
-	return true
+#endregion
 
+#region === Warnings ==========================================================
 
-## Collect the translations from the CSV files
-func _on_collect_translations_pressed() -> void:
-	EditorSproutyDialogsTranslationManager.collect_translations()
+## Update the character names CSV warning visibility
+func _update_character_csv_warning() -> void:
+	_char_csv_warning.visible = (not _valid_csv_path(char_names_csv_field.get_value())
+			and _use_csv_for_names_toggle.is_pressed()
+			and _translate_names_toggle.is_pressed()
+			and _use_csv_files_toggle.is_pressed()
+			and _enable_translations_toggle.is_pressed())
+
+## Update the CSV folder warning visibility
+func _update_csv_folder_warning() -> void:
+	_csv_folder_warning.visible = (not DirAccess.dir_exists_absolute(csv_folder_field.get_value())
+			and not csv_folder_field.get_value().is_empty()
+			and _use_csv_files_toggle.is_pressed()
+			and _enable_translations_toggle.is_pressed())
 
 #endregion

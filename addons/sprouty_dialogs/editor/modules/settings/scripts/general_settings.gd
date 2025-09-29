@@ -59,6 +59,11 @@ func _load_settings() -> void:
 		EditorSproutyDialogsSettingsManager.get_setting("portraits_canvas_layer")
 
 
+## Update settings when the panel is selected
+func update_settings() -> void:
+	pass
+
+
 ## Handle when the continue input action is changed
 func _on_continue_input_action_changed(new_value: String) -> void:
 	EditorSproutyDialogsSettingsManager.set_setting("continue_input_action", new_value)
