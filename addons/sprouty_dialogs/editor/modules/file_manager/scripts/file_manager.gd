@@ -164,9 +164,7 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 		and EditorSproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
 		and EditorSproutyDialogsSettingsManager.get_setting("use_csv"): # Load character names from CSV file
 		name_data = EditorSproutyDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
-		name_data[resource.key_name]["default"] = resource.display_name[resource.key_name]["default"] \
-			if resource.display_name.has(resource.key_name) \
-				and resource.display_name[resource.key_name].has("default") else ""
+		name_data["default"] = resource.display_name["default"] if resource.display_name.has("default") else ""
 	char_editor.load_character(resource, name_data)
 	char_editor.name = "CharacterEditor"
 	remove_child(char_editor)
@@ -243,7 +241,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 			and EditorSproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
 			and EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
 			and EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
-			EditorSproutyDialogsCSVFileManager.save_character_names_on_csv(data.display_name)
+			EditorSproutyDialogsCSVFileManager.save_character_names_on_csv(data.key_name, data.display_name)
 	
 	# Save file on the given path
 	ResourceSaver.save(file_metadata["data"], save_path)

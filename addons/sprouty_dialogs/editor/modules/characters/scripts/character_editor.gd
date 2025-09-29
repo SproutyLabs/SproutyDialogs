@@ -92,7 +92,7 @@ func on_modified():
 func get_character_data() -> SproutyDialogsCharacterData:
 	var data = SproutyDialogsCharacterData.new()
 	data.key_name = _key_name
-	data.display_name = {_key_name: _get_name_translations()}
+	data.display_name = _get_name_translations()
 	data.description = _description_field.text
 	data.dialog_box = ResourceSaver.get_resource_id_for_path(_dialog_box_scene_field.get_value()) if \
 		EditorSproutyDialogsFileUtils.check_valid_extension(_dialog_box_scene_field.get_value(),
@@ -112,10 +112,9 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	# Character name and its translations
 	_set_translation_text_boxes()
 	if name_data.is_empty(): # Load from character data
-		if data.display_name.has(_key_name):
-			_load_name_translations(data.display_name[_key_name])
+		_load_name_translations(data.display_name)
 	else: # Load from provided name CSV data
-		_load_name_translations(name_data[_key_name])
+		_load_name_translations(name_data)
 	_update_translations_state()
 
 	# Text box scene file

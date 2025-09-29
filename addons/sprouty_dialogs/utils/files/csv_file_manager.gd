@@ -160,13 +160,15 @@ static func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 	
 ## Load all dialogs from a CSV file to a dictionary.
 ## Returns a dictionary with the dialogue data as:
-## { dialog_key: {
-##     locale_1: dialog_text,
-##     locale_2: dialog_text,
-##     ...
-##     }
+## [codeblock]
+## { 
+##    dialog_key: {
+##        locale_1: dialog_text,
+##        locale_2: dialog_text,
+##        ...
+##    },
 ##   ...
-## }
+## }[/codeblock]
 static func load_dialogs_from_csv(path: String) -> Dictionary:
 	var data := load_file(path)
 	if data.is_empty(): # If there is no data, an error occurred
@@ -191,7 +193,7 @@ static func load_dialogs_from_csv(path: String) -> Dictionary:
 #region === Character names translations =======================================
 
 ## Save character name translations on CSV file
-static func save_character_names_on_csv(name_data: Dictionary) -> void:
+static func save_character_names_on_csv(key_name: String, name_data: Dictionary) -> void:
 	var char_names_csv = EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
 	if char_names_csv == -1:
 		printerr("[Sprouty Dialogs] Cannot save character name translations, no CSV file set."
@@ -210,36 +212,34 @@ static func save_character_names_on_csv(name_data: Dictionary) -> void:
 		return
 	var csv_file := load_file(path)
 	var header = csv_file[0]
-	var key_name = name_data.keys()[0]
 
 	# Parse name data to an array and sort by header locales
 	var row = [key_name]
 	for i in range(header.size()):
 		if header[i] == "key":
 			continue
-		if name_data[key_name].has(header[i]):
-			row.append(name_data[key_name][header[i]])
+		if name_data.has(header[i]):
+			row.append(name_data[header[i]])
 		else:
 			row.append("EMPTY")
 	
 	# The locales that not exist in header are added to the end of the row
-	for i in range(name_data[key_name].size()):
-		if not header.has(name_data[key_name].keys()[i]) and name_data[key_name].keys()[i] != "default":
-			row.append(name_data[key_name].values()[i])
-			header.append(name_data[key_name].keys()[i])
+	for i in range(name_data.size()):
+		if not header.has(name_data.keys()[i]) and name_data.keys()[i] != "default":
+			row.append(name_data.values()[i])
+			header.append(name_data.keys()[i])
 
 	update_row(path, header, row)
 
 
 ## Load character name translations from a CSV file to a dictionary.
 ## Returns a dictionary with the character names as:
-## { key_name: {
-## 		{ locale_1: character_name_1,
-##  	  locale_2: character_name_2,
-## 		  ...
-## 		}
-##    }
-## }
+## [codeblock]
+## { 
+##    locale_1: character_name_1,
+##    locale_2: character_name_2,
+##    ...
+## }[/codeblock]
 static func load_character_names_from_csv(key_name: String) -> Dictionary:
 	var char_names_csv = EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
 	if char_names_csv == -1:
@@ -270,16 +270,16 @@ static func load_character_names_from_csv(key_name: String) -> Dictionary:
 	
 	if row.is_empty():
 		# If the key is not found, return an empty template dictionary
-		var dict = {key_name: {}}
+		var dict = {}
 		for i in range(data[0].size() - 1):
-			dict[key_name][data[0][i + 1]] = ""
+			dict[data[0][i + 1]] = ""
 		return dict
 	
 	# Get the names and parse to a dictionary
 	var names = row[0].slice(1, row[0].size())
-	var dict = {key_name: {}}
+	var dict = {}
 	for i in range(names.size()):
-		dict[key_name][data[0][i + 1]] = names[i]
+		dict[data[0][i + 1]] = names[i]
 	
 	return dict
 

@@ -48,18 +48,18 @@ static func get_translated_character_name(key_name: String,
 			if not character_data:
 				printerr("[Sprouty Dialogs] No character data found for character: " + key_name)
 				return key_name
-			if not character_data.display_name[key_name].has(locale):
+			if not character_data.display_name.has(locale):
 				printerr("[Sprouty Dialogs] No translation found for character '"
 					+ key_name + "' in locale: " + locale + ". Using default display name instead.")
 				locale = "default"
 			 # Otherwise, get the name from the dialog resource
-			return character_data.display_name[key_name][locale]
+			return character_data.display_name[locale]
 	else:
 		if not character_data:
 			printerr("[Sprouty Dialogs] No character data found for character: " + key_name)
 			return key_name
 		# If translation is not enabled, return the default display name
-		return character_data.display_name[key_name]["default"]
+		return character_data.display_name["default"]
 
 
 #region === Collect Translations ===============================================
