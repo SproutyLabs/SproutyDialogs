@@ -112,8 +112,9 @@ func on_locales_changed() -> void:
 func on_translation_enabled_changed(enabled: bool) -> void:
 	_translations_enabled = enabled
 	if enabled: on_locales_changed()
-	%DefaultLocaleLabel.visible = enabled
-	_translation_boxes.visible = enabled
+	else: # Hide translation boxes and default locale label
+		%DefaultLocaleLabel.visible = false
+		_translation_boxes.visible = false
 
 
 ## Set translation text boxes
@@ -131,7 +132,7 @@ func _set_translation_text_boxes() -> void:
 			)
 		)
 	%DefaultLocaleLabel.visible = _translations_enabled and _default_locale != ""
-	_translation_boxes.visible = _translations_enabled
+	_translation_boxes.visible = _translations_enabled and locales.size() > 1
 
 
 ## Update the option position index

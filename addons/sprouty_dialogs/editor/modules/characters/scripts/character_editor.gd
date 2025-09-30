@@ -78,6 +78,7 @@ func _ready() -> void:
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
 
+	await get_tree().process_frame # Wait a frame to ensure settings are loaded
 	on_translation_enabled_changed( # Enable/disable translation section
 			EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
 		)
@@ -176,8 +177,9 @@ func on_locales_changed() -> void:
 func on_translation_enabled_changed(enabled: bool) -> void:
 	_translations_enabled = enabled
 	if enabled: on_locales_changed()
-	_name_default_locale_label.visible = enabled
-	_name_translations_container.visible = enabled
+	else: # Hide translation boxes and default locale label
+		_name_default_locale_label.visible = false
+		_name_translations_container.visible = false
 
 
 ## Update the translations state based on project settings
@@ -211,7 +213,10 @@ func _load_name_translations(translations: Dictionary) -> void:
 	if _translations_enabled and translations.has(_default_locale):
 		_name_default_locale_field.text = translations[_default_locale]
 	else: # Use default if translations disabled or no default locale translation
-		_name_default_locale_field.text = translations["default"]
+		if translations.has("default"):
+			_name_default_locale_field.text = translations["default"]
+		else:
+			_name_default_locale_field.text = ""
 	_name_translations_container.load_translations_text(translations)
 
 
@@ -230,7 +235,7 @@ func _set_translation_text_boxes() -> void:
 			)
 		)
 	_name_default_locale_label.visible = _translations_enabled and _default_locale != ""
-	_name_translations_container.visible = _translations_enabled
+	_name_translations_container.visible = _translations_enabled and locales.size() > 1
 
 #endregion
 
