@@ -57,7 +57,7 @@ func _ready():
 ## Get the portrait data from the editor
 func get_portrait_data() -> SproutyDialogsPortraitData:
 	var data = SproutyDialogsPortraitData.new()
-	data.portrait_scene = ResourceSaver.get_resource_id_for_path(_portrait_scene_field.get_value()) if \
+	data.portrait_scene = ResourceSaver.get_resource_id_for_path(_portrait_scene_field.get_value(), true) if \
 		EditorSproutyDialogsFileUtils.check_valid_extension(_portrait_scene_field.get_value(),
 			_portrait_scene_field.file_filters) else -1
 	data.export_overrides = _portrait_export_properties.get_export_overrides()
@@ -83,17 +83,17 @@ func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 	set_portrait_name(name)
 
 	# Set the portrait scene
-	if data.portrait_scene == -1:
+	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(data.portrait_scene):
+		if data.portrait_scene != -1:
+			printerr("[Sprouty Dialogs] Portrait scene not found for portrait '"
+					+ name + "'. Check if the scene file was deleted.")
 		_portrait_scene_field.set_value("")
 		_to_portrait_scene_button.visible = false
 		_new_portrait_scene_button.visible = true
 		_switch_scene_preview("")
-	else: # If the text box scene is set, load it
-		if not ResourceLoader.exists(ResourceUID.get_id_path(data.portrait_scene)):
-			printerr("[Sprouty Dialogs] Portrait scene file not found: ", data.portrait_scene)
-			return
+	else:
 		_portrait_scene_field.set_value(ResourceUID.get_id_path(data.portrait_scene))
-
+	
 	_portrait_export_properties.set_export_overrides(data.export_overrides)
 	
 	# Check if the scene file is valid and set the preview
@@ -203,11 +203,15 @@ func _new_portrait_scene(scene_path: String) -> void:
 	var default_uid = EditorSproutyDialogsSettingsManager.get_setting("default_portrait_scene")
 	var default_path = ""
 	
-	if default_uid == -1: # If no default portrait is set
+	# If no default portrait scene is set or the resource does not exist, use the built-in default
+	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(default_uid):
+		printerr("[Sprouty Dialogs] No default portrait scene found." \
+				+" Check that the default portrait scene is set in Settings > General" \
+				+" plugin tab, and that the scene resource exists. Using built-in default instead.")
 		default_path = EditorSproutyDialogsSettingsManager.DEFAULT_PORTRAIT_PATH
 		# Use and set the setting to the built-in default
 		EditorSproutyDialogsSettingsManager.set_setting("default_portrait_scene",
-				ResourceSaver.get_resource_id_for_path(default_path))
+				ResourceSaver.get_resource_id_for_path(default_path, true))
 	else: # Use the user-defined default portrait scene
 		default_path = ResourceUID.get_id_path(default_uid)
 	

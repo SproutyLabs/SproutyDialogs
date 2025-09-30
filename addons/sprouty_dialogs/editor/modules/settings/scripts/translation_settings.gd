@@ -94,13 +94,16 @@ func _load_settings() -> void:
 	csv_folder_field.set_value(
 		EditorSproutyDialogsSettingsManager.get_setting("csv_translations_folder")
 	)
-	if EditorSproutyDialogsSettingsManager.get_setting("character_names_csv") == -1:
+	var char_names_csv = EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
+	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
+		if char_names_csv != -1:
+			printerr("[Sprouty Dialogs] Character names CSV file not found." \
+					+" Check that the character names CSV is set in Settings > Translation" \
+					+" plugin tab, and that the CSV file exists.")
 		char_names_csv_field.set_value("") # No CSV set
 	else:
-		char_names_csv_field.set_value(ResourceUID.get_id_path(
-				EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
-			)
-		)
+		char_names_csv_field.set_value(ResourceUID.get_id_path(char_names_csv))
+	
 	_update_csv_folder_warning()
 	_update_character_csv_warning()
 	_set_locales_on_dropdown(default_locale_dropdown, true)
@@ -112,14 +115,16 @@ func _load_settings() -> void:
 func update_settings() -> void:
 	# If the CSV character names warning is visible, reset the path
 	if _char_csv_warning.visible:
-		if EditorSproutyDialogsSettingsManager.get_setting("character_names_csv") == -1:
-			char_names_csv_field.set_value("")
+		var char_names_csv = EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
+		if not EditorSproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
+			printerr("[Sprouty Dialogs] Character names CSV file not found." \
+					+" Check that the character names CSV is set in Settings > Translation" \
+					+" plugin tab, and that the CSV file exists.")
+			char_names_csv_field.set_value("") # No CSV set
 		else:
-			char_names_csv_field.set_value(ResourceUID.get_id_path(
-					EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
-				)
-			)
-		_char_csv_warning.visible = false
+			char_names_csv_field.set_value(ResourceUID.get_id_path(char_names_csv))
+			_char_csv_warning.visible = false
+	
 	 # If the CSV folder warning is visible, reset the path
 	if _csv_folder_warning.visible:
 		csv_folder_field.set_value(
@@ -313,7 +318,7 @@ func _on_char_names_csv_path_changed(path: String) -> void:
 		return
 	_char_csv_warning.visible = false
 	EditorSproutyDialogsSettingsManager.set_setting("character_names_csv",
-			ResourceSaver.get_resource_id_for_path(path))
+			ResourceSaver.get_resource_id_for_path(path, true))
 
 
 ## Create a new CSV template file for character names
@@ -331,7 +336,7 @@ func _new_character_names_csv() -> void:
 	_char_csv_warning.visible = false
 	char_names_csv_field.set_value(path)
 	EditorSproutyDialogsSettingsManager.set_setting("character_names_csv",
-			ResourceSaver.get_resource_id_for_path(path))
+			ResourceSaver.get_resource_id_for_path(path, true))
 
 #endregion
 

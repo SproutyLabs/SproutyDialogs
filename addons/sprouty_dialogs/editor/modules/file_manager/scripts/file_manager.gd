@@ -128,7 +128,7 @@ func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> GraphEdit
 	# Load dialogs from CSV file if translation is enabled
 	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
 		and EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
-		if ResourceUID.has_id(resource.csv_translation_file):
+		if EditorSproutyDialogsFileUtils.check_valid_uid_path(resource.csv_translation_file):
 			dialogs = EditorSproutyDialogsCSVFileManager.load_dialogs_from_csv(
 					ResourceUID.get_id_path(resource.csv_translation_file))
 	graph.load_graph_data(resource, dialogs)
@@ -183,7 +183,7 @@ func load_file(path: String) -> void:
 			var graph = _new_graph_from_resource(resource)
 			var csv_path_uid = resource.csv_translation_file
 			var csv_path = ""
-			if csv_path_uid != -1:
+			if EditorSproutyDialogsFileUtils.check_valid_uid_path(csv_path_uid):
 				csv_path = ResourceUID.get_id_path(csv_path_uid)
 			_file_list.new_file_item(path, resource, graph, csv_path)
 			request_to_switch_tab.emit(0)
@@ -225,7 +225,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		# Save the CSV file with the dialogs
 		if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
 			and EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
-			if ResourceUID.has_id(data.csv_translation_file):
+			if EditorSproutyDialogsFileUtils.check_valid_uid_path(data.csv_translation_file):
 				EditorSproutyDialogsCSVFileManager.save_dialogs_on_csv(
 					graph_editor_data["dialogs"],
 					ResourceUID.get_id_path(data.csv_translation_file)

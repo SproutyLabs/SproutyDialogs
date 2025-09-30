@@ -95,7 +95,7 @@ func get_character_data() -> SproutyDialogsCharacterData:
 	data.key_name = _key_name
 	data.display_name = _get_name_translations()
 	data.description = _description_field.text
-	data.dialog_box = ResourceSaver.get_resource_id_for_path(_dialog_box_scene_field.get_value()) if \
+	data.dialog_box = ResourceSaver.get_resource_id_for_path(_dialog_box_scene_field.get_value(), true) if \
 		EditorSproutyDialogsFileUtils.check_valid_extension(_dialog_box_scene_field.get_value(),
 			_dialog_box_scene_field.file_filters) else -1
 	data.portrait_on_dialog_box = _portrait_on_dialog_box
@@ -118,15 +118,15 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 		_load_name_translations(name_data)
 	_update_translations_state()
 
-	# Text box scene file
-	if data.dialog_box == -1:
-		_dialog_box_scene_field.set_value("")
+	# Dialog box scene file
+	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(data.dialog_box):
+		if data.dialog_box != -1:
+			printerr("[Sprouty Dialogs] Dialog box scene not found for character '"
+					+ _key_name + "'. Check if the scene file was deleted.")
 		_to_dialog_box_scene_button.visible = false
 		_new_dialog_box_scene_button.visible = true
-	else: # If the text box scene is set, load it
-		if not ResourceLoader.exists(ResourceUID.get_id_path(data.dialog_box)):
-			printerr("[Sprouty Dialogs] Text box scene file not found: ", data.dialog_box)
-			return
+		_dialog_box_scene_field.set_value("")
+	else:
 		_dialog_box_scene_field.set_value(ResourceUID.get_id_path(data.dialog_box))
 	
 	if EditorSproutyDialogsFileUtils.check_valid_extension(
@@ -271,11 +271,15 @@ func _on_new_dialog_box_path_selected(path: String) -> void:
 	var default_uid = EditorSproutyDialogsSettingsManager.get_setting("default_dialog_box")
 	var default_path = ""
 	
-	if default_uid == -1: # If no default dialog box is set
+	# If no default dialog box is set or the resource does not exist, use the built-in default
+	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(default_uid):
+		printerr("[Sprouty Dialogs] No default dialog box scene found." \
+				+" Check that the default dialog box is set in Settings > General" \
+				+" plugin tab, and that the scene resource exists. Using built-in default instead.")
 		default_path = EditorSproutyDialogsSettingsManager.DEFAULT_DIALOG_BOX_PATH
 		# Use and set the setting to the built-in default
 		EditorSproutyDialogsSettingsManager.set_setting("default_dialog_box",
-				ResourceSaver.get_resource_id_for_path(default_path))
+				ResourceSaver.get_resource_id_for_path(default_path, true))
 	else: # Use the user-defined default dialog box
 		default_path = ResourceUID.get_id_path(default_uid)
 	
@@ -295,7 +299,7 @@ func _on_new_dialog_box_path_selected(path: String) -> void:
 	ResourceSaver.save(packed_scene, path)
 	new_scene.queue_free()
 
-	# Set the text box scene path
+	# Set the dialog box scene path
 	_dialog_box_scene_field.set_value(path)
 	_to_dialog_box_scene_button.visible = true
 	_new_dialog_box_scene_button.visible = false

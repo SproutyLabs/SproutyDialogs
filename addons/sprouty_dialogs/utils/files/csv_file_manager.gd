@@ -195,21 +195,13 @@ static func load_dialogs_from_csv(path: String) -> Dictionary:
 ## Save character name translations on CSV file
 static func save_character_names_on_csv(key_name: String, name_data: Dictionary) -> void:
 	var char_names_csv = EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
-	if char_names_csv == -1:
+	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
 		printerr("[Sprouty Dialogs] Cannot save character name translations, no CSV file set."
 				+" Please set 'Character names CSV' in Settings > Characters.")
-		return
-	if not ResourceUID.has_id(char_names_csv):
-		printerr("[Sprouty Dialogs] Cannot load character names translations, no valid CSV file set."
-				+" Please set a valid 'Character names CSV' in Settings > Characters.")
 		return
 	
 	# Load the CSV file
 	var path: String = ResourceUID.get_id_path(char_names_csv)
-	if not FileAccess.file_exists(path):
-		printerr("[Sprouty Dialogs] Cannot load character names translations, CSV file: "
-				+ path + " does not exist. Please set a valid 'Character names CSV' in Settings > Characters.")
-		return
 	var csv_file := load_file(path)
 	var header = csv_file[0]
 
@@ -242,21 +234,13 @@ static func save_character_names_on_csv(key_name: String, name_data: Dictionary)
 ## }[/codeblock]
 static func load_character_names_from_csv(key_name: String) -> Dictionary:
 	var char_names_csv = EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
-	if char_names_csv == -1:
+	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
 		printerr("[Sprouty Dialogs] Cannot load character names translations, no CSV file set."
 				+" Please set 'Character names CSV' in Settings > Characters.")
-		return {}
-	if not ResourceUID.has_id(char_names_csv):
-		printerr("[Sprouty Dialogs] Cannot load character names translations, no valid CSV file set."
-				+" Please set a valid 'Character names CSV' in Settings > Characters.")
 		return {}
 	
 	# Load the CSV file
 	var path: String = ResourceUID.get_id_path(char_names_csv)
-	if not FileAccess.file_exists(path):
-		printerr("[Sprouty Dialogs] Cannot load character names translations, CSV file: "
-				+ path + " does not exist. Please set a valid 'Character names CSV' in Settings > Characters.")
-		return {}
 	var data := load_file(path)
 	if data.is_empty():
 		printerr("[Sprouty Dialogs] Cannot load character names from CSV file.")

@@ -41,3 +41,9 @@ static func check_valid_extension(path: String, extensions: Array) -> bool:
 		if path.ends_with(ext.replace("*", "")):
 			return true
 	return false
+
+
+## Check if a UID has a valid resource path associated with it
+static func check_valid_uid_path(uid: int) -> bool:
+	return uid != -1 and ResourceUID.has_id(uid) \
+			and ResourceLoader.exists(ResourceUID.get_id_path(uid))

@@ -170,7 +170,7 @@ func get_graph_data() -> Dictionary:
 				# Add character to the reference dictionary
 				if character != "" and not dict.characters[start_id].has(character):
 						dict.characters[start_id][character] = \
-							ResourceSaver.get_resource_id_for_path(child.get_character_path())
+							ResourceSaver.get_resource_id_for_path(child.get_character_path(), true)
 			
 			# Get option dialogs from options nodes
 			if child.node_type == "options_node":
@@ -243,7 +243,7 @@ func load_graph_data(data: SproutyDialogsDialogueData, dialogs: Dictionary) -> v
 				var character_name = node_data["character"]
 				if character_name != "":
 					var character_uid = characters[dialogue_id][character_name]
-					if character_uid != -1:
+					if EditorSproutyDialogsFileUtils.check_valid_uid_path(character_uid):
 						new_node.load_character(ResourceUID.get_id_path(character_uid))
 						new_node.load_portrait(node_data["portrait"])
 				

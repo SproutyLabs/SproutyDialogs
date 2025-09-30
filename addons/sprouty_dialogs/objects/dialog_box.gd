@@ -120,13 +120,19 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	# Connect meta clicked signal to handle meta tags
+	if not _dialog_display:
+		printerr("[Sprouty Dialogs] Dialog display is not set. Please set the " \
+				+"_dialog_display property on the inspector.")
+		return
 	if not _dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
 		_dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
 	
+	_dialog_display.bbcode_enabled = true
+
 	if _option_template:
 		_option_template = _option_template.duplicate()
-	_dialog_display.bbcode_enabled = true
-	_continue_indicator.visible = false
+	if _continue_indicator:
+		_continue_indicator.visible = false
 	if _options_container:
 		_options_container.visible = false
 
@@ -382,7 +388,8 @@ func _add_tags_to_sentence(sentence: String, tags: Array) -> String:
 func _display_new_sentence(sentence: String) -> void:
 	_dialog_display.text = sentence
 	_dialog_display.visible_characters = 0
-	_continue_indicator.visible = false
+	if _continue_indicator:
+		_continue_indicator.visible = false
 	_display_completed = false
 	_type_timer.start()
 
@@ -398,7 +405,8 @@ func _on_type_timer_timeout() -> void:
 
 ## When the dialog finishes displaying a text
 func _on_display_completed() -> void:
-	_continue_indicator.visible = true
+	if _continue_indicator:
+		_continue_indicator.visible = true
 	_display_completed = true
 	dialog_typing_ends.emit(_current_character)
 

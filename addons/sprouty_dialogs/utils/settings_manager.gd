@@ -105,9 +105,9 @@ static func initialize_default_settings() -> void:
 	ProjectSettings.set_setting(_settings_paths["continue_input_action"],
 			"dialogs_continue_action")
 	ProjectSettings.set_setting(_settings_paths["default_dialog_box"],
-			ResourceSaver.get_resource_id_for_path(DEFAULT_DIALOG_BOX_PATH))
+			ResourceSaver.get_resource_id_for_path(DEFAULT_DIALOG_BOX_PATH, true))
 	ProjectSettings.set_setting(_settings_paths["default_portrait_scene"],
-			ResourceSaver.get_resource_id_for_path(DEFAULT_PORTRAIT_PATH))
+			ResourceSaver.get_resource_id_for_path(DEFAULT_PORTRAIT_PATH, true))
 	ProjectSettings.set_setting(_settings_paths["dialog_box_canvas_layer"], 2)
 	ProjectSettings.set_setting(_settings_paths["portraits_canvas_layer"], 1)
 

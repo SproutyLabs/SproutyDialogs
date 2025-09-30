@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://d0js6iit3n6uq" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/general_settings.gd" id="1_il2y2"]
 [ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="2_0s7dw"]
-[ext_resource type="Texture2D" uid="uid://c30bvh5pxcwpi" path="res://addons/sprouty_dialogs/editor/editor/icons/cursor-arrow.svg" id="2_kixug"]
+[ext_resource type="Texture2D" uid="uid://c30bvh5pxcwpi" path="res://addons/sprouty_dialogs/editor/icons/cursor-arrow.svg" id="2_kixug"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="3_hokrq"]
-[ext_resource type="Texture2D" uid="uid://t7ujqvnbwl36" path="res://addons/sprouty_dialogs/editor/editor/icons/settings.svg" id="4_kixug"]
-[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/editor/editor/icons/text_editor/image.svg" id="5_kixug"]
+[ext_resource type="Texture2D" uid="uid://t7ujqvnbwl36" path="res://addons/sprouty_dialogs/editor/icons/settings.svg" id="4_kixug"]
+[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/editor/icons/text_editor/image.svg" id="5_kixug"]
 
 [node name="GeneralSettings" type="HSplitContainer"]
 anchors_preset = 15
@@ -74,10 +74,19 @@ layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Defaults"
 
+[node name="DefaultDialogBoxWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=tomato]Please select a valid scene file for the default dialog box."
+fit_content = true
+
 [node name="DefaultDialogBox" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Default dialog box that will be displayed when no character is selected.
-It will also be used as a template when creating a new dialog box for a character."
+It will also be used as a template when creating a new dialog box for a character.
+The root of the scene must be a node inherited from the DialogBox class."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
 layout_mode = 2
@@ -92,9 +101,18 @@ _open_directory = false
 _placeholder_text = "Select a dialog box scene..."
 file_filters = PackedStringArray("*.tscn")
 
+[node name="DefaultPortraitWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=tomato]Please select a valid scene file for the default portrait scene."
+fit_content = true
+
 [node name="DefaultPortraitScene" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Default portrait scene that will be used as a template when creating a new portrait for a character."
+tooltip_text = "Default portrait scene that will be used as a template when creating a new portrait for a character.
+The root of the scene must be a node inherited from the DialogPortrait class."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
 layout_mode = 2

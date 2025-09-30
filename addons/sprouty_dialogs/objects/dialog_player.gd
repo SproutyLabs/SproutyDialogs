@@ -166,16 +166,17 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		# In editor, check if the dialogue data resource exists
-		if _dialog_data_uid != -1 and not ResourceUID.has_id(_dialog_data_uid):
-			printerr("[Sprouty Dialogs] Dialog Player '" + name + "' cannot find the dialogue data resource '" +
-				_dialog_file_name + "'. Check if it was deleted.")
+		if not EditorSproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
+			printerr("[Sprouty Dialogs] Dialog Player '" + name
+				+"' cannot find the dialogue data resource '" \
+				+ _dialog_file_name + ".tres'. Check if it was deleted.")
 			_dialog_data = null
 			_dialog_data_uid = -1
 			_dialog_file_name = ""
 			_start_id = "(Select a dialog)"
 			_starts_ids = []
 	else: # In game, load the dialogue data resources
-		if not _dialog_data and _dialog_data_uid != -1 and ResourceUID.has_id(_dialog_data_uid):
+		if not _dialog_data and EditorSproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
 			_dialog_data = load(ResourceUID.get_id_path(_dialog_data_uid))
 			_starts_ids = _dialog_data.get_start_ids()
 		if _starts_ids.has(_start_id):
@@ -434,13 +435,14 @@ func stop() -> void:
 	# Exit all active portraits
 	for char in _portraits_instances.keys():
 		for portrait in _portraits_instances[char].values():
-			if portrait.is_visible():
+			if portrait and portrait.is_visible():
 				await portrait.on_portrait_exit()
 	
 	# Free all portraits displayed
 	for char in _portraits_instances.keys():
 		for portrait in _portraits_instances[char].values():
-			portrait.get_parent().queue_free()
+			if portrait:
+				portrait.get_parent().queue_free()
 	
 	if _current_dialog_box: # If there is a current dialog box, stop it
 		await _current_dialog_box.stop_dialog(true)
@@ -568,16 +570,19 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 		portrait_name, _portrait_parents.get(character_name, null), _current_dialog_box)
 		_portraits_instances[character_name][portrait_name] = _current_portrait
 	
-	_current_portrait.set_portrait()
+	if _current_portrait:
+		_current_portrait.set_portrait()
 	
 	# Hide all other portraits of the character
 	for portrait in _portraits_instances[character_name].values():
+		if not portrait:
+			continue
 		if portrait != _current_portrait:
 			portrait.hide()
 		else:
 			portrait.show()
 	
-	if is_joining: # Entry action if the character is joining the dialog
+	if is_joining and _current_portrait: # Entry action if the character is joining the dialog
 		await _current_portrait.on_portrait_entry()
 
 
