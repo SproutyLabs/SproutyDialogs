@@ -12,9 +12,6 @@ extends HSplitContainer
 ## Triggered when something is modified
 signal modified
 
-## New scene dialog
-@onready var new_scene_dialog: FileDialog = $NewSceneDialog
-
 ## Label with the key name of the character
 @onready var _key_name_label: Label = %KeyNameLabel
 ## Label with the default locale for display name
@@ -32,6 +29,8 @@ signal modified
 @onready var _to_dialog_box_scene_button: Button = %ToDialogBoxSceneButton
 ## Dialog box new scene button
 @onready var _new_dialog_box_scene_button: Button = %NewDialogBoxSceneButton
+## New dialog box scene dialog
+@onready var _new_dialog_box_dialog: FileDialog = $NewDialogBoxDialog
 
 ## Portrait tree
 @onready var _portrait_tree: Tree = %PortraitTree
@@ -68,8 +67,11 @@ func _ready() -> void:
 	_dialog_box_scene_field.path_changed.connect(_on_dialog_box_scene_path_changed)
 	_to_dialog_box_scene_button.pressed.connect(_on_dialog_box_scene_button_pressed)
 	_new_dialog_box_scene_button.pressed.connect(_on_new_dialog_box_scene_pressed)
+	_new_dialog_box_dialog.file_selected.connect(_new_dialog_box)
 	%PortraitOnDialogBoxToggle.toggled.connect(_on_portrait_dialog_box_toggled)
+	_portrait_tree.show_portrait_editor_panel.connect(_show_portrait_editor_panel)
 	_portrait_tree.portrait_item_selected.connect(_on_portrait_selected)
+	_portrait_tree.modified.connect(on_modified)
 
 	# Set icons for buttons and fields
 	_to_dialog_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
@@ -137,7 +139,7 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	%PortraitOnDialogBoxToggle.button_pressed = _portrait_on_dialog_box
 
 	# Portraits
-	_portrait_tree.load_portraits_data(data.portraits)
+	_portrait_tree.load_portraits_data(data.portraits, self)
 
 
 ## Open a scene in the editor
@@ -259,15 +261,13 @@ func _on_dialog_box_scene_button_pressed() -> void:
 
 ## Create a new dialog box scene and open it in the editor
 func _on_new_dialog_box_scene_pressed() -> void:
-	if not new_scene_dialog.is_connected("file_selected", _on_new_dialog_box_path_selected):
-		new_scene_dialog.file_selected.connect(_on_new_dialog_box_path_selected)
-	new_scene_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path("text_box_files"))
-	new_scene_dialog.get_line_edit().text = "new_text_box.tscn"
-	new_scene_dialog.popup_centered()
+	_new_dialog_box_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path("dialog_box_files"))
+	_new_dialog_box_dialog.get_line_edit().text = "new_dialog_box.tscn"
+	_new_dialog_box_dialog.popup_centered()
 
 
-## Create a new text box scene file
-func _on_new_dialog_box_path_selected(path: String) -> void:
+## Create a new dialog box scene file
+func _new_dialog_box(path: String) -> void:
 	var default_uid = EditorSproutyDialogsSettingsManager.get_setting("default_dialog_box")
 	var default_path = ""
 	
@@ -309,7 +309,7 @@ func _on_new_dialog_box_path_selected(path: String) -> void:
 	on_modified()
 
 	# Set the recent file path
-	EditorSproutyDialogsFileUtils.set_recent_file_path("text_box_files", path)
+	EditorSproutyDialogsFileUtils.set_recent_file_path("dialog_box_files", path)
 
 
 ## Handle the text box portrait display toggle
@@ -322,7 +322,7 @@ func _on_portrait_dialog_box_toggled(toggled_on: bool) -> void:
 #region === Portrait Tree ======================================================
 
 ## Show or hide the portrait settings panel
-func show_portrait_editor_panel(show: bool) -> void:
+func _show_portrait_editor_panel(show: bool) -> void:
 	_portrait_empty_panel.visible = not show
 	_portrait_editor_container.visible = show
 
@@ -341,6 +341,8 @@ func _on_add_portrait_button_pressed() -> void:
 	var item: TreeItem = _portrait_tree.new_portrait_item(
 			"New Portrait", portrait_editor.get_portrait_data(), parent, portrait_editor
 		)
+	portrait_editor.request_open_scene_in_editor.connect(open_scene_in_editor)
+	portrait_editor.modified.connect(on_modified)
 	remove_child(portrait_editor)
 	item.set_editable(0, true)
 	item.select(0)
@@ -376,9 +378,9 @@ func _on_portrait_selected(item: TreeItem) -> void:
 		return # No item selected
 	
 	if item.get_metadata(0).has("group"):
-		show_portrait_editor_panel(false)
+		_show_portrait_editor_panel(false)
 	else:
-		show_portrait_editor_panel(true)
+		_show_portrait_editor_panel(true)
 	_switch_current_portrait(item)
 
 

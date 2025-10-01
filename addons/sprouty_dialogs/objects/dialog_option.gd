@@ -29,6 +29,7 @@ var option_index: int = 0
 func _ready() -> void:
 	# Connect the button pressed signal
 	pressed.connect(_on_option_selected)
+	visible = false
 
 
 ## Return the text of the option

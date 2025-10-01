@@ -9,10 +9,10 @@ extends VBoxContainer
 ## various properties and settings.
 # -----------------------------------------------------------------------------
 
-## Character editor reference
-@onready var _character_editor: Container = find_parent("CharacterEditor")
-## Character editor new scene dialog
-@onready var _new_scene_dialog: FileDialog = _character_editor.new_scene_dialog if _character_editor else null
+## Emitted when the portrait is modified
+signal modified
+## Emitted to request opening a scene in the editor
+signal request_open_scene_in_editor(scene_path: String)
 
 ## Portrait name label
 @onready var _portrait_name: Label = $Title/PortraitName
@@ -25,6 +25,8 @@ extends VBoxContainer
 @onready var _to_portrait_scene_button: Button = %ToPortraitSceneButton
 ## Button to create a new portrait scene
 @onready var _new_portrait_scene_button: Button = %NewPortraitSceneButton
+## New portrait scene dialog
+@onready var _new_portrait_scene_dialog: FileDialog = $NewPortraitSceneDialog
 
 ## Exported properties section
 @onready var _portrait_export_properties: Container = %PortraitProperties
@@ -41,6 +43,7 @@ extends VBoxContainer
 func _ready():
 	_to_portrait_scene_button.button_down.connect(_on_to_portrait_scene_button_pressed)
 	_new_portrait_scene_button.button_down.connect(_on_new_portrait_scene_button_pressed)
+	_new_portrait_scene_dialog.file_selected.connect(_new_portrait_scene)
 	_portrait_scene_field.path_changed.connect(_on_portrait_scene_path_changed)
 	_portrait_export_properties.property_changed.connect(_on_export_property_changed)
 
@@ -184,18 +187,16 @@ func _on_portrait_scene_path_changed(path: String) -> void:
 		_to_portrait_scene_button.visible = true
 		_new_portrait_scene_button.visible = false
 		_switch_scene_preview(path)
-		_character_editor.on_modified()
+		modified.emit()
 	else:
 		printerr("[Sprouty Dialogs] File " + path + " not found.")
 
 
 ## Select a path to create a new portrait scene file
 func _on_new_portrait_scene_button_pressed() -> void:
-	if not _new_scene_dialog.is_connected("file_selected", _new_portrait_scene):
-		_new_scene_dialog.connect("file_selected", _new_portrait_scene)
-	_new_scene_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path("portrait_files"))
-	_new_scene_dialog.get_line_edit().text = "new_portrait.tscn"
-	_new_scene_dialog.popup_centered()
+	_new_portrait_scene_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path("portrait_files"))
+	_new_portrait_scene_dialog.get_line_edit().text = "new_portrait.tscn"
+	_new_portrait_scene_dialog.popup_centered()
 
 
 ## Create a new portrait scene file
@@ -233,12 +234,13 @@ func _new_portrait_scene(scene_path: String) -> void:
 
 	# Set the field and preview to the new scene file
 	_portrait_scene_field.set_value(scene_path)
+	_new_portrait_scene_button.visible = false
 	_to_portrait_scene_button.visible = true
 	_switch_scene_preview(scene_path)
 
 	# Open the new scene in the editor
-	_character_editor.open_scene_in_editor(scene_path)
-	_character_editor.on_modified()
+	request_open_scene_in_editor.emit(scene_path)
+	modified.emit()
 
 	# Set the recent file path
 	EditorSproutyDialogsFileUtils.set_recent_file_path("portrait_files", scene_path)
@@ -246,7 +248,10 @@ func _new_portrait_scene(scene_path: String) -> void:
 
 ## Open the portrait scene in the editor
 func _on_to_portrait_scene_button_pressed() -> void:
-	_character_editor.open_scene_in_editor(_portrait_scene_field.get_value())
+	if _portrait_scene_field.get_value() != "":
+		request_open_scene_in_editor.emit(_portrait_scene_field.get_value())
+	else:
+		printerr("[Sprouty Dialogs] No scene file selected.")
 
 #endregion
 
@@ -271,7 +276,7 @@ func _on_scale_x_value_changed(value: float) -> void:
 	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
 		_portrait_scale_section.get_node("YField").value = value
 		_preview_container.scale.y = value
-	_character_editor.on_modified()
+	modified.emit()
 
 ## Update the image scale
 func _on_scale_y_value_changed(value: float) -> void:
@@ -279,25 +284,25 @@ func _on_scale_y_value_changed(value: float) -> void:
 	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
 		_portrait_scale_section.get_node("XField").value = value
 		_preview_container.scale.x = value
-	_character_editor.on_modified()
+	modified.emit()
 
 
 ## Update the image offset position
 func _on_offset_x_value_changed(value: float) -> void:
 	_preview_container.position.x = value
-	_character_editor.on_modified()
+	modified.emit()
 
 
 ## Update the image offset position
 func _on_offset_y_value_changed(value: float) -> void:
 	_preview_container.position.y = value
-	_character_editor.on_modified()
+	modified.emit()
 
 
 ## Update the image rotation
 func _on_rotation_value_changed(value: float) -> void:
 	_preview_container.rotation_degrees = value
-	_character_editor.on_modified()
+	modified.emit()
 
 
 ## Update the image mirroring
@@ -306,7 +311,7 @@ func _on_mirror_check_box_toggled(toggled_on: bool) -> void:
 		_preview_container.scale.x = - abs(_preview_container.scale.x)
 	else:
 		_preview_container.scale.x = abs(_preview_container.scale.x)
-	_character_editor.on_modified()
+	modified.emit()
 
 #endregion
 
@@ -319,6 +324,6 @@ func _on_export_property_changed(name: String, value: Variant) -> void:
 	# Update the portrait preview scene
 	if _preview_container.get_child(0).has_method("set_portrait"):
 			_preview_container.get_child(0).set_portrait()
-	_character_editor.on_modified()
+	modified.emit()
 
 #endregion

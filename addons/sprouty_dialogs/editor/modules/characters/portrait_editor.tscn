@@ -5,9 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://j23crfderjkx" path="res://addons/sprouty_dialogs/editor/icons/character.svg" id="2_fad05"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="3_6ncm1"]
 [ext_resource type="Script" uid="uid://r4em5768hrs2" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/portrait_export_properties.gd" id="4_ljfx6"]
-[ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/sprouty_dialogs/editor/editor/theme/expander_subpanel_highlight.tres" id="5_mmsn6"]
+[ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/sprouty_dialogs/editor/theme/expander_subpanel_highlight.tres" id="5_mmsn6"]
 
-[sub_resource type="DPITexture" id="DPITexture_6bto2"]
+[sub_resource type="DPITexture" id="DPITexture_v013n"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -55,7 +55,7 @@ text = "Portrait Preview"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Reload scene"
-icon = SubResource("DPITexture_6bto2")
+icon = SubResource("DPITexture_v013n")
 
 [node name="PreviewPanel" type="Panel" parent="Container/PortraitPreview"]
 clip_contents = true
@@ -100,7 +100,7 @@ offset_right = 8.0
 offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("DPITexture_6bto2")
+texture = SubResource("DPITexture_v013n")
 stretch_mode = 3
 
 [node name="PortraitSettings" type="ScrollContainer" parent="Container"]
@@ -130,13 +130,13 @@ text = "Scene"
 [node name="NewPortraitSceneButton" type="Button" parent="Container/PortraitSettings/Container/PortraitScene"]
 unique_name_in_owner = true
 layout_mode = 2
-icon = SubResource("DPITexture_6bto2")
+icon = SubResource("DPITexture_v013n")
 
 [node name="ToPortraitSceneButton" type="Button" parent="Container/PortraitSettings/Container/PortraitScene"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-icon = SubResource("DPITexture_6bto2")
+icon = SubResource("DPITexture_v013n")
 
 [node name="PortraitSceneField" parent="Container/PortraitSettings/Container/PortraitScene" instance=ExtResource("1_4ou2u")]
 unique_name_in_owner = true
@@ -231,7 +231,7 @@ allow_greater = true
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
-icon = SubResource("DPITexture_6bto2")
+icon = SubResource("DPITexture_v013n")
 flat = true
 
 [node name="--" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
@@ -294,6 +294,15 @@ suffix = "°"
 [node name="MirrorCheckBox" type="CheckBox" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 text = "Mirror"
+
+[node name="NewPortraitSceneDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+oversampling_override = 1.0
+title = "New Portrait Scene"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Create file"
+filters = PackedStringArray("*.tscn")
 
 [connection signal="pressed" from="Container/PortraitPreview/PreviewTopBar/ReloadSceneButton" to="." method="_on_reload_scene_button_pressed"]
 [connection signal="toggled" from="Container/PortraitSettings/Container/ExpandTransformSettingsButton" to="." method="_on_expand_transform_settings_toggled"]

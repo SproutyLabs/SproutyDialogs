@@ -16,7 +16,7 @@ static var recent_file_paths: Dictionary = {
 	"dialogue_files": "res://",
 	"character_files": "res://",
 	"csv_dialog_files": "res://",
-	"text_box_files": "res://",
+	"dialog_box_files": "res://",
 	"portrait_files": "res://",
 }
 

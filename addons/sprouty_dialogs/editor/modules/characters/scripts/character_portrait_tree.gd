@@ -8,11 +8,13 @@ extends Tree
 ## It allows the user to add, remove, rename and duplicate portraits.
 # -----------------------------------------------------------------------------
 
+## Emitted when the portrait data is modified
+signal modified
 ## Triggered when the user selects an item
 signal portrait_item_selected(item: TreeItem)
+## Emitted to show/hide the portrait editor panel
+signal show_portrait_editor_panel(show: bool)
 
-## Character editor reference
-@onready var _character_editor: Container = find_parent("CharacterEditor")
 ## Portrait tree popup menu
 @onready var _popup_menu: PopupMenu = $PortraitPopupMenu
 ## Confirmation dialog for removing a portrait group
@@ -41,14 +43,16 @@ func get_portraits_data(from: TreeItem = get_root()) -> Dictionary:
 
 
 ## Load the portrait data into the tree
-func load_portraits_data(data: Dictionary, parent_item: TreeItem = get_root()) -> void:
+func load_portraits_data(data: Dictionary, char_editor: Control, parent_item: TreeItem = get_root()) -> void:
 	if not data:
 		return # If the data is empty, do nothing
 	
 	for item in data.keys():
 		if data[item] is SproutyDialogsPortraitData:
 			# If the item is a portrait, create it and load its data
-			var editor = _character_editor.portrait_editor_scene.instantiate()
+			var editor = char_editor.portrait_editor_scene.instantiate()
+			editor.request_open_scene_in_editor.connect(char_editor.open_scene_in_editor)
+			editor.modified.connect(char_editor.on_modified)
 			add_child(editor)
 			new_portrait_item(item, data[item], parent_item, editor)
 			editor.load_portrait_data(item, data[item])
@@ -56,7 +60,7 @@ func load_portraits_data(data: Dictionary, parent_item: TreeItem = get_root()) -
 		else:
 			# If the item is a group, create it and load its children
 			var group_item: TreeItem = new_portrait_group(item, parent_item)
-			load_portraits_data(data[item], group_item)
+			load_portraits_data(data[item], char_editor, group_item)
 
 
 ## Adds a new portrait item to the tree
@@ -93,7 +97,7 @@ func duplicate_portrait_item(item: TreeItem) -> TreeItem:
 		)
 	item.set_editable(0, true)
 	item.select(0)
-	_character_editor.on_modified()
+	modified.emit()
 	return new_item
 
 
@@ -102,10 +106,10 @@ func remove_portrait_item(item: TreeItem) -> void:
 	if item.get_next_visible(true) and item.get_next_visible(true) != item:
 		item.get_next_visible(true).select(0)
 	item.free()
-	_character_editor.on_modified()
+	modified.emit()
 	# If the tree is empty, hide the portrait editor panel
 	if get_root().get_children().size() == 0:
-		_character_editor.show_portrait_editor_panel(false)
+		show_portrait_editor_panel.emit(false)
 
 
 ## Removes the portrait group and all its children from the tree
@@ -214,7 +218,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		new_item.move_before(to_item)
 
 	item.free() # Free the original item
-	_character_editor.on_modified()
+	modified.emit()
 
 
 # Create a copy of the item and its children (if is a group)
@@ -276,7 +280,7 @@ func _on_item_edited() -> void:
 	
 	if not item.get_metadata(0).has("group"): # Update the portrait name
 		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
-	_character_editor.on_modified()
+	modified.emit()
 
 
 ## Called when the user selects an item in the popup menu
