@@ -141,7 +141,8 @@ text = "Dialog Box Settings"
 
 [node name="DialogBox" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
-tooltip_text = "Scene with the text box where the text will be displayed. The root node must be a DialogBox node."
+tooltip_text = "Scene with the dialog box where the text will be displayed.
+The root of the scene must be a node inherited from the DialogBox class."
 
 [node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/DialogBox"]
 custom_minimum_size = Vector2(100, 0)
@@ -152,12 +153,14 @@ text = "Dialog Box"
 [node name="NewDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBox"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Create a new dialog box scene."
 icon = SubResource("DPITexture_v013n")
 
 [node name="ToDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBox"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+tooltip_text = "Open the dialog box scene."
 icon = SubResource("DPITexture_v013n")
 
 [node name="DialogBoxSceneField" parent="CharacterSettings/ScrollContainer/Container/DialogBox" instance=ExtResource("5_x3nyu")]
@@ -172,7 +175,9 @@ file_filters = PackedStringArray("*.tscn")
 [node name="PortraitOnDialogBoxToggle" type="CheckButton" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Select this option to display the portrait inside the text box. You need to assign a 2D Sprite node in the DialogBox node to display the portrait."
+tooltip_text = "Select this option to display the portrait inside the dialog box. 
+You need to assign a node in 'Dialog Box Components > Portrait Display'
+property from the DialogBox to use it as a parent to display the portrait."
 text = "Portrait on dialog box"
 
 [node name="-----" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
