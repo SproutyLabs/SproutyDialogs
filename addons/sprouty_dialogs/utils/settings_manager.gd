@@ -135,7 +135,7 @@ static func initialize_default_settings() -> void:
 	var editor_lang = settings.get_setting("interface/editor/editor_language")
 	ProjectSettings.set_setting(_settings_paths["default_locale"], editor_lang)
 	ProjectSettings.set_setting(_settings_paths["locales"], [editor_lang])
-	ProjectSettings.set_setting(_settings_paths["testing_locale"], "")
+	ProjectSettings.set_setting(_settings_paths["testing_locale"], editor_lang)
 
 	# Variable settings
 	ProjectSettings.set_setting(_settings_paths["variables"], {})

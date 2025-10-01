@@ -106,8 +106,7 @@ func _load_settings() -> void:
 	
 	_update_csv_folder_warning()
 	_update_character_csv_warning()
-	_set_locales_on_dropdown(default_locale_dropdown, true)
-	_set_locales_on_dropdown(testing_locale_dropdown, false)
+	_set_locales_on_dropdowns()
 	locales_selector.set_locale_list()
 
 
@@ -137,22 +136,27 @@ func update_settings() -> void:
 
 #region === Locales ============================================================
 
-## Load the locales available in the project on a dropdown
-func _set_locales_on_dropdown(dropdown: OptionButton, default: bool) -> void:
-	dropdown.clear()
+## Load the locales available in the project on the default and testing locale dropdowns
+func _set_locales_on_dropdowns() -> void:
 	var locales = EditorSproutyDialogsSettingsManager.get_setting("locales")
-
-	if not default or (locales == null or locales.is_empty()):
-		dropdown.add_item("(no one)")
-	
 	var default_locale = EditorSproutyDialogsSettingsManager.get_setting("default_locale")
 	var testing_locale = EditorSproutyDialogsSettingsManager.get_setting("testing_locale")
 
+	default_locale_dropdown.clear()
+	testing_locale_dropdown.clear()
+
+	if locales == null or locales.is_empty():
+		default_locale_dropdown.add_item("(no one)")
+	testing_locale_dropdown.add_item("(no one)")
+	
 	for index in locales.size():
-		dropdown.add_item(locales[index])
-		if (default and locales[index] == default_locale) or \
-		   (not default and locales[index] == testing_locale):
-			dropdown.select(index)
+		default_locale_dropdown.add_item(locales[index])
+		testing_locale_dropdown.add_item(locales[index])
+		# Select the current default and testing locales
+		if locales[index] == default_locale:
+			default_locale_dropdown.select(index)
+		if locales[index] == testing_locale:
+			testing_locale_dropdown.select(index + 1) # For the "(no one)" item
 
 
 ## Select the default locale from the dropdown
@@ -178,9 +182,7 @@ func _on_testing_locale_selected(index: int) -> void:
 
 ## Triggered when the locales change
 func _on_locales_changed() -> void:
-	# Update the dropdowns
-	_set_locales_on_dropdown(default_locale_dropdown, true)
-	_set_locales_on_dropdown(testing_locale_dropdown, false)
+	_set_locales_on_dropdowns() # Refresh the dropdowns
 	
 	# If the default or testing locales are removed, select the first locale
 	var new_locales = EditorSproutyDialogsSettingsManager.get_setting("locales")
