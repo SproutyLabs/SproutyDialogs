@@ -116,7 +116,7 @@ func release_resources(dialog_data: SproutyDialogsDialogueData, start_id: String
 	for char in dialog_data.characters[start_id]:
 		# Remove the dialog boxes loaded if they are not used anymore
 		if _characters_data.has(char):
-			var dialog_box_uid = _characters_data[char].dialog_box
+			var dialog_box_uid = _characters_data[char].dialog_box_uid
 			var dialog_box_path = ""
 			if EditorSproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
 				dialog_box_path = ResourceUID.get_id_path(dialog_box_uid)
@@ -184,13 +184,13 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 			_characters_count[char] += 1
 		
 		# Load the dialog box for the character if not already loaded
-		var dialog_box_uid = _characters_data[char].dialog_box
+		var dialog_box_uid = _characters_data[char].dialog_box_uid
 		if not EditorSproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
 			if dialog_box_uid != -1:
-				printerr("[Sprouty Dialogs] No dialog box scene found for '" + char \
+				printerr("[Sprouty Dialogs] No dialog box found for '" + char \
 						+"' character in dialog: " + dialog_data.resource_path + \
-						". Check that the dialog box is assigned in the character resource"
-						+" or that the scene resource exists. Using default dialog box instead.")
+						". Check that the file '" + _characters_data[char].dialog_box_path \
+						+"' exists. Using default dialog box instead.")
 			# Use the default dialog box if no dialog box is set for the character
 			dialog_box_uid = EditorSproutyDialogsSettingsManager.get_setting("default_dialog_box")
 			if not EditorSproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
@@ -229,14 +229,14 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 				_portraits[character_name][portrait_name] = null
 				continue
 			# If the portrait UID is set, load the portrait scene
-			if not EditorSproutyDialogsFileUtils.check_valid_uid_path(portrait_data.portrait_scene):
+			if not EditorSproutyDialogsFileUtils.check_valid_uid_path(portrait_data.portrait_scene_uid):
 				printerr("[Sprouty Dialogs] No portrait scene found for '" + portrait_name \
-						+"' in character '" + character_name \
-						+"'. Check that the portrait scene resource exists.")
+						+"' in character '" + character_name + "'. Check that the file '" \
+						+ portrait_data.portrait_scene_path + "' exists.")
 				_portraits[character_name][portrait_name] = null
 				continue
 			else: # Load the portrait scene
-				var portrait_scene = load(ResourceUID.get_id_path(portrait_data.portrait_scene))
+				var portrait_scene = load(ResourceUID.get_id_path(portrait_data.portrait_scene_uid))
 				_portraits[character_name][portrait_name] = portrait_scene
 		
 		if not _portraits_count[character_name].has(portrait_name):
@@ -254,10 +254,10 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 func instantiate_dialog_box(character_name: String, dialog_box_parent: Node) -> DialogBox:
 	var dialog_box_uid = ""
 	if not character_name.is_empty():
-		dialog_box_uid = _characters_data[character_name].dialog_box
+		dialog_box_uid = _characters_data[character_name].dialog_box_uid
 	
 	# If no character or the character has no dialog box, use the default dialog box
-	if character_name.is_empty() or dialog_box_uid == -1:
+	if character_name.is_empty() or not EditorSproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
 		dialog_box_uid = EditorSproutyDialogsSettingsManager.get_setting("default_dialog_box")
 
 	var dialog_box_path = ResourceUID.get_id_path(dialog_box_uid)
@@ -294,7 +294,9 @@ func instantiate_portrait(character_name: String, portrait_name: String,
 	if not _portraits[character_name][portrait_name]:
 		printerr("[Sprouty Dialogs] Cannot instantiate '" + portrait_name + "' portrait" \
 				+" from character '" + character_name + "'. No scene is set for '" + portrait_name \
-				+"' portrait. Check that the portrait scene is assigned in the character resource.")
+				+"' portrait. Check that the file '" + _characters_data[character_name] \
+				.get_portrait_from_path_name(portrait_name).portrait_scene_path \
+				+"' exists or reassign the portrait scene in the character resource.")
 		return null
 	
 	var portrait_scene = _portraits[character_name][portrait_name].instantiate()

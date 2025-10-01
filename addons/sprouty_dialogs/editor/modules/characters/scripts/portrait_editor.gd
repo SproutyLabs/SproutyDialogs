@@ -60,9 +60,12 @@ func _ready():
 ## Get the portrait data from the editor
 func get_portrait_data() -> SproutyDialogsPortraitData:
 	var data = SproutyDialogsPortraitData.new()
-	data.portrait_scene = ResourceSaver.get_resource_id_for_path(_portrait_scene_field.get_value(), true) if \
+	data.portrait_scene_uid = ResourceSaver.get_resource_id_for_path(_portrait_scene_field.get_value(), true) if \
 		EditorSproutyDialogsFileUtils.check_valid_extension(_portrait_scene_field.get_value(),
 			_portrait_scene_field.file_filters) else -1
+	data.portrait_scene_path = _portrait_scene_field.get_value() if \
+		EditorSproutyDialogsFileUtils.check_valid_extension(_portrait_scene_field.get_value(),
+			_portrait_scene_field.file_filters) else ""
 	data.export_overrides = _portrait_export_properties.get_export_overrides()
 	data.transform_settings = {
 		"scale": Vector2(
@@ -86,16 +89,16 @@ func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 	set_portrait_name(name)
 
 	# Set the portrait scene
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(data.portrait_scene):
-		if data.portrait_scene != -1:
+	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(data.portrait_scene_uid):
+		if data.portrait_scene_uid != -1:
 			printerr("[Sprouty Dialogs] Portrait scene not found for portrait '"
-					+ name + "'. Check if the scene file was deleted.")
+					+ name + "'. Check that the file '" + data.portrait_scene_path + "' exists.")
 		_portrait_scene_field.set_value("")
 		_to_portrait_scene_button.visible = false
 		_new_portrait_scene_button.visible = true
 		_switch_scene_preview("")
 	else:
-		_portrait_scene_field.set_value(ResourceUID.get_id_path(data.portrait_scene))
+		_portrait_scene_field.set_value(ResourceUID.get_id_path(data.portrait_scene_uid))
 	
 	_portrait_export_properties.set_export_overrides(data.export_overrides)
 	

@@ -97,9 +97,12 @@ func get_character_data() -> SproutyDialogsCharacterData:
 	data.key_name = _key_name
 	data.display_name = _get_name_translations()
 	data.description = _description_field.text
-	data.dialog_box = ResourceSaver.get_resource_id_for_path(_dialog_box_scene_field.get_value(), true) if \
+	data.dialog_box_uid = ResourceSaver.get_resource_id_for_path(_dialog_box_scene_field.get_value(), true) if \
 		EditorSproutyDialogsFileUtils.check_valid_extension(_dialog_box_scene_field.get_value(),
 			_dialog_box_scene_field.file_filters) else -1
+	data.dialog_box_path = _dialog_box_scene_field.get_value() if \
+		EditorSproutyDialogsFileUtils.check_valid_extension(_dialog_box_scene_field.get_value(),
+			_dialog_box_scene_field.file_filters) else ""
 	data.portrait_on_dialog_box = _portrait_on_dialog_box
 	data.portraits = _portrait_tree.get_portraits_data()
 	data.typing_sounds = {} # Typing sounds are not implemented yet
@@ -121,15 +124,15 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	_update_translations_state()
 
 	# Dialog box scene file
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(data.dialog_box):
-		if data.dialog_box != -1:
-			printerr("[Sprouty Dialogs] Dialog box scene not found for character '"
-					+ _key_name + "'. Check if the scene file was deleted.")
+	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(data.dialog_box_uid):
+		if data.dialog_box_uid != -1:
+			printerr("[Sprouty Dialogs] Dialog box not found for character '" + _key_name
+					+"'. Check that the file '" + data.dialog_box_path + "' exists.")
 		_to_dialog_box_scene_button.visible = false
 		_new_dialog_box_scene_button.visible = true
 		_dialog_box_scene_field.set_value("")
 	else:
-		_dialog_box_scene_field.set_value(ResourceUID.get_id_path(data.dialog_box))
+		_dialog_box_scene_field.set_value(ResourceUID.get_id_path(data.dialog_box_uid))
 	
 	if EditorSproutyDialogsFileUtils.check_valid_extension(
 			_dialog_box_scene_field.get_value(), _dialog_box_scene_field.file_filters):

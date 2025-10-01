@@ -27,9 +27,13 @@ extends Resource
 ## Character description.
 ## This does nothing, its only for your reference.
 @export var description: String = ""
-## Dialog box to display the character's dialogue.
-## This is the UID of a scene that contains a [class DialogBox] node.
-@export var dialog_box: int = -1
+## Reference to the dialog box scene used by this character.
+## This is the UID of a scene that contains a [class DialogBox] node
+## which will be used to display the character's dialogue.
+@export var dialog_box_uid: int = -1
+## Path to the dialog box scene to display the character's dialogue.
+## This is for reference only, use [param dialog_box_uid] to set the dialog box
+@export var dialog_box_path: String = ""
 ## Flag to indicate if the character's portrait should be displayed on the dialog box.
 ## If true, the character's portrait scene will be shown in the [param display portrait]
 ## node of the [class DialogBox]. For this you need to set the [param display portrait]
