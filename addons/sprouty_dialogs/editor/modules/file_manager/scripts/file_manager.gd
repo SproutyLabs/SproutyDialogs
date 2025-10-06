@@ -325,8 +325,8 @@ func _on_file_closed(metadata: Dictionary) -> void:
 
 
 ## Set the current file as modified
-func _on_data_modified() -> void:
-	_file_list.set_file_as_modified(_file_list.get_current_index(), true)
+func _on_data_modified(modified: bool = true) -> void:
+	_file_list.set_file_as_modified(_file_list.get_current_index(), modified)
 
 
 ## Update the CSV file path to the current dialog file

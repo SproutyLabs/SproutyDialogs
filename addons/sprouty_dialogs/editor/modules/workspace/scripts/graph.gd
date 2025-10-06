@@ -9,7 +9,7 @@ extends GraphEdit
 # -----------------------------------------------------------------------------
 
 ## Triggered when the graph is modified
-signal modified
+signal modified(modified: bool)
 ## Triggered when all the nodes are loaded
 signal nodes_loaded
 
@@ -60,6 +60,9 @@ var _request_port: int = -1
 ## Cursor position
 var _cursor_pos: Vector2 = Vector2.ZERO
 
+## Modified counter to track changes
+var _modified_counter: int = 0
+
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
 
@@ -90,13 +93,8 @@ func _ready():
 
 func _input(_event):
 	if (not _add_node_menu.visible) and _request_port > -1:
-		_request_node = ''
+		_request_node = ""
 		_request_port = -1
-
-
-## Emit the modified signal
-func on_modified(_arg: Variant = null) -> void:
-	modified.emit()
 
 
 ## Notify the nodes that the locales have changed
@@ -109,22 +107,16 @@ func on_translation_enabled_changed(enabled: bool):
 	translation_enabled_changed.emit(enabled)
 
 
-# Create a new node of a given type
-func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_count: bool = true) -> GraphNode:
-	var new_node = _nodes_references[node_type].instantiate()
-	new_node.name = node_type + "_" + str(node_index)
-	new_node.title += ' #' + str(node_index)
-	new_node.position_offset = node_offset
-	new_node.node_index = node_index
-	new_node.node_type = node_type
-	new_node.undo_redo = undo_redo
-	add_child(new_node, true)
+## Increment the modified counter and emit the modified signal
+func _on_modified(_arg: Variant = null) -> void:
+	_modified_counter += 1
+	modified.emit(_modified_counter > 0)
 
-	# Connect translation signals
-	if node_type == "dialogue_node" or node_type == "options_node":
-		locales_changed.connect(new_node.on_locales_changed)
-		translation_enabled_changed.connect(new_node.on_translation_enabled_changed)
-	return new_node
+
+## Decrement the modified counter and emit the modified signal
+func _on_unmodified() -> void:
+	_modified_counter -= 1
+	modified.emit(_modified_counter > 0)
 
 
 ## Get the nodes scene references from the nodes folder
@@ -152,7 +144,73 @@ func _get_next_available_index(node_type: String) -> int:
 	return idx
 
 
+# Create a new node of a given type
+func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_count: bool = true) -> GraphNode:
+	var new_node = _nodes_references[node_type].instantiate()
+	new_node.name = node_type + "_" + str(node_index)
+	new_node.title += " #" + str(node_index)
+	new_node.position_offset = node_offset
+	new_node.node_index = node_index
+	new_node.node_type = node_type
+	new_node.undo_redo = undo_redo
+	add_child(new_node, true)
+	_connect_node_signals(new_node)
+	return new_node
+
+
+#region === Connect Node Signals ===============================================
+
+## Connect node signals
+func _connect_node_signals(node: SproutyDialogsBaseNode) -> void:
+	node.modified.connect(_on_modified)
+	node.dragged.connect(_on_node_dragged.bind(node))
+
+	# Connect text editor signals
+	if node.has_signal("open_text_editor"):
+		node.open_text_editor.connect(open_text_editor.emit)
+	if node.has_signal("update_text_editor"):
+		node.update_text_editor.connect(update_text_editor.emit)
+	
+	# Connect translation signals
+	if node.has_signal("on_locales_changed"):
+		locales_changed.connect(node.on_locales_changed)
+	if node.has_signal("on_translation_enabled_changed"):
+		translation_enabled_changed.connect(node.on_translation_enabled_changed)
+	
+	match node.node_type: # Connect specific node signals
+		"start_node":
+			node.play_dialog_request.connect(play_dialog_request.emit)
+		"dialogue_node":
+			node.open_character_file_request.connect(open_character_file_request.emit)
+
+
+## Disconnect node signals
+func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
+	node.modified.disconnect(_on_modified)
+	node.dragged.disconnect(_on_node_dragged.bind(node))
+
+	# Disconnect text editor signals
+	if node.has_signal("open_text_editor"):
+		node.open_text_editor.disconnect(open_text_editor.emit)
+	if node.has_signal("update_text_editor"):
+		node.update_text_editor.disconnect(update_text_editor.emit)
+	
+	# Connect translation signals
+	if node.has_signal("on_locales_changed"):
+		locales_changed.disconnect(node.on_locales_changed)
+	if node.has_signal("on_translation_enabled_changed"):
+		translation_enabled_changed.disconnect(node.on_translation_enabled_changed)
+	
+	match node.node_type: # Disconnect specific node signals
+		"start_node":
+			node.play_dialog_request.disconnect(play_dialog_request.emit)
+		"dialogue_node":
+			node.open_character_file_request.disconnect(open_character_file_request.emit)
+
+#endregion
+
 #region === Graph Data =========================================================
+
 ## Get graph data in a dictionary
 func get_graph_data() -> Dictionary:
 	var dict := {
@@ -201,20 +259,16 @@ func get_graph_data() -> Dictionary:
 
 ## Load graph data from a dictionary
 func load_graph_data(data: SproutyDialogsDialogueData, dialogs: Dictionary) -> void:
-	var characters = data.characters
-	var graph_data = data.graph_data
-	# Flag to fallback to resource dialogs if key not found in CSV
-	var fallback_to_resource = EditorSproutyDialogsSettingsManager.get_setting("fallback_to_resource")
-	for dialogue_id in graph_data.keys():
+	for dialogue_id in data.graph_data.keys():
 		# Find the start node for the current dialogue
 		var current_start_node = ""
-		for node_name in graph_data[dialogue_id].keys():
-			if graph_data[dialogue_id][node_name]["node_type"] == "start_node":
+		for node_name in data.graph_data[dialogue_id].keys():
+			if data.graph_data[dialogue_id][node_name]["node_type"] == "start_node":
 				current_start_node = node_name
 				break
 		# Load nodes for the current dialogue
-		for node_name in graph_data[dialogue_id].keys():
-			var node_data = graph_data[dialogue_id][node_name]
+		for node_name in data.graph_data[dialogue_id].keys():
+			var node_data = data.graph_data[dialogue_id][node_name]
 
 			# Create node and set data
 			var new_node = _new_node(
@@ -225,149 +279,93 @@ func load_graph_data(data: SproutyDialogsDialogueData, dialogs: Dictionary) -> v
 			new_node.set_data(node_data)
 			new_node.start_node_name = current_start_node
 			
-			# Load dialogs and characters on dialogue nodes
-			if node_data["node_type"] == "dialogue_node":
-				if not dialogs.has(node_data["dialog_key"]):
-					# Print error if no dialog is found for the dialogue node
-					printerr("[Sprouty Dialogs] No dialogue found for Dialogue Node #" + str(node_data["node_index"]) \
-						+" in the CSV file: " + ResourceUID.get_id_path(data.csv_translation_file) \
-						+". Check that the key '" + node_data["dialog_key"] \
-						+"' exists in the CSV translation file and that it is the correct CSV file." \
-						+ (" Loading '" + node_data["dialog_key"] + "' dialogue from '" \
-						+ data.resource_path.get_file() + "' dialog file instead.") \
-						if fallback_to_resource else "")
-					if fallback_to_resource and data.dialogs.has(node_data["dialog_key"]):
-						new_node.load_dialogs(data.dialogs[node_data["dialog_key"]])
-				else:
-					if not dialogs[node_data["dialog_key"]].has("default"): # Ensure that the default dialog exists
-						dialogs[node_data["dialog_key"]]["default"] = data.dialogs[node_data["dialog_key"]]["default"]
-					new_node.load_dialogs(dialogs[node_data["dialog_key"]])
-				
-				# Load character if exists
-				var character_name = node_data["character"]
-				if character_name != "":
-					var character_uid = characters[dialogue_id][character_name]
-					if EditorSproutyDialogsFileUtils.check_valid_uid_path(character_uid):
-						new_node.load_character(ResourceUID.get_id_path(character_uid))
-						new_node.load_portrait(node_data["portrait"])
-				
-			# Load options on options nodes
-			elif node_data["node_type"] == "options_node":
-				for option_key in node_data["options_keys"]:
-					if not dialogs.has(option_key):
-						# Print error if no dialog is found for the option
-						printerr("[Sprouty Dialogs] No dialogue found for Option #" \
-							+ str(int(option_key.split("_")[-1]) + 1) + " of Option Node #" \
-							+ str(node_data["node_index"]) + " in the CSV file:\n" \
-							+ ResourceUID.get_id_path(data.csv_translation_file) \
-							+". Check that the key '" + option_key \
-							+"' exists in the CSV translation file and that it is the correct CSV file." \
-							+ (" Loading '" + option_key + "' dialogue from '" \
-							+ data.resource_path.get_file() + "' dialog file instead.") \
-							if fallback_to_resource else "")
-						if fallback_to_resource and data.dialogs.has(option_key):
-							dialogs[option_key] = data.dialogs[option_key]
-					else:
-						if not dialogs[option_key].has("default"): # Ensure that the default dialog exists
-							dialogs[option_key]["default"] = data.dialogs[option_key]["default"]
-				new_node.load_options_text(dialogs)
+			match node_data.node_type:
+				"dialogue_node":
+					_load_dialogue_node_data(new_node, dialogue_id, data, dialogs)
+				"options_node":
+					_load_options_node_data(new_node, dialogue_id, data, dialogs)
 	
-	# When all the nodes are loaded, notify the nodes to connect each other
-	nodes_loaded.emit()
-
-#endregion
-
-#region === Popup Menus ========================================================
-
-## Set nodes list on popup node menu
-func _set_add_node_menu() -> void:
-	_add_node_menu.clear()
-	var index = 0
-	for node in _nodes_references:
-		var node_aux = _nodes_references[node].instantiate()
-		_add_node_menu.add_icon_item(node_aux.node_icon, node_aux.name.capitalize(), index)
-		_add_node_menu.set_item_metadata(index, node)
-		node_aux.queue_free()
-		index += 1
+	# When all the nodes are loaded, connect the nodes
+	_load_nodes_connections()
+	_modified_counter = 0 # Reset modified counter
 
 
-## Set icons on node actions menu
-func _set_node_actions_menu(has_selection: bool = false, paste_enabled: bool = false) -> void:
-	_node_actions_menu.clear()
-	_node_actions_menu.add_icon_item(get_theme_icon("Add", "EditorIcons"), "Add Node", 0)
-	_node_actions_menu.add_separator()
-	if has_selection:
-		_node_actions_menu.add_icon_item(get_theme_icon("Remove", "EditorIcons"),
-			"Remove Nodes" if _selected_nodes.size() > 1 else "Remove Node", 1)
-		_node_actions_menu.add_icon_item(get_theme_icon("Duplicate", "EditorIcons"),
-			"Duplicate Nodes" if _selected_nodes.size() > 1 else "Duplicate Node", 2)
-		_node_actions_menu.add_icon_item(get_theme_icon("ActionCopy", "EditorIcons"),
-			"Copy Nodes" if _selected_nodes.size() > 1 else "Copy Node", 3)
-		_node_actions_menu.add_icon_item(get_theme_icon("ActionCut", "EditorIcons"),
-			"Cut Nodes" if _selected_nodes.size() > 1 else "Cut Node", 4)
-	if paste_enabled:
-		_node_actions_menu.add_icon_item(get_theme_icon("ActionPaste", "EditorIcons"),
-			"Paste Nodes" if _nodes_copy.size() > 1 else "Paste Node", 5)
+## Load the data of a dialogue node
+func _load_dialogue_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
+		data: SproutyDialogsDialogueData, dialogs: Dictionary) -> void:
+	# Flag to fallback to resource dialogs if key not found in CSV
+	var fallback_to_resource = EditorSproutyDialogsSettingsManager.get_setting("fallback_to_resource")
+	var node_data = data.graph_data[dialogue_id][node.name]
+
+	if not dialogs.has(node_data["dialog_key"]):
+		# Print error if no dialog is found for the dialogue node
+		printerr("[Sprouty Dialogs] No dialogue found for Dialogue Node #" + str(node_data["node_index"]) \
+			+" in the CSV file: " + ResourceUID.get_id_path(data.csv_translation_file) \
+			+". Check that the key '" + node_data["dialog_key"] \
+			+"' exists in the CSV translation file and that it is the correct CSV file." \
+			+ (" Loading '" + node_data["dialog_key"] + "' dialogue from '" \
+			+ data.resource_path.get_file() + "' dialog file instead.") \
+			if fallback_to_resource else "")
+		# Load the dialogues from resource
+		if fallback_to_resource and data.dialogs.has(node_data["dialog_key"]):
+			node.load_dialogs(data.dialogs[node_data["dialog_key"]])
+	else:
+		# Ensure that the default dialog exists
+		if not dialogs[node_data["dialog_key"]].has("default"):
+			dialogs[node_data["dialog_key"]]["default"] = data.dialogs[node_data["dialog_key"]]["default"]
+		node.load_dialogs(dialogs[node_data["dialog_key"]])
+	
+	# Load character if exists
+	var character_name = node_data["character"]
+	if character_name != "":
+		var character_uid = data.characters[dialogue_id][character_name]
+		if EditorSproutyDialogsFileUtils.check_valid_uid_path(character_uid):
+			node.load_character(ResourceUID.get_id_path(character_uid))
+			node.load_portrait(node_data["portrait"])
 
 
-## Rename the node actions menu items based on the number of selected nodes
-func _rename_node_actions(plural: bool) -> void:
-	_node_actions_menu.set_item_text(2, "Remove Nodes" if plural else "Remove Node")
-	_node_actions_menu.set_item_text(3, "Duplicate Nodes" if plural else "Duplicate Node")
-	_node_actions_menu.set_item_text(4, "Copy Nodes" if plural else "Copy Node")
-	_node_actions_menu.set_item_text(5, "Cut Nodes" if plural else "Cut Node")
-	_node_actions_menu.set_item_text(6, "Paste Nodes" if plural else "Paste Node")
+## Load the data of a options node
+func _load_options_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
+		data: SproutyDialogsDialogueData, dialogs: Dictionary) -> void:
+	# Flag to fallback to resource dialogs if key not found in CSV
+	var fallback_to_resource = EditorSproutyDialogsSettingsManager.get_setting("fallback_to_resource")
+	var node_data = data.graph_data[dialogue_id][node.name]
 
-
-## Show a pop-up menu at a given position
-func _show_popup_menu(menu: PopupMenu, pos: Vector2) -> void:
-	var pop_pos := pos + global_position + Vector2(get_window().position)
-	menu.popup(Rect2(pop_pos.x, pop_pos.y, _add_node_menu.size.x, _add_node_menu.size.y))
-	_cursor_pos = (pos + scroll_offset) / zoom
-	menu.reset_size()
-
-
-## Add node from pop-up menu
-func _on_add_node_menu_selected(id: int) -> void:
-	var node_type = _add_node_menu.get_item_metadata(id)
-	_add_new_node(node_type)
-
-
-## Handle node actions from the pop-up menu
-func _on_node_actions_menu_selected(id: int) -> void:
-	match id:
-		0: # Add Node
-			_show_popup_menu(_add_node_menu, get_local_mouse_position())
-		1: # Delete Node
-			var selected_nodes = _selected_nodes.duplicate()
-			for node in selected_nodes:
-				delete_node(node)
-		2: # Duplicate Node
-			_on_duplicate_nodes()
-		3: # Copy Node
-			_on_copy_nodes()
-		4: # Cut Node
-			_on_cut_nodes()
-		5: # Paste Node
-			_on_paste_nodes()
-
-
-## Show add node pop-up menu on right click
-func _on_right_click(pos: Vector2) -> void:
-	# Show node actions menu if nodes are selected
-	if _selected_nodes.size() > 0:
-		if _nodes_copy.size() > 0:
-			_set_node_actions_menu(true, true)
-			_show_popup_menu(_node_actions_menu, pos)
+	for option_key in node_data["options_keys"]:
+		if not dialogs.has(option_key):
+			# Print error if no dialog is found for the option
+			printerr("[Sprouty Dialogs] No dialogue found for Option #" \
+				+ str(int(option_key.split("_")[-1]) + 1) + " of Option Node #" \
+				+ str(node_data["node_index"]) + " in the CSV file:\n" \
+				+ ResourceUID.get_id_path(data.csv_translation_file) \
+				+". Check that the key '" + option_key \
+				+"' exists in the CSV translation file and that it is the correct CSV file." \
+				+ (" Loading '" + option_key + "' dialogue from '" \
+				+ data.resource_path.get_file() + "' dialog file instead.") \
+				if fallback_to_resource else "")
+			# Load dialogues from resource
+			if fallback_to_resource and data.dialogs.has(option_key):
+				dialogs[option_key] = data.dialogs[option_key]
 		else:
-			_set_node_actions_menu(true, false)
-			_show_popup_menu(_node_actions_menu, pos)
-	# Show only paste option if nodes are copied but no nodes are selected
-	elif _nodes_copy.size() > 0:
-		_set_node_actions_menu(false, true)
-		_show_popup_menu(_node_actions_menu, pos)
-	else: # Show add node menu if no nodes are selected
-		_show_popup_menu(_add_node_menu, pos)
+			# Ensure that the default dialog exists
+			if not dialogs[option_key].has("default"):
+				dialogs[option_key]["default"] = data.dialogs[option_key]["default"]
+
+	node.load_options_text(dialogs)
+
+
+## Load the connections after loading the nodes
+func _load_nodes_connections() -> void:
+	for child in get_children():
+		if child is SproutyDialogsBaseNode:
+			# Set start node reference
+			if child.start_node_name != "":
+				child.start_node = get_node(child.start_node_name)
+			 # Connect each output node
+			for output_node in child.to_node:
+				if output_node == "END":
+					continue
+				connect_node(child.name, child.to_node.find(output_node), output_node, 0)
 
 #endregion
 
@@ -379,14 +377,14 @@ func _add_new_node(node_type: String) -> void:
 	var new_node = _new_node(node_type, new_index, _cursor_pos)
 	var prev_connection := get_node_output_connections(_request_node, _request_port)
 	new_node.selected = true
-	on_modified()
+	_on_modified()
 	
 	# Connect to a previous node if requested
 	if _request_port > -1 and new_node.is_slot_enabled_left(0):
 		if prev_connection.size() > 0:
 			# Disconnect previous connection first
 			disconnect_node(_request_node, _request_port,
-				prev_connection[0]['to_node'], prev_connection[0]['to_port'])
+				prev_connection[0]["to_node"], prev_connection[0]["to_port"])
 			# Update the start node of the disconnected node to null
 			get_node(NodePath(prev_connection[0]["to_node"])).start_node = null
 		# Connect the new node to the requested node
@@ -395,14 +393,14 @@ func _add_new_node(node_type: String) -> void:
 		_request_node = ""
 		_request_port = -1
 	
-	#region --- UndoRedo -------------------------------------------------
+	# --- UndoRedo ---------------------------------------------------
 
 	# Use UndoRedo to add the new node
 	undo_redo.create_action("Add " + node_type.capitalize())
 	undo_redo.add_do_method(self, "add_child", new_node)
 	undo_redo.add_do_reference(new_node)
-	undo_redo.add_do_method(self, "on_modified")
-	undo_redo.add_undo_method(self, "on_modified")
+	undo_redo.add_do_method(self, "_on_modified")
+	undo_redo.add_undo_method(self, "_on_unmodified")
 
 	# Connect to a previous node if requested
 	if _request_port > -1 and new_node.is_slot_enabled_left(0):
@@ -427,41 +425,62 @@ func _add_new_node(node_type: String) -> void:
 	undo_redo.add_undo_method(self, "_deselect_all_nodes")
 	undo_redo.commit_action(false)
 	
-	#endregion ---------------------------------------------------------
+	# -----------------------------------------------------------------
 
 
 ## Delete a node from graph
-func delete_node(node: GraphNode) -> void:
+func delete_node(node: GraphNode, from_request: bool = false) -> void:
 	var node_connections = get_node_connections(node.name, true)
 	for connection in node_connections: # Disconnect all connections
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
+	_disconnect_node_signals(node)
 	_selected_nodes.erase(node)
 	remove_child(node)
-	on_modified()
+	_on_modified()
 
-	#region --- UndoRedo -------------------------------------------------
+	# --- UndoRedo ----------------------------------------------------
 
-	undo_redo.create_action("Delete " + node.node_type.capitalize())
-	
+	if not from_request:
+		undo_redo.create_action("Delete " + node.node_type.capitalize())
+
 	for connection in node_connections: # Disconnect all connections
 		undo_redo.add_do_method(self, "disconnect_node", connection["from_node"],
 			connection["from_port"], connection["to_node"], connection["to_port"])
 		undo_redo.add_undo_method(self, "connect_node", connection["from_node"],
 			connection["from_port"], connection["to_node"], connection["to_port"])
 	
+	undo_redo.add_do_method(self, "_disconnect_node_signals", node)
+	undo_redo.add_undo_method(self, "_connect_node_signals", node)
+
 	undo_redo.add_do_method(self, "_on_node_deselected", node)
 	undo_redo.add_undo_method(self, "_on_node_selected", node)
 
 	undo_redo.add_do_method(self, "remove_child", node)
 	undo_redo.add_undo_method(self, "add_child", node)
 	undo_redo.add_undo_reference(node)
-
-	undo_redo.add_do_method(self, "on_modified")
-	undo_redo.add_undo_method(self, "on_modified")
-	undo_redo.commit_action(false)
 	
-	#endregion ---------------------------------------------------------
+	if not from_request:
+		undo_redo.add_do_method(self, "_on_modified")
+		undo_redo.add_undo_method(self, "_on_unmodified")
+		undo_redo.commit_action(false)
+	
+	# ------------------------------------------------------------------
+
+
+## Delete selected nodes
+func _on_delete_nodes_request(nodes: Array) -> void:
+	undo_redo.create_action("Delete Node(s)")
+
+	for child in get_children():
+		for node_name in nodes: # Remove selected nodes
+			if child.name == node_name: delete_node(child, true)
+	
+	# --- UndoRedo ------------------------------------------------------
+	undo_redo.add_do_method(self, "_on_modified")
+	undo_redo.add_undo_method(self, "_on_unmodified")
+	undo_redo.commit_action(false)
+	# -------------------------------------------------------------------
 
 
 ## Create a copy of a node from the graph
@@ -479,18 +498,15 @@ func _copy_node(node: GraphNode) -> GraphNode:
 	_copied_nodes[new_node.name] = node # Store the copied node reference
 	_copied_names[node.name] = new_node.name # Store the copied name reference
 	
-	if node.node_type == "dialogue_node":
-		new_node.load_dialogs(node.get_dialogs_text())
-		new_node.load_character(node.get_character_path())
-		new_node.load_portrait(node.get_portrait())
+	match node.node_type:
+		"dialogue_node":
+			new_node.load_dialogs(node.get_dialogs_text())
+			new_node.load_character(node.get_character_path())
+			new_node.load_portrait(node.get_portrait())
+		"options_node":
+			new_node.load_options_text(node.get_options_text())
+	
 	return new_node
-
-
-## Delete selected nodes
-func _on_delete_nodes_request(nodes: Array[StringName]):
-	for child in get_children():
-		for node_name in nodes: # Remove selected nodes
-			if child.name == node_name: delete_node(child)
 
 
 ## Duplicate selected nodes
@@ -498,6 +514,8 @@ func _on_duplicate_nodes() -> void:
 	if _selected_nodes.size() == 0:
 		return
 	var _duplicate_nodes = _selected_nodes.duplicate()
+	undo_redo.create_action("Duplicate Node(s)")
+
 	for node in _duplicate_nodes:
 		var new_index = _get_next_available_index(node.node_type)
 		var new_node = _copy_node(node)
@@ -509,10 +527,24 @@ func _on_duplicate_nodes() -> void:
 		add_child(new_node, true)
 		new_node.selected = true
 		node.selected = false
+
+		# --- UndoRedo -------------------------------------------------
+		undo_redo.add_do_method(self, "add_child", new_node)
+		undo_redo.add_do_reference(new_node)
+		undo_redo.add_undo_method(self, "remove_child", new_node)
+		undo_redo.add_undo_method(self, "_deselect_all_nodes")
+		# ---------------------------------------------------------------
+	
 	_reconnect_nodes_copy()
 	_copied_nodes.clear()
 	_nodes_copy.clear()
-	on_modified()
+	_on_modified()
+
+	# --- UndoRedo ------------------------------------------------------
+	undo_redo.add_do_method(self, "_on_modified")
+	undo_redo.add_undo_method(self, "_on_unmodified")
+	undo_redo.commit_action(false)
+	# -------------------------------------------------------------------
 
 
 ## Copy selected nodes
@@ -539,14 +571,29 @@ func _on_cut_nodes() -> void:
 	if _selected_nodes.size() == 0:
 		return
 
+	undo_redo.create_action("Cut Node(s)")
+
 	for node in _selected_nodes:
 		_copied_connections[node.name] = get_node_connections(node.name)
 		_copied_names[node.name] = node.name
 		_copied_nodes[node.name] = node
 		_nodes_copy.append(node)
 		remove_child(node)
+
+		# --- UndoRedo -------------------------------------------------
+		undo_redo.add_do_method(self, "remove_child", node)
+		undo_redo.add_undo_method(self, "add_child", node)
+		undo_redo.add_undo_reference(node)
+		# ---------------------------------------------------------------
+	
 	_selected_nodes.clear()
-	on_modified()
+	_on_modified()
+
+	# --- UndoRedo ------------------------------------------------------
+	undo_redo.add_do_method(self, "_on_modified")
+	undo_redo.add_undo_method(self, "_on_unmodified")
+	undo_redo.commit_action(false)
+	# -------------------------------------------------------------------
 
 
 ## Paste copied nodes
@@ -560,6 +607,8 @@ func _on_paste_nodes() -> void:
 		center_pos += node.position_offset
 	center_pos /= _nodes_copy.size()
 	
+	undo_redo.create_action("Paste Node(s)")
+
 	for node in _nodes_copy:
 		node.position_offset -= Vector2(node.size.x / 2, node.size.y / 2)
 		node.position_offset -= center_pos # Center the nodes
@@ -575,13 +624,26 @@ func _on_paste_nodes() -> void:
 		_rename_if_exists(node)
 		add_child(node, true)
 		node.selected = true
+
+		# --- UndoRedo -------------------------------------------------
+		undo_redo.add_do_method(self, "add_child", node)
+		undo_redo.add_do_reference(node)
+		undo_redo.add_undo_method(self, "remove_child", node)
+		undo_redo.add_undo_method(self, "_deselect_all_nodes")
+		# ---------------------------------------------------------------
 	
 	_reconnect_nodes_copy()
 	_copied_connections.clear()
 	_copied_names.clear()
 	_copied_nodes.clear()
 	_nodes_copy.clear()
-	on_modified()
+	_on_modified()
+
+	# --- UndoRedo ------------------------------------------------------
+	undo_redo.add_do_method(self, "_on_modified")
+	undo_redo.add_undo_method(self, "_on_unmodified")
+	undo_redo.commit_action(false)
+	# -------------------------------------------------------------------
 
 
 ## Rename the node if it already exists
@@ -601,6 +663,23 @@ func _reconnect_nodes_copy() -> void:
 				connect_node(_copied_names[connection["from_node"]], connection["from_port"],
 					_copied_names[connection["to_node"]], connection["to_port"])
 	_copied_connections.clear()
+
+
+## Called when a node is dragged or moved in the graph
+func _on_node_dragged(from: Vector2, to: Vector2, node: GraphElement) -> void:
+	_on_modified()
+
+	# --- UndoRedo ----------------------------------------------------
+	undo_redo.create_action("Drag " + node.node_type.capitalize()
+			+": " + str(from) + " -> " + str(to))
+	undo_redo.add_do_property(node, "position_offset", to)
+	undo_redo.add_do_property(self, "_cursor_pos", to)
+	undo_redo.add_do_method(self, "_on_modified")
+	undo_redo.add_undo_method(self, "_on_unmodified")
+	undo_redo.add_undo_property(self, "_cursor_pos", _cursor_pos)
+	undo_redo.add_undo_property(node, "position_offset", from)
+	undo_redo.commit_action(false)
+	# ------------------------------------------------------------------
 
 
 ## Called when a node is selected
@@ -671,7 +750,7 @@ func disconnect_node_on_port(node: String, port: int) -> void:
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
 		get_node(NodePath(connection["to_node"])).start_node = null
-	on_modified()
+	_on_modified()
 
 
 ## Connect two nodes on the given ports
@@ -686,7 +765,7 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 	# Handle nodes connection and assign the node to the connected dialog tree
 	connect_node(from_node, from_port, to_node, to_port)
 	get_node(NodePath(to_node)).start_node = get_node(NodePath(from_node)).start_node
-	on_modified()
+	_on_modified()
 
 
 ## If connection ends on empty space, show add node menu to add a new node
@@ -695,5 +774,97 @@ func _on_connection_to_empty(from_node: String, from_port: int, release_position
 	_request_port = from_port
 	disconnect_node_on_port(from_node, from_port) # Remove the connection
 	_show_popup_menu(_add_node_menu, release_position)
+
+#endregion
+
+#region === Popup Menus ========================================================
+
+## Set nodes list on popup node menu
+func _set_add_node_menu() -> void:
+	_add_node_menu.clear()
+	var index = 0
+	for node in _nodes_references:
+		var node_aux = _nodes_references[node].instantiate()
+		_add_node_menu.add_icon_item(node_aux.node_icon, node_aux.name.capitalize(), index)
+		_add_node_menu.set_item_metadata(index, node)
+		node_aux.queue_free()
+		index += 1
+
+
+## Set icons on node actions menu
+func _set_node_actions_menu(has_selection: bool = false, paste_enabled: bool = false) -> void:
+	_node_actions_menu.clear()
+	_node_actions_menu.add_icon_item(get_theme_icon("Add", "EditorIcons"), "Add Node", 0)
+	_node_actions_menu.add_separator()
+	if has_selection:
+		_node_actions_menu.add_icon_item(get_theme_icon("Remove", "EditorIcons"),
+			"Remove Nodes" if _selected_nodes.size() > 1 else "Remove Node", 1)
+		_node_actions_menu.add_icon_item(get_theme_icon("Duplicate", "EditorIcons"),
+			"Duplicate Nodes" if _selected_nodes.size() > 1 else "Duplicate Node", 2)
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionCopy", "EditorIcons"),
+			"Copy Nodes" if _selected_nodes.size() > 1 else "Copy Node", 3)
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionCut", "EditorIcons"),
+			"Cut Nodes" if _selected_nodes.size() > 1 else "Cut Node", 4)
+	if paste_enabled:
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionPaste", "EditorIcons"),
+			"Paste Nodes" if _nodes_copy.size() > 1 else "Paste Node", 5)
+
+
+## Rename the node actions menu items based on the number of selected nodes
+func _rename_node_actions(plural: bool) -> void:
+	_node_actions_menu.set_item_text(2, "Remove Nodes" if plural else "Remove Node")
+	_node_actions_menu.set_item_text(3, "Duplicate Nodes" if plural else "Duplicate Node")
+	_node_actions_menu.set_item_text(4, "Copy Nodes" if plural else "Copy Node")
+	_node_actions_menu.set_item_text(5, "Cut Nodes" if plural else "Cut Node")
+	_node_actions_menu.set_item_text(6, "Paste Nodes" if plural else "Paste Node")
+
+
+## Show a pop-up menu at a given position
+func _show_popup_menu(menu: PopupMenu, pos: Vector2) -> void:
+	var pop_pos := pos + global_position + Vector2(get_window().position)
+	menu.popup(Rect2(pop_pos.x, pop_pos.y, _add_node_menu.size.x, _add_node_menu.size.y))
+	_cursor_pos = (pos + scroll_offset) / zoom
+	menu.reset_size()
+
+
+## Add node from pop-up menu
+func _on_add_node_menu_selected(id: int) -> void:
+	var node_type = _add_node_menu.get_item_metadata(id)
+	_add_new_node(node_type)
+
+
+## Handle node actions from the pop-up menu
+func _on_node_actions_menu_selected(id: int) -> void:
+	match id:
+		0: # Add Node
+			_show_popup_menu(_add_node_menu, get_local_mouse_position())
+		1: # Delete Node
+			_on_delete_nodes_request(_selected_nodes.map(func(n): return n.name))
+		2: # Duplicate Node
+			_on_duplicate_nodes()
+		3: # Copy Node
+			_on_copy_nodes()
+		4: # Cut Node
+			_on_cut_nodes()
+		5: # Paste Node
+			_on_paste_nodes()
+
+
+## Show add node pop-up menu on right click
+func _on_right_click(pos: Vector2) -> void:
+	# Show node actions menu if nodes are selected
+	if _selected_nodes.size() > 0:
+		if _nodes_copy.size() > 0:
+			_set_node_actions_menu(true, true)
+			_show_popup_menu(_node_actions_menu, pos)
+		else:
+			_set_node_actions_menu(true, false)
+			_show_popup_menu(_node_actions_menu, pos)
+	# Show only paste option if nodes are copied but no nodes are selected
+	elif _nodes_copy.size() > 0:
+		_set_node_actions_menu(false, true)
+		_show_popup_menu(_node_actions_menu, pos)
+	else: # Show add node menu if no nodes are selected
+		_show_popup_menu(_add_node_menu, pos)
 
 #endregion

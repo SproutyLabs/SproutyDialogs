@@ -7,8 +7,10 @@ extends SproutyDialogsBaseNode
 ## Node to set a variable value.
 # -----------------------------------------------------------------------------
 
-## Emitted when press the expand button in the string value field
-signal open_text_editor(text_edit: TextEdit)
+## Emitted when press the expand button in the text box field
+signal open_text_editor(text_box: TextEdit)
+## Emitted when the text box field gains focus and should update the text editor
+signal update_text_editor(text_box: TextEdit)
 
 ## Variable name dropdown selector
 @onready var _name_input: EditorSproutyDialogsComboBox = $Container/VarField/NameInput
@@ -26,7 +28,10 @@ var _new_var_value: Variant = ""
 
 func _ready():
 	super ()
-	_name_input.text_changed.connect(graph_editor.on_modified)
+	_operator_dropdown.item_selected.connect(modified.emit.unbind(1))
+	_name_input.text_changed.connect(modified.emit)
+
+	# Set the type dropdown and connect its signal
 	$Container/VarField/TypeField.add_child(EditorSproutyDialogsVariableManager.get_types_dropdown())
 	_type_dropdown = $Container/VarField/TypeField/TypeDropdown
 	_type_dropdown.item_selected.connect(_on_type_selected)
@@ -80,24 +85,28 @@ func set_data(dict: Dictionary) -> void:
 ## Handle when the type is selected from the dropdown
 func _on_type_selected(index: int) -> void:
 	var type = _type_dropdown.get_item_id(index)
+
 	# Set the variable dropdown based on the selected type and update the value field
 	_name_input.set_options(EditorSproutyDialogsVariableManager.get_variable_list(type))
 	_set_value_field(type)
+
 	# Set the operator dropdown based on the variable type
 	var operators = EditorSproutyDialogsVariableManager.get_assignment_operators(type)
 	_operator_dropdown.clear()
 	for operator in operators.keys():
 		_operator_dropdown.add_item(operator, operators[operator])
-	graph_editor.on_modified()
+	modified.emit(true)
 	_on_resized()
 
 
 ## Set the value field based on the variable type
 func _set_value_field(type: int) -> void:
+	# Clear previous field
 	if $Container/ValueField.get_child_count() > 0:
 		var field = $Container/ValueField.get_child(0)
 		$Container/ValueField.remove_child(field)
 		field.queue_free()
+	
 	var field_data = EditorSproutyDialogsVariableManager.get_field_by_type(type, _on_value_changed)
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	$Container/ValueField.add_child(field_data.field)
@@ -106,9 +115,8 @@ func _set_value_field(type: int) -> void:
 	if type == TYPE_STRING: # Connect the expand button to open the text editor
 		var text_box = field_data.field.get_node("TextEdit")
 		field_data.field.get_node("ExpandButton").pressed.connect(
-			graph_editor.open_text_editor.emit.bind(text_box))
-		text_box.focus_entered.connect(
-			graph_editor.update_text_editor.emit.bind(text_box))
+				open_text_editor.emit.bind(text_box))
+		text_box.focus_entered.connect(update_text_editor.emit.bind(text_box))
 	
 	if type == TYPE_BOOL: # Adjust size horizontally
 		size.x += field_data.field.get_size().x
@@ -116,5 +124,6 @@ func _set_value_field(type: int) -> void:
 
 ## Handle when the value in the input field changes
 func _on_value_changed(value: Variant) -> void:
-	_new_var_value = value
-	graph_editor.on_modified()
+	if _new_var_value != value:
+		_new_var_value = value
+		modified.emit(true)

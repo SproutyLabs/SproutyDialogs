@@ -47,5 +47,6 @@ func set_data(dict: Dictionary) -> void:
 #endregion
 
 func _on_input_text_changed(new_text: String) -> void:
-	_signal_argument = new_text
-	graph_editor.on_modified()
+	if _signal_argument != new_text:
+		_signal_argument = new_text
+		modified.emit(true)

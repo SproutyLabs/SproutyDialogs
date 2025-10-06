@@ -7,6 +7,11 @@ extends SproutyDialogsBaseNode
 ## Node to display dialog options in the dialog tree.
 # -----------------------------------------------------------------------------
 
+## Emitted when press the expand button in a text box field
+signal open_text_editor(text_box: TextEdit)
+## Emitted when a text box field gains focus and should update the text editor
+signal update_text_editor(text_box: TextEdit)
+
 ## First option container
 @onready var _first_option: EditorSproutyDialogsOptionContainer = $OptionContainer
 ## Option container template
@@ -18,11 +23,11 @@ var _options_keys: Array = []
 func _ready():
 	super ()
 	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
-	if graph_editor is GraphEdit and _first_option: # Connect signals for the first option container
-		_first_option.open_text_editor.connect(graph_editor.open_text_editor.emit)
-		_first_option.update_text_editor.connect(graph_editor.update_text_editor.emit)
+	if _first_option: # Connect signals for the first option container
+		_first_option.open_text_editor.connect(open_text_editor.emit)
+		_first_option.update_text_editor.connect(update_text_editor.emit)
 		_first_option.option_removed.connect(_on_option_removed)
-		_first_option.modified.connect(graph_editor.on_modified)
+		_first_option.modified.connect(modified.emit)
 		_first_option.resized.connect(func():
 			position_offset.y += 0.01
 			_on_resized()
@@ -33,7 +38,7 @@ func _ready():
 
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = graph_editor.get_node_connections(name)
+	var connections: Array = get_parent().get_node_connections(name)
 
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
@@ -112,15 +117,15 @@ func _add_new_option() -> EditorSproutyDialogsOptionContainer:
 	
 	# Add slot to connect the option
 	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
-	new_option.open_text_editor.connect(get_parent().open_text_editor.emit)
-	new_option.update_text_editor.connect(get_parent().update_text_editor.emit)
+	new_option.open_text_editor.connect(open_text_editor.emit)
+	new_option.update_text_editor.connect(update_text_editor.emit)
 	new_option.option_removed.connect(_on_option_removed)
-	new_option.modified.connect(graph_editor.on_modified)
+	new_option.modified.connect(modified.emit)
 	new_option.resized.connect(func():
 		position_offset.y += 0.01
 		_on_resized()
 		)
-	graph_editor.on_modified()
+	modified.emit(true)
 	return new_option
 
 
@@ -146,7 +151,7 @@ func _on_option_removed(index: int) -> void:
 	
 	# Remove the last remaining port
 	set_slot(get_child_count() - 3, false, 0, Color.WHITE, false, 0, Color.WHITE)
-	graph_editor.on_modified()
+	modified.emit(true)
 
 	# Wait to delete the option node
 	await get_child(index).tree_exited

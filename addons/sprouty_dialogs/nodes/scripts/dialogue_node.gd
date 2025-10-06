@@ -10,6 +10,10 @@ extends SproutyDialogsBaseNode
 
 ## Emitted when is requesting to open a character file
 signal open_character_file_request(path: String)
+## Emitted when press the expand button in a text box field
+signal open_text_editor(text_box: TextEdit)
+## Emitted when a text box field gains focus and should update the text editor
+signal update_text_editor(text_box: TextEdit)
 
 ## Character data resource field
 @onready var _character_file_field: EditorSproutyDialogsFileField = %CharacterFileField
@@ -43,22 +47,21 @@ var _collapse_down_icon = preload("res://addons/sprouty_dialogs/editor/icons/int
 
 func _ready():
 	super ()
-	if graph_editor is GraphEdit:
-		# Connect signals to open and update text editor
-		_translation_boxes.open_text_editor.connect(graph_editor.open_text_editor.emit)
-		_default_text_box.open_text_editor.connect(graph_editor.open_text_editor.emit)
-		_translation_boxes.update_text_editor.connect(graph_editor.update_text_editor.emit)
-		_default_text_box.update_text_editor.connect(graph_editor.update_text_editor.emit)
+	# Connect signals to open and update text editor
+	_translation_boxes.open_text_editor.connect(open_text_editor.emit)
+	_default_text_box.open_text_editor.connect(open_text_editor.emit)
+	_translation_boxes.update_text_editor.connect(update_text_editor.emit)
+	_default_text_box.update_text_editor.connect(update_text_editor.emit)
 
-		# Connect signals to mark the graph as modified
-		_translation_boxes.modified.connect(graph_editor.on_modified)
-		_default_text_box.text_changed.connect(graph_editor.on_modified)
+	# Connect signals to mark the graph as modified
+	_translation_boxes.modified.connect(modified.emit)
+	_default_text_box.text_changed.connect(modified.emit)
 
-		# Connect signals for character selection
-		_portrait_dropdown.item_selected.connect(graph_editor.on_modified.unbind(1))
-		open_character_file_request.connect(
-			graph_editor.open_character_file_request.emit.bind(get_character_path())
-		)
+	# Connect signals for character selection
+	_portrait_dropdown.item_selected.connect(modified.emit.unbind(1))
+	open_character_file_request.connect(
+		open_character_file_request.emit.bind(get_character_path())
+	)
 	_character_expand_button.toggled.connect(_on_expand_character_button_toggled)
 	_character_file_field.path_changed.connect(load_character)
 	_character_name_button.disabled = true
@@ -69,7 +72,7 @@ func _ready():
 
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = graph_editor.get_node_connections(name)
+	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
@@ -141,7 +144,7 @@ func load_character(path: String) -> void:
 		_character_name_button.pressed.connect(open_character_file_request.emit.bind(path))
 	_set_portrait_dropdown(character)
 	_character_data = character
-	graph_editor.on_modified()
+	modified.emit(true)
 
 
 ## Load the character portrait

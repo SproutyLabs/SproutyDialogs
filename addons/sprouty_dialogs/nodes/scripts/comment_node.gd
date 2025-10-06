@@ -15,6 +15,8 @@ extends SproutyDialogsBaseNode
 
 func _ready():
 	super ()
+	# Connect text changed signal
+	text_input.text_changed.connect(_on_input_text_changed)
 
 
 func get_data() -> Dictionary:
@@ -40,5 +42,6 @@ func set_data(dict: Dictionary) -> void:
 
 
 func _on_input_text_changed() -> void:
-	comment_text = text_input.text
-	graph_editor.on_modified()
+	if comment_text != text_input.text:
+		comment_text = text_input.text
+		modified.emit(true)

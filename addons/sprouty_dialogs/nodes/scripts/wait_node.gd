@@ -47,5 +47,6 @@ func set_data(dict: Dictionary) -> void:
 #endregion
 
 func _on_time_value_changed(value: float) -> void:
-	time_value = value
-	graph_editor.on_modified()
+	if time_value != value:
+		time_value = value
+		modified.emit(true)

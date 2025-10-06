@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://hxn726na6i6v"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/editor/theme/main_theme.tres" id="1_0q2mk"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_0q2mk"]
 [ext_resource type="Texture2D" uid="uid://dutvcwiqufcor" path="res://addons/sprouty_dialogs/editor/icons/nodes/comment.svg" id="3_g6856"]
 [ext_resource type="Script" uid="uid://cybxpd2fvt5vq" path="res://addons/sprouty_dialogs/nodes/scripts/comment_node.gd" id="5_achcx"]
 
@@ -56,5 +56,3 @@ custom_minimum_size = Vector2(150, 100)
 layout_mode = 2
 size_flags_vertical = 3
 placeholder_text = "Write a comment..."
-
-[connection signal="text_changed" from="TextInput" to="." method="_on_input_text_changed"]

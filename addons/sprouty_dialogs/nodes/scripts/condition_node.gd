@@ -7,8 +7,10 @@ extends SproutyDialogsBaseNode
 ## Node to add branches conditions to the dialog tree.
 # -----------------------------------------------------------------------------
 
-## Emitted when press the expand button in the string value field
-signal open_text_editor(text_edit: TextEdit)
+## Emitted when press the expand button in the text box field
+signal open_text_editor(text_box: TextEdit)
+## Emitted when the text box field gains focus and should update the text editor
+signal update_text_editor(text_box: TextEdit)
 
 ## Operator dropdown selector
 @onready var operator_dropdown: OptionButton = $Container/OperatorDropdown
@@ -23,7 +25,9 @@ func _ready():
 	super ()
 	_set_type_dropdown($Container/FirstVar/TypeField, 0)
 	_set_type_dropdown($Container/SecondVar/TypeField, 1)
+	
 	# Set the operators in the operator dropdown
+	operator_dropdown.item_selected.connect(_on_operator_changed)
 	var operators = EditorSproutyDialogsVariableManager.get_comparison_operators()
 	operator_dropdown.clear()
 	for operator in operators.keys():
@@ -94,7 +98,7 @@ func set_data(dict: Dictionary) -> void:
 func _on_type_selected(type_index: int, field_index: int) -> void:
 	var type = _type_dropdowns[field_index].get_item_id(type_index)
 	_set_value_field(type, field_index)
-	graph_editor.on_modified()
+	modified.emit(true)
 	_on_resized()
 
 
@@ -102,13 +106,16 @@ func _on_type_selected(type_index: int, field_index: int) -> void:
 func _set_value_field(type: int, field_index: int) -> void:
 	var value_field = $Container/FirstVar/ValueField if field_index == 0 \
 			else $Container/SecondVar/ValueField
+	
 	# Remove the previous value field if it exists
 	if value_field.get_child_count() > 0:
 		var field = value_field.get_child(0)
 		value_field.remove_child(field)
 		field.queue_free()
+	
 	# Set the value field based on the variable type
-	var field_data = EditorSproutyDialogsVariableManager.get_field_by_type(type, _on_value_changed.bind(field_index))
+	var field_data = EditorSproutyDialogsVariableManager.get_field_by_type(
+			type, _on_value_changed.bind(field_index))
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	value_field.add_child(field_data.field)
 	_var_values[field_index] = field_data.default_value
@@ -116,12 +123,18 @@ func _set_value_field(type: int, field_index: int) -> void:
 	if type == TYPE_STRING: # Connect the expand button to open the text editor
 		var text_box = field_data.field.get_node("TextEdit")
 		field_data.field.get_node("ExpandButton").pressed.connect(
-			graph_editor.open_text_editor.emit.bind(text_box))
-		text_box.focus_entered.connect(
-			graph_editor.update_text_editor.emit.bind(text_box))
+				open_text_editor.emit.bind(text_box))
+		text_box.focus_entered.connect(update_text_editor.emit.bind(text_box))
 
 
 ## Handle when the value changes in any of the value fields
 func _on_value_changed(value: Variant, field_index: int) -> void:
-	_var_values[field_index] = value
-	graph_editor.on_modified()
+	if _var_values[field_index] != value:
+		_var_values[field_index] = value
+		modified.emit(true)
+
+
+## Handle when the operator is changed in the operator dropdown
+func _on_operator_changed(operator_index: int) -> void:
+	if operator_dropdown.selected != operator_index:
+		modified.emit(true)
