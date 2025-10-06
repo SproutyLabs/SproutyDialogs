@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://chmw64xy0cmck"]
 
 [ext_resource type="Script" uid="uid://cqis4e6pcwteo" path="res://addons/sprouty_dialogs/editor/scripts/editor.gd" id="1_gu2d1"]
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme//theme/main_theme.tres" id="1_h283m"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_h283m"]
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/sprouty_dialogs/editor/modules/file_manager/file_manager.tscn" id="1_qbi36"]
 [ext_resource type="PackedScene" uid="uid://d0gf52rcd1hn" path="res://addons/sprouty_dialogs/editor/modules/characters/character_panel.tscn" id="3_7mghu"]
 [ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/sprouty_dialogs/editor/modules/workspace/workspace.tscn" id="4_yuhh0"]
@@ -10,7 +10,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_22uar"]
 
-[node name="Main" type="Control"]
+[node name="Editor" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

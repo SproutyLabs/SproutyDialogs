@@ -51,6 +51,9 @@ var _new_char_icon := preload("res://addons/sprouty_dialogs/editor/icons/add-cha
 var _graph_scene := preload("res://addons/sprouty_dialogs/editor/modules/workspace/graph.tscn")
 var _char_scene := preload("res://addons/sprouty_dialogs/editor/modules/characters/character_editor.tscn")
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready() -> void:
 	# Connect signals
@@ -122,8 +125,8 @@ func new_dialog_file(path: String) -> void:
 ## Create a new graph instance and load the data from a resource
 func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> GraphEdit:
 	var graph = _graph_scene.instantiate()
-	add_child(graph)
 	graph.modified.connect(_on_data_modified)
+	add_child(graph)
 	var dialogs = resource.dialogs if resource.dialogs else {}
 	# Load dialogs from CSV file if translation is enabled
 	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
@@ -177,6 +180,7 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 func load_file(path: String) -> void:
 	if FileAccess.file_exists(path):
 		var resource = load(path)
+		EditorSproutyDialogsFileUtils.set_recent_file_path("graph_dialogs_files", path)
 
 		if resource is SproutyDialogsDialogueData:
 			EditorSproutyDialogsFileUtils.set_recent_file_path("dialogue_files", path)
@@ -187,15 +191,18 @@ func load_file(path: String) -> void:
 				csv_path = ResourceUID.get_id_path(csv_path_uid)
 			_file_list.new_file_item(path, resource, graph, csv_path)
 			request_to_switch_tab.emit(0)
+			_save_file_button.disabled = false
 		
 		elif resource is SproutyDialogsCharacterData:
 			EditorSproutyDialogsFileUtils.set_recent_file_path("character_files", path)
 			var char_editor = _new_character_from_resource(resource)
 			_file_list.new_file_item(path, resource, char_editor)
 			request_to_switch_tab.emit(1)
-
-		_save_file_button.disabled = false
-		EditorSproutyDialogsFileUtils.set_recent_file_path("graph_dialogs_files", path)
+			_save_file_button.disabled = false
+		
+		else:
+			printerr("[Sprouty Dialogs] File " + path + " is not a valid dialogue or character resource.")
+			return
 	else:
 		printerr("[Sprouty Dialogs] File " + path + "does not exist.")
 

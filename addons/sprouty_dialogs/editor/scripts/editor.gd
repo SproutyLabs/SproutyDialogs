@@ -35,9 +35,19 @@ extends Control
 	preload("res://addons/sprouty_dialogs/editor/icons/settings.svg")
 ]
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready():
 	set_tabs_icons()
+	
+	# Set undo redo manager
+	workspace.undo_redo = undo_redo
+	character_panel.undo_redo = undo_redo
+	variables_panel.undo_redo = undo_redo
+	settings_panel.undo_redo = undo_redo
+	file_manager.undo_redo = undo_redo
 
 	# File manager signals
 	file_manager.all_dialog_files_closed.connect(workspace.show_start_panel)

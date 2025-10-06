@@ -13,6 +13,9 @@ extends Container
 ## Text editor for edit string variables
 @onready var _text_editor: Control = $TextEditor
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready():
 	# Connect signals

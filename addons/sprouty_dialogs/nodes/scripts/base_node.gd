@@ -36,6 +36,9 @@ var node_type: String = ""
 ## Index of the node in the graph editor.
 var node_index: int = 0
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 ## Get the node data as a dictionary.
 ## This method should be overridden in each node.

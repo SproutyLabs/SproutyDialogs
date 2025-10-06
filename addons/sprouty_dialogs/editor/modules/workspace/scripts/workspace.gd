@@ -33,6 +33,9 @@ signal play_dialog_request(start_id: String)
 ## Open dialog button reference (from start panel)
 @onready var _open_dialog_button: Button = %OpenDialogButton
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready() -> void:
 	_new_dialog_button.pressed.connect(new_dialog_file_pressed.emit)
@@ -57,12 +60,15 @@ func switch_current_graph(new_graph: GraphEdit) -> void:
 	# Remove old graph and switch to the new one
 	if _graph_editor.get_child_count() > 0:
 		_graph_editor.remove_child(_graph_editor.get_child(0))
-	# Asign text editor reference to the new graph
+	
+	# Connect signals to the new graph
 	if not new_graph.is_connected("open_text_editor", _text_editor.show_text_editor):
 		new_graph.open_text_editor.connect(_text_editor.show_text_editor)
 		new_graph.update_text_editor.connect(_text_editor.update_text_editor)
 		new_graph.open_character_file_request.connect(open_character_file_request.emit)
 		new_graph.play_dialog_request.connect(play_dialog_request.emit)
+	
+	new_graph.undo_redo = undo_redo
 	_graph_editor.add_child(new_graph)
 	show_graph_editor()
 

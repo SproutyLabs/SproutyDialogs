@@ -60,6 +60,9 @@ var _request_port: int = -1
 ## Cursor position
 var _cursor_pos: Vector2 = Vector2.ZERO
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _init() -> void:
 	node_selected.connect(_on_node_selected)
@@ -81,8 +84,8 @@ func _ready():
 	_node_actions_menu.id_pressed.connect(_on_node_actions_menu_selected)
 
 	_nodes_references = _get_nodes_references(NODES_PATH)
-	set_node_actions_menu()
-	set_add_node_menu()
+	_set_node_actions_menu()
+	_set_add_node_menu()
 
 
 func _input(_event):
@@ -114,6 +117,7 @@ func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_
 	new_node.position_offset = node_offset
 	new_node.node_index = node_index
 	new_node.node_type = node_type
+	new_node.undo_redo = undo_redo
 	add_child(new_node, true)
 
 	# Connect translation signals
@@ -136,7 +140,7 @@ func _get_nodes_references(path: String) -> Dictionary:
 
 ## Get the next available index for a node type
 ## This is used to ensure that the node index is unique
-func get_next_available_index(node_type: String) -> int:
+func _get_next_available_index(node_type: String) -> int:
 	var used_indices := []
 	for child in get_children():
 		if child is SproutyDialogsBaseNode and child.node_type == node_type:
@@ -276,7 +280,7 @@ func load_graph_data(data: SproutyDialogsDialogueData, dialogs: Dictionary) -> v
 #region === Popup Menus ========================================================
 
 ## Set nodes list on popup node menu
-func set_add_node_menu() -> void:
+func _set_add_node_menu() -> void:
 	_add_node_menu.clear()
 	var index = 0
 	for node in _nodes_references:
@@ -288,7 +292,7 @@ func set_add_node_menu() -> void:
 
 
 ## Set icons on node actions menu
-func set_node_actions_menu(has_selection: bool = false, paste_enabled: bool = false) -> void:
+func _set_node_actions_menu(has_selection: bool = false, paste_enabled: bool = false) -> void:
 	_node_actions_menu.clear()
 	_node_actions_menu.add_icon_item(get_theme_icon("Add", "EditorIcons"), "Add Node", 0)
 	_node_actions_menu.add_separator()
@@ -326,7 +330,7 @@ func _show_popup_menu(menu: PopupMenu, pos: Vector2) -> void:
 ## Add node from pop-up menu
 func _on_add_node_menu_selected(id: int) -> void:
 	var node_type = _add_node_menu.get_item_metadata(id)
-	add_new_node(node_type)
+	_add_new_node(node_type)
 
 
 ## Handle node actions from the pop-up menu
@@ -353,14 +357,14 @@ func _on_right_click(pos: Vector2) -> void:
 	# Show node actions menu if nodes are selected
 	if _selected_nodes.size() > 0:
 		if _nodes_copy.size() > 0:
-			set_node_actions_menu(true, true)
+			_set_node_actions_menu(true, true)
 			_show_popup_menu(_node_actions_menu, pos)
 		else:
-			set_node_actions_menu(true, false)
+			_set_node_actions_menu(true, false)
 			_show_popup_menu(_node_actions_menu, pos)
 	# Show only paste option if nodes are copied but no nodes are selected
 	elif _nodes_copy.size() > 0:
-		set_node_actions_menu(false, true)
+		_set_node_actions_menu(false, true)
 		_show_popup_menu(_node_actions_menu, pos)
 	else: # Show add node menu if no nodes are selected
 		_show_popup_menu(_add_node_menu, pos)
@@ -370,24 +374,60 @@ func _on_right_click(pos: Vector2) -> void:
 #region === Nodes Operations ===================================================
 
 ## Add a new node to the graph
-func add_new_node(node_type: String) -> void:
-	var new_index = get_next_available_index(node_type)
+func _add_new_node(node_type: String) -> void:
+	var new_index = _get_next_available_index(node_type)
 	var new_node = _new_node(node_type, new_index, _cursor_pos)
+	var prev_connection := get_node_output_connections(_request_node, _request_port)
 	new_node.selected = true
 	on_modified()
 	
 	# Connect to a previous node if requested
 	if _request_port > -1 and new_node.is_slot_enabled_left(0):
-		var prev_connection := get_node_output_connections(_request_node, _request_port)
 		if prev_connection.size() > 0:
+			# Disconnect previous connection first
 			disconnect_node(_request_node, _request_port,
 				prev_connection[0]['to_node'], prev_connection[0]['to_port'])
+			# Update the start node of the disconnected node to null
 			get_node(NodePath(prev_connection[0]["to_node"])).start_node = null
-		
+		# Connect the new node to the requested node
 		connect_node(_request_node, _request_port, new_node.name, 0)
 		new_node.start_node = get_node(NodePath(_request_node)).start_node
 		_request_node = ""
 		_request_port = -1
+	
+	#region --- UndoRedo -------------------------------------------------
+
+	# Use UndoRedo to add the new node
+	undo_redo.create_action("Add " + node_type.capitalize())
+	undo_redo.add_do_method(self, "add_child", new_node)
+	undo_redo.add_do_reference(new_node)
+	undo_redo.add_do_method(self, "on_modified")
+	undo_redo.add_undo_method(self, "on_modified")
+
+	# Connect to a previous node if requested
+	if _request_port > -1 and new_node.is_slot_enabled_left(0):
+		if prev_connection.size() > 0:
+			# Disconnect previous connection first
+			undo_redo.add_do_method(self, "disconnect_node", _request_node, _request_port,
+					prev_connection[0]["to_node"], prev_connection[0]["to_port"]
+				)
+			undo_redo.add_undo_method(self, "connect_node", _request_node, _request_port,
+					prev_connection[0]["to_node"], prev_connection[0]["to_port"]
+				)
+			# Update the start node of the disconnected node to null
+			undo_redo.add_do_property(get_node(NodePath(prev_connection[0]["to_node"])), "start_node", null)
+			undo_redo.add_undo_property(get_node(NodePath(prev_connection[0]["to_node"])), "start_node",
+					get_node(NodePath(_request_node)).start_node
+				)
+		# Connect the new node to the requested node
+		undo_redo.add_do_method(self, "connect_node", _request_node, _request_port, new_node.name, 0)
+		undo_redo.add_undo_method(self, "disconnect_node", _request_node, _request_port, new_node.name, 0)
+	
+	undo_redo.add_undo_method(self, "remove_child", new_node)
+	undo_redo.add_undo_method(self, "_deselect_all_nodes")
+	undo_redo.commit_action(false)
+	
+	#endregion ---------------------------------------------------------
 
 
 ## Delete a node from graph
@@ -397,15 +437,38 @@ func delete_node(node: GraphNode) -> void:
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
 	_selected_nodes.erase(node)
-	node.queue_free()
+	remove_child(node)
 	on_modified()
+
+	#region --- UndoRedo -------------------------------------------------
+
+	undo_redo.create_action("Delete " + node.node_type.capitalize())
+	
+	for connection in node_connections: # Disconnect all connections
+		undo_redo.add_do_method(self, "disconnect_node", connection["from_node"],
+			connection["from_port"], connection["to_node"], connection["to_port"])
+		undo_redo.add_undo_method(self, "connect_node", connection["from_node"],
+			connection["from_port"], connection["to_node"], connection["to_port"])
+	
+	undo_redo.add_do_method(self, "_on_node_deselected", node)
+	undo_redo.add_undo_method(self, "_on_node_selected", node)
+
+	undo_redo.add_do_method(self, "remove_child", node)
+	undo_redo.add_undo_method(self, "add_child", node)
+	undo_redo.add_undo_reference(node)
+
+	undo_redo.add_do_method(self, "on_modified")
+	undo_redo.add_undo_method(self, "on_modified")
+	undo_redo.commit_action(false)
+	
+	#endregion ---------------------------------------------------------
 
 
 ## Create a copy of a node from the graph
-func copy_node(node: GraphNode) -> GraphNode:
+func _copy_node(node: GraphNode) -> GraphNode:
 	var new_node = _new_node(
 		node.node_type,
-		get_next_available_index(node.node_type),
+		_get_next_available_index(node.node_type),
 		node.position_offset,
 		false # Do not add to count here, it will be added later
 	)
@@ -436,8 +499,8 @@ func _on_duplicate_nodes() -> void:
 		return
 	var _duplicate_nodes = _selected_nodes.duplicate()
 	for node in _duplicate_nodes:
-		var new_index = get_next_available_index(node.node_type)
-		var new_node = copy_node(node)
+		var new_index = _get_next_available_index(node.node_type)
+		var new_node = _copy_node(node)
 		new_node.node_index = new_index
 		new_node.name = node.node_type + "_" + str(new_index)
 		new_node.title = new_node.title.split("#")[0] + "#" + str(new_index)
@@ -462,7 +525,7 @@ func _on_copy_nodes() -> void:
 	if _selected_nodes.size() == 0:
 		return
 	for node in _selected_nodes:
-		var new_node = copy_node(node)
+		var new_node = _copy_node(node)
 		_nodes_copy.append(new_node)
 
 
@@ -505,7 +568,7 @@ func _on_paste_nodes() -> void:
 		if _copied_nodes[node.name]: # Deselect original nodes
 			_copied_nodes[node.name].selected = false
 		
-		var new_index = get_next_available_index(node.node_type)
+		var new_index = _get_next_available_index(node.node_type)
 		node.node_index = new_index
 		node.name = node.node_type + "_" + str(new_index)
 		node.title = node.title.split("#")[0] + "#" + str(new_index)
@@ -524,7 +587,7 @@ func _on_paste_nodes() -> void:
 ## Rename the node if it already exists
 func _rename_if_exists(node: GraphNode) -> void:
 	if get_node_or_null(NodePath(node.name)) != null:
-		var new_index = get_next_available_index(node.node_type)
+		var new_index = _get_next_available_index(node.node_type)
 		node.name = node.node_type + "_" + str(new_index)
 		node.title = node.title.split("#")[0] + "#" + str(new_index)
 		node.node_index = new_index
@@ -550,6 +613,13 @@ func _on_node_selected(node: GraphNode) -> void:
 ## Called when a node is deselected
 func _on_node_deselected(node: GraphNode) -> void:
 	_selected_nodes.erase(node)
+
+
+## Deselect all selected nodes
+func _deselect_all_nodes() -> void:
+	for node in _selected_nodes:
+		node.selected = false
+	_selected_nodes.clear()
 
 
 ## Check if graph do not have nodes

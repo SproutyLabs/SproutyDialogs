@@ -1,12 +1,12 @@
 @tool
 extends EditorPlugin
 
-const MAIN_PANEL = preload("res://addons/sprouty_dialogs/editor/editor.tscn")
+const EDITOR_MAIN = preload("res://addons/sprouty_dialogs/editor/editor.tscn")
 const AUTOLOAD_NAME := "SproutyDialogs"
 const PLUGIN_ICON_PATH := "res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg"
 const PLUGIN_MANAGER_PATH := "res://addons/sprouty_dialogs/sprouty_dialogs_manager.gd"
 
-var main_panel_instance
+var editor: Control
 
 
 func _enable_plugin() -> void:
@@ -23,16 +23,19 @@ func _disable_plugin() -> void:
 
 
 func _enter_tree():
-	main_panel_instance = MAIN_PANEL.instantiate()
+	editor = EDITOR_MAIN.instantiate()
+
+	# Get undo redo manager
+	editor.undo_redo = get_undo_redo()
 
 	# Add the main panel to the editor"s main viewport.
-	EditorInterface.get_editor_main_screen().add_child(main_panel_instance)
-	_make_visible(false) # Hide the main panel. Very much required.
+	EditorInterface.get_editor_main_screen().add_child(editor)
+	_make_visible(false) # Hide the main panel initially.
 
 
 func _exit_tree():
-	if main_panel_instance:
-		main_panel_instance.queue_free()
+	if editor:
+		editor.queue_free()
 
 
 func _has_main_screen():
@@ -40,8 +43,8 @@ func _has_main_screen():
 
 
 func _make_visible(visible):
-	if main_panel_instance:
-		main_panel_instance.visible = visible
+	if editor:
+		editor.visible = visible
 
 
 func _get_plugin_name():

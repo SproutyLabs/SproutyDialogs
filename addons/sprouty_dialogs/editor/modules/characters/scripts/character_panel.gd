@@ -22,6 +22,9 @@ signal open_character_file_pressed
 ## Open character button reference (from start panel)
 @onready var _open_character_button: Button = %OpenCharacterButton
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready() -> void:
 	_new_character_button.pressed.connect(new_character_file_pressed.emit)

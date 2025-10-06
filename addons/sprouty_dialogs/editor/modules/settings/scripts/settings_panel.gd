@@ -22,6 +22,9 @@ extends TabContainer
 	preload("res://addons/sprouty_dialogs/editor/icons/translation.svg")
 ]
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready():
 	set_tabs_icons()
