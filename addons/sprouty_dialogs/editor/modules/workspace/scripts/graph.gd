@@ -62,6 +62,8 @@ var _cursor_pos: Vector2 = Vector2.ZERO
 
 ## Modified counter to track changes
 var _modified_counter: int = 0
+## Action name for the last modification
+var _last_action_name: String = ""
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
@@ -110,13 +112,24 @@ func on_translation_enabled_changed(enabled: bool):
 ## Increment the modified counter and emit the modified signal
 func _on_modified(_arg: Variant = null) -> void:
 	_modified_counter += 1
+	print("_modified_counter: ", _modified_counter)
 	modified.emit(_modified_counter > 0)
 
 
 ## Decrement the modified counter and emit the modified signal
 func _on_unmodified() -> void:
-	_modified_counter -= 1
+	if _modified_counter > 0:
+		_modified_counter -= 1
+	print("_modified_counter: ", _modified_counter)
 	modified.emit(_modified_counter > 0)
+
+
+## Handle when a node is modified
+func _on_node_modified(modified: bool) -> void:
+	if modified:
+		_on_modified()
+	else:
+		_on_unmodified()
 
 
 ## Get the nodes scene references from the nodes folder
@@ -162,7 +175,7 @@ func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_
 
 ## Connect node signals
 func _connect_node_signals(node: SproutyDialogsBaseNode) -> void:
-	node.modified.connect(_on_modified)
+	node.modified.connect(_on_node_modified)
 	node.dragged.connect(_on_node_dragged.bind(node))
 
 	# Connect text editor signals
@@ -186,7 +199,7 @@ func _connect_node_signals(node: SproutyDialogsBaseNode) -> void:
 
 ## Disconnect node signals
 func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
-	node.modified.disconnect(_on_modified)
+	node.modified.disconnect(_on_node_modified)
 	node.dragged.disconnect(_on_node_dragged.bind(node))
 
 	# Disconnect text editor signals

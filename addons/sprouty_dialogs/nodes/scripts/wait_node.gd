@@ -8,15 +8,22 @@ extends SproutyDialogsBaseNode
 # -----------------------------------------------------------------------------
 
 ## Time input spin box
-@onready var time_input: SpinBox = $Container/SpinBox
+@onready var _time_input: SpinBox = $Container/SpinBox
 ## Wait time value
-@onready var time_value: float = time_input.value
+@onready var _wait_time: float = _time_input.value
+
+## Flag to check if the time was modified
+var _time_modified: bool = false
 
 
 func _ready():
 	super ()
+	# Connect time input signals
+	_time_input.value_changed.connect(_on_time_value_changed)
+	_time_input.focus_exited.connect(_on_time_input_focus_exited)
 
-#region === Overridden Methods =================================================
+
+#region === Node Data ==========================================================
 
 func get_data() -> Dictionary:
 	var dict := {}
@@ -25,7 +32,7 @@ func get_data() -> Dictionary:
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
-		"time": time_value,
+		"wait_time": _wait_time,
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
 		"offset": position_offset,
@@ -41,12 +48,32 @@ func set_data(dict: Dictionary) -> void:
 	position_offset = dict["offset"]
 	size = dict["size"]
 
-	time_value = dict["time"]
-	time_input.value = dict["time"]
+	_wait_time = dict["wait_time"]
+	_time_input.value = dict["wait_time"]
 
 #endregion
 
+
 func _on_time_value_changed(value: float) -> void:
-	if time_value != value:
-		time_value = value
+	if _wait_time != value:
+		var temp = _wait_time
+		_wait_time = value
+		_time_modified = true
+
+		# --- UndoRedo --------------------------------------------------
+		undo_redo.create_action("Edit Wait Time", 1)
+		undo_redo.add_do_property(self, "_wait_time", _wait_time)
+		undo_redo.add_do_property(_time_input, "value", _wait_time)
+		undo_redo.add_undo_property(self, "_wait_time", temp)
+		undo_redo.add_undo_property(_time_input, "value", temp)
+
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.commit_action(false)
+		# ---------------------------------------------------------------
+
+
+func _on_time_input_focus_exited() -> void:
+	if _time_modified:
+		_time_modified = false
 		modified.emit(true)

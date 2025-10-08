@@ -51,8 +51,7 @@ var undo_redo: EditorUndoRedoManager
 
 
 func _ready():
-	# Set node type based on the node name
-	node_type = name.to_snake_case().split("_node_")[0] + "_node"
+	resized.connect(_on_resized)
 	_set_node_titlebar()
 
 

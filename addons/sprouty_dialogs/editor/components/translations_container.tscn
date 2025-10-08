@@ -21,12 +21,18 @@ toggle_mode = true
 icon = ExtResource("2_8u1nn")
 flat = true
 
-[node name="TextBoxes" type="VBoxContainer" parent="."]
-unique_name_in_owner = true
-visible = false
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(150, 160)
 layout_mode = 2
+horizontal_scroll_mode = 0
 
-[node name="TranslationBox" parent="TextBoxes" instance=ExtResource("3_sqsni")]
+[node name="TextBoxes" type="VBoxContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TranslationBox" parent="ScrollContainer/TextBoxes" instance=ExtResource("3_sqsni")]
 custom_minimum_size = Vector2(150, 100)
 layout_mode = 2
 

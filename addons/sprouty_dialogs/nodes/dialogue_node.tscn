@@ -30,14 +30,14 @@ border_width_right = 2
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="DPITexture" id="DPITexture_ab75r"]
+[sub_resource type="DPITexture" id="DPITexture_euyob"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
 [node name="DialogueNode" type="GraphNode"]
 custom_minimum_size = Vector2(250, 0)
 offset_right = 250.0
-offset_bottom = 430.0
+offset_bottom = 395.0
 size_flags_vertical = 3
 theme = ExtResource("1_05qy5")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_lcatj")
@@ -134,11 +134,11 @@ icon = ExtResource("5_hoe8b")
 visible = false
 
 [node name="OpenButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="2"]
-icon = SubResource("DPITexture_ab75r")
+icon = SubResource("DPITexture_euyob")
 
 [node name="ClearButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="3"]
 size_flags_horizontal = 8
-icon = SubResource("DPITexture_ab75r")
+icon = SubResource("DPITexture_euyob")
 
 [node name="OpenDialog" parent="CharacterContainer/Content/CharacterFileField" index="1"]
 ok_button_text = "Open File"
@@ -175,11 +175,12 @@ text = "Dialogue"
 
 [node name="DefaultLocaleLabel" type="Label" parent="DialogContainer/DialogHeader"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_05qy5")
 theme_type_variation = &"LocaleLabel"
-text = "(es)"
+text = "()"
 horizontal_alignment = 2
 
 [node name="DefaultTextBox" parent="DialogContainer" instance=ExtResource("6_2llfw")]
@@ -189,6 +190,7 @@ layout_mode = 2
 
 [node name="Translations" parent="DialogContainer" instance=ExtResource("5_kt63k")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="HSeparator" type="HSeparator" parent="DialogContainer"]
@@ -203,7 +205,6 @@ horizontal_alignment = 2
 layout_mode = 2
 theme_override_constants/margin_top = 0
 
-[connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="resized" from="DialogContainer" to="." method="_on_resized"]
 
 [editable path="CharacterContainer/Content/CharacterFileField"]

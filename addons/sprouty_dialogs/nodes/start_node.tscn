@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://cu41jslmdjohb"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/editor/theme/main_theme.tres" id="1_jdnrk"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_jdnrk"]
 [ext_resource type="Script" uid="uid://kgje42uy42vb" path="res://addons/sprouty_dialogs/nodes/scripts/start_node.gd" id="5_3ppuo"]
 [ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/sprouty_dialogs/editor/icons/nodes/play.svg" id="6_6olnj"]
 
@@ -28,7 +28,7 @@ corner_radius_top_right = 5
 [node name="StartNode" type="GraphNode"]
 custom_minimum_size = Vector2(180, 0)
 offset_right = 180.0
-offset_bottom = 88.0
+offset_bottom = 97.0
 size_flags_vertical = 4
 theme = ExtResource("1_jdnrk")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_3wpa2")
@@ -68,9 +68,3 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Label..."
-
-[connection signal="node_deselected" from="." to="." method="_on_node_deselected"]
-[connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]
-[connection signal="focus_exited" from="Container/IDInput" to="." method="_on_id_input_focus_exited"]
-[connection signal="text_changed" from="Container/IDInput" to="." method="_on_id_input_changed"]

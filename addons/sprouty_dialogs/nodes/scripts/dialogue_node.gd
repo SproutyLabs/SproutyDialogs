@@ -40,6 +40,14 @@ var _dialogs_text: Dictionary = {}
 ## Character data resource
 var _character_data: SproutyDialogsCharacterData
 
+## Current default dialog text (for UndoRedo)
+var _default_text: String = ""
+## Flag to check if the default text was modified (for UndoRedo)
+var _default_text_modified: bool = false
+
+## Previous selected portrait index (for UndoRedo)
+var _previous_portrait_index: int = 0
+
 ## Collapse/Expand icons
 var _collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
 var _collapse_down_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg")
@@ -53,18 +61,21 @@ func _ready():
 	_translation_boxes.update_text_editor.connect(update_text_editor.emit)
 	_default_text_box.update_text_editor.connect(update_text_editor.emit)
 
-	# Connect signals to mark the graph as modified
+	# Connect signals for text changes
 	_translation_boxes.modified.connect(modified.emit)
-	_default_text_box.text_changed.connect(modified.emit)
+	_default_text_box.text_changed.connect(_on_default_text_changed)
+	_default_text_box.focus_exited.connect(_on_default_focus_exited)
 
 	# Connect signals for character selection
-	_portrait_dropdown.item_selected.connect(modified.emit.unbind(1))
+	_portrait_dropdown.item_selected.connect(_on_portrait_selected)
 	open_character_file_request.connect(
 		open_character_file_request.emit.bind(get_character_path())
 	)
 	_character_expand_button.toggled.connect(_on_expand_character_button_toggled)
-	_character_file_field.path_changed.connect(load_character)
+	_character_file_field.path_changed.connect(_on_character_changed)
 	_character_name_button.disabled = true
+
+	_translation_boxes.undo_redo = undo_redo
 	_set_translation_text_boxes()
 
 
@@ -144,7 +155,6 @@ func load_character(path: String) -> void:
 		_character_name_button.pressed.connect(open_character_file_request.emit.bind(path))
 	_set_portrait_dropdown(character)
 	_character_data = character
-	modified.emit(true)
 
 
 ## Load the character portrait
@@ -155,6 +165,40 @@ func load_portrait(portrait: String) -> void:
 	
 	var portrait_index = _find_dropdown_item(_portrait_dropdown, portrait)
 	_portrait_dropdown.select(portrait_index)
+
+
+## Handle the character file path changed signal
+func _on_character_changed(path: String) -> void:
+	var previous_character_path = get_character_path()
+	var previous_portrait = _portrait_dropdown.selected
+	load_character(path)
+	modified.emit(true)
+
+	# --- UndoRedo ----------------------------------------------------------
+	undo_redo.create_action("Assign Character")
+	undo_redo.add_do_method(self, "load_character", path)
+	undo_redo.add_undo_method(self, "load_character", previous_character_path)
+	undo_redo.add_undo_property(_portrait_dropdown, "selected", previous_portrait)
+	
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# -----------------------------------------------------------------------
+
+
+## Handle the portrait dropdown item selected signal
+func _on_portrait_selected(index: int) -> void:
+	# --- UndoRedo ----------------------------------------------------------
+	undo_redo.create_action("Select Portrait")
+	undo_redo.add_do_property(_portrait_dropdown, "selected", index)
+	undo_redo.add_do_property(self, "_previous_portrait_index", index)
+	undo_redo.add_undo_property(_portrait_dropdown, "selected", _previous_portrait_index)
+	undo_redo.add_undo_property(self, "_previous_portrait_index", _previous_portrait_index)
+
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action()
+	# -----------------------------------------------------------------------
 
 
 ## Clear the character field and reset the portrait dropdown
@@ -245,8 +289,10 @@ func load_dialogs(dialogs: Dictionary) -> void:
 	
 	if _translations_enabled and dialogs.has(_default_locale):
 		_default_text_box.set_text(dialogs[_default_locale])
+		_default_text = dialogs[_default_locale]
 	else: # Use default if translations disabled or no default locale dialog
 		_default_text_box.set_text(dialogs["default"])
+		_default_text = dialogs["default"]
 	_translation_boxes.load_translations_text(dialogs)
 
 
@@ -295,5 +341,33 @@ func _set_translation_text_boxes() -> void:
 		)
 	%DefaultLocaleLabel.visible = _translations_enabled and _default_locale != ""
 	_translation_boxes.visible = _translations_enabled and locales.size() > 1
+
+
+## Handle the default text box text changed signal
+func _on_default_text_changed(new_text: String = "") -> void:
+	if _default_text != _default_text_box.get_text():
+		var temp = _default_text
+		_default_text = _default_text_box.get_text()
+		_default_text_modified = true
+
+		# --- UndoRedo ----------------------------------------------------------
+		undo_redo.create_action("Edit Dialog Text"
+			+ (" (" + _default_locale + ")") if _default_locale != "" else "", 1)
+		undo_redo.add_do_property(self, "_default_text", _default_text)
+		undo_redo.add_do_method(_default_text_box, "set_text", _default_text)
+		undo_redo.add_undo_property(self, "_default_text", temp)
+		undo_redo.add_undo_method(_default_text_box, "set_text", temp)
+
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.commit_action(false)
+		# -----------------------------------------------------------------------
+
+
+## Handle the default text box focus exited signal
+func _on_default_focus_exited() -> void:
+	if _default_text_modified:
+		_default_text_modified = false
+		modified.emit(true)
 
 #endregion

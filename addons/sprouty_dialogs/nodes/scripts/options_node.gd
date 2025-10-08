@@ -12,26 +12,20 @@ signal open_text_editor(text_box: TextEdit)
 ## Emitted when a text box field gains focus and should update the text editor
 signal update_text_editor(text_box: TextEdit)
 
-## First option container
-@onready var _first_option: EditorSproutyDialogsOptionContainer = $OptionContainer
 ## Option container template
 @onready var _option_scene := preload("res://addons/sprouty_dialogs/nodes/components/option_container.tscn")
+
+## First option container
+var _first_option: EditorSproutyDialogsOptionContainer
 
 ## List of options keys
 var _options_keys: Array = []
 
+
 func _ready():
 	super ()
 	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
-	if _first_option: # Connect signals for the first option container
-		_first_option.open_text_editor.connect(open_text_editor.emit)
-		_first_option.update_text_editor.connect(update_text_editor.emit)
-		_first_option.option_removed.connect(_on_option_removed)
-		_first_option.modified.connect(modified.emit)
-		_first_option.resized.connect(func():
-			position_offset.y += 0.01
-			_on_resized()
-			)
+	_first_option = _add_new_option() # Add the first option
 
 
 #region === Overridden Methods =================================================
@@ -106,17 +100,10 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 			child.on_translation_enabled_changed(enabled)
 
 
-## Add a new option
-func _add_new_option() -> EditorSproutyDialogsOptionContainer:
+## Create a new option
+func _new_option() -> EditorSproutyDialogsOptionContainer:
 	var new_option = _option_scene.instantiate()
-	var option_index = get_child_count() - 2
-	
-	add_child(new_option, true)
-	move_child(new_option, option_index)
-	new_option.update_option_index(option_index)
-	
-	# Add slot to connect the option
-	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
+	new_option.undo_redo = undo_redo
 	new_option.open_text_editor.connect(open_text_editor.emit)
 	new_option.update_text_editor.connect(update_text_editor.emit)
 	new_option.option_removed.connect(_on_option_removed)
@@ -125,22 +112,53 @@ func _add_new_option() -> EditorSproutyDialogsOptionContainer:
 		position_offset.y += 0.01
 		_on_resized()
 		)
-	modified.emit(true)
 	return new_option
 
 
-func _on_add_option_button_pressed() -> void:
-	_add_new_option()
-
-
-## Handle options when one is removed
-func _on_option_removed(index: int) -> void:
-	get_child(index).queue_free() # Delete option
+## Add a new option
+func _add_new_option() -> EditorSproutyDialogsOptionContainer:
+	var new_option = _new_option()
+	var option_index = get_child_count() - 2
 	
-	# Update the following options to the removed one, by moving them upwards
-	for child in get_children(false):
-		if child is VBoxContainer and child.get_index() >= index:
-			# Update the option index
+	add_child(new_option, true)
+	move_child(new_option, option_index)
+	new_option.update_option_index(option_index)
+	
+	# Add slot to connect the option
+	set_slot(option_index, false, 0, Color.WHITE, true, 0, Color.WHITE)
+	return new_option
+
+
+## Add an option at a given index
+func _add_option(index: int, new_option: EditorSproutyDialogsOptionContainer) -> void:
+	add_child(new_option, true)
+	move_child(new_option, index)
+	new_option.update_option_index(index)
+
+	# Add a new slot
+	set_slot(get_child_count() - 3, false, 0, Color.WHITE, true, 0, Color.WHITE)
+
+	# Update the following options to the new one, by moving them downwards
+	var options = get_children().filter(func(c): return c is EditorSproutyDialogsOptionContainer)
+	options.reverse()
+	for option in options:
+		if option.get_index() > index:
+			option.update_option_index(option.get_index())
+			# Get the connections on previous port and move them to current port
+			var prev_connections = get_parent().get_node_output_connections(name, option.get_index() - 1)
+			get_parent().disconnect_node_on_port(name, option.get_index() - 1) # Remove old connections
+			for connection in prev_connections: # Update to new connections
+				get_parent().connect_node(name, option.get_index(),
+					connection["to_node"], connection["to_port"])
+
+	_on_resized() # Resize container vertically
+
+
+## Remove an option at a given index
+func _remove_option(index: int) -> void:
+	for child in get_children():
+		# Update the following options to the removed one, by moving them upwards
+		if child is EditorSproutyDialogsOptionContainer and child.get_index() >= index:
 			child.update_option_index(child.get_index() - 1)
 			# Get the connections on next port and move them to current port
 			var next_connections = get_parent().get_node_output_connections(name, child.get_index() + 1)
@@ -149,10 +167,44 @@ func _on_option_removed(index: int) -> void:
 				get_parent().connect_node(name, child.get_index(),
 					connection["to_node"], connection["to_port"])
 	
+	remove_child(get_child(index))
+
 	# Remove the last remaining port
-	set_slot(get_child_count() - 3, false, 0, Color.WHITE, false, 0, Color.WHITE)
+	set_slot(get_child_count() - 2, false, 0, Color.WHITE, false, 0, Color.WHITE)
+	_on_resized() # Resize container vertically
+
+
+## Handle when the add option button is pressed
+func _on_add_option_button_pressed() -> void:
+	_add_new_option()
 	modified.emit(true)
 
-	# Wait to delete the option node
-	await get_child(index).tree_exited
-	_on_resized() # Resize container vertically
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Add Option")
+	undo_redo.add_do_method(self, "_add_new_option")
+	undo_redo.add_undo_method(self, "_remove_option", get_child_count() - 3)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
+
+
+## Handle when an option is removed
+func _on_option_removed(index: int) -> void:
+	var temp_connections = get_parent().get_node_output_connections(name, index)
+	var temp_node = get_child(index)
+	_remove_option(index)
+	modified.emit(true)
+	
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Remove Option")
+	undo_redo.add_do_method(self, "_remove_option", index)
+	undo_redo.add_undo_method(self, "_add_option", index, temp_node)
+	if temp_connections.size() > 0: # Restore connections if there were any
+		undo_redo.add_undo_method(get_parent(), "connect_node", name, index,
+				temp_connections[0]["to_node"], temp_connections[0]["to_port"])
+	
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------

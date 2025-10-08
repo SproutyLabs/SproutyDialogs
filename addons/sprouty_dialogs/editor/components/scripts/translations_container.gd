@@ -11,7 +11,7 @@ extends VBoxContainer
 # -----------------------------------------------------------------------------
 
 ## Emitted when the text in any of the text boxes changes
-signal modified
+signal modified(modified: bool)
 ## Emitted when pressing the expand button of a text box to open the text editor
 signal open_text_editor(text_box: TextEdit)
 ## Emitted when change the focus to another text box while the text editor is open
@@ -35,9 +35,14 @@ var _translation_line = preload("res://addons/sprouty_dialogs/editor/components/
 var collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
 var collapse_down_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg")
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready():
 	# Collapse text boxes by default
+	if _text_boxes.get_parent() != self:
+		_text_boxes.get_parent().visible = false
 	_text_boxes.visible = false
 
 
@@ -68,9 +73,10 @@ func set_translation_boxes(locales: Array) -> void:
 			box = _translation_line.instantiate()
 		_text_boxes.add_child(box)
 		box.set_locale(locale)
+		box.undo_redo = undo_redo
 		box.open_text_editor.connect(open_text_editor.emit)
-		box.update_text_editor.connect(open_text_editor.emit)
-		box.text_changed.connect(modified.emit)
+		box.update_text_editor.connect(update_text_editor.emit)
+		box.modified.connect(modified.emit)
 	self.visible = true
 
 

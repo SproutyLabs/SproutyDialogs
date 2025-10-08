@@ -12,11 +12,18 @@ extends SproutyDialogsBaseNode
 ## Signal argument value
 @onready var _signal_argument: String = _text_input.text
 
+## Flag to check if the signal was modified
+var _signal_modified: bool = false
+
 
 func _ready():
 	super ()
+	# Connect text input signals
+	_text_input.text_changed.connect(_on_text_input_changed)
+	_text_input.focus_exited.connect(_on_text_input_focus_exited)
 
-#region === Overridden Methods =================================================
+
+#region === Node Data ==========================================================
 
 func get_data() -> Dictionary:
 	var dict := {}
@@ -46,7 +53,27 @@ func set_data(dict: Dictionary) -> void:
 
 #endregion
 
-func _on_input_text_changed(new_text: String) -> void:
+
+func _on_text_input_changed(new_text: String) -> void:
 	if _signal_argument != new_text:
+		var temp = _signal_argument
 		_signal_argument = new_text
+		_signal_modified = true
+
+		# --- UndoRedo --------------------------------------------------
+		undo_redo.create_action("Edit Signal", 1)
+		undo_redo.add_do_property(self, "_signal_argument", _signal_argument)
+		undo_redo.add_do_property(_text_input, "text", _signal_argument)
+		undo_redo.add_undo_property(self, "_signal_argument", temp)
+		undo_redo.add_undo_property(_text_input, "text", temp)
+
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.commit_action(false)
+		# ---------------------------------------------------------------
+
+
+func _on_text_input_focus_exited() -> void:
+	if _signal_modified:
+		_signal_modified = false
 		modified.emit(true)

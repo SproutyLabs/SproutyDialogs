@@ -11,26 +11,35 @@ extends SproutyDialogsBaseNode
 signal play_dialog_request(start_id: String)
 
 ## ID input text field
-@onready var id_input_text: LineEdit = %IDInput
+@onready var _id_input_text: LineEdit = %IDInput
 ## Start ID value
-@onready var start_id: String = id_input_text.text
+@onready var _start_id: String = _id_input_text.text
 ## Play button to run the dialog
-@onready var play_button: Button = %PlayButton
+@onready var _play_button: Button = %PlayButton
 
 ## Empty field error style for input text
-var input_error_style := preload("res://addons/sprouty_dialogs/editor/theme/input_text_error.tres")
+var _input_error_style := preload("res://addons/sprouty_dialogs/editor/theme/input_text_error.tres")
 ## Flag to check if the error alert is displaying
-var displaying_error: bool = false
+var _displaying_error: bool = false
 ## Error alert to show when the ID input is empty
-var id_error_alert: EditorSproutyDialogsAlert
+var _id_error_alert: EditorSproutyDialogsAlert
+
+## Flag to check if the ID was modified
+var _id_modified: bool = false
 
 
 func _ready():
 	super ()
-	play_button.pressed.connect(_on_play_button_pressed)
+	# Connect signals
+	_id_input_text.text_changed.connect(_on_id_input_changed)
+	_id_input_text.focus_exited.connect(_on_id_input_focus_exited)
+	_play_button.pressed.connect(_on_play_button_pressed)
+	node_deselected.connect(_on_node_deselected)
+	tree_exiting.connect(_on_tree_exiting)
 	start_node = self # Assign as start dialog node
 
-#region === Overridden Methods =================================================
+
+#region === Node Data ==========================================================
 
 func get_data() -> Dictionary:
 	var dict := {}
@@ -39,7 +48,7 @@ func get_data() -> Dictionary:
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
-		"start_id": start_id.to_upper(),
+		"start_id": _start_id.to_upper(),
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
 		"offset": position_offset,
@@ -55,57 +64,77 @@ func set_data(dict: Dictionary) -> void:
 	position_offset = dict["offset"]
 	size = dict["size"]
 
-	start_id = dict["start_id"]
-	id_input_text.text = dict["start_id"]
+	_start_id = dict["start_id"]
+	_id_input_text.text = dict["start_id"]
 
 #endregion
 
+
 ## Return the dialog ID
 func get_start_id() -> String:
-	return start_id.to_upper()
+	return _start_id.to_upper()
 
 
 ## Update the dialog ID and become it to uppercase
 func _on_id_input_changed(new_text: String) -> void:
-	if start_id != new_text:
-		modified.emit(true)
-	
-	if displaying_error:
+	if _displaying_error:
 		# Remove error style and hide alert when input is changed
-		id_input_text.remove_theme_stylebox_override("normal")
-		get_parent().alerts.hide_alert(id_error_alert)
-		id_error_alert = null
-		displaying_error = false
+		_id_input_text.remove_theme_stylebox_override("normal")
+		get_parent().alerts.hide_alert(_id_error_alert)
+		_id_error_alert = null
+		_displaying_error = false
 	
 	# Keep the caret position when uppercase the text
-	var caret_pos = id_input_text.caret_column
-	id_input_text.text = new_text.to_upper()
-	id_input_text.caret_column = caret_pos
-	start_id = new_text
+	var caret_pos = _id_input_text.caret_column
+	_id_input_text.text = new_text.to_upper()
+	_id_input_text.caret_column = caret_pos
+
+	if _start_id != new_text:
+		var temp = _start_id
+		_start_id = new_text
+		_id_modified = true
+
+		# --- UndoRedo --------------------------------------------------
+		undo_redo.create_action("Edit Start ID", 1)
+		undo_redo.add_do_property(self, "_start_id", new_text)
+		undo_redo.add_do_property(_id_input_text, "text", new_text.to_upper())
+		undo_redo.add_undo_property(self, "_start_id", temp)
+		undo_redo.add_undo_property(_id_input_text, "text", temp.to_upper())
+		undo_redo.add_undo_method(self, "_on_id_input_focus_exited")
+
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.commit_action(false)
+		# ---------------------------------------------------------------
 
 
 ## Show error alerts when the ID input loses focus
 func _on_id_input_focus_exited() -> void:
+	if _id_modified:
+		_id_modified = false
+		modified.emit(true)
+	
 	# Show error if the ID input is empty
-	if id_input_text.text.is_empty():
-		id_input_text.add_theme_stylebox_override("normal", input_error_style)
-		if id_error_alert == null:
-			id_error_alert = get_parent().alerts.show_alert(
+	if _id_input_text.text.is_empty():
+		_id_input_text.add_theme_stylebox_override("normal", _input_error_style)
+		if _id_error_alert == null:
+			_id_error_alert = get_parent().alerts.show_alert(
 				"Start Node #" + str(node_index) + " needs an ID", "ERROR")
-		else: get_parent().alerts.focus_alert(id_error_alert)
-		displaying_error = true
-	else: # Show error if the ID already exists in another node
+		else: get_parent().alerts.focus_alert(_id_error_alert)
+		_displaying_error = true
+	else:
+		# Show error if the ID already exists in another node
 		var nodes: Array = get_parent().get_children()
 		for node in nodes:
 			if node is SproutyDialogsBaseNode and node.node_type == "start_node" \
-					and node != self and node.get_start_id() == id_input_text.text:
-				id_input_text.add_theme_stylebox_override("normal", input_error_style)
-				if id_error_alert == null:
-					id_error_alert = get_parent().alerts.show_alert(
+					and node != self and node.get_start_id() == _id_input_text.text:
+				_id_input_text.add_theme_stylebox_override("normal", _input_error_style)
+				if _id_error_alert == null:
+					_id_error_alert = get_parent().alerts.show_alert(
 						"Start Node #" + str(node.node_index) + " already has the ID '" \
-						+ id_input_text.text + "'", "ERROR")
-				else: get_parent().alerts.focus_alert(id_error_alert)
-				displaying_error = true
+						+ _id_input_text.text + "'", "ERROR")
+				else: get_parent().alerts.focus_alert(_id_error_alert)
+				_displaying_error = true
 				break
 
 
@@ -116,7 +145,7 @@ func _on_node_deselected() -> void:
 
 ## Hide active error alert on node destroy
 func _on_tree_exiting() -> void:
-	get_parent().alerts.hide_alert(id_error_alert)
+	get_parent().alerts.hide_alert(_id_error_alert)
 
 
 ## Play the dialog from the current graph starting from the given ID

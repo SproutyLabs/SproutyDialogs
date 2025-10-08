@@ -126,6 +126,7 @@ func new_dialog_file(path: String) -> void:
 func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> GraphEdit:
 	var graph = _graph_scene.instantiate()
 	graph.modified.connect(_on_data_modified)
+	graph.undo_redo = undo_redo
 	add_child(graph)
 	var dialogs = resource.dialogs if resource.dialogs else {}
 	# Load dialogs from CSV file if translation is enabled
