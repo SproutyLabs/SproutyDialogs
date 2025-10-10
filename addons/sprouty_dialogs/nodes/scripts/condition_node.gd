@@ -16,9 +16,19 @@ signal update_text_editor(text_box: TextEdit)
 @onready var operator_dropdown: OptionButton = $Container/OperatorDropdown
 
 ## Both variable type dropdown selectors
-var _type_dropdowns: Array = []
+var _type_dropdowns: Array = [null, null]
+## Both variable value input fields
+var _value_inputs: Array = [null, null]
 ## Variable values for the condition
 var _var_values: Array = ["", ""]
+
+## Selected type (for UndoRedo)
+var _type_indexes: Array[int] = [TYPE_NIL, TYPE_NIL]
+## Selected operator (for UndoRedo)
+var _operator_index: int = 0
+
+## Flag to indicate if the value has been modified (for UndoRedo)
+var _values_modified: Array[bool] = [false, false]
 
 
 func _ready():
@@ -27,7 +37,7 @@ func _ready():
 	_set_type_dropdown($Container/SecondVar/TypeField, 1)
 	
 	# Set the operators in the operator dropdown
-	operator_dropdown.item_selected.connect(_on_operator_changed)
+	operator_dropdown.item_selected.connect(_on_operator_selected)
 	var operators = EditorSproutyDialogsVariableManager.get_comparison_operators()
 	operator_dropdown.clear()
 	for operator in operators.keys():
@@ -38,10 +48,10 @@ func _ready():
 func _set_type_dropdown(dropdown_field: Node, field_index: int) -> void:
 	var types_dropdown = EditorSproutyDialogsVariableManager.get_types_dropdown(true, true)
 	dropdown_field.add_child(types_dropdown)
-	_type_dropdowns.insert(field_index, dropdown_field.get_node("TypeDropdown"))
+	_type_dropdowns[field_index] = dropdown_field.get_node("TypeDropdown")
 	_type_dropdowns[field_index].item_selected.connect(_on_type_selected.bind(field_index))
 	_type_dropdowns[field_index].select(0) # Default type (Variable)
-	_on_type_selected(0, field_index) # Default type (Variable)
+	_set_value_field(0, field_index) # Default type (Variable)
 
 
 #region === Overridden Methods =================================================
@@ -78,32 +88,27 @@ func set_data(dict: Dictionary) -> void:
 	# Set the types on the dropdowns
 	var first_type_index = _type_dropdowns[0].get_item_index(dict["first_type"])
 	_type_dropdowns[0].select(first_type_index)
-	_on_type_selected(first_type_index, 0)
+	_set_value_field(first_type_index, 0)
+	_type_indexes[0] = first_type_index
+
 	var second_type_index = _type_dropdowns[1].get_item_index(dict["second_type"])
 	_type_dropdowns[1].select(second_type_index)
-	_on_type_selected(second_type_index, 1)
+	_set_value_field(second_type_index, 1)
+	_type_indexes[1] = second_type_index
 
 	# Set the operator and values
 	operator_dropdown.select(operator_dropdown.get_item_index(dict["operator"]))
-	EditorSproutyDialogsVariableManager.set_field_value(
-		$Container/FirstVar/ValueField.get_child(0), dict["first_type"], dict["first_value"])
-	EditorSproutyDialogsVariableManager.set_field_value(
-		$Container/SecondVar/ValueField.get_child(0), dict["second_type"], dict["second_value"])
+	_set_field_value(dict["first_value"], dict["first_type"], 0)
+	_set_field_value(dict["second_value"], dict["second_type"], 1)
 	_var_values = [dict["first_value"], dict["second_value"]]
+	_operator_index = operator_dropdown.selected
 
 #endregion
 
 
-## Handle when a type is selected from the dropdown
-func _on_type_selected(type_index: int, field_index: int) -> void:
-	var type = _type_dropdowns[field_index].get_item_id(type_index)
-	_set_value_field(type, field_index)
-	modified.emit(true)
-	_on_resized()
-
-
 ## Set a value field based on the variable type
-func _set_value_field(type: int, field_index: int) -> void:
+func _set_value_field(type_index: int, field_index: int) -> void:
+	var type = _type_dropdowns[field_index].get_item_id(type_index)
 	var value_field = $Container/FirstVar/ValueField if field_index == 0 \
 			else $Container/SecondVar/ValueField
 	
@@ -116,25 +121,91 @@ func _set_value_field(type: int, field_index: int) -> void:
 	# Set the value field based on the variable type
 	var field_data = EditorSproutyDialogsVariableManager.get_field_by_type(
 			type, _on_value_changed.bind(field_index))
+	field_data.field.focus_exited.connect(_on_value_input_focus_exited.bind(field_index))
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	value_field.add_child(field_data.field)
+	_value_inputs[field_index] = field_data.field
 	_var_values[field_index] = field_data.default_value
+	_type_indexes[field_index] = type_index
 
 	if type == TYPE_STRING: # Connect the expand button to open the text editor
 		var text_box = field_data.field.get_node("TextEdit")
 		field_data.field.get_node("ExpandButton").pressed.connect(
 				open_text_editor.emit.bind(text_box))
 		text_box.focus_entered.connect(update_text_editor.emit.bind(text_box))
+	
+	_on_resized()
+
+
+## Set the input field value
+func _set_field_value(value: Variant, type_index: int, field_index: int) -> void:
+	_var_values[field_index] = value
+	EditorSproutyDialogsVariableManager.set_field_value(_value_inputs[field_index],
+			_type_dropdowns[field_index].get_item_id(type_index), value)
+
+
+## Handle when a type is selected from the dropdown
+func _on_type_selected(type_index: int, field_index: int) -> void:
+	var temp_type = _type_indexes[field_index]
+	var temp_value = _var_values[field_index]
+	_set_value_field(type_index, field_index)
+	modified.emit(true)
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Set Condition Type")
+	undo_redo.add_do_method(self, "_set_value_field", type_index, field_index)
+	undo_redo.add_do_property(_type_dropdowns[field_index], "selected", type_index)
+
+	undo_redo.add_undo_method(self, "_set_value_field", temp_type, field_index)
+	undo_redo.add_undo_property(_type_dropdowns[field_index], "selected", temp_type)
+	undo_redo.add_undo_method(self, "_set_field_value", temp_value, temp_type, field_index)
+
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	#-----------------------------------------------------------------------
+
+
+## Handle when the operator is selected from the dropdown
+func _on_operator_selected(index: int) -> void:
+	if index != _operator_index:
+		var temp = _operator_index
+		_operator_index = index
+		modified.emit(true)
+
+		# --- UndoRedo -----------------------------------------------------
+		undo_redo.create_action("Set Condition Operator")
+		undo_redo.add_do_property(operator_dropdown, "selected", index)
+		undo_redo.add_undo_property(operator_dropdown, "selected", temp)
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.commit_action(false)
+		# ------------------------------------------------------------------
 
 
 ## Handle when the value changes in any of the value fields
 func _on_value_changed(value: Variant, field_index: int) -> void:
-	if _var_values[field_index] != value:
-		_var_values[field_index] = value
-		modified.emit(true)
+	if typeof(value) == typeof(_var_values[field_index]) and value == _var_values[field_index]:
+		return # No value change
+	
+	var temp_value = _var_values[field_index]
+	_var_values[field_index] = value
+	_values_modified[field_index] = true
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Set Condition Value", 1)
+	undo_redo.add_do_method(self, "_set_field_value",
+			value, _type_indexes[field_index], field_index)
+	undo_redo.add_undo_method(self, "_set_field_value",
+			temp_value, _type_indexes[field_index], field_index)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# ------------------------------------------------------------------
 
 
-## Handle when the operator is changed in the operator dropdown
-func _on_operator_changed(operator_index: int) -> void:
-	if operator_dropdown.selected != operator_index:
+## Handle when a value input field loses focus
+func _on_value_input_focus_exited(field_index: int) -> void:
+	if _values_modified[field_index]:
+		_values_modified[field_index] = false
 		modified.emit(true)

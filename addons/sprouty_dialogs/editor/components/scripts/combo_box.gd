@@ -80,6 +80,7 @@ func _on_dropdown_item_selected(index: int) -> void:
 	var selected_text = _dropdown_popup.get_item_text(index)
 	text = selected_text
 	option_selected.emit(selected_text)
+	input_changed.emit(selected_text)
 
 
 ## Handle focus exit from the input field

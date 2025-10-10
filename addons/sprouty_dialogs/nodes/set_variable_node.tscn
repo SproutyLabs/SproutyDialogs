@@ -1,7 +1,7 @@
 [gd_scene load_steps=8 format=3 uid="uid://b80xoq50othk8"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/editor/theme/main_theme.tres" id="1_bouee"]
-[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/editor/theme/empty_panel.tres" id="4_7k7se"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_bouee"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="4_7k7se"]
 [ext_resource type="Script" uid="uid://b317lbp1qvjyu" path="res://addons/sprouty_dialogs/nodes/scripts/set_variable_node.gd" id="5_5o0bh"]
 [ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="5_oao84"]
 [ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/sprouty_dialogs/editor/icons/nodes/set-variable.svg" id="6_sx7hg"]
@@ -33,7 +33,7 @@ corner_detail = 5
 
 [node name="SetVariableNode" type="GraphNode"]
 offset_right = 537.0
-offset_bottom = 86.0
+offset_bottom = 95.0
 theme = ExtResource("1_bouee")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_0am0n")
 theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_5130m")
@@ -83,5 +83,3 @@ popup/item_1/id = 1
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_7k7se")
-
-[connection signal="resized" from="." to="." method="_on_resized"]

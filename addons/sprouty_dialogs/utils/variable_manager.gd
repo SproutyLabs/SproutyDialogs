@@ -257,7 +257,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 			field.add_child(popup)
 			field.set_placeholder("Variable name...")
 			field.set_options(get_variable_list())
-			field.option_selected.connect(on_value_changed)
+			field.input_changed.connect(on_value_changed)
 			default_value = ""
 		TYPE_BOOL:
 			field = CheckBox.new()

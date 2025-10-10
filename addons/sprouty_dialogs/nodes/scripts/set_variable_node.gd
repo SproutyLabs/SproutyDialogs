@@ -21,22 +21,34 @@ signal update_text_editor(text_box: TextEdit)
 var _type_dropdown: OptionButton
 ## Value input field
 var _value_input: Control
+## Current value in the input field
+var _var_value: Variant = ""
+## Current variable name
+var _var_name: String = ""
 
-## New variable value to set
-var _new_var_value: Variant = ""
+## Selected type (for UndoRedo)
+var _type_index: int = TYPE_STRING - 1
+## Selected operator (for UndoRedo)
+var _operator_index: int = 0
+
+## Flag to indicate if the name has been modified (for UndoRedo)
+var _name_modified: bool = false
+## Flag to indicate if the value has been modified (for UndoRedo)
+var _value_modified: bool = false
 
 
 func _ready():
 	super ()
-	_operator_dropdown.item_selected.connect(modified.emit.unbind(1))
-	_name_input.text_changed.connect(modified.emit)
+	_operator_dropdown.item_selected.connect(_on_operator_selected)
+	_name_input.input_changed.connect(_on_name_input_changed)
+	_name_input.focus_exited.connect(_on_name_input_focus_exited)
 
 	# Set the type dropdown and connect its signal
 	$Container/VarField/TypeField.add_child(EditorSproutyDialogsVariableManager.get_types_dropdown())
 	_type_dropdown = $Container/VarField/TypeField/TypeDropdown
 	_type_dropdown.item_selected.connect(_on_type_selected)
-	_type_dropdown.select(3) # Default type (String)
-	_on_type_selected(3) # Default type (String)
+	_type_dropdown.select(_type_index) # Default type (String)
+	_set_variable_type(_type_index) # Default type (String)
 
 
 #region === Overridden Methods =================================================
@@ -51,7 +63,7 @@ func get_data() -> Dictionary:
 		"var_name": _name_input.get_value(),
 		"var_type": _type_dropdown.get_item_id(_type_dropdown.selected),
 		"operator": _operator_dropdown.get_item_id(_operator_dropdown.selected),
-		"new_value": _new_var_value,
+		"new_value": _var_value,
 		"to_node": [connections[0]["to_node"].to_snake_case()]
 				if connections.size() > 0 else ["END"],
 		"offset": position_offset,
@@ -70,20 +82,21 @@ func set_data(dict: Dictionary) -> void:
 	# Set the type on the dropdown
 	var type_index = _type_dropdown.get_item_index(dict["var_type"])
 	_type_dropdown.select(type_index)
-	_on_type_selected(type_index)
+	_set_variable_type(type_index)
 	
 	# Set the variable name, operator and value
 	_name_input.set_value(dict["var_name"])
 	_operator_dropdown.select(_operator_dropdown.get_item_index(dict["operator"]))
-	EditorSproutyDialogsVariableManager.set_field_value(
-		$Container/ValueField.get_child(0), dict["var_type"], dict["new_value"])
-	_new_var_value = dict["new_value"]
+	_set_field_value(dict["new_value"], _type_dropdown.get_item_index(dict["var_type"]))
+	_operator_index = _operator_dropdown.selected
+	_var_value = dict["new_value"]
+	_var_name = dict["var_name"]
 
 #endregion
 
 
 ## Handle when the type is selected from the dropdown
-func _on_type_selected(index: int) -> void:
+func _set_variable_type(index: int) -> void:
 	var type = _type_dropdown.get_item_id(index)
 
 	# Set the variable dropdown based on the selected type and update the value field
@@ -95,8 +108,10 @@ func _on_type_selected(index: int) -> void:
 	_operator_dropdown.clear()
 	for operator in operators.keys():
 		_operator_dropdown.add_item(operator, operators[operator])
-	modified.emit(true)
-	_on_resized()
+	
+	# Update the selected indexes and current value for UndoRedo
+	_operator_index = _operator_dropdown.selected
+	_type_index = index
 
 
 ## Set the value field based on the variable type
@@ -107,10 +122,13 @@ func _set_value_field(type: int) -> void:
 		$Container/ValueField.remove_child(field)
 		field.queue_free()
 	
+	# Create new field based on type
 	var field_data = EditorSproutyDialogsVariableManager.get_field_by_type(type, _on_value_changed)
+	field_data.field.focus_exited.connect(_on_value_input_focus_exited)
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	$Container/ValueField.add_child(field_data.field)
-	_new_var_value = field_data.default_value
+	_var_value = field_data.default_value
+	_value_input = field_data.field
 
 	if type == TYPE_STRING: # Connect the expand button to open the text editor
 		var text_box = field_data.field.get_node("TextEdit")
@@ -120,10 +138,103 @@ func _set_value_field(type: int) -> void:
 	
 	if type == TYPE_BOOL: # Adjust size horizontally
 		size.x += field_data.field.get_size().x
+	
+	_on_resized()
+
+
+## Set the input field value
+func _set_field_value(value: Variant, type_index: int) -> void:
+	_var_value = value
+	EditorSproutyDialogsVariableManager.set_field_value(_value_input,
+			_type_dropdown.get_item_id(type_index), value)
+
+
+## Handle when the type is selected from the dropdown
+func _on_type_selected(index: int) -> void:
+	var temp_type = _type_index
+	var temp_operator = _operator_index
+	var temp_value = _var_value
+	_set_variable_type(index)
+	modified.emit(true)
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Set Variable Type")
+	undo_redo.add_do_method(self, "_set_variable_type", index)
+	undo_redo.add_do_property(_type_dropdown, "selected", index)
+
+	undo_redo.add_undo_method(self, "_set_variable_type", temp_type)
+	undo_redo.add_undo_property(_type_dropdown, "selected", temp_type)
+	undo_redo.add_undo_property(_operator_dropdown, "selected", temp_operator)
+	undo_redo.add_undo_method(self, "_set_field_value", temp_value, temp_type)
+
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
+
+
+## Handle when the variable name in the input field changes
+func _on_name_input_changed(new_text: String) -> void:
+	if new_text != _var_name:
+		var temp_name = _var_name
+		_var_name = new_text
+		_name_modified = true
+
+		# --- UndoRedo -----------------------------------------------------
+		undo_redo.create_action("Set Variable Name", 1)
+		undo_redo.add_do_method(_name_input, "set_value", new_text)
+		undo_redo.add_undo_method(_name_input, "set_value", temp_name)
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.commit_action(false)
+		# ------------------------------------------------------------------
+
+
+## Handle when the variable name input field loses focus
+func _on_name_input_focus_exited() -> void:
+	if _name_modified:
+		_name_modified = false
+		modified.emit(true)
+
+
+## Handle when the operator is selected from the dropdown
+func _on_operator_selected(index: int) -> void:
+	if index != _operator_index:
+		var temp = _operator_index
+		_operator_index = index
+		modified.emit(true)
+
+		# --- UndoRedo -----------------------------------------------------
+		undo_redo.create_action("Set Variable Operator")
+		undo_redo.add_do_property(_operator_dropdown, "selected", index)
+		undo_redo.add_undo_property(_operator_dropdown, "selected", temp)
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.commit_action(false)
+		# ------------------------------------------------------------------
 
 
 ## Handle when the value in the input field changes
 func _on_value_changed(value: Variant) -> void:
-	if _new_var_value != value:
-		_new_var_value = value
+	if typeof(value) == typeof(_var_value) and value == _var_value:
+		return # No value change
+	
+	var temp_value = _var_value
+	_var_value = value
+	_value_modified = true
+
+	# --- UndoRedo -------------------------------------------------------------
+	undo_redo.create_action("Set Variable Value", 1)
+	undo_redo.add_do_method(self, "_set_field_value", value, _type_index)
+	undo_redo.add_undo_method(self, "_set_field_value", temp_value, _type_index)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# --------------------------------------------------------------------------
+
+
+## Handle when the value input field loses focus
+func _on_value_input_focus_exited() -> void:
+	if _value_modified:
+		_value_modified = false
 		modified.emit(true)

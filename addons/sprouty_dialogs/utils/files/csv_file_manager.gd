@@ -184,7 +184,8 @@ static func load_dialogs_from_csv(path: String) -> Dictionary:
 		dialogs[dialog_key] = {}
 		# Add each dialog in their respective locale
 		for i in range(1, row.size()):
-			dialogs[dialog_key][header[i]] = row[i]
+			if header.size() > i and row.size() > i:
+				dialogs[dialog_key][header[i]] = row[i]
 	
 	return dialogs
 

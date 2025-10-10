@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://wex81cyrw24j"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/editor/theme/main_theme.tres" id="1_8k3p6"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_8k3p6"]
 [ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/sprouty_dialogs/editor/icons/nodes/condition.svg" id="3_7frl5"]
-[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/editor/theme/empty_panel.tres" id="4_l3xvy"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="4_l3xvy"]
 [ext_resource type="Script" uid="uid://d1s7kmoh1qgr0" path="res://addons/sprouty_dialogs/nodes/scripts/condition_node.gd" id="5_swe6e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avnbs"]
@@ -32,7 +32,7 @@ corner_detail = 5
 
 [node name="ConditionNode" type="GraphNode"]
 offset_right = 429.0
-offset_bottom = 186.0
+offset_bottom = 195.0
 theme = ExtResource("1_8k3p6")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_avnbs")
 theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_que3n")
@@ -129,5 +129,3 @@ horizontal_alignment = 2
 layout_mode = 2
 text = "False"
 horizontal_alignment = 2
-
-[connection signal="resized" from="." to="." method="_on_resized"]

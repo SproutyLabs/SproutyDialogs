@@ -26,6 +26,7 @@ func _ready():
 	super ()
 	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
 	_first_option = _add_new_option() # Add the first option
+	set_slot(0, true, 0, Color.WHITE, true, 0, Color.WHITE)
 
 
 #region === Overridden Methods =================================================
