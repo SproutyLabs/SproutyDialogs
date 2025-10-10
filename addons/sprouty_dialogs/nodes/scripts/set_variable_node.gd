@@ -123,8 +123,8 @@ func _set_value_field(type: int) -> void:
 		field.queue_free()
 	
 	# Create new field based on type
-	var field_data = EditorSproutyDialogsVariableManager.get_field_by_type(type, _on_value_changed)
-	field_data.field.focus_exited.connect(_on_value_input_focus_exited)
+	var field_data = EditorSproutyDialogsVariableManager.get_field_by_type(type,
+			_on_value_changed, _on_value_input_modified)
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	$Container/ValueField.add_child(field_data.field)
 	_var_value = field_data.default_value
@@ -233,8 +233,8 @@ func _on_value_changed(value: Variant) -> void:
 	# --------------------------------------------------------------------------
 
 
-## Handle when the value input field loses focus
-func _on_value_input_focus_exited() -> void:
+## Handle when the value input was modified (focus lost)
+func _on_value_input_modified() -> void:
 	if _value_modified:
 		_value_modified = false
 		modified.emit(true)

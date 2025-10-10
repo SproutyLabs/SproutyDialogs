@@ -42,9 +42,10 @@ func _ready():
 		_text_box.open_text_editor.connect(open_text_editor.emit)
 		_text_box.update_text_editor.connect(update_text_editor.emit)
 		_text_box.text_changed.connect(_on_expandable_box_text_changed)
+		_text_box.text_box_focus_exited.connect(_on_text_focus_exited)
 	else:
 		_text_box.text_changed.connect(_on_text_changed)
-	_text_box.focus_exited.connect(_on_text_focus_exited)
+		_text_box.focus_exited.connect(_on_text_focus_exited)
 
 
 ## Get the text from the text box

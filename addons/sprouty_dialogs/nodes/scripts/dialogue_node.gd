@@ -64,7 +64,7 @@ func _ready():
 	# Connect signals for text changes
 	_translation_boxes.modified.connect(modified.emit)
 	_default_text_box.text_changed.connect(_on_default_text_changed)
-	_default_text_box.focus_exited.connect(_on_default_focus_exited)
+	_default_text_box.text_box_focus_exited.connect(_on_default_focus_exited)
 
 	# Connect signals for character selection
 	_portrait_dropdown.item_selected.connect(_on_portrait_selected)

@@ -53,8 +53,8 @@ func _ready() -> void:
 	_translation_boxes.open_text_editor.connect(open_text_editor.emit)
 	_default_text_box.update_text_editor.connect(update_text_editor.emit)
 	_translation_boxes.update_text_editor.connect(update_text_editor.emit)
+	_default_text_box.text_box_focus_exited.connect(_on_default_focus_exited)
 	_default_text_box.text_changed.connect(_on_default_text_changed)
-	_default_text_box.focus_exited.connect(_on_default_focus_exited)
 	_translation_boxes.modified.connect(modified.emit)
 	_translation_boxes.undo_redo = undo_redo
 

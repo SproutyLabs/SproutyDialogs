@@ -246,7 +246,8 @@ static func get_types_dropdown(label: bool = true, include_var: bool = false) ->
 
 
 ## Returns a Control node for the variable type field
-static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictionary:
+static func get_field_by_type(type: int, on_value_changed: Callable,
+		_on_modified_callable: Callable = func(): return ) -> Dictionary:
 	var field = null
 	var default_value = null
 	match type:
@@ -258,10 +259,12 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 			field.set_placeholder("Variable name...")
 			field.set_options(get_variable_list())
 			field.input_changed.connect(on_value_changed)
+			field.input_focus_exited.connect(_on_modified_callable)
 			default_value = ""
 		TYPE_BOOL:
 			field = CheckBox.new()
 			field.toggled.connect(on_value_changed)
+			field.focus_exited.connect(_on_modified_callable)
 			default_value = false
 		TYPE_INT:
 			field = SpinBox.new()
@@ -269,6 +272,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 			field.allow_greater = true
 			field.allow_lesser = true
 			field.value_changed.connect(on_value_changed)
+			field.mouse_exited.connect(_on_modified_callable)
 			default_value = field.value
 		TYPE_FLOAT:
 			field = SpinBox.new()
@@ -276,6 +280,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 			field.allow_greater = true
 			field.allow_lesser = true
 			field.value_changed.connect(on_value_changed)
+			field.mouse_exited.connect(_on_modified_callable)
 			default_value = field.value
 		TYPE_STRING:
 			field = HBoxContainer.new()
@@ -284,6 +289,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 			line_edit.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 			line_edit.placeholder_text = "Write text here..."
 			line_edit.text_changed.connect(on_value_changed)
+			line_edit.focus_exited.connect(_on_modified_callable)
 			field.add_child(line_edit)
 			var button = Button.new()
 			button.name = "ExpandButton"
@@ -318,6 +324,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 				default_value = Vector2.ZERO if type == TYPE_VECTOR2 \
 					else Vector3.ZERO if type == TYPE_VECTOR3 else Vector4.ZERO
 				
+				component_field.mouse_exited.connect(_on_modified_callable)
 				component_field.value_changed.connect(func(value):
 					var vector_value = default_value
 					for j in range(0, vector_n):
@@ -330,6 +337,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 			field = ColorPickerButton.new()
 			field.custom_minimum_size = Vector2(60, 60)
 			field.color_changed.connect(on_value_changed)
+			field.focus_exited.connect(_on_modified_callable)
 			default_value = field.color.to_html()
 		
 		# ----------------------------------
@@ -339,6 +347,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable) -> Dictiona
 		_:
 			field = LineEdit.new() # Default to LineEdit for unsupported types
 			field.text_changed.connect(on_value_changed)
+			field.focus_exited.connect(_on_modified_callable)
 			default_value = field.text
 	return {
 		"field": field,

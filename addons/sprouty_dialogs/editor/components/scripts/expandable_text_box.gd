@@ -15,6 +15,8 @@ signal text_changed(text: String)
 signal open_text_editor(text_box: TextEdit)
 ## Emitted when the text in the text editor is updated
 signal update_text_editor(text_box: TextEdit)
+## Emitted when the text box loses focus
+signal text_box_focus_exited()
 
 ## Input text box
 @onready var _text_box: TextEdit = $TextEdit
@@ -22,6 +24,7 @@ signal update_text_editor(text_box: TextEdit)
 
 func _ready():
 	_text_box.text_changed.connect(text_changed.emit)
+	_text_box.focus_exited.connect(text_box_focus_exited.emit)
 	_text_box.focus_entered.connect(update_text_editor.emit.bind(_text_box))
 	$ExpandButton.pressed.connect(open_text_editor.emit.bind(_text_box))
 	$ExpandButton.icon = get_theme_icon("DistractionFree", "EditorIcons")

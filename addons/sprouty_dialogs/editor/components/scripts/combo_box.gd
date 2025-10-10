@@ -15,6 +15,8 @@ signal option_selected(option: String)
 signal input_changed(text: String)
 ## Emitted when the user submits the input (presses Enter)
 signal input_submitted(text: String)
+## Emitted when the input field loses focus
+signal input_focus_exited()
 
 ## Input field placeholder text
 @export var _placeholder_text: String = "Write something..."
@@ -86,6 +88,7 @@ func _on_dropdown_item_selected(index: int) -> void:
 ## Handle focus exit from the input field
 func _on_input_field_focus_exited() -> void:
 	_dropdown_popup.hide()
+	input_focus_exited.emit()
 
 
 ## Show the dropdown list
