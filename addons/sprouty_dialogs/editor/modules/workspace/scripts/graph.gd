@@ -62,8 +62,6 @@ var _cursor_pos: Vector2 = Vector2.ZERO
 
 ## Modified counter to track changes
 var _modified_counter: int = 0
-## Action name for the last modification
-var _last_action_name: String = ""
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
@@ -115,7 +113,6 @@ func _on_modified(mark_as_modified: bool) -> void:
 		_modified_counter += 1
 	elif _modified_counter > 0:
 		_modified_counter -= 1
-	print("_modified_counter: ", _modified_counter)
 	modified.emit(_modified_counter > 0)
 
 

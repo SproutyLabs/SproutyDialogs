@@ -10,7 +10,7 @@ extends HSplitContainer
 # -----------------------------------------------------------------------------
 
 ## Triggered when something is modified
-signal modified
+signal modified(modified: bool)
 
 ## Label with the key name of the character
 @onready var _key_name_label: Label = %KeyNameLabel
@@ -19,7 +19,7 @@ signal modified
 ## Display name text input field in default locale
 @onready var _name_default_locale_field: LineEdit = %NameDefaultLocaleField
 ## Translation container for display name
-@onready var _name_translations_container: VBoxContainer = %NameTranslationsContainer
+@onready var _name_translations_container: EditorSproutyDialogsTranslationsContainer = %NameTranslationsContainer
 
 ## Description text input field
 @onready var _description_field: TextEdit = %DescriptionField
@@ -61,17 +61,48 @@ var _name_without_translation: bool = true
 ## Portrait display on dialog box option
 var _portrait_on_dialog_box: bool = false
 
+## Default display name (for UndoRedo)
+var _default_display_name: String = ""
+## Flag to indicate if the default display name was modified
+var _default_name_modified: bool = false
+
+## Description text (for UndoRedo)
+var _description_text: String = ""
+## Flag to indicate if the description text was modified
+var _description_modified: bool = false
+
+## Dialog box scene file path (for UndoRedo)
+var _dialog_box_path: String = ""
+
+## Modified counter to track changes
+var _modified_counter: int = 0
+
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready() -> void:
-	# Connect signals
+	# Connect display name signals
+	_name_default_locale_field.text_changed.connect(_on_default_display_name_changed)
+	_name_default_locale_field.mouse_exited.connect(_on_default_display_focus_exited)
+	_name_translations_container.modified.connect(_on_modified)
+	_name_translations_container.undo_redo = undo_redo
+
+	# Connect description signals
+	_description_field.text_changed.connect(_on_description_text_changed)
+	_description_field.mouse_exited.connect(_on_description_focus_exited)
+
+	# Connect dialog box signals
 	_dialog_box_scene_field.path_changed.connect(_on_dialog_box_scene_path_changed)
 	_to_dialog_box_scene_button.pressed.connect(_on_dialog_box_scene_button_pressed)
 	_new_dialog_box_scene_button.pressed.connect(_on_new_dialog_box_scene_pressed)
 	_new_dialog_box_dialog.file_selected.connect(_new_dialog_box)
+
+	# Connect portrait signals
 	%PortraitOnDialogBoxToggle.toggled.connect(_on_portrait_dialog_box_toggled)
 	_portrait_tree.show_portrait_editor_panel.connect(_show_portrait_editor_panel)
 	_portrait_tree.portrait_item_selected.connect(_on_portrait_selected)
-	_portrait_tree.modified.connect(on_modified)
+	_portrait_tree.modified.connect(_on_modified)
 
 	# Set icons for buttons and fields
 	_to_dialog_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
@@ -86,10 +117,52 @@ func _ready() -> void:
 		)
 
 
-## Emit the modified signal
-func on_modified():
-	modified.emit()
+## Open a scene in the editor
+func open_scene_in_editor(path: String) -> void:
+	if EditorSproutyDialogsFileUtils.check_valid_extension(path, _dialog_box_scene_field.file_filters):
+		if ResourceLoader.exists(path):
+			EditorInterface.open_scene_from_path(path)
+			await get_tree().process_frame
+			EditorInterface.set_main_screen_editor("2D")
+	else:
+		printerr("[Sprouty Dialogs] Invalid scene file path.")
 
+
+## Emit the modified signal
+func _on_modified(mark_as_modified: bool) -> void:
+	if mark_as_modified:
+		_modified_counter += 1
+	elif _modified_counter > 0:
+		_modified_counter -= 1
+	print("_modified_counter: ", _modified_counter)
+	modified.emit(_modified_counter > 0)
+
+
+## Handle the description text change
+func _on_description_text_changed() -> void:
+	if _description_field.text != _description_text:
+		var temp = _description_text
+		_description_text = _description_field.text
+		_description_modified = true
+
+		# --- UndoRedo -----------------------------------------------------
+		undo_redo.create_action("Change Character Description", 1)
+		undo_redo.add_do_property(_description_field, "text", _description_text)
+		undo_redo.add_undo_property(_description_field, "text", temp)
+		undo_redo.add_do_method(self, "_on_modified", true)
+		undo_redo.add_undo_method(self, "_on_modified", false)
+		undo_redo.commit_action(false)
+		# ------------------------------------------------------------------
+
+
+## Handle the description focus exit
+func _on_description_focus_exited() -> void:
+	if _description_modified:
+		_description_modified = false
+		_on_modified(true)
+
+
+#region === Character Data =====================================================
 
 ## Get the character data from the editor
 func get_character_data() -> SproutyDialogsCharacterData:
@@ -97,12 +170,15 @@ func get_character_data() -> SproutyDialogsCharacterData:
 	data.key_name = _key_name
 	data.display_name = _get_name_translations()
 	data.description = _description_field.text
+
 	data.dialog_box_uid = ResourceSaver.get_resource_id_for_path(_dialog_box_scene_field.get_value(), true) if \
 		EditorSproutyDialogsFileUtils.check_valid_extension(_dialog_box_scene_field.get_value(),
 			_dialog_box_scene_field.file_filters) else -1
+	
 	data.dialog_box_path = _dialog_box_scene_field.get_value() if \
 		EditorSproutyDialogsFileUtils.check_valid_extension(_dialog_box_scene_field.get_value(),
 			_dialog_box_scene_field.file_filters) else ""
+	
 	data.portrait_on_dialog_box = _portrait_on_dialog_box
 	data.portraits = _portrait_tree.get_portraits_data()
 	data.typing_sounds = {} # Typing sounds are not implemented yet
@@ -132,7 +208,8 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 		_new_dialog_box_scene_button.visible = true
 		_dialog_box_scene_field.set_value("")
 	else:
-		_dialog_box_scene_field.set_value(ResourceUID.get_id_path(data.dialog_box_uid))
+		_dialog_box_path = ResourceUID.get_id_path(data.dialog_box_uid)
+		_dialog_box_scene_field.set_value(_dialog_box_path)
 	
 	if EditorSproutyDialogsFileUtils.check_valid_extension(
 			_dialog_box_scene_field.get_value(), _dialog_box_scene_field.file_filters):
@@ -143,20 +220,11 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 
 	# Portraits
 	_portrait_tree.load_portraits_data(data.portraits, self)
+	_modified_counter = 0
 
+#endregion
 
-## Open a scene in the editor
-func open_scene_in_editor(path: String) -> void:
-	if EditorSproutyDialogsFileUtils.check_valid_extension(path, _dialog_box_scene_field.file_filters):
-		if ResourceLoader.exists(path):
-			EditorInterface.open_scene_from_path(path)
-			await get_tree().process_frame
-			EditorInterface.set_main_screen_editor("2D")
-	else:
-		printerr("[Sprouty Dialogs] Invalid scene file path.")
-
-
-#region === Character Name Translation =========================================
+#region === Name Translations ==================================================
 
 ## Update name translations text boxes when locales change
 func on_locales_changed() -> void:
@@ -167,6 +235,7 @@ func on_locales_changed() -> void:
 		# Handle when there was no translation before
 		if _name_without_translation and _default_locale != "":
 			translations[_default_locale] = translations["default"]
+			_default_display_name = translations["default"]
 			_name_without_translation = false
 		# Handle when the default locale changes
 		elif previous_default_locale != _default_locale:
@@ -174,6 +243,7 @@ func on_locales_changed() -> void:
 				translations[previous_default_locale] = translations["default"]
 			translations["default"] = translations[_default_locale] \
 					if translations.has(_default_locale) else translations["default"]
+			_default_display_name = translations["default"]
 			_name_translations = translations
 		_load_name_translations(translations)
 
@@ -217,11 +287,14 @@ func _load_name_translations(translations: Dictionary) -> void:
 
 	if _translations_enabled and translations.has(_default_locale):
 		_name_default_locale_field.text = translations[_default_locale]
+		_default_display_name = translations[_default_locale]
 	else: # Use default if translations disabled or no default locale translation
 		if translations.has("default"):
 			_name_default_locale_field.text = translations["default"]
+			_default_display_name = translations["default"]
 		else:
 			_name_default_locale_field.text = ""
+			_default_display_name = ""
 	_name_translations_container.load_translations_text(translations)
 
 
@@ -242,19 +315,60 @@ func _set_translation_text_boxes() -> void:
 	_name_default_locale_label.visible = _translations_enabled and _default_locale != ""
 	_name_translations_container.visible = _translations_enabled and locales.size() > 1
 
+
+## Handle the default display name text change
+func _on_default_display_name_changed(new_text: String) -> void:
+	if new_text != _default_display_name:
+		var temp = _default_display_name
+		_default_display_name = new_text
+		_default_name_modified = true
+
+		# --- UndoRedo -----------------------------------------------------
+		undo_redo.create_action("Change Display Name", 1)
+		undo_redo.add_do_property(_name_default_locale_field, "text", new_text)
+		undo_redo.add_undo_property(_name_default_locale_field, "text", temp)
+		undo_redo.add_do_method(self, "_on_modified", true)
+		undo_redo.add_undo_method(self, "_on_modified", false)
+		undo_redo.commit_action(false)
+		# ------------------------------------------------------------------
+
+
+## Handle the default display name focus exit
+func _on_default_display_focus_exited() -> void:
+	if _default_name_modified:
+		_default_name_modified = false
+		_on_modified(true)
+
 #endregion
 
 #region === Dialog Text box ====================================================
 
 ## Handle the dialog box scene file path
 func _on_dialog_box_scene_path_changed(path: String) -> void:
-	if path.is_empty(): # No path selected
-		_to_dialog_box_scene_button.visible = false
-		_new_dialog_box_scene_button.visible = true
-	elif EditorSproutyDialogsFileUtils.check_valid_extension(path, _dialog_box_scene_field.file_filters):
-		_to_dialog_box_scene_button.visible = true # Valid path
-		_new_dialog_box_scene_button.visible = false
-	on_modified()
+	# If the path is valid, show the open scene button and hide the new scene button
+	var is_valid = EditorSproutyDialogsFileUtils.check_valid_extension(path,
+			_dialog_box_scene_field.file_filters)
+	_to_dialog_box_scene_button.visible = is_valid
+	_new_dialog_box_scene_button.visible = not is_valid
+	var temp = _dialog_box_path
+	_dialog_box_path = path
+	_on_modified(true)
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Change Dialog Box Scene")
+	undo_redo.add_do_method(_dialog_box_scene_field, "set_value", path)
+	undo_redo.add_undo_method(_dialog_box_scene_field, "set_value", temp)
+	undo_redo.add_do_property(self, "_dialog_box_path", path)
+	undo_redo.add_undo_property(self, "_dialog_box_path", temp)
+	undo_redo.add_do_property(_to_dialog_box_scene_button, "visible", is_valid)
+	undo_redo.add_undo_property(_to_dialog_box_scene_button, "visible",
+		EditorSproutyDialogsFileUtils.check_valid_extension(temp,
+			_dialog_box_scene_field.file_filters))
+	
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
 
 
 ## Handle the dialog box scene button press
@@ -304,12 +418,11 @@ func _new_dialog_box(path: String) -> void:
 
 	# Set the dialog box scene path
 	_dialog_box_scene_field.set_value(path)
-	_to_dialog_box_scene_button.visible = true
-	_new_dialog_box_scene_button.visible = false
+	_on_dialog_box_scene_path_changed(path)
 
 	# Open the new scene in the editor
 	open_scene_in_editor(path)
-	on_modified()
+	_on_modified(true)
 
 	# Set the recent file path
 	EditorSproutyDialogsFileUtils.set_recent_file_path("dialog_box_files", path)
@@ -317,8 +430,18 @@ func _new_dialog_box(path: String) -> void:
 
 ## Handle the text box portrait display toggle
 func _on_portrait_dialog_box_toggled(toggled_on: bool) -> void:
+	var temp = _portrait_on_dialog_box
 	_portrait_on_dialog_box = toggled_on
-	on_modified()
+	_on_modified(true)
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Toggle Portrait on Dialog Box")
+	undo_redo.add_do_property(%PortraitOnDialogBoxToggle, "button_pressed", toggled_on)
+	undo_redo.add_undo_property(%PortraitOnDialogBoxToggle, "button_pressed", temp)
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
 
 #endregion
 
@@ -345,12 +468,12 @@ func _on_add_portrait_button_pressed() -> void:
 			"New Portrait", portrait_editor.get_portrait_data(), parent, portrait_editor
 		)
 	portrait_editor.request_open_scene_in_editor.connect(open_scene_in_editor)
-	portrait_editor.modified.connect(on_modified)
+	portrait_editor.modified.connect(_on_modified)
 	remove_child(portrait_editor)
 	item.set_editable(0, true)
 	item.select(0)
 	_portrait_tree.call_deferred("edit_selected")
-	on_modified()
+	_on_modified(true)
 
 
 ## Add a new portrait group to the tree
@@ -366,7 +489,7 @@ func _on_add_folder_button_pressed() -> void:
 	item.set_editable(0, true)
 	item.select(0)
 	_portrait_tree.call_deferred("edit_selected")
-	on_modified()
+	_on_modified(true)
 
 
 ## Filter the portrait tree items

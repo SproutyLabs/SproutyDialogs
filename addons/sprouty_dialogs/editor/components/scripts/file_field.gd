@@ -97,13 +97,11 @@ func _on_path_dialog_selected(path: String) -> void:
 ## Handle the text change event of the field.
 func _on_field_text_changed(new_text: String) -> void:
 	path_changed.emit(new_text)
-	set_value(new_text)
 
 
 ## Handle the text submission event of the field.
 func _on_field_text_submitted(new_text: String) -> void:
 	path_submitted.emit(new_text)
-	set_value(new_text)
 
 
 ## Clear the current value of the field.

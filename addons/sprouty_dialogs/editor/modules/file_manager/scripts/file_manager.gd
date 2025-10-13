@@ -160,8 +160,9 @@ func new_character_file(path: String) -> void:
 ## Create a new character editor instance and load the data from a resource
 func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Control:
 	var char_editor = _char_scene.instantiate()
-	add_child(char_editor)
 	char_editor.modified.connect(_on_data_modified)
+	char_editor.undo_redo = undo_redo
+	add_child(char_editor)
 	var name_data = resource.display_name if resource.display_name else {}
 	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
 		and EditorSproutyDialogsSettingsManager.get_setting("translate_character_names") \

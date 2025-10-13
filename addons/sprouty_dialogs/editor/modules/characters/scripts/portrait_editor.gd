@@ -10,7 +10,7 @@ extends VBoxContainer
 # -----------------------------------------------------------------------------
 
 ## Emitted when the portrait is modified
-signal modified
+signal modified(modified: bool)
 ## Emitted to request opening a scene in the editor
 signal request_open_scene_in_editor(scene_path: String)
 
@@ -190,7 +190,7 @@ func _on_portrait_scene_path_changed(path: String) -> void:
 		_to_portrait_scene_button.visible = true
 		_new_portrait_scene_button.visible = false
 		_switch_scene_preview(path)
-		modified.emit()
+		modified.emit(true)
 	else:
 		printerr("[Sprouty Dialogs] File " + path + " not found.")
 
@@ -243,7 +243,7 @@ func _new_portrait_scene(scene_path: String) -> void:
 
 	# Open the new scene in the editor
 	request_open_scene_in_editor.emit(scene_path)
-	modified.emit()
+	modified.emit(true)
 
 	# Set the recent file path
 	EditorSproutyDialogsFileUtils.set_recent_file_path("portrait_files", scene_path)
@@ -279,7 +279,7 @@ func _on_scale_x_value_changed(value: float) -> void:
 	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
 		_portrait_scale_section.get_node("YField").value = value
 		_preview_container.scale.y = value
-	modified.emit()
+	modified.emit(true)
 
 ## Update the image scale
 func _on_scale_y_value_changed(value: float) -> void:
@@ -287,25 +287,25 @@ func _on_scale_y_value_changed(value: float) -> void:
 	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
 		_portrait_scale_section.get_node("XField").value = value
 		_preview_container.scale.x = value
-	modified.emit()
+	modified.emit(true)
 
 
 ## Update the image offset position
 func _on_offset_x_value_changed(value: float) -> void:
 	_preview_container.position.x = value
-	modified.emit()
+	modified.emit(true)
 
 
 ## Update the image offset position
 func _on_offset_y_value_changed(value: float) -> void:
 	_preview_container.position.y = value
-	modified.emit()
+	modified.emit(true)
 
 
 ## Update the image rotation
 func _on_rotation_value_changed(value: float) -> void:
 	_preview_container.rotation_degrees = value
-	modified.emit()
+	modified.emit(true)
 
 
 ## Update the image mirroring
@@ -314,7 +314,7 @@ func _on_mirror_check_box_toggled(toggled_on: bool) -> void:
 		_preview_container.scale.x = - abs(_preview_container.scale.x)
 	else:
 		_preview_container.scale.x = abs(_preview_container.scale.x)
-	modified.emit()
+	modified.emit(true)
 
 #endregion
 
@@ -327,6 +327,6 @@ func _on_export_property_changed(name: String, value: Variant) -> void:
 	# Update the portrait preview scene
 	if _preview_container.get_child(0).has_method("set_portrait"):
 			_preview_container.get_child(0).set_portrait()
-	modified.emit()
+	modified.emit(true)
 
 #endregion

@@ -43,11 +43,13 @@ func get_current_character_editor() -> Container:
 
 
 ## Switch the current character editor panel
-func switch_current_character_editor(new_panel: Container) -> void:
+func switch_current_character_editor(new_editor: Container) -> void:
 	# Remove old panel and switch to the new one
 	if get_child_count() > 1:
 		remove_child(get_child(1))
-	add_child(new_panel)
+	
+	new_editor.undo_redo = undo_redo
+	add_child(new_editor)
 	show_character_editor()
 
 
