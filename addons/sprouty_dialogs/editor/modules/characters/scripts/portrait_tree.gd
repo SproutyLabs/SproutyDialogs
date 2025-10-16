@@ -2,14 +2,14 @@
 extends Tree
 
 # -----------------------------------------------------------------------------
-# Character Portrait Tree
+# Portrait Tree
 # -----------------------------------------------------------------------------
 ## This module is responsible for the character portrait tree.
 ## It allows the user to add, remove, rename and duplicate portraits.
 # -----------------------------------------------------------------------------
 
 ## Emitted when the portrait data is modified
-signal modified
+signal modified(modified: bool)
 ## Triggered when the user selects an item
 signal portrait_item_selected(item: TreeItem)
 ## Emitted to show/hide the portrait editor panel
@@ -23,13 +23,27 @@ signal show_portrait_editor_panel(show: bool)
 ## Icon of the character portrait
 var _portrait_icon: Texture2D = preload("res://addons/sprouty_dialogs/editor/icons/character.svg")
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready() -> void:
+	# Connect tree signals
+	item_mouse_selected.connect(_on_item_mouse_selected)
+	button_clicked.connect(_on_item_button_clicked)
+	item_activated.connect(_on_item_activated)
+	item_selected.connect(_on_item_selected)
+	item_edited.connect(_on_item_edited)
+
+	# Set up popup menu
+	_popup_menu.id_pressed.connect(_on_popup_menu_id_pressed)
 	_popup_menu.set_item_icon(0, get_theme_icon("Rename", "EditorIcons"))
 	_popup_menu.set_item_icon(1, get_theme_icon("Duplicate", "EditorIcons"))
 	_popup_menu.set_item_icon(2, get_theme_icon("Remove", "EditorIcons"))
 	create_item() # Create the root item
 
+
+#region === Portrait Data ======================================================
 
 ## Get the portrait data from the tree
 func get_portraits_data(from: TreeItem = get_root()) -> Dictionary:
@@ -52,7 +66,7 @@ func load_portraits_data(data: Dictionary, char_editor: Control, parent_item: Tr
 			# If the item is a portrait, create it and load its data
 			var editor = char_editor.portrait_editor_scene.instantiate()
 			editor.request_open_scene_in_editor.connect(char_editor.open_scene_in_editor)
-			editor.modified.connect(char_editor.on_modified)
+			editor.modified.connect(modified.emit)
 			add_child(editor)
 			new_portrait_item(item, data[item], parent_item, editor)
 			editor.load_portrait_data(item, data[item])
@@ -62,6 +76,8 @@ func load_portraits_data(data: Dictionary, char_editor: Control, parent_item: Tr
 			var group_item: TreeItem = new_portrait_group(item, parent_item)
 			load_portraits_data(data[item], char_editor, group_item)
 
+#endregion
+
 
 ## Adds a new portrait item to the tree
 func new_portrait_item(name: String, data: SproutyDialogsPortraitData,
@@ -69,6 +85,7 @@ func new_portrait_item(name: String, data: SproutyDialogsPortraitData,
 	var item: TreeItem = create_item(parent_item)
 	item.set_icon(0, _portrait_icon)
 	item.set_text(0, name)
+	item.set_meta("name", name)
 	item.set_metadata(0, {"portrait": data})
 	item.set_meta("item_path", get_item_path(item))
 	item.set_meta("portrait_editor", portrait_editor)
@@ -77,10 +94,11 @@ func new_portrait_item(name: String, data: SproutyDialogsPortraitData,
 
 
 ## Adds a new portrait group to the tree
-func new_portrait_group(group_name := "Group", parent_item: TreeItem = get_root()) -> TreeItem:
+func new_portrait_group(name: String, parent_item: TreeItem = get_root()) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
 	item.set_icon(0, get_theme_icon("Folder", "EditorIcons"))
-	item.set_text(0, group_name)
+	item.set_text(0, name)
+	item.set_meta("name", name)
 	item.set_metadata(0, {"group": true})
 	item.set_meta("item_path", get_item_path(item))
 	item.add_button(0, get_theme_icon("Remove", "EditorIcons"), 1, false, "Remove Group")
@@ -91,32 +109,50 @@ func new_portrait_group(group_name := "Group", parent_item: TreeItem = get_root(
 func duplicate_portrait_item(item: TreeItem) -> TreeItem:
 	var new_item: TreeItem = new_portrait_item(
 		item.get_text(0) + " (copy)",
-		item.get_metadata(0),
+		item.get_metadata(0)["portrait"],
 		item.get_parent(),
-		item.get_meta("portrait_editor")
+		item.get_meta("portrait_editor").duplicate()
 		)
-	item.set_editable(0, true)
-	item.select(0)
-	modified.emit()
+	new_item.set_editable(0, true)
+	new_item.select(0)
+	modified.emit(true)
+
+	# --- UndoRedo -----------------------------------------------------
+	var parent := item.get_parent()
+	undo_redo.create_action("Duplicate Portrait")
+	undo_redo.add_do_reference(new_item)
+	undo_redo.add_do_method(parent, "add_child", new_item)
+	undo_redo.add_undo_method(parent, "remove_child", new_item)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# ------------------------------------------------------------------
 	return new_item
 
 
-## Removes the portrait item from the tree
+## Removes a portrait or group from the tree
 func remove_portrait_item(item: TreeItem) -> void:
-	if item.get_next_visible(true) and item.get_next_visible(true) != item:
-		item.get_next_visible(true).select(0)
-	item.free()
-	modified.emit()
+	# Select the next visible item before removing the current one
+	var next_item := item.get_next_visible(true)
+	if next_item and next_item != item:
+		next_item.select(0)
+	var parent := item.get_parent()
+	parent.remove_child(item)
+	modified.emit(true)
+
 	# If the tree is empty, hide the portrait editor panel
 	if get_root().get_children().size() == 0:
 		show_portrait_editor_panel.emit(false)
-
-
-## Removes the portrait group and all its children from the tree
-func remove_portrait_group(item: TreeItem) -> void:
-	for child in item.get_children():
-		child.free()
-	remove_portrait_item(item) # Remove the group item itself
+	
+	# --- UndoRedo -----------------------------------------------------
+	undo_redo.create_action("Remove Portrait")
+	undo_redo.add_undo_reference(item)
+	undo_redo.add_do_method(parent, "remove_child", item)
+	undo_redo.add_undo_method(parent, "add_child", item)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# ------------------------------------------------------------------
 
 
 ## Renames the portrait item
@@ -125,14 +161,44 @@ func rename_portrait_item(item: TreeItem) -> void:
 	call_deferred("edit_selected")
 
 
-## Check if the name is already in use
-func check_existing_name(name: String, checked_item: TreeItem) -> bool:
-	for item in get_root().get_children():
-		if item == checked_item:
+## Check if the item name is already in use by its siblings
+func check_existing_item_name(name: String, item: TreeItem) -> bool:
+	var parent := item.get_parent()
+	if not parent:
+		parent = get_root()
+	# Check all the siblings of the item
+	for child in parent.get_children():
+		if child == item:
 			continue # Skip the item being checked
-		if item.get_text(0) == name:
-			return true
+		if child.get_text(0) == name:
+			return true # If the name matches, return true
 	return false
+
+
+## Ensure the item has a valid name (unique and not empty)
+func ensure_valid_item_name(item: TreeItem) -> void:
+	# If the name is empty, set it to "Unnamed"
+	if item.get_text(0).strip_edges() == "":
+		item.set_text(0, "Unnamed")
+		return
+
+	# If the name is already in use, add a suffix to the name
+	if check_existing_item_name(item.get_text(0), item):
+		# Remove the suffix like " (1)" if exists
+		var regex = RegEx.new()
+		regex.compile("(?: \\(\\d+\\))?$")
+		var result = regex.search(item.get_text(0))
+		var clean_name = item.get_text(0)
+		if result:
+			clean_name = regex.sub(item.get_text(0), "").strip_edges()
+		
+		# If new the name is already in use, increment the suffix value
+		var suffix := 1
+		var name = clean_name + " (" + str(suffix) + ")"
+		while check_existing_item_name(name, item):
+			suffix += 1
+			name = clean_name + " (" + str(suffix) + ")"
+		item.set_text(0, name)
 
 
 ## Get the path of the item in the tree
@@ -193,50 +259,89 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 
 	if item == null or to_item == null:
 		return
-	else:
-		# Check if the item is a child of the target item
-		var aux := to_item
-		while true:
-			if aux == item: # Dropping inside itself
-				return # Prevent infinite loops
-			aux = aux.get_parent()
-			if aux == get_root():
-				break
 	
+	# Check if the item is a child of the target item
+	var aux := to_item
+	while true:
+		if aux == item: # Dropping inside itself
+			return # Prevent infinite loops
+		aux = aux.get_parent()
+		if aux == get_root():
+			break
+	
+	# Get the drop section (-1: above, 0: inside, 1: below)
 	var drop_section := get_drop_section_at_position(at_position)
-	var parent := to_item.get_parent()
+	var parent := item.get_parent()
+	var index := item.get_index()
 
+	undo_redo.create_action("Move Portrait")
+
+	# If dropping into a group, set the parent to the group
 	if to_item.get_metadata(0).has("group") and drop_section == 1:
-		parent = to_item
+		if to_item.get_children().size() == 0:
+			# If the group is empty, just add the item to the group
+			parent.remove_child(item)
+			to_item.add_child(item)
 
-	var new_item := copy_tree_item(item, parent)
+			# --- UndoRedo -------------------------------------------------
+			undo_redo.add_do_method(parent, "remove_child", item)
+			undo_redo.add_do_method(to_item, "add_child", item)
+			# --------------------------------------------------------------
+		else: # If the group has children, move the item to the first position
+			var first_child := to_item.get_first_child()
+			item.move_before(first_child)
+
+			# --- UndoRedo -------------------------------------------------
+			undo_redo.add_do_method(item, "move_before", first_child)
+			# --------------------------------------------------------------
+
 	
+	# Move the new item after the target item
 	if !to_item.get_metadata(0).has("group") and drop_section == 1:
-		new_item.move_after(to_item)
+		item.move_after(to_item)
 
-	if drop_section == -1:
-		new_item.move_before(to_item)
+		# --- UndoRedo -----------------------------------------------------
+		undo_redo.add_do_method(item, "move_after", to_item)
+		# ------------------------------------------------------------------
 
-	item.free() # Free the original item
-	modified.emit()
+	if drop_section == -1: # Move the new item before the target item
+		item.move_before(to_item)
 
+		# --- UndoRedo -----------------------------------------------------
+		undo_redo.add_do_method(item, "move_before", to_item)
+		# ------------------------------------------------------------------
 
-# Create a copy of the item and its children (if is a group)
-func copy_tree_item(item: TreeItem, new_parent: TreeItem) -> TreeItem:
-	var new_item: TreeItem = null
-	if item.get_metadata(0).has("group"):
-		new_item = new_portrait_group(item.get_text(0), new_parent)
-	else:
-		new_item = new_portrait_item(
-			item.get_text(0),
-			item.get_metadata(0),
-			new_parent,
-			item.get_meta("portrait_editor")
-			)
+	# Ensure the item has a unique name after moving
+	var temp_name := item.get_meta("name")
+	ensure_valid_item_name(item)
+	if temp_name != item.get_text(0):
+		item.set_meta("name", item.get_text(0))
+	modified.emit(true)
+
+	# --- UndoRedo ---------------------------------------------------------
+	if parent.get_child_count() > 0:
+		if index >= parent.get_child_count():
+			# If the item was the last child, move it to the end
+			undo_redo.add_undo_method(item, "move_after",
+				parent.get_child(parent.get_child_count() - 1))
+		else: # Otherwise, move it back to its original position
+			undo_redo.add_undo_method(item, "move_before",
+					parent.get_child(index if index > 0 else 0))
+	else: # If the parent has no children, just add the item back to the parent
+		undo_redo.add_undo_method(item.get_parent(), "remove_child", item)
+		undo_redo.add_undo_method(parent, "add_child", item)
 	
-	for child in item.get_children():
-		copy_tree_item(child, new_item)
-	return new_item
+	if temp_name != item.get_text(0):
+		undo_redo.add_do_method(item, "set_text", 0, item.get_text(0))
+		undo_redo.add_do_method(item, "set_meta", "name", item.get_text(0))
+		undo_redo.add_undo_method(item, "set_text", 0, temp_name)
+		undo_redo.add_undo_method(item, "set_meta", "name", temp_name)
+
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
+
 
 #endregion
 
@@ -259,28 +364,31 @@ func _on_item_activated() -> void:
 	rename_portrait_item(get_selected())
 
 
-## Called when the user edits a portrait item
+## Called when the user edits (rename) a portrait item
 func _on_item_edited() -> void:
 	var item := get_selected()
+	ensure_valid_item_name(item)
+	if item.get_meta("name") == item.get_text(0):
+		return # If the name didn't change, do nothing
 	
-	# If the name is empty, set it to "Unnamed"
-	if item.get_text(0).strip_edges() == "":
-		item.set_text(0, "Unnamed")
-		return
+	var temp_name := item.get_meta("name")
+	item.set_meta("name", item.get_text(0))
+	modified.emit(true)
 
-	# If the name is already in use, add a suffix to the name
-	if check_existing_name(item.get_text(0), item):
-		var suffix := 1
-		var name := item.get_text(0).strip_edges() + " (" + str(suffix) + ")"
-		# If new the name is already in use, increment the suffix value
-		while check_existing_name(name, item):
-			name = item.get_text(0).strip_edges() + " (" + str(suffix) + ")"
-			suffix += 1
-		item.set_text(0, name)
-	
 	if not item.get_metadata(0).has("group"): # Update the portrait name
 		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
-	modified.emit()
+
+	# --- UndoRedo -----------------------------------------------------
+	undo_redo.create_action("Rename Portrait")
+	undo_redo.add_do_method(item, "set_text", 0, item.get_text(0))
+	undo_redo.add_do_method(item, "set_meta", "name", item.get_text(0))
+	undo_redo.add_undo_method(item, "set_text", 0, temp_name)
+	undo_redo.add_undo_method(item, "set_meta", "name", temp_name)
+
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# ------------------------------------------------------------------
 
 
 ## Called when the user selects an item in the popup menu
@@ -302,7 +410,7 @@ func _on_item_button_clicked(item: TreeItem, column: int, id: int, mouse_button_
 		if id == 1: # Remove group button clicked
 			if item.get_children().size() > 0:
 				# If the group has children, show a confirmation dialog
-				_remove_group_dialog.confirmed.connect(remove_portrait_group.bind(item))
+				_remove_group_dialog.confirmed.connect(remove_portrait_item.bind(item))
 				_remove_group_dialog.popup_centered()
 			else:
 				remove_portrait_item(item)

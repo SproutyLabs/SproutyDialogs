@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://r4em5768hrs2" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/portrait_export_properties.gd" id="4_ljfx6"]
 [ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/sprouty_dialogs/editor/theme/expander_subpanel_highlight.tres" id="5_mmsn6"]
 
-[sub_resource type="DPITexture" id="DPITexture_v013n"]
+[sub_resource type="DPITexture" id="DPITexture_jxppo"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -18,9 +18,9 @@ script = ExtResource("1_7iqxq")
 
 [node name="Title" type="HBoxContainer" parent="."]
 layout_mode = 2
+theme_override_constants/separation = 0
 
 [node name="Icon" type="TextureRect" parent="Title"]
-custom_minimum_size = Vector2(35, 0)
 layout_mode = 2
 texture = ExtResource("2_fad05")
 expand_mode = 3
@@ -29,7 +29,7 @@ stretch_mode = 3
 [node name="PortraitName" type="Label" parent="Title"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
-text = "Portrait Name"
+text = "New Portrait"
 
 [node name="--" type="HSeparator" parent="."]
 layout_mode = 2
@@ -55,7 +55,7 @@ text = "Portrait Preview"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Reload scene"
-icon = SubResource("DPITexture_v013n")
+icon = SubResource("DPITexture_jxppo")
 
 [node name="PreviewPanel" type="Panel" parent="Container/PortraitPreview"]
 clip_contents = true
@@ -100,7 +100,7 @@ offset_right = 8.0
 offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("DPITexture_v013n")
+texture = SubResource("DPITexture_jxppo")
 stretch_mode = 3
 
 [node name="PortraitSettings" type="ScrollContainer" parent="Container"]
@@ -132,14 +132,14 @@ text = "Scene"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create a new portrait scene."
-icon = SubResource("DPITexture_v013n")
+icon = SubResource("DPITexture_jxppo")
 
 [node name="ToPortraitSceneButton" type="Button" parent="Container/PortraitSettings/Container/PortraitScene"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 tooltip_text = "Open the portrait scene."
-icon = SubResource("DPITexture_v013n")
+icon = SubResource("DPITexture_jxppo")
 
 [node name="PortraitSceneField" parent="Container/PortraitSettings/Container/PortraitScene" instance=ExtResource("1_4ou2u")]
 unique_name_in_owner = true
@@ -234,7 +234,7 @@ allow_greater = true
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
-icon = SubResource("DPITexture_v013n")
+icon = SubResource("DPITexture_jxppo")
 flat = true
 
 [node name="--" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]

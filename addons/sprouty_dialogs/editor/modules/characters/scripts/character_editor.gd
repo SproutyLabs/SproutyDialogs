@@ -97,19 +97,24 @@ func _ready() -> void:
 	_to_dialog_box_scene_button.pressed.connect(_on_dialog_box_scene_button_pressed)
 	_new_dialog_box_scene_button.pressed.connect(_on_new_dialog_box_scene_pressed)
 	_new_dialog_box_dialog.file_selected.connect(_new_dialog_box)
+	%PortraitOnDialogBoxToggle.toggled.connect(_on_portrait_dialog_box_toggled)
 
 	# Connect portrait signals
-	%PortraitOnDialogBoxToggle.toggled.connect(_on_portrait_dialog_box_toggled)
 	_portrait_tree.show_portrait_editor_panel.connect(_show_portrait_editor_panel)
 	_portrait_tree.portrait_item_selected.connect(_on_portrait_selected)
 	_portrait_tree.modified.connect(_on_modified)
+	_portrait_tree.undo_redo = undo_redo
+
+	%PortraitSearchBar.text_changed.connect(_on_portrait_search_bar_text_changed)
+	%AddPortraitButton.pressed.connect(_on_add_portrait_button_pressed)
+	%AddGroupButton.pressed.connect(_on_add_portrait_group_button_pressed)
 
 	# Set icons for buttons and fields
 	_to_dialog_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
 	_new_dialog_box_scene_button.icon = get_theme_icon("Add", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
-	%AddFolderButton.icon = get_theme_icon("Folder", "EditorIcons")
+	%AddGroupButton.icon = get_theme_icon("Folder", "EditorIcons")
 
 	await get_tree().process_frame # Wait a frame to ensure settings are loaded
 	on_translation_enabled_changed( # Enable/disable translation section
@@ -456,12 +461,18 @@ func _show_portrait_editor_panel(show: bool) -> void:
 ## Add a new portrait to the tree
 func _on_add_portrait_button_pressed() -> void:
 	var parent: TreeItem = _portrait_tree.get_root()
-	if _portrait_tree.get_selected():
-		if _portrait_tree.get_selected().get_metadata(0) and \
-			_portrait_tree.get_selected().get_metadata(0).has("group"):
-			parent = _portrait_tree.get_selected()
+	var item_selected = _portrait_tree.get_selected()
+	
+	if item_selected: # If an item is selected, add to its group
+		if item_selected.get_metadata(0) and \
+				item_selected.get_metadata(0).has("group"):
+			parent = item_selected
 		else:
-			parent = _portrait_tree.get_selected().get_parent()
+			parent = item_selected.get_parent()
+			if not parent: # If no parent, add to root
+				parent = _portrait_tree.get_root()
+	
+	# Create a new portrait editor and create a new portrait item
 	var portrait_editor = portrait_editor_scene.instantiate()
 	add_child(portrait_editor)
 	var item: TreeItem = _portrait_tree.new_portrait_item(
@@ -474,22 +485,48 @@ func _on_add_portrait_button_pressed() -> void:
 	item.select(0)
 	_portrait_tree.call_deferred("edit_selected")
 	_on_modified(true)
+	
+	# --- UndoRedo -----------------------------------------------------
+	undo_redo.create_action("Add New Portrait")
+	undo_redo.add_do_reference(item)
+	undo_redo.add_do_method(parent, "add_child", item)
+	undo_redo.add_undo_method(parent, "remove_child", item)
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.commit_action(false)
+	# ------------------------------------------------------------------
 
 
 ## Add a new portrait group to the tree
-func _on_add_folder_button_pressed() -> void:
+func _on_add_portrait_group_button_pressed() -> void:
 	var parent: TreeItem = _portrait_tree.get_root()
-	if _portrait_tree.get_selected():
-		if _portrait_tree.get_selected().get_metadata(0) and \
-			_portrait_tree.get_selected().get_metadata(0).has("group"):
-			parent = _portrait_tree.get_selected()
+	var item_selected = _portrait_tree.get_selected()
+
+	if item_selected: # If an item is selected, add to its group
+		if item_selected.get_metadata(0) and \
+			item_selected.get_metadata(0).has("group"):
+			parent = item_selected
 		else:
-			parent = _portrait_tree.get_selected().get_parent()
+			parent = item_selected.get_parent()
+			if not parent: # If no parent, add to root
+				parent = _portrait_tree.get_root()
+
+	# Create a new portrait group item
 	var item: TreeItem = _portrait_tree.new_portrait_group("New Group", parent)
 	item.set_editable(0, true)
 	item.select(0)
 	_portrait_tree.call_deferred("edit_selected")
 	_on_modified(true)
+
+	# --- UndoRedo -----------------------------------------------------
+	undo_redo.create_action("Add New Portrait Group")
+	undo_redo.add_do_reference(item)
+	undo_redo.add_do_method(parent, "add_child", item)
+	undo_redo.add_undo_method(parent, "remove_child", item)
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.commit_action(false)
+	# ------------------------------------------------------------------
 
 
 ## Filter the portrait tree items
