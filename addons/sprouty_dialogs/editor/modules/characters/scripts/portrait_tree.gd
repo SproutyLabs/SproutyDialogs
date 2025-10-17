@@ -83,6 +83,7 @@ func load_portraits_data(data: Dictionary, char_editor: Control, parent_item: Tr
 func new_portrait_item(name: String, data: SproutyDialogsPortraitData,
 		parent_item: TreeItem, portrait_editor: Node) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
+	portrait_editor.undo_redo = undo_redo
 	item.set_icon(0, _portrait_icon)
 	item.set_text(0, name)
 	item.set_meta("name", name)

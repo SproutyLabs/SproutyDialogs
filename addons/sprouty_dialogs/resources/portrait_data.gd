@@ -43,8 +43,8 @@ extends Resource
 ##  - "rotation": the rotation of the portrait in degrees.
 ##  - "mirror": whether to mirror the portrait.
 @export var transform_settings: Dictionary = {
-	"scale": Vector2.ZERO,
-	"scale_lock_ratio": false,
+	"scale": Vector2.ONE,
+	"scale_lock_ratio": true,
 	"offset": Vector2.ZERO,
 	"rotation": 0.0,
 	"mirror": false

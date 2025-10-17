@@ -9,6 +9,8 @@ extends VBoxContainer
 # -----------------------------------------------------------------------------
 
 ## Emmited when a property is modified
+signal modified(modified: bool)
+## Emmited when a property value is changed
 signal property_changed(name: String, value: Variant)
 
 ## Exported properties section
@@ -22,6 +24,9 @@ var _file_field_path := "res://addons/sprouty_dialogs/editor/components/file_fie
 var _dict_field_path := "res://addons/sprouty_dialogs/editor/components/dictionary_field.tscn"
 ## Array field scene
 var _array_field_path := "res://addons/sprouty_dialogs/editor/components/array_field.tscn"
+
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
 
 
 func _ready():
@@ -154,7 +159,7 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 			if value != null:
 				field.button_pressed = value
 			field.toggled.connect(
-				_on_property_changed.bind(property_data["name"], type))
+				_on_property_changed.bind(property_data["name"], type, field))
 		
 		TYPE_INT:
 			# Enum int
@@ -165,7 +170,7 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 				if value != null:
 					field.select(value)
 				field.item_selected.connect(
-					_on_property_changed.bind(property_data["name"], type))
+					_on_property_changed.bind(property_data["name"], type, field))
 			else:
 				field = SpinBox.new()
 				var range_settings = property_data["hint_string"].split(",")
@@ -182,7 +187,7 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 				if value != null:
 					field.value = value
 				field.value_changed.connect(
-					_on_property_changed.bind(property_data["name"], type))
+					_on_property_changed.bind(property_data["name"], type, field))
 		
 		TYPE_FLOAT:
 			field = SpinBox.new()
@@ -200,7 +205,7 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 			if value != null:
 				field.value = value
 			field.value_changed.connect(
-				_on_property_changed.bind(property_data["name"], type))
+				_on_property_changed.bind(property_data["name"], type, field))
 		
 		TYPE_STRING:
 			# File path string
@@ -223,7 +228,7 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 				if value != null:
 					field.ready.connect(func(): field.set_value(value))
 				field.path_changed.connect(
-						_on_property_changed.bind(property_data["name"], type))
+						_on_property_changed.bind(property_data["name"], type, field))
 			# Enum string
 			elif property_data["hint"] == PROPERTY_HINT_ENUM:
 				field = OptionButton.new()
@@ -234,39 +239,41 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 				if value != null:
 					field.select(options.find(value))
 				field.item_selected.connect(
-						_on_property_changed.bind(property_data["name"], type))
+						_on_property_changed.bind(property_data["name"], type, field))
 			else:
 				field = LineEdit.new()
 				if value != null:
 					field.text = value
-				field.text_submitted.connect(
-						_on_property_changed.bind(property_data["name"], type))
+				field.text_changed.connect(
+						_on_property_changed.bind(property_data["name"], type, field))
 		
 		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
 			var vector_n := int(type_string(property_data["type"])[-1])
 			var components_names = ["x", "y", "z", "w"]
-			field = HBoxContainer.new()
+			field = HFlowContainer.new()
 			# Create the fields for each component of the vector
 			for i in range(0, vector_n):
+				var container = HBoxContainer.new()
+				field.add_child(container)
 				var label = Label.new()
 				label.text = components_names[i]
-				field.add_child(label)
+				container.add_child(label)
 				var x_field = SpinBox.new()
 				x_field.step = 0.01
 				x_field.allow_greater = true
 				x_field.allow_lesser = true
 				if value != null:
 					x_field.value = value[i]
-				field.add_child(x_field)
+				container.add_child(x_field)
 				x_field.value_changed.connect(_on_property_changed.bind(
-						property_data["name"] + ":" + components_names[i], type))
+						property_data["name"] + "." + components_names[i], type, x_field))
 		
 		TYPE_COLOR:
 			field = ColorPickerButton.new()
 			if value != null:
 				field.color = value
 			field.color_changed.connect(
-					_on_property_changed.bind(property_data["name"], type))
+					_on_property_changed.bind(property_data["name"], type, field))
 		
 		TYPE_DICTIONARY:
 			field = load(_dict_field_path).instantiate()
@@ -288,36 +295,104 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 			field = RichTextLabel.new()
 			field.bbcode_enabled = true
 			field.fit_content = true
-			field.text = "[color=red]Objects/Resources are not supported.[/color]"
-			field.tooltip_text = "Use @export_file(\"*.extension\") to load the resource instead."
+			field.text = "[color=tomato]Objects/Resources are not supported.[/color]"
+			field.tooltip_text = "Use @export_file(\"*.extension\") to load the resource file instead."
 		
 		_:
 			field = LineEdit.new()
 			if value != null:
 				field.text = value
-			field.text_submitted.connect(
-					_on_property_changed.bind(property_data["name"], type))
+			field.text_changed.connect(
+					_on_property_changed.bind(property_data["name"], type, field))
 	return field
 
 
-## Update the exported properties and the preview scene when the value changes
-func _on_property_changed(value: Variant, name: String, type: int, field: Variant = null) -> void:
-	# If is changing a vector component, update the vector with the value
-	if type == TYPE_VECTOR2 or type == TYPE_VECTOR3 or type == TYPE_VECTOR4:
-		name = name.get_slice(":", 0)
-		var vector_component = name.get_slice(":", 1)
-		_export_overrides[name]["value"][vector_component] = value
-		_export_overrides[name]["type"] = type
-	# If is changing an array or dictionary, save the types of its elements
-	elif type == TYPE_ARRAY or type == TYPE_DICTIONARY:
-		_export_overrides[name]["type"] = field.get_items_types()
-		_export_overrides[name]["value"] = value
-	# If is changing a color, save the color value as a hexadecimal string
-	elif type == TYPE_COLOR:
-		_export_overrides[name]["value"] = value.to_html()
-		_export_overrides[name]["type"] = type
-	else:
-		_export_overrides[name]["type"] = type
-		_export_overrides[name]["value"] = value
+## Set a property on the export overrides dictionary
+func _set_property_on_dict(name: String, value: Variant, type: Variant) -> void:
+	_export_overrides[name]["value"] = value
+	_export_overrides[name]["type"] = type
+
+
+## Update the exported properties when the value changes
+func _on_property_changed(value: Variant, name: String, type: Variant, field: Variant = null) -> void:
+	var temp = _export_overrides[name.get_slice(".", 0)].duplicate()
+	var vector_component = name.get_slice(".", 1)
 	
-	property_changed.emit(name, _export_overrides[name]["value"])
+	match type:
+		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
+			# Update the changed component of the vector
+			vector_component = ["x", "y", "z", "w"].find(vector_component)
+			var vector_value = temp["value"]
+			vector_value[vector_component] = value
+			value = vector_value
+		TYPE_ARRAY, TYPE_DICTIONARY: # Save each element type
+			type = field.get_items_types()
+		TYPE_COLOR: # Save color value as a hexadecimal string
+			value = value.to_html()
+	
+	name = name.get_slice(".", 0) # Get the base property name
+	print("_on_property_changed: ", name, " = ", value)
+	_set_property_on_dict(name, value, type)
+	property_changed.emit(name, value)
+	modified.emit(true)
+
+	# --- UndoRedo -------------------------------------------------------------
+	undo_redo.create_action("Edit Portrait Property: " + name.capitalize())
+
+	match type: # Handle specific field types for undo/redo
+		TYPE_BOOL:
+			if field is CheckBox: # Checkbox bool
+				undo_redo.add_do_method(field, "set_pressed_no_signal", value)
+				undo_redo.add_undo_method(field, "set_pressed_no_signal", temp["value"])
+		TYPE_INT:
+			if field is OptionButton: # Enum int
+				undo_redo.add_do_method(field, "select", field.get_item_index(value))
+				undo_redo.add_undo_method(field, "select", field.get_item_index(temp["value"]))
+			elif field is SpinBox: # SpinBox int
+				undo_redo.add_do_method(field, "set_value_no_signal", value)
+				undo_redo.add_undo_method(field, "set_value_no_signal", temp["value"])
+		TYPE_FLOAT:
+			if field is SpinBox: # SpinBox float
+				undo_redo.add_do_method(field, "set_value_no_signal", value)
+				undo_redo.add_undo_method(field, "set_value_no_signal", temp["value"])
+		TYPE_STRING:
+			if field is EditorSproutyDialogsFileField: # File/Dir path string
+				undo_redo.add_do_method(field, "set_value", value)
+				undo_redo.add_undo_method(field, "set_value", temp["value"])
+			elif field is OptionButton: # Enum string
+				undo_redo.add_do_method(field, "select", field.get_item_index(value))
+				undo_redo.add_undo_method(field, "select", field.get_item_index(temp["value"]))
+			elif field is LineEdit: # LineEdit string
+				undo_redo.add_do_property(field, "text", value)
+				undo_redo.add_undo_property(field, "text", temp["value"])
+		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
+			if field is SpinBox: # Vector component SpinBox
+				undo_redo.add_do_method(field, "set_value_no_signal", value[vector_component])
+				undo_redo.add_undo_method(field, "set_value_no_signal", temp["value"][vector_component])
+		TYPE_COLOR:
+			if field is ColorPickerButton: # ColorPickerButton
+				undo_redo.add_do_property(field, "color", value)
+				undo_redo.add_undo_property(field, "color", temp["value"])
+		TYPE_ARRAY:
+			if field is EditorSproutyDialogsArrayField: # Array field
+				undo_redo.add_do_method(field, "set_array", value, type)
+				undo_redo.add_undo_method(field, "set_array", temp["value"], temp["type"])
+		TYPE_DICTIONARY:
+			if field is EditorSproutyDialogsDictionaryField: # Dictionary field
+				undo_redo.add_do_method(field, "set_dictionary", value, type)
+				undo_redo.add_undo_method(field, "set_dictionary", temp["value"], type)
+		_:
+			if field is LineEdit: # LineEdit default
+				undo_redo.add_do_property(field, "text", value)
+				undo_redo.add_undo_property(field, "text", temp["value"])
+
+	undo_redo.add_do_method(self, "_set_property_on_dict", name, value, type)
+	undo_redo.add_undo_method(self, "_set_property_on_dict", name, temp["value"], temp["type"])
+
+	undo_redo.add_do_method(self, "emit_signal", "property_changed", name, value)
+	undo_redo.add_undo_method(self, "emit_signal", "property_changed", name, temp["value"])
+
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# --------------------------------------------------------------------------

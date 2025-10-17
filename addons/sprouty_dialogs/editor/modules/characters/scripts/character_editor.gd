@@ -176,13 +176,12 @@ func get_character_data() -> SproutyDialogsCharacterData:
 	data.display_name = _get_name_translations()
 	data.description = _description_field.text
 
-	data.dialog_box_uid = ResourceSaver.get_resource_id_for_path(_dialog_box_scene_field.get_value(), true) if \
-		EditorSproutyDialogsFileUtils.check_valid_extension(_dialog_box_scene_field.get_value(),
-			_dialog_box_scene_field.file_filters) else -1
+	data.dialog_box_uid = ResourceSaver.get_resource_id_for_path(
+				_dialog_box_scene_field.get_value(), true) \
+		if _check_valid_dialog_box_scene(_dialog_box_scene_field.get_value()) else -1
 	
-	data.dialog_box_path = _dialog_box_scene_field.get_value() if \
-		EditorSproutyDialogsFileUtils.check_valid_extension(_dialog_box_scene_field.get_value(),
-			_dialog_box_scene_field.file_filters) else ""
+	data.dialog_box_path = _dialog_box_scene_field.get_value() \
+		if _check_valid_dialog_box_scene(_dialog_box_scene_field.get_value()) else ""
 	
 	data.portrait_on_dialog_box = _portrait_on_dialog_box
 	data.portraits = _portrait_tree.get_portraits_data()
@@ -348,27 +347,47 @@ func _on_default_display_focus_exited() -> void:
 
 #region === Dialog Text box ====================================================
 
+## Check if a dialog box scene path is valid
+func _check_valid_dialog_box_scene(path: String, print_error: bool = true) -> bool:
+	var is_valid = EditorSproutyDialogsFileUtils.check_valid_extension(path,
+			_dialog_box_scene_field.file_filters) and FileAccess.file_exists(path)
+	
+	if is_valid: # Check if the scene inherits from DialogBox class
+		var scene = load(path).instantiate()
+		if not scene is DialogBox:
+			if print_error:
+				printerr("[Sprouty Dialogs] The scene '" + path + "' is not valid."
+						+" The root node must inherit from DialogBox class.")
+			is_valid = false
+			scene.queue_free()
+	
+	return is_valid
+
+
 ## Handle the dialog box scene file path
 func _on_dialog_box_scene_path_changed(path: String) -> void:
 	# If the path is valid, show the open scene button and hide the new scene button
-	var is_valid = EditorSproutyDialogsFileUtils.check_valid_extension(path,
-			_dialog_box_scene_field.file_filters)
+	var is_valid = _check_valid_dialog_box_scene(path)
 	_to_dialog_box_scene_button.visible = is_valid
 	_new_dialog_box_scene_button.visible = not is_valid
 	var temp = _dialog_box_path
 	_dialog_box_path = path
 	_on_modified(true)
-
+	
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Change Dialog Box Scene")
 	undo_redo.add_do_method(_dialog_box_scene_field, "set_value", path)
 	undo_redo.add_undo_method(_dialog_box_scene_field, "set_value", temp)
 	undo_redo.add_do_property(self, "_dialog_box_path", path)
 	undo_redo.add_undo_property(self, "_dialog_box_path", temp)
+
 	undo_redo.add_do_property(_to_dialog_box_scene_button, "visible", is_valid)
 	undo_redo.add_undo_property(_to_dialog_box_scene_button, "visible",
-		EditorSproutyDialogsFileUtils.check_valid_extension(temp,
-			_dialog_box_scene_field.file_filters))
+		_check_valid_dialog_box_scene(temp, false))
+	
+	undo_redo.add_do_property(_new_dialog_box_scene_button, "visible", not is_valid)
+	undo_redo.add_undo_property(_new_dialog_box_scene_button, "visible",
+		not _check_valid_dialog_box_scene(temp, false))
 	
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)
