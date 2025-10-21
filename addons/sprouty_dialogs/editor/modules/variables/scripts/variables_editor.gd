@@ -63,7 +63,8 @@ func _get_variables_data(variables_array: Array = _variables_container.get_child
 			variables_data[data.name] = {
 				"index": child.get_index() - 1,
 				"type": data.type,
-				"value": data.value
+				"value": data.value,
+				"metadata": data.metadata
 			}
 		elif child is EditorSproutyDialogsVariableGroup:
 			variables_data[child.get_item_name()] = {
@@ -90,7 +91,7 @@ func _load_variables_data(data: Dictionary, parent: Node = _variables_container)
 			new_item.parent_group = parent
 			new_item.ready.connect(func():
 				new_item.set_item_name(name)
-				new_item.set_type(value.type)
+				new_item.set_type(value.type, value.metadata)
 				new_item.set_value(value.value)
 			)
 			new_item.variable_renamed.connect(_on_item_rename.bind(new_item))

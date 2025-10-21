@@ -36,13 +36,16 @@ signal update_text_editor(text_box: LineEdit)
 ## Modified indicator to show if the variable has been modified
 @onready var _modified_indicator: Label = $Container/ModifiedIndicator
 
+## Type dropdown selector
+var _type_dropdown: OptionButton
+
 ## Parent group of the item
 var parent_group: Node = null
 
 
 func _ready() -> void:
 	_set_types_dropdown()
-	_set_value_field(_variable_type)
+	_set_value_field(_type_dropdown.get_item_index(_variable_type))
 	_name_input.editing_toggled.connect(_on_name_changed)
 	$Container/RemoveButton.icon = get_theme_icon("Remove", "EditorIcons")
 	$Container/RemoveButton.pressed.connect(_on_remove_button_pressed)
@@ -65,7 +68,8 @@ func get_variable_data() -> Dictionary:
 	return {
 		"name": _variable_name,
 		"type": _variable_type,
-		"value": _variable_value
+		"value": _variable_value,
+		"metadata": _type_dropdown.get_item_metadata(_type_dropdown.selected)
 	}
 
 
@@ -100,11 +104,17 @@ func set_item_name(new_name: String) -> void:
 
 
 ## Set the variable type
-func set_type(type: int) -> void:
+func set_type(type: int, metadata: Dictionary) -> void:
 	_variable_type = type
-	$Container/TypeField/TypeDropdown.select(
-		$Container/TypeField/TypeDropdown.get_item_index(type))
-	_set_value_field(_variable_type)
+	var index = _type_dropdown.get_item_index(type)
+	if metadata.has("hint"): # Handle File/Dir Path types
+		if metadata["hint"] == PROPERTY_HINT_FILE:
+			index = _type_dropdown.item_count - 2
+		elif metadata["hint"] == PROPERTY_HINT_DIR:
+			index = _type_dropdown.item_count - 1
+	
+	_type_dropdown.select(index)
+	_set_value_field(index)
 
 
 ## Set the variable value
@@ -133,25 +143,41 @@ func update_path_tooltip() -> void:
 func _set_types_dropdown() -> void:
 	if $Container/TypeField.get_child_count() > 0:
 		$Container/TypeField/TypeDropdown.queue_free()
-	var dropdown = EditorSproutyDialogsVariableManager.get_types_dropdown()
-	dropdown.select(dropdown.get_item_index(TYPE_STRING))
-	dropdown.item_selected.connect(_on_type_changed)
-	dropdown.fit_to_longest_item = true
-	$Container/TypeField.add_child(dropdown)
+	_type_dropdown = EditorSproutyDialogsVariableManager.get_types_dropdown(true, [
+		"Variable", "Dictionary", "Array" # Excluded from options
+	])
+	_type_dropdown.select(_type_dropdown.get_item_index(TYPE_STRING))
+	_type_dropdown.item_selected.connect(_on_type_changed)
+	_type_dropdown.fit_to_longest_item = true
+	$Container/TypeField.add_child(_type_dropdown)
 
 
 ## Set the value field based on the variable type
-func _set_value_field(type: int) -> void:
+func _set_value_field(type_index: int) -> void:
+	# Clear previous field
 	if _value_field.get_child_count() > 0:
 		var field = _value_field.get_child(0)
 		_value_field.remove_child(field)
 		field.queue_free()
-	var field_data = EditorSproutyDialogsVariableManager.get_field_by_type(type, _on_value_changed)
+
+	# Get the type
+	var type = _type_dropdown.get_item_id(type_index)
+	var metadata = _type_dropdown.get_item_metadata(type_index)
+	if metadata.has("hint"):
+		if metadata["hint"] == PROPERTY_HINT_FILE or \
+				metadata["hint"] == PROPERTY_HINT_DIR:
+			type = TYPE_STRING # File/Dir Path is treated as String type
+	
+	# Create the new value field
+	var field_data = EditorSproutyDialogsVariableManager.new_field_by_type(
+			type, null, metadata, _on_value_changed)
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	_value_field.add_child(field_data.field)
 	_variable_value = field_data.default_value
+	_variable_type = type
 
-	if type == TYPE_STRING: # Connect the expand button to open the text editor
+	# Connect the expand button to open the text editor
+	if type == TYPE_STRING and field_data.field is HBoxContainer:
 		var text_box = field_data.field.get_node("TextEdit")
 		field_data.field.get_node("ExpandButton").pressed.connect(
 			open_text_editor.emit.bind(text_box))
@@ -168,20 +194,19 @@ func _on_name_changed(toggled_on: bool) -> void:
 	variable_renamed.emit(_variable_name)
 	variable_changed.emit(_variable_name, _variable_type, _variable_value)
 
-	
+
 ## Handle the type change event
 func _on_type_changed(type_index: int) -> void:
-	_variable_type = $Container/TypeField/TypeDropdown.get_item_id(type_index)
-	variable_changed.emit(_variable_name, _variable_type, _variable_value)
-	_set_value_field(_variable_type) # Update the value field based on the new type
+	_set_value_field(type_index) # Update the value field based on the new type
 	show_as_modified(true)
+	variable_changed.emit(_variable_name, _variable_type, _variable_value)
 
 
 ## Handle the value change event
-func _on_value_changed(new_value: Variant) -> void:
-	_variable_value = new_value
+func _on_value_changed(value: Variant, type: int, field: Control) -> void:
+	_variable_value = value
 	show_as_modified(true)
-	variable_changed.emit(_variable_name, _variable_type, _variable_value)
+	variable_changed.emit(_variable_name, type, value)
 
 
 ## Handle the remove button pressed event

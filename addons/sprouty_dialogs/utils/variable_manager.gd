@@ -34,6 +34,15 @@ enum COMPARISON_OPS {
 	GREATER_EQUAL ## Greater than or equal to operator (>=)
 }
 
+## Path to the variable icon
+const VAR_ICON_PATH = "res://addons/sprouty_dialogs/editor/icons/variable.svg"
+## Path to the dictionary field scene
+const DICTIONARY_FIELD_PATH := "res://addons/sprouty_dialogs/editor/components/dictionary_field.tscn"
+## Path to the array field scene
+const ARRAY_FIELD_PATH := "res://addons/sprouty_dialogs/editor/components/array_field.tscn"
+## Path to the file field scene
+const FILE_FIELD_PATH := "res://addons/sprouty_dialogs/editor/components/file_field.tscn"
+
 ## Dictionary to store variable names, types and values
 ## Also supports groups of variables, which can contain other variables.
 ## The dictionary structure is as follows:
@@ -56,7 +65,6 @@ enum COMPARISON_OPS {
 ## }
 static var _variables: Dictionary = {}
 ## Variable icon
-static var _variable_icon = preload("res://addons/sprouty_dialogs/editor/icons/variable.svg")
 ## Reference to the root node of the scene tree
 ## This is used to access autoloads and other global nodes.
 ## It is set in the _ready() function of the SproutyDialogsManager.
@@ -220,34 +228,110 @@ static func get_autoloads() -> Dictionary:
 #region === Variable Type Fields ===============================================
 
 # Returns an OptionButton with all variable types
-static func get_types_dropdown(label: bool = true, include_var: bool = false) -> OptionButton:
+static func get_types_dropdown(label: bool = true, excluded: Array[String] = []) -> OptionButton:
 	var dropdown: OptionButton = OptionButton.new()
 	dropdown.name = "TypeDropdown"
 	dropdown.tooltip_text = "Select variable type"
 	dropdown.mouse_filter = Control.MOUSE_FILTER_PASS
-
+	
 	var root = EditorInterface.get_base_control()
-	if include_var: # Add variable as a type option
-		dropdown.add_icon_item(_variable_icon, "Variable" if label else "", TYPE_NIL)
-	dropdown.add_icon_item(root.get_theme_icon("bool", "EditorIcons"), "Bool" if label else "", TYPE_BOOL)
-	dropdown.add_icon_item(root.get_theme_icon("int", "EditorIcons"), "Int" if label else "", TYPE_INT)
-	dropdown.add_icon_item(root.get_theme_icon("float", "EditorIcons"), "Float" if label else "", TYPE_FLOAT)
-	dropdown.add_icon_item(root.get_theme_icon("String", "EditorIcons"), "String" if label else "", TYPE_STRING)
-	dropdown.add_icon_item(root.get_theme_icon("Vector2", "EditorIcons"), "Vector2" if label else "", TYPE_VECTOR2)
-	dropdown.add_icon_item(root.get_theme_icon("Vector3", "EditorIcons"), "Vector3" if label else "", TYPE_VECTOR3)
-	dropdown.add_icon_item(root.get_theme_icon("Vector4", "EditorIcons"), "Vector4" if label else "", TYPE_VECTOR4)
-	dropdown.add_icon_item(root.get_theme_icon("Color", "EditorIcons"), "Color" if label else "", TYPE_COLOR)
+	var types_dict = {
+		"Variable": {
+			"icon": load(VAR_ICON_PATH),
+			"type": TYPE_NIL,
+			"metadata": {},
+		},
+		"bool": {
+			"icon": root.get_theme_icon("bool", "EditorIcons"),
+			"type": TYPE_BOOL,
+			"metadata": {},
+		},
+		"int": {
+			"icon": root.get_theme_icon("int", "EditorIcons"),
+			"type": TYPE_INT,
+			"metadata": {},
+		},
+		"float": {
+			"icon": root.get_theme_icon("float", "EditorIcons"),
+			"type": TYPE_FLOAT,
+			"metadata": {},
+		},
+		"String": {
+			"icon": root.get_theme_icon("String", "EditorIcons"),
+			"type": TYPE_STRING,
+			"metadata": {},
+		},
+		"Vector2": {
+			"icon": root.get_theme_icon("Vector2", "EditorIcons"),
+			"type": TYPE_VECTOR2,
+			"metadata": {},
+		},
+		"Vector3": {
+			"icon": root.get_theme_icon("Vector3", "EditorIcons"),
+			"type": TYPE_VECTOR3,
+			"metadata": {},
+		},
+		"Vector4": {
+			"icon": root.get_theme_icon("Vector4", "EditorIcons"),
+			"type": TYPE_VECTOR4,
+			"metadata": {},
+		},
+		"Color": {
+			"icon": root.get_theme_icon("Color", "EditorIcons"),
+			"type": TYPE_COLOR,
+			"metadata": {},
+		},
+		"Dictionary": {
+			"icon": root.get_theme_icon("Dictionary", "EditorIcons"),
+			"type": TYPE_DICTIONARY,
+			"metadata": {},
+		},
+		"Array": {
+			"icon": root.get_theme_icon("Array", "EditorIcons"),
+			"type": TYPE_ARRAY,
+			"metadata": {},
+		},
+		"File Path": {
+			"icon": root.get_theme_icon("FileBrowse", "EditorIcons"),
+			"type": TYPE_STRING,
+			"metadata": {"hint": PROPERTY_HINT_FILE, "hint_string": ""},
+		},
+		"Dir Path": {
+			"icon": root.get_theme_icon("FolderBrowse", "EditorIcons"),
+			"type": TYPE_STRING,
+			"metadata": {"hint": PROPERTY_HINT_DIR, "hint_string": ""},
+		},
 
-	# ----------------------------------
-	# Add more types as needed here (!)
-	# ----------------------------------
+		# ----------------------------------
+		# Add more types as needed here (!)
+		# ----------------------------------
+	}
+	
+	# Populate the dropdown with types
+	for type_name in types_dict.keys():
+		if excluded.has(type_name):
+			continue # Skip excluded types
+		
+		var type_info = types_dict[type_name]
+		dropdown.add_icon_item(
+			type_info["icon"], # Type icon
+			type_name if label else "", # Label (optional)
+			type_info["type"] # Type as ID
+			)
+		# Store additional data as metadata
+		dropdown.set_item_metadata(dropdown.get_item_count() - 1, type_info["metadata"])
 
 	return dropdown
 
 
-## Returns a Control node for the variable type field
-static func get_field_by_type(type: int, on_value_changed: Callable,
-		_on_modified_callable: Callable = func(): return ) -> Dictionary:
+## Create a new field based on the variable type
+static func new_field_by_type(
+		type: int,
+		init_value: Variant = null,
+		property_data: Dictionary = {},
+		on_value_changed: Callable = func(value, type, field): return ,
+		on_modified_callable: Callable = func(): return ,
+		) -> Dictionary:
 	var field = null
 	var default_value = null
 	match type:
@@ -258,45 +342,137 @@ static func get_field_by_type(type: int, on_value_changed: Callable,
 			field.add_child(popup)
 			field.set_placeholder("Variable name...")
 			field.set_options(get_variable_list())
-			field.input_changed.connect(on_value_changed)
-			field.input_focus_exited.connect(_on_modified_callable)
-			default_value = ""
+			if init_value != null:
+				field.set_value(init_value)
+			default_value = field.get_value()
+			field.input_changed.connect(on_value_changed.bind(type, field))
+			field.input_focus_exited.connect(on_modified_callable)
+		
 		TYPE_BOOL:
 			field = CheckBox.new()
-			field.toggled.connect(on_value_changed)
-			field.focus_exited.connect(_on_modified_callable)
-			default_value = false
+			if init_value != null:
+				field.button_pressed = init_value
+			default_value = field.button_pressed
+			field.toggled.connect(on_value_changed.bind(type, field))
+			field.focus_exited.connect(on_modified_callable)
+		
 		TYPE_INT:
-			field = SpinBox.new()
-			field.step = 1
-			field.allow_greater = true
-			field.allow_lesser = true
-			field.value_changed.connect(on_value_changed)
-			field.mouse_exited.connect(_on_modified_callable)
-			default_value = field.value
+			# Enum int
+			if property_data.has("hint") and \
+					property_data["hint"] == PROPERTY_HINT_ENUM:
+				field = OptionButton.new()
+				for option in property_data["hint_string"].split(","):
+					field.add_item(option.split(":")[0])
+				
+				if init_value != null:
+					field.select(init_value)
+				default_value = field.selected
+				field.item_selected.connect(on_value_changed.bind(type, field))
+				field.item_selected.connect(on_modified_callable.unbind(1))
+			else: # Regular int
+				field = SpinBox.new()
+				field.step = 1
+				field.allow_greater = true
+				field.allow_lesser = true
+
+				# If the property is a int between a range, set range values
+				if property_data.has("hint_string"):
+					var range_settings = property_data["hint_string"].split(",")
+					if range_settings.size() > 1:
+						field.min_value = int(range_settings[0])
+						field.max_value = int(range_settings[1])
+						if range_settings.size() > 2:
+							field.step = int(range_settings[2])
+				
+				if init_value != null:
+					field.value = init_value
+				default_value = field.value
+				field.value_changed.connect(on_value_changed.bind(type, field))
+				field.mouse_exited.connect(on_modified_callable)
+		
 		TYPE_FLOAT:
 			field = SpinBox.new()
 			field.step = 0.01
 			field.allow_greater = true
 			field.allow_lesser = true
-			field.value_changed.connect(on_value_changed)
-			field.mouse_exited.connect(_on_modified_callable)
+
+			# If the property is a float between a range, set range values
+			if property_data.has("hint_string"):
+				var range_settings = property_data["hint_string"].split(",")
+				if range_settings.size() > 1:
+					field.min_value = float(range_settings[0])
+					field.max_value = float(range_settings[1])
+					if range_settings.size() > 2:
+						field.step = float(range_settings[2])
+		
+			if init_value != null:
+				field.value = init_value
 			default_value = field.value
+			field.value_changed.connect(on_value_changed.bind(type, field))
+			field.mouse_exited.connect(on_modified_callable)
+		
 		TYPE_STRING:
-			field = HBoxContainer.new()
 			var line_edit = LineEdit.new()
 			line_edit.name = "TextEdit"
 			line_edit.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 			line_edit.placeholder_text = "Write text here..."
-			line_edit.text_changed.connect(on_value_changed)
-			line_edit.focus_exited.connect(_on_modified_callable)
-			field.add_child(line_edit)
-			var button = Button.new()
-			button.name = "ExpandButton"
-			button.icon = EditorInterface.get_base_control().\
-					get_theme_icon("DistractionFree", "EditorIcons")
-			field.add_child(button)
-			default_value = line_edit.text
+			line_edit.text_changed.connect(on_value_changed.bind(type, field))
+			line_edit.focus_exited.connect(on_modified_callable)
+			
+			if not property_data.is_empty():
+				# File path string
+				if property_data["hint"] == PROPERTY_HINT_FILE:
+					field = load(FILE_FIELD_PATH).instantiate()
+					field.file_filters = PackedStringArray(
+						property_data["hint_string"].split(",")
+						)
+					if init_value != null:
+						field.ready.connect(func(): field.set_value(init_value))
+					default_value = init_value if init_value != null else ""
+					field.path_changed.connect(on_value_changed.bind(type, field))
+					field.path_changed.connect(on_modified_callable.unbind(1))
+				# Directory path string
+				elif property_data["hint"] == PROPERTY_HINT_DIR:
+					field = load(FILE_FIELD_PATH).instantiate()
+					field.ready.connect(func(): field.open_directory(true))
+					field.file_filters = PackedStringArray(
+						property_data["hint_string"].split(",")
+						)
+					if init_value != null:
+						field.ready.connect(func(): field.set_value(init_value))
+					default_value = init_value if init_value != null else ""
+					field.path_changed.connect(on_value_changed.bind(type, field))
+					field.path_changed.connect(on_modified_callable.unbind(1))
+				# Enum string
+				elif property_data["hint"] == PROPERTY_HINT_ENUM:
+					field = OptionButton.new()
+					var options := []
+					for enum_option in property_data["hint_string"].split(","):
+						options.append(enum_option.split(':')[0].strip_edges())
+						field.add_item(options[-1])
+					if init_value != null:
+						field.select(options.find(init_value))
+					default_value = field.selected
+					field.item_selected.connect(on_value_changed.bind(type, field))
+					field.item_selected.connect(on_modified_callable.unbind(1))
+				else: # Regular string
+					field = line_edit
+					if init_value != null:
+						field.text = init_value
+					default_value = line_edit.text
+			else:
+				# String with expandable field
+				field = HBoxContainer.new()
+				field.add_child(line_edit)
+				var button = Button.new()
+				button.name = "ExpandButton"
+				button.icon = EditorInterface.get_base_control().\
+						get_theme_icon("DistractionFree", "EditorIcons")
+				field.add_child(button)
+				if init_value != null:
+					line_edit.text = init_value
+				default_value = line_edit.text
+		
 		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
 			var vector_n := int(type_string(type)[-1])
 			var components_names = ["x", "y", "z", "w"]
@@ -305,7 +481,7 @@ static func get_field_by_type(type: int, on_value_changed: Callable,
 			for i in range(0, vector_n):
 				# Create a container for each component
 				var container = HBoxContainer.new()
-				container.name = str(components_names[i]) # x, y, z, w
+				container.name = components_names[i] # x, y, z, w
 				container.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 				field.add_child(container)
 
@@ -321,34 +497,65 @@ static func get_field_by_type(type: int, on_value_changed: Callable,
 				component_field.allow_lesser = true
 				container.add_child(component_field)
 
+				if init_value != null:
+					component_field.value = init_value[i]
 				default_value = Vector2.ZERO if type == TYPE_VECTOR2 \
 					else Vector3.ZERO if type == TYPE_VECTOR3 else Vector4.ZERO
 				
-				component_field.mouse_exited.connect(_on_modified_callable)
+				component_field.mouse_exited.connect(on_modified_callable)
 				component_field.value_changed.connect(func(value):
 					var vector_value = default_value
 					for j in range(0, vector_n):
 						if field.get_child_count() > j:
 							var component = field.get_child(j).get_node("Field")
 							vector_value[j] = component.value
-					on_value_changed.call(vector_value)
+					on_value_changed.call(vector_value, type, field)
 				)
+		
 		TYPE_COLOR:
 			field = ColorPickerButton.new()
 			field.custom_minimum_size = Vector2(60, 60)
-			field.color_changed.connect(on_value_changed)
-			field.focus_exited.connect(_on_modified_callable)
+			if init_value != null:
+				field.color = Color(init_value)
 			default_value = field.color.to_html()
+			field.color_changed.connect(on_value_changed.bind(type, field))
+			field.focus_exited.connect(on_modified_callable)
+		
+		TYPE_DICTIONARY:
+			field = load(DICTIONARY_FIELD_PATH).instantiate()
+			if init_value != null and property_data.has("type"):
+				field.ready.connect(func():
+					field.set_dictionary(init_value, property_data["type"]))
+			default_value = field.get_dictionary()
+			field.dictionary_changed.connect(on_value_changed.bind(type, field))
+			field.focus_exited.connect(on_modified_callable)
+		
+		TYPE_ARRAY:
+			field = load(ARRAY_FIELD_PATH).instantiate()
+			if init_value != null and property_data.has("type"):
+				field.ready.connect(func():
+					field.set_array(init_value, property_data["type"]))
+			default_value = field.get_array()
+			field.array_changed.connect(on_value_changed.bind(type, field))
+			field.focus_exited.connect(on_modified_callable)
+
+		TYPE_OBJECT:
+			field = RichTextLabel.new()
+			field.bbcode_enabled = true
+			field.fit_content = true
+			field.text = "[color=tomato]Objects/Resources are not supported.[/color]"
+			field.tooltip_text = "Use @export_file(\"*.extension\") to load the resource file instead."
 		
 		# ----------------------------------
 		# Add more types as needed here (!)
 		# ----------------------------------
 
 		_:
-			field = LineEdit.new() # Default to LineEdit for unsupported types
-			field.text_changed.connect(on_value_changed)
-			field.focus_exited.connect(_on_modified_callable)
-			default_value = field.text
+			field = LineEdit.new()
+			field.text = "<null>"
+			field.editable = false
+			field.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	
 	return {
 		"field": field,
 		"default_value": default_value
@@ -356,22 +563,34 @@ static func get_field_by_type(type: int, on_value_changed: Callable,
 
 
 ## Sets the value in the given field based on its type
-static func set_field_value(field: Control, type: int, value: Variant) -> void:
+static func set_field_value(field: Control, type: int,
+		value: Variant, collection_types: Variant = null) -> void:
+	print("setting field value")
 	match type:
-		TYPE_NIL:
+		TYPE_NIL: # Variable field
 			if field is EditorSproutyDialogsComboBox:
-				field.set_value(value) # Set the variable name
+				field.set_value(value)
+		
 		TYPE_BOOL:
 			if field is CheckBox:
 				field.button_pressed = bool(value)
+		
 		TYPE_INT, TYPE_FLOAT:
-			if field is SpinBox:
+			if field is OptionButton: # Enum int
+				field.select(value)
+			if field is SpinBox: # Regular int/float
 				field.value = float(value)
+		
 		TYPE_STRING:
-			if field is HBoxContainer:
-				var text_edit = field.get_node("TextEdit")
-				if text_edit is LineEdit:
-					text_edit.text = str(value)
+			if field is OptionButton: # Enum string
+				field.select(value)
+			if field is EditorSproutyDialogsFileField: # File/Directory path
+				field.set_value(value)
+			if field is HBoxContainer: # Expandable string
+				field = field.get_node("TextEdit")
+			if field is LineEdit: # Regular string
+				field.text = str(value)
+		
 		TYPE_VECTOR2, TYPE_VECTOR3, TYPE_VECTOR4:
 			var vector_n := int(type_string(type)[-1])
 			if field is HFlowContainer:
@@ -384,13 +603,23 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 			if field is ColorPickerButton:
 				field.color = Color(value)
 		
+		TYPE_DICTIONARY:
+			if field is EditorSproutyDialogsDictionaryField:
+				field.set_dictionary(value, collection_types)
+		
+		TYPE_ARRAY:
+			if field is EditorSproutyDialogsArrayField:
+				field.set_array(value, collection_types)
+		
+		TYPE_OBJECT:
+			pass # Objects/Resources are not supported
+		
 		# ----------------------------------
 		# Add more types as needed here (!)
 		# ----------------------------------
 
 		_:
-			if field is LineEdit:
-				field.text = str(value)
+			pass # Do nothing for unsupported types
 
 #endregion
 

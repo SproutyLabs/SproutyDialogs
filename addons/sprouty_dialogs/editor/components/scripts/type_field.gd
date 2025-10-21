@@ -13,7 +13,7 @@ extends HBoxContainer
 ## Emitted when the input value is changed
 signal value_changed(value: Variant, type: Variant)
 ## Emitted when the type is changed
-signal type_changed(value: int)
+signal type_changed(type: int)
 
 ## Types dropdown menu
 @onready var _types_dropdown: OptionButton = $TypesDropdown
@@ -128,7 +128,7 @@ func _setup_types_dropdown() -> void:
 func _on_types_dropdown_item_selected(index: int) -> void:
 	var type = _types_dropdown.get_item_id(index)
 	_update_field_type(type)
-	emit_signal("type_changed", type)
+	type_changed.emit(type)
 
 
 ## Update the field by type
@@ -213,7 +213,7 @@ func _update_field_type(type: Variant) -> void:
 		40: # File path
 			field = load(_file_field_path).instantiate()
 			field.size_flags_horizontal = SIZE_EXPAND_FILL
-			field.file_path_changed.connect(_on_field_value_changed.bind(type))
+			field.path_changed.connect(_on_field_value_changed.bind(type))
 			_field_container.add_child(field)
 			_current_value = ""
 		_:
@@ -268,4 +268,4 @@ func _on_field_value_changed(value: Variant, type: Variant, component: String = 
 	else:
 		_current_value = value
 	
-	emit_signal("value_changed", _current_value, type)
+	value_changed.emit(_current_value, type)

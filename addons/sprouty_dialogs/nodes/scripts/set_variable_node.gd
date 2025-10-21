@@ -44,9 +44,13 @@ func _ready():
 	_name_input.focus_exited.connect(_on_name_input_focus_exited)
 
 	# Set the type dropdown and connect its signal
-	$Container/VarField/TypeField.add_child(EditorSproutyDialogsVariableManager.get_types_dropdown())
+	$Container/VarField/TypeField.add_child(
+		EditorSproutyDialogsVariableManager.get_types_dropdown(true,
+				["Variable", "Dictionary", "Array"] # Excluded from options
+			))
 	_type_dropdown = $Container/VarField/TypeField/TypeDropdown
 	_type_dropdown.item_selected.connect(_on_type_selected)
+
 	_type_dropdown.select(_type_index) # Default type (String)
 	_set_variable_type(_type_index) # Default type (String)
 
@@ -62,6 +66,7 @@ func get_data() -> Dictionary:
 		"node_index": node_index,
 		"var_name": _name_input.get_value(),
 		"var_type": _type_dropdown.get_item_id(_type_dropdown.selected),
+		"var_metadata": _type_dropdown.get_item_metadata(_type_dropdown.selected),
 		"operator": _operator_dropdown.get_item_id(_operator_dropdown.selected),
 		"new_value": _var_value,
 		"to_node": [connections[0]["to_node"].to_snake_case()]
@@ -81,13 +86,20 @@ func set_data(dict: Dictionary) -> void:
 
 	# Set the type on the dropdown
 	var type_index = _type_dropdown.get_item_index(dict["var_type"])
+
+	if dict["var_metadata"].has("hint"): # Handle File/Dir Path types
+		if dict["var_metadata"]["hint"] == PROPERTY_HINT_FILE:
+			type_index = _type_dropdown.item_count - 2
+		elif dict["var_metadata"]["hint"] == PROPERTY_HINT_DIR:
+			type_index = _type_dropdown.item_count - 1
+	
 	_type_dropdown.select(type_index)
 	_set_variable_type(type_index)
 	
 	# Set the variable name, operator and value
 	_name_input.set_value(dict["var_name"])
 	_operator_dropdown.select(_operator_dropdown.get_item_index(dict["operator"]))
-	_set_field_value(dict["new_value"], _type_dropdown.get_item_index(dict["var_type"]))
+	_set_field_value(dict["new_value"], dict["var_type"])
 	_operator_index = _operator_dropdown.selected
 	_var_value = dict["new_value"]
 	_var_name = dict["var_name"]
@@ -98,10 +110,15 @@ func set_data(dict: Dictionary) -> void:
 ## Handle when the type is selected from the dropdown
 func _set_variable_type(index: int) -> void:
 	var type = _type_dropdown.get_item_id(index)
+	var metadata = _type_dropdown.get_item_metadata(index)
+	if metadata.has("hint"):
+		if metadata["hint"] == PROPERTY_HINT_FILE or \
+				metadata["hint"] == PROPERTY_HINT_DIR:
+			type = TYPE_STRING # File/Dir Path is treated as String type
 
 	# Set the variable dropdown based on the selected type and update the value field
 	_name_input.set_options(EditorSproutyDialogsVariableManager.get_variable_list(type))
-	_set_value_field(type)
+	_set_value_field(type, index)
 
 	# Set the operator dropdown based on the variable type
 	var operators = EditorSproutyDialogsVariableManager.get_assignment_operators(type)
@@ -115,7 +132,7 @@ func _set_variable_type(index: int) -> void:
 
 
 ## Set the value field based on the variable type
-func _set_value_field(type: int) -> void:
+func _set_value_field(type: int, index: int) -> void:
 	# Clear previous field
 	if $Container/ValueField.get_child_count() > 0:
 		var field = $Container/ValueField.get_child(0)
@@ -123,14 +140,17 @@ func _set_value_field(type: int) -> void:
 		field.queue_free()
 	
 	# Create new field based on type
-	var field_data = EditorSproutyDialogsVariableManager.get_field_by_type(type,
-			_on_value_changed, _on_value_input_modified)
+	var field_data = EditorSproutyDialogsVariableManager.new_field_by_type(
+			type, null, _type_dropdown.get_item_metadata(index),
+			_on_value_changed, _on_value_input_modified
+		)
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	$Container/ValueField.add_child(field_data.field)
 	_var_value = field_data.default_value
 	_value_input = field_data.field
 
-	if type == TYPE_STRING: # Connect the expand button to open the text editor
+	 # Connect the expand button to open the text editor
+	if type == TYPE_STRING and field_data.field is HBoxContainer:
 		var text_box = field_data.field.get_node("TextEdit")
 		field_data.field.get_node("ExpandButton").pressed.connect(
 				open_text_editor.emit.bind(text_box))
@@ -143,10 +163,9 @@ func _set_value_field(type: int) -> void:
 
 
 ## Set the input field value
-func _set_field_value(value: Variant, type_index: int) -> void:
+func _set_field_value(value: Variant, type: int) -> void:
 	_var_value = value
-	EditorSproutyDialogsVariableManager.set_field_value(_value_input,
-			_type_dropdown.get_item_id(type_index), value)
+	EditorSproutyDialogsVariableManager.set_field_value(_value_input, type, value)
 
 
 ## Handle when the type is selected from the dropdown
@@ -215,7 +234,7 @@ func _on_operator_selected(index: int) -> void:
 
 
 ## Handle when the value in the input field changes
-func _on_value_changed(value: Variant) -> void:
+func _on_value_changed(value: Variant, type: int, field: Control) -> void:
 	if typeof(value) == typeof(_var_value) and value == _var_value:
 		return # No value change
 	
@@ -225,8 +244,8 @@ func _on_value_changed(value: Variant) -> void:
 
 	# --- UndoRedo -------------------------------------------------------------
 	undo_redo.create_action("Set Variable Value", 1)
-	undo_redo.add_do_method(self, "_set_field_value", value, _type_index)
-	undo_redo.add_undo_method(self, "_set_field_value", temp_value, _type_index)
+	undo_redo.add_do_method(self, "_set_field_value", value, type)
+	undo_redo.add_undo_method(self, "_set_field_value", temp_value, type)
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)

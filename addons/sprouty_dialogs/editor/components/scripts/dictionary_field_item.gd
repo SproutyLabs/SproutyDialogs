@@ -24,9 +24,10 @@ signal item_removed(index: int)
 
 func _ready():
 	_remove_button.icon = get_theme_icon("Remove", "EditorIcons")
-	_value_field.connect("value_changed", _on_value_changed)
-	_key_field.connect("text_changed", _on_key_changed)
-	_remove_button.connect("pressed", _on_remove_button_pressed)
+	_remove_button.pressed.connect(_on_remove_button_pressed)
+	_value_field.value_changed.connect(_on_value_changed)
+	_value_field.type_changed.connect(_on_type_changed)
+	_key_field.text_changed.connect(_on_key_changed)
 
 
 ## Get the current value of the item
@@ -57,6 +58,11 @@ func set_value(value: Variant, type: Variant) -> void:
 ## Emit a signal when the item value is modified
 func _on_value_changed(value: Variant, type: Variant) -> void:
 	item_changed.emit(get_key(), value, type)
+
+
+## Emit a signal when the item type is modified
+func _on_type_changed(type: Variant) -> void:
+	item_changed.emit(get_key(), _value_field.get_value(), type)
 
 
 ## Emit a signal when the item key is modified
