@@ -36,7 +36,7 @@ var _item_value: Variant = ""
 
 func _ready():
 	_remove_button.icon = get_theme_icon("Remove", "EditorIcons")
-	_remove_button.connect("pressed", _on_remove_button_pressed)
+	_remove_button.pressed.connect(_on_remove_button_pressed)
 
 	# Set the type dropdown and connect its signal
 	$TypeField.add_child(
@@ -53,6 +53,7 @@ func _ready():
 ## Get all the item data as a dictionary
 func get_item_data() -> Dictionary:
 	return {
+		"index": get_item_index(),
 		"type": get_type(),
 		"value": get_value(),
 		"metadata": get_metadata()

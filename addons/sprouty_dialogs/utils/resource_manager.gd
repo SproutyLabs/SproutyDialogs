@@ -337,7 +337,14 @@ func _set_portrait_properties(character_name: String,
 		return
 	
 	for prop in portrait_data.export_overrides: # Set export overrides
-		portrait_scene.set(prop, portrait_data.export_overrides[prop]["value"])
+		var value = portrait_data.export_overrides[prop]["value"]
+		var type = portrait_data.export_overrides[prop]["type"]
+		# If the property is a collection, get the real value
+		if type == TYPE_DICTIONARY:
+			value = _get_dictionary_from_data(value)
+		elif type == TYPE_ARRAY:
+			value = _get_array_from_data(value)
+		portrait_scene.set(prop, value)
 	
 	# Set transform settings
 	portrait_scene.scale = portrait_data.transform_settings.scale
@@ -353,5 +360,35 @@ func _new_portrait_parent(character_name: String, parent: Node) -> Control:
 		node.set_anchors_preset(Control.PRESET_CENTER)
 		return node
 	return parent.get_node(character_name)
+
+
+## Recursively get array from array data
+func _get_array_from_data(array_data: Array) -> Array:
+	var array = []
+	for item in array_data:
+		var value = item["value"]
+		var type = item["type"]
+		if type == TYPE_DICTIONARY:
+			value = _get_dictionary_from_data(value)
+		elif type == TYPE_ARRAY:
+			value = _get_array_from_data(value)
+		array.append(value)
+	return array
+
+
+## Recursively get dictionary from dictionary data
+func _get_dictionary_from_data(dict_data: Dictionary) -> Dictionary:
+	var dict = {}
+	for key in dict_data.keys():
+		var item = dict_data[key]
+		var value = item["value"]
+		var type = item["type"]
+		if type == TYPE_DICTIONARY:
+			value = _get_dictionary_from_data(value)
+		elif type == TYPE_ARRAY:
+			value = _get_array_from_data(value)
+		dict[key] = value
+	return dict
+
 
 #endregion

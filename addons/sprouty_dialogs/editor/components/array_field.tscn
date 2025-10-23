@@ -33,6 +33,3 @@ layout_mode = 2
 size_flags_horizontal = 4
 text = "Add Element"
 icon = SubResource("DPITexture_7k83i")
-
-[connection signal="toggled" from="CollapseButton" to="." method="_on_array_collapse_button_toggled"]
-[connection signal="pressed" from="ItemsPanel/ItemsContainer/AddButton" to="." method="_on_add_button_pressed"]

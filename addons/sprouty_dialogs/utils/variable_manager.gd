@@ -526,12 +526,13 @@ static func new_field_by_type(
 		
 		TYPE_DICTIONARY:
 			field = load(DICTIONARY_FIELD_PATH).instantiate()
-			if init_value != null and property_data.has("type"):
-				field.ready.connect(func():
-					field.set_dictionary(init_value, property_data["type"]))
-			default_value = field.get_dictionary()
+			field.ready.connect(func():
+				if init_value != null:
+					field.set_dictionary(init_value)
+				default_value = field.get_dictionary()
+			)
 			field.dictionary_changed.connect(on_value_changed.bind(type, field))
-			field.focus_exited.connect(on_modified_callable)
+			field.modified.connect(on_modified_callable)
 		
 		TYPE_ARRAY:
 			field = load(ARRAY_FIELD_PATH).instantiate()
@@ -609,8 +610,7 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 		
 		TYPE_DICTIONARY:
 			if field is EditorSproutyDialogsDictionaryField:
-				#field.set_dictionary(value, collection_types)
-				pass
+				field.set_dictionary(value)
 		
 		TYPE_ARRAY:
 			if field is EditorSproutyDialogsArrayField:

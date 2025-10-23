@@ -24,7 +24,7 @@ signal item_removed(item: Dictionary)
 @onready var _collapse_button: Button = $CollapseButton
 ## Button to add new items to the array
 @onready var _add_button: Button = $ItemsPanel/ItemsContainer/AddButton
-## items container
+## Items container
 @onready var _items_container: VBoxContainer = $ItemsPanel/ItemsContainer
 
 ## Array item field scene
@@ -32,13 +32,16 @@ var _item_field := preload("res://addons/sprouty_dialogs/editor/components/array
 
 
 func _ready() -> void:
+	_collapse_button.toggled.connect(_on_collapse_button_toggled)
+	_add_button.pressed.connect(_on_add_button_pressed)
 	_add_button.icon = get_theme_icon("Add", "EditorIcons")
-	_on_array_collapse_button_toggled(false) # Start collapsed
+	_on_collapse_button_toggled(false) # Start collapsed
 
 
 ## Return the current array of items data
 ## Each item is a dictionary with the following estructure:
 ## {
+##	   "index": int,
 ##     "type": int,
 ##     "value": Variant,
 ##     "metadata": Dictionary
@@ -46,9 +49,8 @@ func _ready() -> void:
 func get_array() -> Array:
 	var items = []
 	for child in _items_container.get_children():
-		if child is Button:
-			continue # Skip the add button
-		items.append(child.get_item_data())
+		if child is EditorSproutyDialogsArrayFieldItem:
+			items.append(child.get_item_data())
 	return items
 
 
@@ -56,9 +58,8 @@ func get_array() -> Array:
 func get_items_values() -> Array:
 	var values = []
 	for child in _items_container.get_children():
-		if child is Button:
-			continue # Skip the add button
-		values.append(child.get_value())
+		if child is EditorSproutyDialogsArrayFieldItem:
+			values.append(child.get_value())
 	return values
 
 
@@ -66,9 +67,8 @@ func get_items_values() -> Array:
 func get_items_types() -> Array:
 	var types = []
 	for child in _items_container.get_children():
-		if child is Button:
-			continue # Skip the add button
-		types.append(child.get_type())
+		if child is EditorSproutyDialogsArrayFieldItem:
+			types.append(child.get_type())
 	return types
 
 
@@ -83,10 +83,9 @@ func set_array(items: Array) -> void:
 ## Clear the array items
 func clear_array() -> void:
 	for child in _items_container.get_children():
-		if child is Button:
-			continue # Skip the add button
-		_items_container.remove_child(child)
-		child.queue_free()
+		if child is EditorSproutyDialogsArrayFieldItem:
+			_items_container.remove_child(child)
+			child.queue_free()
 
 
 ## Create a new array item
@@ -134,7 +133,7 @@ func _on_remove_button_pressed(index: int) -> void:
 
 
 ## Show/hide the array items
-func _on_array_collapse_button_toggled(toggled_on: bool) -> void:
+func _on_collapse_button_toggled(toggled_on: bool) -> void:
 	_items_container.get_parent().visible = toggled_on
 
 

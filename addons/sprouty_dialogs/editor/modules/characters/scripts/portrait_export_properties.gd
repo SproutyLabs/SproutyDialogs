@@ -86,11 +86,11 @@ func load_exported_properties(scene: Node) -> void:
 				# If is not in the overrides, get the value from the scene
 				value = scene.get(prop["name"])
 
-				# Load collections types from the scene
+				# Load collections items from the scene
 				if prop["type"] == TYPE_ARRAY:
-					value = _get_array_items_data(value)
-				#elif prop["type"] == TYPE_DICTIONARY:
-				#	prop["type"] = _get_dictionary_types(value)
+					value = _get_array_data(value)
+				if prop["type"] == TYPE_DICTIONARY:
+					value = _get_dictionary_data(value)
 				
 				_export_overrides[prop["name"]] = {
 					"value": value,
@@ -105,21 +105,70 @@ func load_exported_properties(scene: Node) -> void:
 
 	visible = true
 
-#region === Helper Methods =====================================================
+#region === Handle Collections =================================================
 
-## Recursively get array items data from an array
-func _get_array_items_data(array: Array) -> Array:
+## Recursively get array data from an array
+func _get_array_data(array: Array) -> Array:
 	var items = []
 	for item in array:
 		var type = typeof(item)
+		if type == TYPE_DICTIONARY:
+			item = _get_dictionary_data(item)
 		if type == TYPE_ARRAY:
-			item = _get_array_items_data(item)
+			item = _get_array_data(item)
 		items.append({
 			"type": typeof(item),
 			"value": item,
 			"metadata": {}
 		})
 	return items
+
+
+## Recursively get dictionary data from a dictionary
+func _get_dictionary_data(dict: Dictionary) -> Dictionary:
+	var items = {}
+	for key in dict.keys():
+		var item = dict[key]
+		var type = typeof(item)
+		if type == TYPE_DICTIONARY:
+			item = _get_dictionary_data(item)
+		elif type == TYPE_ARRAY:
+			item = _get_array_data(item)
+		items[key] = {
+			"type": typeof(item),
+			"value": item,
+			"metadata": {}
+		}
+	return items
+
+
+## Recursively get array from array data
+func _get_array_from_data(array_data: Array) -> Array:
+	var array = []
+	for item in array_data:
+		var value = item["value"]
+		var type = item["type"]
+		if type == TYPE_DICTIONARY:
+			value = _get_dictionary_from_data(value)
+		elif type == TYPE_ARRAY:
+			value = _get_array_from_data(value)
+		array.append(value)
+	return array
+
+
+## Recursively get dictionary from dictionary data
+func _get_dictionary_from_data(dict_data: Dictionary) -> Dictionary:
+	var dict = {}
+	for key in dict_data.keys():
+		var item = dict_data[key]
+		var value = item["value"]
+		var type = item["type"]
+		if type == TYPE_DICTIONARY:
+			value = _get_dictionary_from_data(value)
+		elif type == TYPE_ARRAY:
+			value = _get_array_from_data(value)
+		dict[key] = value
+	return dict
 
 #endregion
 
@@ -129,7 +178,14 @@ func _override_exported_properties(scene: Node) -> void:
 	var property_list: Array = scene.script.get_script_property_list()
 	for prop in _export_overrides.keys():
 		if property_list.any(func(p): return p["name"] == prop):
-			scene.set(prop, _export_overrides[prop]["value"])
+			var value = _export_overrides[prop]["value"]
+			# If the property is a collection, get the real value
+			if _export_overrides[prop]["type"] == TYPE_DICTIONARY:
+				value = _get_dictionary_from_data(value)
+			elif _export_overrides[prop]["type"] == TYPE_ARRAY:
+				value = _get_array_from_data(value)
+			
+			scene.set(prop, value)
 		else:
 			_export_overrides.erase(prop)
 
@@ -164,7 +220,6 @@ func _on_property_changed(value: Variant, type: Variant, field: Control, name: S
 	if type == TYPE_COLOR: # Save color value as a hexadecimal string
 		value = value.to_html()
 	
-	print("_on_property_changed: ", name, " = ", value)
 	_set_property_on_dict(name, value, type)
 	property_changed.emit(name, value)
 	_properties_modified[name] = true
