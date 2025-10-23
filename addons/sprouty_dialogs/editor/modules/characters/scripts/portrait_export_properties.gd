@@ -85,10 +85,12 @@ func load_exported_properties(scene: Node) -> void:
 			else:
 				# If is not in the overrides, get the value from the scene
 				value = scene.get(prop["name"])
+
+				# Load collections types from the scene
 				if prop["type"] == TYPE_ARRAY:
-					prop["type"] = _get_array_types(value)
-				elif prop["type"] == TYPE_DICTIONARY:
-					prop["type"] = _get_dictionary_types(value)
+					value = _get_array_items_data(value)
+				#elif prop["type"] == TYPE_DICTIONARY:
+				#	prop["type"] = _get_dictionary_types(value)
 				
 				_export_overrides[prop["name"]] = {
 					"value": value,
@@ -103,6 +105,24 @@ func load_exported_properties(scene: Node) -> void:
 
 	visible = true
 
+#region === Helper Methods =====================================================
+
+## Recursively get array items data from an array
+func _get_array_items_data(array: Array) -> Array:
+	var items = []
+	for item in array:
+		var type = typeof(item)
+		if type == TYPE_ARRAY:
+			item = _get_array_items_data(item)
+		items.append({
+			"type": typeof(item),
+			"value": item,
+			"metadata": {}
+		})
+	return items
+
+#endregion
+
 
 ## Overrides the exported properties on a scene and update export overrides
 func _override_exported_properties(scene: Node) -> void:
@@ -114,32 +134,6 @@ func _override_exported_properties(scene: Node) -> void:
 			_export_overrides.erase(prop)
 
 
-## Get the types of the dictionary elements
-func _get_dictionary_types(dictionary: Dictionary) -> Dictionary:
-	var types = {}
-	for key in dictionary.keys():
-		if typeof(dictionary[key]) == TYPE_DICTIONARY:
-			types[key] = _get_dictionary_types(dictionary[key])
-		elif typeof(dictionary[key]) == TYPE_ARRAY:
-			types[key] = _get_dictionary_types(dictionary[key])
-		else:
-			types[key] = typeof(dictionary[key])
-	return types
-
-
-## Get the types of the array elements
-func _get_array_types(array: Array) -> Array:
-	var types = []
-	for i in range(0, array.size()):
-		if typeof(array[i]) == TYPE_DICTIONARY:
-			types.append(_get_dictionary_types(array[i]))
-		elif typeof(array[i]) == TYPE_ARRAY:
-			types.append(_get_array_types(array[i]))
-		else:
-			types.append(typeof(array[i]))
-	return types
-
-
 ## Clear the exported properties from the editor
 func _clear_exported_properties() -> void:
 	for child in _properties_grid.get_children():
@@ -149,14 +143,8 @@ func _clear_exported_properties() -> void:
 
 ## Create a new exported property field
 func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
-	var type: int = 0
-	if typeof(property_data["type"]) == TYPE_DICTIONARY:
-		type = TYPE_DICTIONARY
-	elif typeof(property_data["type"]) == TYPE_ARRAY:
-		type = TYPE_ARRAY
-	else: type = property_data["type"]
 	var field_data = EditorSproutyDialogsVariableManager.new_field_by_type(
-			type, value, property_data,
+			property_data["type"], value, property_data,
 			_on_property_changed.bind(property_data["name"]),
 			_on_property_modified.bind(property_data["name"])
 		)
@@ -173,11 +161,8 @@ func _set_property_on_dict(name: String, value: Variant, type: Variant) -> void:
 func _on_property_changed(value: Variant, type: Variant, field: Control, name: String) -> void:
 	var temp = _export_overrides[name].duplicate()
 	
-	match type:
-		TYPE_ARRAY, TYPE_DICTIONARY: # Save each element type
-			type = field.get_items_types()
-		TYPE_COLOR: # Save color value as a hexadecimal string
-			value = value.to_html()
+	if type == TYPE_COLOR: # Save color value as a hexadecimal string
+		value = value.to_html()
 	
 	print("_on_property_changed: ", name, " = ", value)
 	_set_property_on_dict(name, value, type)

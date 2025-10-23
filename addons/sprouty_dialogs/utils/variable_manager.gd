@@ -315,12 +315,15 @@ static func get_types_dropdown(label: bool = true, excluded: Array[String] = [])
 		var type_info = types_dict[type_name]
 		dropdown.add_icon_item(
 			type_info["icon"], # Type icon
-			type_name if label else "", # Label (optional)
+			type_name, # Type name label
 			type_info["type"] # Type as ID
 			)
 		# Store additional data as metadata
 		dropdown.set_item_metadata(dropdown.get_item_count() - 1, type_info["metadata"])
-
+	
+	if not label: # Hide option text in button
+		dropdown.clip_text = true
+	
 	return dropdown
 
 
@@ -532,12 +535,13 @@ static func new_field_by_type(
 		
 		TYPE_ARRAY:
 			field = load(ARRAY_FIELD_PATH).instantiate()
-			if init_value != null and property_data.has("type"):
-				field.ready.connect(func():
-					field.set_array(init_value, property_data["type"]))
-			default_value = field.get_array()
+			field.ready.connect(func():
+				if init_value != null:
+					field.set_array(init_value)
+				default_value = field.get_array()
+			)
 			field.array_changed.connect(on_value_changed.bind(type, field))
-			field.focus_exited.connect(on_modified_callable)
+			field.modified.connect(on_modified_callable)
 
 		TYPE_OBJECT:
 			field = RichTextLabel.new()
@@ -563,9 +567,9 @@ static func new_field_by_type(
 
 
 ## Sets the value in the given field based on its type
-static func set_field_value(field: Control, type: int,
-		value: Variant, collection_types: Variant = null) -> void:
-	print("setting field value")
+static func set_field_value(field: Control, type: int, value: Variant) -> void:
+	if value == null:
+		return # Do nothing if value is null
 	match type:
 		TYPE_NIL: # Variable field
 			if field is EditorSproutyDialogsComboBox:
@@ -605,11 +609,12 @@ static func set_field_value(field: Control, type: int,
 		
 		TYPE_DICTIONARY:
 			if field is EditorSproutyDialogsDictionaryField:
-				field.set_dictionary(value, collection_types)
+				#field.set_dictionary(value, collection_types)
+				pass
 		
 		TYPE_ARRAY:
 			if field is EditorSproutyDialogsArrayField:
-				field.set_array(value, collection_types)
+				field.set_array(value)
 		
 		TYPE_OBJECT:
 			pass # Objects/Resources are not supported

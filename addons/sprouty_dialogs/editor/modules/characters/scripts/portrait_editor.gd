@@ -127,6 +127,8 @@ func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 			_portrait_scene_field.get_value(), _portrait_scene_field.file_filters):
 		_to_portrait_scene_button.visible = true
 		_new_portrait_scene_button.visible = false
+		if not _portrait_export_properties.undo_redo:
+			_portrait_export_properties.undo_redo = undo_redo
 		_switch_scene_preview(_portrait_scene_field.get_value())
 	else:
 		_to_portrait_scene_button.visible = false
