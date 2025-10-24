@@ -102,7 +102,8 @@ static func get_variable(name: String) -> Variant:
 		return {
 			"name": name,
 			"type": variable.type,
-			"value": variable.value
+			"value": variable.value,
+			"metadata": variable.metadata
 		}
 	elif "/" in name: # If the variable is inside a group
 		var parts = name.split("/")
@@ -115,18 +116,25 @@ static func get_variable(name: String) -> Variant:
 					return {
 						"name": part,
 						"type": current_group[part].type,
-						"value": current_group[part].value
+						"value": current_group[part].value,
+						"metadata": current_group[part].metadata
 					}
 	elif "." in name: # If the variable is in an autoload
 		var from = name.get_slice(".", 0)
 		var autoloads = get_autoloads()
 		if autoloads.has(from):
 			var variable_name = name.get_slice(".", 1)
-			var variable_value = autoloads[from].get(variable_name)
+			var prop = autoloads[from].script.get_script_property_list().find(
+				func(p): return p["name"] == variable_name
+			)
 			return {
 			"name": variable_name,
-			"type": typeof(variable_value),
-			"value": variable_value
+			"type": prop["type"],
+			"value": prop["value"],
+			"metadata": {
+				"hint": prop["hint"],
+				"hint_string": prop["hint_string"]
+			}
 		}
 	return null
 	
@@ -178,6 +186,7 @@ static func save_variables(data: Dictionary) -> void:
 	EditorSproutyDialogsSettingsManager.set_setting("variables", data)
 	_variables = data
 
+#region === Parse Variables ====================================================
 
 ## Replaces all variables ({}) in a text with their corresponding values
 static func parse_variables(text: String, ignore_error: bool = false) -> String:
@@ -186,23 +195,56 @@ static func parse_variables(text: String, ignore_error: bool = false) -> String:
 	
 	# Find all variables in the format {variable_name}
 	var regex := RegEx.new()
-	regex.compile("{([^{}]+)}")
+	regex.compile("{([^{}]*)}")
 	var results = regex.search_all(text)
 	results = results.map(func(val): return val.get_string(1))
 
 	if not results.is_empty():
 		for var_name in results:
-			var variable = get_variable(var_name)
-			if variable:
-				if variable.type == TYPE_STRING: # Recursively parse variables
-					variable.value = parse_variables(variable.value)
-				elif variable.type == TYPE_COLOR and variable.value is Color:
-					variable.value = variable.value.to_html() # Convert to Hex string
-				text = text.replace("{" + var_name + "}", str(variable.value))
+			var parsed_variable = get_parsed_variable(var_name)
+			if parsed_variable:
+				text = text.replace("{" + var_name + "}", str(parsed_variable.value))
 			elif not ignore_error:
 				printerr("[Sprouty Dialogs] Cannot parse variable {" + var_name + "} not found. " +
 					"Please check if the variable exists in the Variables Manager or in the autoloads.")
 	return text
+
+
+## Gets the value of a variable by its name
+## Returns a dictionary with the variable name, type, value and metadata
+## If the variable does not exist, it returns null.
+static func get_parsed_variable(var_name: String) -> Variant:
+	var variable = get_variable(var_name)
+	if variable:
+		if variable.type == TYPE_STRING:
+			# If the variable is an expression, execute it
+			if variable.metadata.has("hint") and \
+					variable.metadata["hint"] == PROPERTY_HINT_EXPRESSION:
+				variable.value = execute_expression(variable.value)
+				variable.type = typeof(variable.value)
+			else: # Recursively parse variables
+				variable.value = parse_variables(variable.value)
+		elif variable.type == TYPE_COLOR and variable.value is Color:
+			variable.value = variable.value.to_html() # Convert to Hex string
+	return variable
+
+
+## Executes a expression with variables parsed
+## Returns the result of the expression
+static func execute_expression(command: String) -> Variant:
+	var parsed_command = parse_variables(command, true)
+	var autoloads = get_autoloads()
+	var expression = Expression.new()
+	var error = expression.parse(parsed_command, autoloads.keys())
+	if error != OK:
+		printerr("[Sprouty Dialogs] Error parsing expression: " + expression.get_error_text())
+		return null
+	var result = expression.execute(autoloads.values())
+	if expression.has_execute_failed():
+		printerr("[Sprouty Dialogs] Error executing expression: " + expression.get_error_text())
+		return null
+	else: # Successful execution
+		return result
 
 
 ## Returns a dictionary with the autoloads from a given scene tree.
@@ -214,6 +256,7 @@ static func get_autoloads() -> Dictionary:
 		return autoloads
 	return {}
 
+#endregion
 
 #region === Variable Type Fields ===============================================
 
@@ -275,6 +318,11 @@ static func get_types_dropdown(label: bool = true, excluded: Array[String] = [])
 			"icon": root.get_theme_icon("Color", "EditorIcons"),
 			"type": TYPE_COLOR,
 			"metadata": {},
+		},
+		"Expression": {
+			"icon": root.get_theme_icon("Variant", "EditorIcons"),
+			"type": TYPE_STRING,
+			"metadata": {"hint": PROPERTY_HINT_EXPRESSION, "hint_string": ""},
 		},
 		"Dictionary": {
 			"icon": root.get_theme_icon("Dictionary", "EditorIcons"),
@@ -447,7 +495,15 @@ static func new_field_by_type(
 					default_value = field.selected
 					field.item_selected.connect(on_value_changed.bind(type, field))
 					field.item_selected.connect(on_modified_callable.unbind(1))
-				else: # Regular string
+				# Expression string
+				elif property_data["hint"] == PROPERTY_HINT_EXPRESSION:
+					line_edit.placeholder_text = "Write a expression here..."
+					field = line_edit
+					if init_value != null:
+						field.text = init_value
+					default_value = line_edit.text
+				else:
+					# Regular string
 					field = line_edit
 					if init_value != null:
 						field.text = init_value
@@ -720,49 +776,69 @@ static func get_assignment_result(type: int, operator: int, value: Variant, new_
 
 
 ## Returns the result of comparing two values based on the specified operator.
-static func get_comparison_result(first_type: int, first_value: Variant,
-		second_type: int, second_value: Variant, operator: int) -> Variant:
+static func get_comparison_result(first_var: Dictionary, second_var: Dictionary,
+		operator: int) -> Variant:
 	# Get the variable values if any is a variable
-	if first_type == 40:
-		var variable = get_variable(first_value)
-		if variable:
-			first_value = variable.value
-			first_type = variable.type
-		else:
-			printerr("[Sprouty Dialogs] Cannot check condition. Variable '" + str(first_value) + "' not found. " +
-				"Please check if the variable exists in the Variables Manager or in the autoloads.")
-			return null
-	if second_type == 40:
-		var variable = get_variable(second_value)
-		if variable:
-			second_value = variable.value
-			second_type = variable.type
-		else:
-			printerr("[Sprouty Dialogs] Cannot check condition. Variable '" + str(second_value) + "' not found. " +
-				"Please check if the variable exists in the Variables Manager or in the autoloads.")
-			return null
-	
-	if first_type != second_type: # If types do not match, cannot compare
-		printerr("[Sprouty Dialogs] Cannot compare variables of type '" +
-			type_string(first_type) + "' and '" + type_string(second_type) + "'.")
-		printerr("Values '" + str(first_value) + "' and '" + str(second_value) + "' are not comparable.")
+	first_var = _parse_condition_value(first_var)
+	second_var = _parse_condition_value(second_var)
+	if first_var == null or second_var == null:
 		return null
+
+	# If both variables are not numeric types, ensure they are of the same type
+	var numeric_types = [TYPE_INT, TYPE_FLOAT]
+	if not (first_var.type in numeric_types and second_var.type in numeric_types):
+		if first_var.type != second_var.type: # If types do not match, cannot compare
+			printerr("[Sprouty Dialogs] Cannot compare variables of type '" +
+				type_string(first_var.type) + "' and '" + type_string(second_var.type) + "'." \
+				+" Values '" + str(first_var.value) + "' and '" + str(second_var.value) + "' are not comparable.")
+			return null
 
 	match operator:
 		OP_EQUAL:
-			return first_value == second_value
+			return first_var.value == second_var.value
 		OP_NOT_EQUAL:
-			return first_value != second_value
+			return first_var.value != second_var.value
 		OP_LESS:
-			return first_value < second_value
+			return first_var.value < second_var.value
 		OP_GREATER:
-			return first_value > second_value
+			return first_var.value > second_var.value
 		OP_LESS_EQUAL:
-			return first_value <= second_value
+			return first_var.value <= second_var.value
 		OP_GREATER_EQUAL:
-			return first_value >= second_value
+			return first_var.value >= second_var.value
 		_:
 			printerr("[Sprouty Dialogs] Unsupported comparison operator: " + str(operator))
 			return false
+
+
+## Parses a variable data dictionary to get its actual value.
+static func _parse_condition_value(var_data: Dictionary) -> Variant:
+	var parse_var = var_data
+	match var_data.type:
+		TYPE_STRING:
+			# Expression type
+			if var_data.metadata.has("hint") and \
+					var_data.metadata["hint"] == PROPERTY_HINT_EXPRESSION:
+				var result = execute_expression(var_data.value)
+				if result != null:
+					parse_var.value = result
+					parse_var.type = typeof(result)
+				else:
+					printerr("[Sprouty Dialogs] Cannot check condition. Error evaluating expression: " +
+						str(var_data.value))
+					return null
+		40: # Variable type
+			var variable = get_parsed_variable(var_data.value)
+			if variable:
+				parse_var.value = variable.value
+				parse_var.type = variable.type
+				parse_var.metadata = variable.metadata
+			else:
+				printerr("[Sprouty Dialogs] Cannot check condition. Variable '" + str(var_data.value) + "' not found. " +
+					"Please check if the variable exists in the Variables Manager or in the autoloads.")
+				return null
+		_:
+			return var_data
+	return parse_var
 
 #endregion

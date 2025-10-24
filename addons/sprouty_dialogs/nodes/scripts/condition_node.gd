@@ -112,7 +112,9 @@ func load_type_data(data: Dictionary, field_index: int) -> void:
 	var type_index = _type_dropdowns[field_index].get_item_index(data[key]["type"])
 
 	if data[key]["metadata"].has("hint"): # Handle File/Dir Path types
-		if data[key]["metadata"]["hint"] == PROPERTY_HINT_FILE:
+		if data[key]["metadata"]["hint"] == PROPERTY_HINT_EXPRESSION:
+			type_index = _type_dropdowns[field_index].item_count - 3
+		elif data[key]["metadata"]["hint"] == PROPERTY_HINT_FILE:
 			type_index = _type_dropdowns[field_index].item_count - 2
 		elif data[key]["metadata"]["hint"] == PROPERTY_HINT_DIR:
 			type_index = _type_dropdowns[field_index].item_count - 1
@@ -134,7 +136,8 @@ func _set_value_field(type_index: int, field_index: int) -> void:
 	var metadata = _type_dropdowns[field_index].get_item_metadata(type_index)
 	if metadata.has("hint"):
 		if metadata["hint"] == PROPERTY_HINT_FILE or \
-				metadata["hint"] == PROPERTY_HINT_DIR:
+				metadata["hint"] == PROPERTY_HINT_DIR or \
+					metadata["hint"] == PROPERTY_HINT_EXPRESSION:
 			type = TYPE_STRING # File/Dir Path is treated as String type
 	
 	# Remove the previous value field if it exists
@@ -179,7 +182,7 @@ func _on_type_selected(type_index: int, field_index: int) -> void:
 	modified.emit(true)
 
 	# --- UndoRedo ---------------------------------------------------------
-	undo_redo.create_action("SetConditionType")
+	undo_redo.create_action("Set Condition Type")
 	undo_redo.add_do_method(self, "_set_value_field", type_index, field_index)
 	undo_redo.add_do_property(_type_dropdowns[field_index], "selected", type_index)
 
@@ -201,7 +204,7 @@ func _on_operator_selected(index: int) -> void:
 		modified.emit(true)
 
 		# --- UndoRedo -----------------------------------------------------
-		undo_redo.create_action("SetConditionOperator")
+		undo_redo.create_action("Set Condition Operator")
 		undo_redo.add_do_property(operator_dropdown, "selected", index)
 		undo_redo.add_undo_property(operator_dropdown, "selected", temp)
 		undo_redo.add_do_method(self, "emit_signal", "modified", true)
@@ -220,7 +223,7 @@ func _on_value_changed(value: Variant, type: int, field: Control, field_index: i
 	_values_modified[field_index] = true
 
 	# --- UndoRedo ---------------------------------------------------------
-	undo_redo.create_action("SetConditionValue", 1)
+	undo_redo.create_action("Set Condition Value", 1)
 	undo_redo.add_do_method(self, "_set_field_value", value, type, field_index)
 	undo_redo.add_undo_method(self, "_set_field_value", temp_value, type, field_index)
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)

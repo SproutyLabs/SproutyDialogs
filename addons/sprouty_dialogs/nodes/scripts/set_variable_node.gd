@@ -88,7 +88,9 @@ func set_data(dict: Dictionary) -> void:
 	var type_index = _type_dropdown.get_item_index(dict["var_type"])
 
 	if dict["var_metadata"].has("hint"): # Handle File/Dir Path types
-		if dict["var_metadata"]["hint"] == PROPERTY_HINT_FILE:
+		if dict["var_metadata"]["hint"] == PROPERTY_HINT_EXPRESSION:
+			type_index = _type_dropdown.item_count - 3
+		elif dict["var_metadata"]["hint"] == PROPERTY_HINT_FILE:
 			type_index = _type_dropdown.item_count - 2
 		elif dict["var_metadata"]["hint"] == PROPERTY_HINT_DIR:
 			type_index = _type_dropdown.item_count - 1
@@ -113,7 +115,8 @@ func _set_variable_type(index: int) -> void:
 	var metadata = _type_dropdown.get_item_metadata(index)
 	if metadata.has("hint"):
 		if metadata["hint"] == PROPERTY_HINT_FILE or \
-				metadata["hint"] == PROPERTY_HINT_DIR:
+				metadata["hint"] == PROPERTY_HINT_DIR or \
+					metadata["hint"] == PROPERTY_HINT_EXPRESSION:
 			type = TYPE_STRING # File/Dir Path is treated as String type
 
 	# Set the variable dropdown based on the selected type and update the value field

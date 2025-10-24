@@ -108,7 +108,9 @@ func set_type(type: int, metadata: Dictionary) -> void:
 	_variable_type = type
 	var index = _type_dropdown.get_item_index(type)
 	if metadata.has("hint"): # Handle File/Dir Path types
-		if metadata["hint"] == PROPERTY_HINT_FILE:
+		if metadata["hint"] == PROPERTY_HINT_EXPRESSION:
+			index = _type_dropdown.item_count - 3
+		elif metadata["hint"] == PROPERTY_HINT_FILE:
 			index = _type_dropdown.item_count - 2
 		elif metadata["hint"] == PROPERTY_HINT_DIR:
 			index = _type_dropdown.item_count - 1
@@ -165,7 +167,8 @@ func _set_value_field(type_index: int) -> void:
 	var metadata = _type_dropdown.get_item_metadata(type_index)
 	if metadata.has("hint"):
 		if metadata["hint"] == PROPERTY_HINT_FILE or \
-				metadata["hint"] == PROPERTY_HINT_DIR:
+				metadata["hint"] == PROPERTY_HINT_DIR or \
+					metadata["hint"] == PROPERTY_HINT_EXPRESSION:
 			type = TYPE_STRING # File/Dir Path is treated as String type
 	
 	# Create the new value field

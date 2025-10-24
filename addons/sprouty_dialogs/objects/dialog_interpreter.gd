@@ -66,10 +66,8 @@ func _process_dialogue(node_data: Dictionary) -> void:
 func _process_condition(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing condition node...")
 	var comparison_result = EditorSproutyDialogsVariableManager.get_comparison_result(
-		node_data.first_type, # First variable type
-		node_data.first_value, # First variable value
-		node_data.second_type, # Second variable type
-		node_data.second_value, # Second variable value
+		node_data.first_var, # First variable data
+		node_data.second_var, # Second variable data
 		node_data.operator # Comparison operator
 	)
 	if comparison_result: # If is true, continue to the first connection
