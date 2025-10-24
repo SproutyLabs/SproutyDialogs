@@ -15,6 +15,8 @@ signal modified
 signal item_changed(item: Dictionary)
 ## Emitted when the remove button is pressed
 signal item_removed(index: int)
+## Emitted when the item key is modified
+signal key_modified(key: String)
 
 ## Item key field
 @onready var _key_field: LineEdit = $KeyInput
@@ -157,7 +159,6 @@ func _on_value_changed(value: Variant, type: int, field: Control) -> void:
 ## Emit a signal when the item key is modified
 func _on_key_changed(key: String) -> void:
 	_key_modified = true
-	item_changed.emit(get_item_data())
 
 
 ## Emit a signal when the item key is modified (on focus exit)
@@ -165,6 +166,7 @@ func _on_key_modified() -> void:
 	if _key_modified:
 		_key_modified = false
 		modified.emit()
+		key_modified.emit(get_key())
 
 
 ## Emit a signal when the remove button is pressed

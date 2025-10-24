@@ -54,6 +54,15 @@ func get_dictionary() -> Dictionary:
 	return items
 
 
+## Return the keys of the dictionary items
+func get_keys() -> Array:
+	var keys := []
+	for child in _items_container.get_children():
+		if child is EditorSproutyDialogsDictionaryFieldItem:
+			keys.append(child.get_key())
+	return keys
+
+
 ## Return the values of the dictionary items
 func get_items_values() -> Dictionary:
 	var values := {}
@@ -94,6 +103,7 @@ func _new_dictionary_item() -> EditorSproutyDialogsDictionaryFieldItem:
 	var item = _item_field.instantiate()
 	var index := _items_container.get_child_count() - 1
 
+	item.key_modified.connect(_on_key_modified.bind(item))
 	item.item_removed.connect(_on_remove_button_pressed)
 	item.item_changed.connect(_on_item_changed)
 	item.modified.connect(modified.emit)
@@ -101,7 +111,27 @@ func _new_dictionary_item() -> EditorSproutyDialogsDictionaryFieldItem:
 	_items_container.add_child(item)
 	_items_container.move_child(item, index)
 	_collapse_button.text = "Dictionary (size " + str(index + 1) + ")"
+	item.set_key(EditorSproutyDialogsFileUtils.ensure_unique_name("", get_keys(), "None"))
 	return item
+
+
+## Emmit signals when the value of an item changes
+func _on_item_changed(item: Dictionary) -> void:
+	item_changed.emit(item)
+	dictionary_changed.emit(get_dictionary())
+
+
+## Handle when an item key is changed
+func _on_key_modified(key: String, item: EditorSproutyDialogsDictionaryFieldItem) -> void:
+	var keys = get_keys()
+	keys.erase(key)
+
+	var unique_key = EditorSproutyDialogsFileUtils.ensure_unique_name(key, keys, "None")
+	if key != unique_key:
+		item.set_key(unique_key)
+	
+	item_changed.emit(item.get_item_data())
+	dictionary_changed.emit(get_dictionary())
 
 
 ## Add a new item to the dictionary
@@ -130,9 +160,3 @@ func _on_remove_button_pressed(index: int) -> void:
 ## Show/hide the dictionary items
 func _on_collapse_button_toggled(toggled_on: bool) -> void:
 	_items_container.get_parent().visible = toggled_on
-
-
-## Emmit signals when the value of an item changes
-func _on_item_changed(item: Dictionary) -> void:
-	item_changed.emit(item)
-	dictionary_changed.emit(get_dictionary())

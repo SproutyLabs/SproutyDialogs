@@ -162,44 +162,23 @@ func rename_portrait_item(item: TreeItem) -> void:
 	call_deferred("edit_selected")
 
 
-## Check if the item name is already in use by its siblings
-func check_existing_item_name(name: String, item: TreeItem) -> bool:
-	var parent := item.get_parent()
-	if not parent:
-		parent = get_root()
-	# Check all the siblings of the item
-	for child in parent.get_children():
-		if child == item:
-			continue # Skip the item being checked
-		if child.get_text(0) == name:
-			return true # If the name matches, return true
-	return false
-
-
 ## Ensure the item has a valid name (unique and not empty)
 func ensure_valid_item_name(item: TreeItem) -> void:
-	# If the name is empty, set it to "Unnamed"
-	if item.get_text(0).strip_edges() == "":
-		item.set_text(0, "Unnamed")
-		return
+	var name := item.get_text(0)
+	var siblings_names := []
+	var parent := item.get_parent()
 
-	# If the name is already in use, add a suffix to the name
-	if check_existing_item_name(item.get_text(0), item):
-		# Remove the suffix like " (1)" if exists
-		var regex = RegEx.new()
-		regex.compile("(?: \\(\\d+\\))?$")
-		var result = regex.search(item.get_text(0))
-		var clean_name = item.get_text(0)
-		if result:
-			clean_name = regex.sub(item.get_text(0), "").strip_edges()
-		
-		# If new the name is already in use, increment the suffix value
-		var suffix := 1
-		var name = clean_name + " (" + str(suffix) + ")"
-		while check_existing_item_name(name, item):
-			suffix += 1
-			name = clean_name + " (" + str(suffix) + ")"
-		item.set_text(0, name)
+	if not parent:
+		parent = get_root()
+	# Get all the sibling names
+	for child in parent.get_children():
+		if child != item:
+			siblings_names.append(child.get_text(0))
+	
+	# Ensure the name is unique
+	var unique_name = EditorSproutyDialogsFileUtils.ensure_unique_name(name, siblings_names)
+	if name != unique_name:
+		item.set_text(0, unique_name)
 
 
 ## Get the path of the item in the tree

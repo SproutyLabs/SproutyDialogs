@@ -47,3 +47,30 @@ static func check_valid_extension(path: String, extensions: Array) -> bool:
 static func check_valid_uid_path(uid: int) -> bool:
 	return uid != -1 and ResourceUID.has_id(uid) \
 			and ResourceLoader.exists(ResourceUID.get_id_path(uid))
+
+
+## Ensure a name is unique within a list of existing names
+static func ensure_unique_name(name: String, existing_names: Array,
+		empty_name: String = "Unnamed") -> String:
+	if name.strip_edges() == "":
+		name = empty_name # Set default name if empty
+	
+	if not existing_names.has(name):
+		return name # Name is already unique
+
+	# Remove existing suffix if any
+	var regex = RegEx.new()
+	regex.compile("(?: \\(\\d+\\))?$")
+	var result = regex.search(name)
+	var clean_name = name
+	if result:
+		clean_name = regex.sub(name, "").strip_edges()
+	
+	# Append suffix until unique
+	var suffix := 1
+	var new_name = clean_name + " (" + str(suffix) + ")"
+	while existing_names.has(new_name):
+		suffix += 1
+		new_name = clean_name + " (" + str(suffix) + ")"
+	
+	return new_name

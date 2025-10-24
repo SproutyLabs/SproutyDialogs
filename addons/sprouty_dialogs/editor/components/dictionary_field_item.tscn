@@ -14,7 +14,7 @@ script = ExtResource("1_wyyno")
 [node name="KeyInput" type="LineEdit" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Key"
+placeholder_text = "Key..."
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
