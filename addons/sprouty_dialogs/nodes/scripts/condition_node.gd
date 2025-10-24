@@ -23,7 +23,7 @@ var _value_inputs: Array = [null, null]
 var _var_values: Array = ["", ""]
 
 ## Selected type (for UndoRedo)
-var _type_indexes: Array[int] = [TYPE_NIL, TYPE_NIL]
+var _type_indexes: Array[int] = [40, 40]
 ## Selected operator (for UndoRedo)
 var _operator_index: int = 0
 
@@ -47,7 +47,7 @@ func _ready():
 ## Set the type dropdowns and connect their signals
 func _set_type_dropdown(dropdown_field: Node, field_index: int) -> void:
 	var types_dropdown = EditorSproutyDialogsVariableManager.get_types_dropdown(
-			true, ["Dictionary", "Array"] # Excluded from options
+			true, ["Nil", "Dictionary", "Array"] # Excluded from options
 		)
 	dropdown_field.add_child(types_dropdown)
 	_type_dropdowns[field_index] = dropdown_field.get_node("TypeDropdown")

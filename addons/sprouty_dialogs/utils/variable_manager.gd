@@ -24,16 +24,6 @@ enum ASSIGN_OPS {
 	MOD_ASSIGN, ## Modulus assignment operator (%=)
 }
 
-## Comparison operators for variables
-enum COMPARISON_OPS {
-	EQUAL, ## Equality operator (==)
-	NOT_EQUAL, ## Inequality operator (!=)
-	LESS_THAN, ## Less than operator (<)
-	GREATER_THAN, ## Greater than operator (>)
-	LESS_EQUAL, ## Less than or equal to operator (<=)
-	GREATER_EQUAL ## Greater than or equal to operator (>=)
-}
-
 ## Path to the variable icon
 const VAR_ICON_PATH = "res://addons/sprouty_dialogs/editor/icons/variable.svg"
 ## Path to the dictionary field scene
@@ -238,6 +228,11 @@ static func get_types_dropdown(label: bool = true, excluded: Array[String] = [])
 	var types_dict = {
 		"Variable": {
 			"icon": load(VAR_ICON_PATH),
+			"type": 40,
+			"metadata": {},
+		},
+		"Nil": {
+			"icon": root.get_theme_icon("Nil", "EditorIcons"),
 			"type": TYPE_NIL,
 			"metadata": {},
 		},
@@ -338,18 +333,12 @@ static func new_field_by_type(
 	var field = null
 	var default_value = null
 	match type:
-		TYPE_NIL: # Variable field
-			field = EditorSproutyDialogsComboBox.new()
-			var popup = PopupMenu.new()
-			popup.name = "DropdownPopup"
-			field.add_child(popup)
-			field.set_placeholder("Variable name...")
-			field.set_options(get_variable_list())
-			if init_value != null:
-				field.set_value(init_value)
-			default_value = field.get_value()
-			field.input_changed.connect(on_value_changed.bind(type, field))
-			field.input_focus_exited.connect(on_modified_callable)
+		TYPE_NIL:
+			field = Button.new()
+			field.text = "<null>"
+			field.disabled = true
+			field.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			default_value = null
 		
 		TYPE_BOOL:
 			field = CheckBox.new()
@@ -548,18 +537,34 @@ static func new_field_by_type(
 			field = RichTextLabel.new()
 			field.bbcode_enabled = true
 			field.fit_content = true
-			field.text = "[color=tomato]Objects/Resources are not supported.[/color]"
-			field.tooltip_text = "Use @export_file(\"*.extension\") to load the resource file instead."
+			field.text = "[color=tomato]Objects/Resources are not directly supported[/color]"
+			field.tooltip_text = "Use @export_file(\"*.extension\") to load it from file instead."
+		
+		40: # Variable field
+			field = EditorSproutyDialogsComboBox.new()
+			var popup = PopupMenu.new()
+			popup.name = "DropdownPopup"
+			field.add_child(popup)
+			field.set_placeholder("Variable name...")
+			field.set_options(get_variable_list())
+			if init_value != null:
+				field.set_value(init_value)
+			default_value = field.get_value()
+			field.input_changed.connect(on_value_changed.bind(type, field))
+			field.input_focus_exited.connect(on_modified_callable)
 		
 		# ----------------------------------
 		# Add more types as needed here (!)
 		# ----------------------------------
 
 		_:
-			field = LineEdit.new()
-			field.text = "<null>"
-			field.editable = false
-			field.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			field = RichTextLabel.new()
+			field.bbcode_enabled = true
+			field.fit_content = true
+			if type > TYPE_MAX:
+				field.text = "[color=tomato]Invalid type value[/color]"
+			else:
+				field.text = "[color=tomato]" + type_string(type) + " is not supported[/color]"
 	
 	return {
 		"field": field,
@@ -572,10 +577,6 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 	if value == null:
 		return # Do nothing if value is null
 	match type:
-		TYPE_NIL: # Variable field
-			if field is EditorSproutyDialogsComboBox:
-				field.set_value(value)
-		
 		TYPE_BOOL:
 			if field is CheckBox:
 				field.button_pressed = bool(value)
@@ -616,8 +617,9 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 			if field is EditorSproutyDialogsArrayField:
 				field.set_array(value)
 		
-		TYPE_OBJECT:
-			pass # Objects/Resources are not supported
+		40: # Variable field
+			if field is EditorSproutyDialogsComboBox:
+				field.set_value(value)
 		
 		# ----------------------------------
 		# Add more types as needed here (!)
@@ -675,12 +677,12 @@ static func get_assignment_operators(type: int) -> Dictionary:
 ## Returns the comparison operators as a dictionary
 static func get_comparison_operators() -> Dictionary:
 	return {
-		"==": COMPARISON_OPS.EQUAL,
-		"!=": COMPARISON_OPS.NOT_EQUAL,
-		"<": COMPARISON_OPS.LESS_THAN,
-		">": COMPARISON_OPS.GREATER_THAN,
-		"<=": COMPARISON_OPS.LESS_EQUAL,
-		">=": COMPARISON_OPS.GREATER_EQUAL
+		"==": OP_EQUAL,
+		"!=": OP_NOT_EQUAL,
+		"<": OP_LESS,
+		">": OP_GREATER,
+		"<=": OP_LESS_EQUAL,
+		">=": OP_GREATER_EQUAL
 	}
 
 
@@ -721,7 +723,7 @@ static func get_assignment_result(type: int, operator: int, value: Variant, new_
 static func get_comparison_result(first_type: int, first_value: Variant,
 		second_type: int, second_value: Variant, operator: int) -> Variant:
 	# Get the variable values if any is a variable
-	if first_type == TYPE_NIL:
+	if first_type == 40:
 		var variable = get_variable(first_value)
 		if variable:
 			first_value = variable.value
@@ -730,7 +732,7 @@ static func get_comparison_result(first_type: int, first_value: Variant,
 			printerr("[Sprouty Dialogs] Cannot check condition. Variable '" + str(first_value) + "' not found. " +
 				"Please check if the variable exists in the Variables Manager or in the autoloads.")
 			return null
-	if second_type == TYPE_NIL:
+	if second_type == 40:
 		var variable = get_variable(second_value)
 		if variable:
 			second_value = variable.value
@@ -739,7 +741,7 @@ static func get_comparison_result(first_type: int, first_value: Variant,
 			printerr("[Sprouty Dialogs] Cannot check condition. Variable '" + str(second_value) + "' not found. " +
 				"Please check if the variable exists in the Variables Manager or in the autoloads.")
 			return null
-
+	
 	if first_type != second_type: # If types do not match, cannot compare
 		printerr("[Sprouty Dialogs] Cannot compare variables of type '" +
 			type_string(first_type) + "' and '" + type_string(second_type) + "'.")
@@ -747,17 +749,17 @@ static func get_comparison_result(first_type: int, first_value: Variant,
 		return null
 
 	match operator:
-		COMPARISON_OPS.EQUAL:
+		OP_EQUAL:
 			return first_value == second_value
-		COMPARISON_OPS.NOT_EQUAL:
+		OP_NOT_EQUAL:
 			return first_value != second_value
-		COMPARISON_OPS.LESS_THAN:
+		OP_LESS:
 			return first_value < second_value
-		COMPARISON_OPS.GREATER_THAN:
+		OP_GREATER:
 			return first_value > second_value
-		COMPARISON_OPS.LESS_EQUAL:
+		OP_LESS_EQUAL:
 			return first_value <= second_value
-		COMPARISON_OPS.GREATER_EQUAL:
+		OP_GREATER_EQUAL:
 			return first_value >= second_value
 		_:
 			printerr("[Sprouty Dialogs] Unsupported comparison operator: " + str(operator))

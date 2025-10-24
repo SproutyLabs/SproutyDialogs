@@ -144,7 +144,7 @@ func _set_types_dropdown() -> void:
 	if $Container/TypeField.get_child_count() > 0:
 		$Container/TypeField/TypeDropdown.queue_free()
 	_type_dropdown = EditorSproutyDialogsVariableManager.get_types_dropdown(true, [
-		"Variable", "Dictionary", "Array" # Excluded from options
+		"Nil", "Variable", "Dictionary", "Array" # Excluded from options
 	])
 	_type_dropdown.select(_type_dropdown.get_item_index(TYPE_STRING))
 	_type_dropdown.item_selected.connect(_on_type_changed)

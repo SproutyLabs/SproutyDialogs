@@ -110,12 +110,14 @@ func set_type(type: int, metadata: Dictionary) -> void:
 		elif metadata["hint"] == PROPERTY_HINT_DIR:
 			_type_index = _type_dropdown.item_count - 1
 	
+	if _type_index == -1: # Type not found, set to Nil
+		_type_index = _type_dropdown.get_item_index(TYPE_NIL)
 	_type_dropdown.select(_type_index)
-	_set_value_field(_type_index)
+	_set_value_field(_type_index, type)
 
 
 ## Set the value field based on the variable type
-func _set_value_field(index: int) -> void:
+func _set_value_field(index: int, type: int = -1) -> void:
 	# Clear previous field
 	if $ValueField.get_child_count() > 0:
 		var field = $ValueField.get_child(0)
@@ -123,7 +125,8 @@ func _set_value_field(index: int) -> void:
 		field.queue_free()
 	
 	# Get the selected type
-	var type = _type_dropdown.get_item_id(index)
+	if type == -1:
+		type = _type_dropdown.get_item_id(index)
 	var metadata = _type_dropdown.get_item_metadata(index)
 	metadata = metadata if metadata else {}
 	if metadata.has("hint"):

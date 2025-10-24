@@ -46,7 +46,7 @@ func _ready():
 	# Set the type dropdown and connect its signal
 	$Container/VarField/TypeField.add_child(
 		EditorSproutyDialogsVariableManager.get_types_dropdown(true,
-				["Variable", "Dictionary", "Array"] # Excluded from options
+				["Nil", "Variable", "Dictionary", "Array"] # Excluded from options
 			))
 	_type_dropdown = $Container/VarField/TypeField/TypeDropdown
 	_type_dropdown.item_selected.connect(_on_type_selected)
