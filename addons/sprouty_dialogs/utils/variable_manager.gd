@@ -198,50 +198,91 @@ static func parse_variables(text: String, ignore_error: bool = false) -> String:
 	regex.compile("{([^{}]*)}")
 	var results = regex.search_all(text)
 	results = results.map(func(val): return val.get_string(1))
-
+	
+	var remains = results.duplicate()
 	if not results.is_empty():
 		for var_name in results:
-			var parsed_variable = get_parsed_variable(var_name)
+			var parsed_variable = get_parsed_variable(var_name, ignore_error)
 			if parsed_variable:
 				text = text.replace("{" + var_name + "}", str(parsed_variable.value))
-			elif not ignore_error:
-				printerr("[Sprouty Dialogs] Cannot parse variable {" + var_name + "} not found. " +
-					"Please check if the variable exists in the Variables Manager or in the autoloads.")
+				remains.erase(var_name)
+				
+		# Check if there are still unparsed variables
+		var post_results = regex.search_all(text)
+		post_results = post_results.map(
+			func(val): return val.get_string(1)).filter(
+				func(val): return not remains.has(val)
+			)
+
+		if not post_results.is_empty(): # Recursively parse remaining variables
+			text = parse_variables(text, ignore_error)
 	return text
 
 
-## Gets the value of a variable by its name
-## Returns a dictionary with the variable name, type, value and metadata
-## If the variable does not exist, it returns null.
-static func get_parsed_variable(var_name: String) -> Variant:
+## Gets the value of a variable or expression.
+## Returns a dictionary with the variable name, type, value and metadata.
+## If the variable does not exist or the expression fails, it returns null.
+static func get_parsed_variable(var_name: String, ignore_error: bool = false,
+		only_parse_var: bool = false) -> Variant:
 	var variable = get_variable(var_name)
 	if variable:
 		if variable.type == TYPE_STRING:
 			# If the variable is an expression, execute it
 			if variable.metadata.has("hint") and \
 					variable.metadata["hint"] == PROPERTY_HINT_EXPRESSION:
-				variable.value = execute_expression(variable.value)
-				variable.type = typeof(variable.value)
-			else: # Recursively parse variables
+				var result = execute_expression(variable.value, ignore_error)
+				
+				if not result: # Error evaluating expression
+					if not ignore_error:
+						printerr("[Sprouty Dialogs] Error evaluating expression of variable '" +
+							var_name + "': " + str(variable.value))
+					return null
+				variable.value = result
+				variable.type = typeof(result)
+				variable.metadata = {}
+			else:
+				# Recursively parse variables in the string
 				variable.value = parse_variables(variable.value)
+		
 		elif variable.type == TYPE_COLOR and variable.value is Color:
 			variable.value = variable.value.to_html() # Convert to Hex string
+	
+	elif not only_parse_var: # Try to execute as expression
+		var result = execute_expression(var_name, ignore_error)
+		if not result: # Error evaluating expression
+			if not ignore_error:
+				printerr("[Sprouty Dialogs] Cannot found or parse variable {"
+						+ var_name + "} as expression. ")
+			return null
+		variable = {
+			"name": var_name,
+			"type": typeof(result),
+			"value": result,
+			"metadata": {}
+		}
+	else: # Variable not found
+		if not ignore_error:
+			printerr("[Sprouty Dialogs] Cannot parse variable {" + var_name + "} not found. " +
+				"Please check if the variable exists in the Variables Manager or in the autoloads.")
+		return null
 	return variable
 
 
 ## Executes a expression with variables parsed
 ## Returns the result of the expression
-static func execute_expression(command: String) -> Variant:
+static func execute_expression(command: String, ignore_error: bool = false) -> Variant:
 	var parsed_command = parse_variables(command, true)
 	var autoloads = get_autoloads()
 	var expression = Expression.new()
 	var error = expression.parse(parsed_command, autoloads.keys())
 	if error != OK:
-		printerr("[Sprouty Dialogs] Error parsing expression: " + expression.get_error_text())
+		if not ignore_error:
+			printerr("[Sprouty Dialogs] Error parsing expression: " + expression.get_error_text())
 		return null
 	var result = expression.execute(autoloads.values())
 	if expression.has_execute_failed():
-		printerr("[Sprouty Dialogs] Error executing expression: " + expression.get_error_text())
+		if not ignore_error:
+			printerr("[Sprouty Dialogs] Error executing expression: " + expression.get_error_text())
 		return null
 	else: # Successful execution
 		return result
@@ -828,7 +869,7 @@ static func _parse_condition_value(var_data: Dictionary) -> Variant:
 						str(var_data.value))
 					return null
 		40: # Variable type
-			var variable = get_parsed_variable(var_data.value)
+			var variable = get_parsed_variable(var_data.value, true, true)
 			if variable:
 				parse_var.value = variable.value
 				parse_var.type = variable.type
