@@ -27,6 +27,9 @@ var _array_field_path := "res://addons/sprouty_dialogs/editor/components/array_f
 
 ## Modified properties tracker
 var _properties_modified: Dictionary = {}
+## Flag to know if the properties have been loaded
+var _properties_loaded: bool = false
+
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
 
@@ -104,6 +107,8 @@ func load_exported_properties(scene: Node) -> void:
 			_properties_modified[prop["name"]] = false
 
 	visible = true
+	_properties_loaded = true
+
 
 #region === Handle Collections =================================================
 
@@ -220,10 +225,14 @@ func _on_property_changed(value: Variant, type: Variant, field: Control, name: S
 	if type == TYPE_COLOR: # Save color value as a hexadecimal string
 		value = value.to_html()
 	
+	print("\nChanged property: " + name + " to value: " + str(value))
 	_set_property_on_dict(name, value, type)
 	property_changed.emit(name, value)
 	_properties_modified[name] = true
 
+	if not _properties_loaded:
+		return # If properties are not loaded, do not create UndoRedo action
+	
 	# --- UndoRedo -------------------------------------------------------------
 	undo_redo.create_action("Edit Portrait Property: " + name.capitalize(), 1)
 

@@ -135,15 +135,16 @@ func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 		_new_portrait_scene_button.visible = true
 
 	# Load image settings
-	_portrait_scale_section.get_node("LockRatioButton").button_pressed = data.transform_settings.scale_lock_ratio
-	_portrait_scale_section.get_node("XField").value = data.transform_settings.scale.x
-	_portrait_scale_section.get_node("YField").value = data.transform_settings.scale.y
+	_portrait_scale_section.get_node("LockRatioButton").set_pressed_no_signal(
+			data.transform_settings.scale_lock_ratio)
+	_portrait_scale_section.get_node("XField").set_value_no_signal(data.transform_settings.scale.x)
+	_portrait_scale_section.get_node("YField").set_value_no_signal(data.transform_settings.scale.y)
 
-	_portrait_offset_section.get_node("XField").value = data.transform_settings.offset.x
-	_portrait_offset_section.get_node("YField").value = data.transform_settings.offset.y
+	_portrait_offset_section.get_node("XField").set_value_no_signal(data.transform_settings.offset.x)
+	_portrait_offset_section.get_node("YField").set_value_no_signal(data.transform_settings.offset.y)
 
-	_portrait_rotation_section.get_node("RotationField").value = data.transform_settings.rotation
-	_portrait_rotation_section.get_node("MirrorCheckBox").button_pressed = data.transform_settings.mirror
+	_portrait_rotation_section.get_node("RotationField").set_value_no_signal(data.transform_settings.rotation)
+	_portrait_rotation_section.get_node("MirrorCheckBox").set_pressed_no_signal(data.transform_settings.mirror)
 	
 	_transform_settings = data.transform_settings
 	

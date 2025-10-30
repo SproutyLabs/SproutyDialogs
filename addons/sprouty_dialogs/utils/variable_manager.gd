@@ -435,7 +435,7 @@ static func new_field_by_type(
 				field.button_pressed = init_value
 			default_value = field.button_pressed
 			field.toggled.connect(on_value_changed.bind(type, field))
-			field.focus_exited.connect(on_modified_callable)
+			field.mouse_exited.connect(on_modified_callable)
 		
 		TYPE_INT:
 			# Enum int
@@ -676,13 +676,13 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 	match type:
 		TYPE_BOOL:
 			if field is CheckBox:
-				field.button_pressed = bool(value)
+				field.set_pressed_no_signal(value)
 		
 		TYPE_INT, TYPE_FLOAT:
 			if field is OptionButton: # Enum int
 				field.select(value)
 			if field is SpinBox: # Regular int/float
-				field.value = float(value)
+				field.set_value_no_signal(value)
 		
 		TYPE_STRING:
 			if field is OptionButton: # Enum string
@@ -701,7 +701,7 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 					if field.get_child_count() > i:
 						var component = field.get_child(i).get_node("Field")
 						if component is SpinBox:
-							component.value = float(value[i])
+							component.set_value_no_signal(float(value[i]))
 		TYPE_COLOR:
 			if field is ColorPickerButton:
 				field.color = Color(value)

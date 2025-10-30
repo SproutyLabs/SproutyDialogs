@@ -8,7 +8,6 @@ _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">
 "
 
 [node name="DictionaryFieldItem" type="HBoxContainer"]
-size_flags_horizontal = 3
 script = ExtResource("1_wyyno")
 
 [node name="KeyInput" type="LineEdit" parent="."]

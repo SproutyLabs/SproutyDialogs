@@ -46,6 +46,8 @@ var portrait_editor_scene := preload("res://addons/sprouty_dialogs/editor/module
 
 ## Current portrait selected
 var _current_portrait: TreeItem = null
+## Previous portrait selected
+var _previous_portrait: TreeItem = null
 
 ## Key name of the character (file name)
 var _key_name: String = ""
@@ -503,13 +505,21 @@ func _on_add_portrait_button_pressed() -> void:
 	item.set_editable(0, true)
 	item.select(0)
 	_portrait_tree.call_deferred("edit_selected")
+	var temp = _current_portrait
+	_current_portrait = item
 	_on_modified(true)
 	
 	# --- UndoRedo -----------------------------------------------------
 	undo_redo.create_action("Add New Portrait")
 	undo_redo.add_do_reference(item)
 	undo_redo.add_do_method(parent, "add_child", item)
+	undo_redo.add_do_property(self, "_current_portrait", item)
+	undo_redo.add_do_method(self, "_select_item_on_tree", item)
+	
 	undo_redo.add_undo_method(parent, "remove_child", item)
+	undo_redo.add_undo_property(self, "_current_portrait", temp)
+	undo_redo.add_undo_method(self, "_select_item_on_tree", temp)
+
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
@@ -563,12 +573,38 @@ func _on_portrait_selected(item: TreeItem) -> void:
 		_show_portrait_editor_panel(false)
 	else:
 		_show_portrait_editor_panel(true)
+	
+	if _previous_portrait != item:
+		_previous_portrait = _current_portrait
+	
 	_switch_current_portrait(item)
+
+	if _previous_portrait == item:
+		return # No register undoredo action
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Select Portrait: " + item.get_text(0))
+	undo_redo.add_do_method(self, "_select_item_on_tree", item)
+	undo_redo.add_undo_method(self, "_select_item_on_tree", _previous_portrait)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
+
+
+## Select an item on the portrait tree
+func _select_item_on_tree(item: Variant) -> void:
+	if not item is TreeItem: # No item to select
+		_show_portrait_editor_panel(false)
+		return
+	if item.get_tree() != _portrait_tree:
+		return # Item does not belong to this tree
+	
+	_portrait_tree.deselect_all()
+	_portrait_tree.set_selected(item, 0)
 
 
 ## Switch the portrait settings to the portrait selected
 func _switch_current_portrait(item: TreeItem) -> void:
-	if item == _current_portrait:
+	if not item:
 		return # No change
 	
 	# Update the current portrait data
