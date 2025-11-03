@@ -44,6 +44,9 @@ var _dialogs_count: int = 0
 ## Number of characters in the file list
 var _characters_count: int = 0
 
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
+
 
 func _ready():
 	# Connect signals
@@ -81,6 +84,8 @@ func get_current_index() -> int:
 
 ## Set the current file index selected in the file list
 func set_current_index(index: int) -> void:
+	if index < 0 or index >= _file_list.item_count:
+		return # Invalid index, do nothing
 	_current_file_index = index
 	_file_list.select(index)
 
@@ -159,7 +164,7 @@ func new_file_item(path: String, data: Resource, cache_node: Node, csv_file: Str
 		return
 	
 	_file_list.set_item_metadata(item_index, metadata)
-	_switch_to_file(item_index)
+	_on_file_selected(item_index)
 
 
 ## Close an open file
@@ -263,8 +268,7 @@ func _update_file_metadata(index: int) -> void:
 ## Switch to the given file in the file list
 func _switch_to_file(index: int) -> void:
 	if index < 0 or index >= _file_list.item_count:
-		printerr("[Sprouty Dialogs] Invalid file index to switch to.")
-		return
+		return # Invalid index, do nothing
 	_update_file_metadata(_current_file_index)
 	set_current_index(index)
 	file_selected.emit(_file_list.get_item_metadata(index))
@@ -272,7 +276,15 @@ func _switch_to_file(index: int) -> void:
 
 ## Handle file selection from the file list
 func _on_file_selected(index: int) -> void:
+	var temp = _current_file_index
 	_switch_to_file(index)
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Select File: " + str(_file_list.get_item_text(index)))
+	undo_redo.add_do_method(self, "_switch_to_file", index)
+	undo_redo.add_undo_method(self, "_switch_to_file", temp)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
 
 
 ## When the file list is right clicked, show file menu options

@@ -83,6 +83,9 @@ func _ready() -> void:
 	_csv_file_field.get_parent().hide() # Hide CSV file field by default
 	_save_file_button.disabled = true # Disable save button
 
+	await get_tree().process_frame # Wait a frame to ensure undo_redo is ready
+	_file_list.undo_redo = undo_redo
+
 
 ## Get the current open file path
 func get_current_file_path() -> String:
