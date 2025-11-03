@@ -25,7 +25,7 @@ signal dialog_ended(dialog_file: String, start_id: String)
 ## This is used to keep track of multiple dialog players running at the same time.
 var _current_dialog_players: Array[DialogPlayer] = []
 ## The resource manager instance used to load resources for the dialogs.
-var _resource_manager: EditorSproutyDialogsResourceManager = null
+var _resource_manager: SproutyDialogsResourceManager = null
 
 
 func _ready():
@@ -34,8 +34,8 @@ func _ready():
 		Engine.register_singleton("SproutyDialogs", self)
 	
 	# Set up variables manager
-	EditorSproutyDialogsVariableManager.set_root_reference(get_tree().root)
-	EditorSproutyDialogsVariableManager.load_variables()
+	SproutyDialogsVariableManager.set_root_reference(get_tree().root)
+	SproutyDialogsVariableManager.load_variables()
 
 	get_resource_manager() # Ensure the resource manager is created
 
@@ -60,10 +60,10 @@ func set_dialog_player_as_running(player: DialogPlayer) -> void:
 
 ## Returns the resource manager instance used to load resources for the dialogs
 ## in the current scene. If no resource manager is set, it will create a new one.
-func get_resource_manager() -> EditorSproutyDialogsResourceManager:
+func get_resource_manager() -> SproutyDialogsResourceManager:
 	if not _resource_manager:
 		# Create a new resource manager instance if it doesn't exist
-		_resource_manager = EditorSproutyDialogsResourceManager.new()
+		_resource_manager = SproutyDialogsResourceManager.new()
 		_resource_manager.name = "ResourcesManager"
 		add_child(_resource_manager)
 	return _resource_manager

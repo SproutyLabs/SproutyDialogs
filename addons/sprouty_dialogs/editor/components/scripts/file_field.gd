@@ -81,7 +81,7 @@ func disable_field(disable: bool) -> void:
 
 ## Show the file dialog to select a file.
 func _on_open_pressed() -> void:
-	_open_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path(_recent_file_type))
+	_open_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path(_recent_file_type))
 	_open_dialog.filters = file_filters
 	_open_dialog.popup_centered()
 
@@ -91,7 +91,7 @@ func _on_path_dialog_selected(path: String) -> void:
 	path_submitted.emit(path)
 	path_changed.emit(path)
 	set_value(path)
-	EditorSproutyDialogsFileUtils.set_recent_file_path(_recent_file_type, path)
+	SproutyDialogsFileUtils.set_recent_file_path(_recent_file_type, path)
 
 
 ## Handle the text change event of the field.

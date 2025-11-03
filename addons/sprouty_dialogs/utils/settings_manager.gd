@@ -1,5 +1,5 @@
 @tool
-class_name EditorSproutyDialogsSettingsManager
+class_name SproutyDialogsSettingsManager
 extends Node
 
 # -----------------------------------------------------------------------------

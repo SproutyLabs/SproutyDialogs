@@ -176,7 +176,7 @@ func ensure_valid_item_name(item: TreeItem) -> void:
 			siblings_names.append(child.get_text(0))
 	
 	# Ensure the name is unique
-	var unique_name = EditorSproutyDialogsFileUtils.ensure_unique_name(name, siblings_names)
+	var unique_name = SproutyDialogsFileUtils.ensure_unique_name(name, siblings_names)
 	if name != unique_name:
 		item.set_text(0, unique_name)
 

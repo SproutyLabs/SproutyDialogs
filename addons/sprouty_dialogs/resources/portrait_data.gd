@@ -26,11 +26,11 @@ extends Resource
 ## [codeblock]{
 ##   "property_name_1": {
 ##     "value": value_of_property_1,
-##     "type": 0  (from Variant.Type enum. e.g., 0 for NIL)
+##     "type": 0  (0 for NIL from Variant.Type enum)
 ##   },
 ##   "property_name_2": {
 ##     "value": value_of_property_2,
-##     "type": 1 (from Variant.Type enum. e.g., 1 for BOOL)
+##     "type": 1 (1 for BOOL from Variant.Type enum)
 ##   },
 ##   ...
 ## }[/codeblock]

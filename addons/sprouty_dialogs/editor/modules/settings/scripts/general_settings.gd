@@ -47,11 +47,11 @@ func _ready():
 func _load_settings() -> void:
 	# Load the continue input action
 	_continue_input_action_field.set_value(
-		EditorSproutyDialogsSettingsManager.get_setting("continue_input_action")
+		SproutyDialogsSettingsManager.get_setting("continue_input_action")
 	)
 	# Load the default dialog box
-	var default_dialog_box = EditorSproutyDialogsSettingsManager.get_setting("default_dialog_box")
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(default_dialog_box):
+	var default_dialog_box = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
+	if not SproutyDialogsFileUtils.check_valid_uid_path(default_dialog_box):
 		printerr("[Sprouty Dialogs] Default dialog box scene not found." \
 				+" Check that the default dialog box is set in Settings > General" \
 				+" plugin tab, and that the scene resource exists.")
@@ -62,8 +62,8 @@ func _load_settings() -> void:
 		_default_dialog_box_field.set_value(ResourceUID.get_id_path(default_dialog_box))
 	
 	# Load the default portrait scene
-	var default_portrait = EditorSproutyDialogsSettingsManager.get_setting("default_portrait_scene")
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(default_portrait):
+	var default_portrait = SproutyDialogsSettingsManager.get_setting("default_portrait_scene")
+	if not SproutyDialogsFileUtils.check_valid_uid_path(default_portrait):
 		printerr("[Sprouty Dialogs] Default portrait scene not found." \
 				+" Check that the default portrait scene is set in Settings > General" \
 				+" plugin tab, and that the scene resource exists.")
@@ -75,9 +75,9 @@ func _load_settings() -> void:
 	
 	# Load Canvas layers settings
 	_dialog_box_canvas_layer_field.value = \
-		EditorSproutyDialogsSettingsManager.get_setting("dialog_box_canvas_layer")
+		SproutyDialogsSettingsManager.get_setting("dialog_box_canvas_layer")
 	_portrait_canvas_layer_field.value = \
-		EditorSproutyDialogsSettingsManager.get_setting("portraits_canvas_layer")
+		SproutyDialogsSettingsManager.get_setting("portraits_canvas_layer")
 
 
 ## Update settings when the panel is selected
@@ -87,36 +87,36 @@ func update_settings() -> void:
 
 ## Handle when the continue input action is changed
 func _on_continue_input_action_changed(new_value: String) -> void:
-	EditorSproutyDialogsSettingsManager.set_setting("continue_input_action", new_value)
+	SproutyDialogsSettingsManager.set_setting("continue_input_action", new_value)
 
 
 ## Handle when the default dialog box path is changed
 func _on_default_dialog_box_path_changed(new_path: String) -> void:
 	if not ResourceLoader.exists(new_path) or \
-			not EditorSproutyDialogsFileUtils.check_valid_extension(new_path, ["*.tscn"]):
+			not SproutyDialogsFileUtils.check_valid_extension(new_path, ["*.tscn"]):
 		_default_dialog_box_warning.visible = true
 		return # Ignore empty or invalid paths
 	_default_dialog_box_warning.visible = false
-	EditorSproutyDialogsSettingsManager.set_setting("default_dialog_box",
+	SproutyDialogsSettingsManager.set_setting("default_dialog_box",
 			ResourceSaver.get_resource_id_for_path(new_path, true))
 
 
 ## Handle when the default portrait scene path is changed
 func _on_default_portrait_scene_path_changed(new_path: String) -> void:
 	if not ResourceLoader.exists(new_path) or \
-			not EditorSproutyDialogsFileUtils.check_valid_extension(new_path, ["*.tscn"]):
+			not SproutyDialogsFileUtils.check_valid_extension(new_path, ["*.tscn"]):
 		_default_portrait_warning.visible = true
 		return # Ignore empty or invalid paths
 	_default_portrait_warning.visible = false
-	EditorSproutyDialogsSettingsManager.set_setting("default_portrait_scene",
+	SproutyDialogsSettingsManager.set_setting("default_portrait_scene",
 			ResourceSaver.get_resource_id_for_path(new_path, true))
 
 
 ## Handle when the dialog box canvas layer is changed
 func _on_dialog_box_canvas_layer_changed(new_value: int) -> void:
-	EditorSproutyDialogsSettingsManager.set_setting("dialog_box_canvas_layer", new_value)
+	SproutyDialogsSettingsManager.set_setting("dialog_box_canvas_layer", new_value)
 
 
 ## Handle when the portrait canvas layer is changed
 func _on_portrait_canvas_layer_changed(new_value: int) -> void:
-	EditorSproutyDialogsSettingsManager.set_setting("portraits_canvas_layer", new_value)
+	SproutyDialogsSettingsManager.set_setting("portraits_canvas_layer", new_value)

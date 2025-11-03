@@ -1,5 +1,5 @@
 @tool
-class_name EditorSproutyDialogsVariableManager
+class_name SproutyDialogsVariableManager
 extends Node
 
 # -----------------------------------------------------------------------------
@@ -178,12 +178,12 @@ static func has_variable(name: String, group: Dictionary = _variables) -> bool:
 
 ## Load variables from project settings
 static func load_variables() -> void:
-	_variables = EditorSproutyDialogsSettingsManager.get_setting("variables")
+	_variables = SproutyDialogsSettingsManager.get_setting("variables")
 
 
 ## Save variables to project settings
 static func save_variables(data: Dictionary) -> void:
-	EditorSproutyDialogsSettingsManager.set_setting("variables", data)
+	SproutyDialogsSettingsManager.set_setting("variables", data)
 	_variables = data
 
 #region === Parse Variables ====================================================
@@ -301,7 +301,10 @@ static func get_autoloads() -> Dictionary:
 
 #region === Variable Type Fields ===============================================
 
-# Returns an OptionButton with all variable types
+## Returns an OptionButton component with all the variable types
+## that can be selected. You can exclude types by passing their names
+## in the 'excluded' array. Also, you can hide the label text by setting
+## 'label' to false.
 static func get_types_dropdown(label: bool = true, excluded: Array[String] = []) -> OptionButton:
 	var dropdown: OptionButton = OptionButton.new()
 	dropdown.name = "TypeDropdown"
@@ -412,6 +415,9 @@ static func get_types_dropdown(label: bool = true, excluded: Array[String] = [])
 
 
 ## Create a new field based on the variable type
+## You can pass an initial value and property data for hints.
+## Also, you can pass callables for when the value changes
+## or when the field is modified (mostly for mouse exit events).
 static func new_field_by_type(
 		type: int,
 		init_value: Variant = null,
@@ -771,7 +777,7 @@ static func get_assignment_operators(type: int) -> Dictionary:
 			}
 
 
-## Returns the comparison operators as a dictionary
+## Returns all the comparison operators as a dictionary
 static func get_comparison_operators() -> Dictionary:
 	return {
 		"==": OP_EQUAL,
@@ -852,7 +858,7 @@ static func get_comparison_result(first_var: Dictionary, second_var: Dictionary,
 			return false
 
 
-## Parses a variable data dictionary to get its actual value.
+## Parses a variable data dictionary to get its actual value for condition checking.
 static func _parse_condition_value(var_data: Dictionary) -> Variant:
 	var parse_var = var_data
 	match var_data.type:

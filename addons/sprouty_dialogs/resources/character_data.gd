@@ -72,6 +72,7 @@ extends Resource
 ##   },
 ##   ...
 ## }[/codeblock]
+## (Not used yet, typing sounds implementation is pending)!
 @export var typing_sounds: Dictionary = {}
 
 

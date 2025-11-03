@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://t31feo3lulao"]
 
-[ext_resource type="Script" uid="uid://8i37swtk1vvc" path="res://addons/sprouty_dialogs/objects/test_scene/dialog_test_scene.gd" id="1_cqlcp"]
+[ext_resource type="Script" uid="uid://8i37swtk1vvc" path="res://addons/sprouty_dialogs/utils/test_scene/dialog_test_scene.gd" id="1_cqlcp"]
 
 [node name="DialogTestScene" type="Control"]
 layout_mode = 3

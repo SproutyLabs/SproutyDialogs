@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_8k3p6"]
 [ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/sprouty_dialogs/editor/icons/nodes/condition.svg" id="3_7frl5"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="4_l3xvy"]
-[ext_resource type="Script" uid="uid://d1s7kmoh1qgr0" path="res://addons/sprouty_dialogs/nodes/scripts/condition_node.gd" id="5_swe6e"]
+[ext_resource type="Script" uid="uid://d1s7kmoh1qgr0" path="res://addons/sprouty_dialogs/event_nodes/scripts/condition_node.gd" id="5_swe6e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avnbs"]
 content_margin_left = 4.0

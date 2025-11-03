@@ -49,14 +49,14 @@ func _ready() -> void:
 
 
 ## Get the current graph on editor
-func get_current_graph() -> GraphEdit:
+func get_current_graph() -> EditorSproutyDialogsGraph:
 	if _graph_editor.get_child_count() > 0:
 		return _graph_editor.get_child(0)
 	else: return null
 
 
 ## Switch the current graph on editor
-func switch_current_graph(new_graph: GraphEdit) -> void:
+func switch_current_graph(new_graph: EditorSproutyDialogsGraph) -> void:
 	# Remove old graph and switch to the new one
 	if _graph_editor.get_child_count() > 0:
 		_graph_editor.remove_child(_graph_editor.get_child(0))

@@ -2,7 +2,7 @@
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_0q2mk"]
 [ext_resource type="Texture2D" uid="uid://dutvcwiqufcor" path="res://addons/sprouty_dialogs/editor/icons/nodes/comment.svg" id="3_g6856"]
-[ext_resource type="Script" uid="uid://cybxpd2fvt5vq" path="res://addons/sprouty_dialogs/nodes/scripts/comment_node.gd" id="5_achcx"]
+[ext_resource type="Script" uid="uid://cybxpd2fvt5vq" path="res://addons/sprouty_dialogs/event_nodes/scripts/comment_node.gd" id="5_achcx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42b30"]
 content_margin_left = 4.0

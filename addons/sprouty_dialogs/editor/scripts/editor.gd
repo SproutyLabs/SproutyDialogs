@@ -101,8 +101,8 @@ func play_dialog_scene(start_id: String, dialog_path: String = "") -> void:
 		if dialog_path.is_empty():
 			printerr("[Sprouty Dialogs] Cannot play dialog: No dialog file is open.")
 			return
-	EditorSproutyDialogsSettingsManager.set_setting("play_dialog_path", dialog_path)
-	EditorSproutyDialogsSettingsManager.set_setting("play_start_id", start_id)
+	SproutyDialogsSettingsManager.set_setting("play_dialog_path", dialog_path)
+	SproutyDialogsSettingsManager.set_setting("play_start_id", start_id)
 	EditorInterface.play_custom_scene("res://addons/sprouty_dialogs/objects/test_scene/dialog_test_scene.tscn")
 
 

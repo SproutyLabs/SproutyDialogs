@@ -1,5 +1,4 @@
 @icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_box.svg")
-@abstract
 class_name DialogBox
 extends Panel
 
@@ -31,38 +30,38 @@ signal meta_clicked(meta: String)
 signal option_selected(option_index: int)
 
 ## Typing speed of the dialog text in seconds.
-@export var _typing_speed: float = EditorSproutyDialogsSettingsManager.get_setting("default_typing_speed")
+@export var typing_speed: float = SproutyDialogsSettingsManager.get_setting("default_typing_speed")
 ## Maximum number of characters to be displayed in the dialog box.[br][br]
 ## The dialogue will be split according to this limit and displayed in parts
 ## if the [param split_dialog_by_max_characters] setting is active.
-@export var _max_characters: int = EditorSproutyDialogsSettingsManager.get_setting("max_characters")
+@export var max_characters: int = SproutyDialogsSettingsManager.get_setting("max_characters")
 
 @export_category("Dialog Box Components")
 ## [RichTextLabel] where dialogue will be displayed.[br][br]
 ## [color=red]This component is required to display the text in it.[/color]
-@export var _dialog_display: RichTextLabel
+@export var dialog_display: RichTextLabel
 ## [RichTextLabel] where character name will be displayed.[br][br]
 ## [color=red]If you want to display the character name in the dialog box, 
 ## you need to set this property.[/color]
-@export var _name_display: RichTextLabel
+@export var name_display: RichTextLabel
 ## Visual indicator to indicate press for continue the dialogue (e.g. an arrow).
 ## [br][br][color=red]If you want to display a continue indicator in the
 ## dialog box,you need to set this property.[/color]
-@export var _continue_indicator: Control
+@export var continue_indicator: Control
 ## [Node] where the character portrait will be displayed (portrait parent).[br][br]
 ## [color=red]If you want to display the portrait in the dialog box, 
 ## you need to set this property.[/color]
-@export var _portrait_display: Node
+@export var portrait_display: Node
 
 @export_category("Options Components")
 ## [Container] where the options will be displayed in the dialog box.
 ## Recommended to use a [VBoxContainer] or [GridContainer] to display the options.
 ## [color=red]This component is required to display the dialog options in it.[/color]
-@export var _options_container: Container
+@export var options_container: Container
 ## [Node] that will be used as a template for the options in the dialog box.
 ## It should be a [DialogOption] node or another node that extends it.
 ## [br][br][color=red]This component is required to display the dialog options. [/color]
-@export var _option_template: Control
+@export var option_template: Control
 
 ## Timer to control the typing speed of the dialog.
 var _type_timer: Timer
@@ -91,50 +90,52 @@ var _is_started: bool = false
 var _is_running: bool = false
 
 
-## Handle the behavior of the dialog box when starts at the beginning of the dialog.
-## This method is called when the dialog box is shown on dialog start.
-## Can be overridden in inherited dialog box classes to customize the
-## behavior of the dialog box when it starts.
-@abstract func _on_dialog_box_start()
+#region === Virtual methods ====================================================
+
+## Override this method to customize the behavior of the dialog box when starts 
+## at the beginning of the dialog.
+func _on_dialog_box_start() -> void:
+	show()
 
 
-## Handle the behavior of the dialog box when is closed at the end of the dialog.
-## This method is called when the dialog box is closed after the dialog ends.
-## Can be overridden in inherited dialog box classes to customize the
-## behavior of the dialog box when it is closed.
-@abstract func _on_dialog_box_close()
+## Override this method to customize the behavior of the dialog box when is closed
+## at the end of the dialog.
+func _on_dialog_box_close() -> void:
+	hide()
+
+#endregion
 
 
 func _enter_tree() -> void:
 	_type_timer = Timer.new()
 	add_child(_type_timer)
-	_type_timer.wait_time = _typing_speed
+	_type_timer.wait_time = typing_speed
 	_type_timer.timeout.connect(_on_type_timer_timeout)
 
 	_can_skip_timer = Timer.new()
 	add_child(_can_skip_timer)
-	_can_skip_timer.wait_time = EditorSproutyDialogsSettingsManager.get_setting("can_skip_delay")
+	_can_skip_timer.wait_time = SproutyDialogsSettingsManager.get_setting("can_skip_delay")
 	_can_skip_timer.timeout.connect(func(): _can_skip = true)
 	hide()
 
 
 func _ready() -> void:
 	# Connect meta clicked signal to handle meta tags
-	if not _dialog_display:
+	if not dialog_display:
 		printerr("[Sprouty Dialogs] Dialog display is not set. Please set the " \
-				+"_dialog_display property on the inspector.")
+				+"dialog_display property on the inspector.")
 		return
-	if not _dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
-		_dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
+	if not dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
+		dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
 	
-	_dialog_display.bbcode_enabled = true
+	dialog_display.bbcode_enabled = true
 
-	if _option_template:
-		_option_template = _option_template.duplicate()
-	if _continue_indicator:
-		_continue_indicator.visible = false
-	if _options_container:
-		_options_container.visible = false
+	if option_template:
+		option_template = option_template.duplicate()
+	if continue_indicator:
+		continue_indicator.visible = false
+	if options_container:
+		options_container.visible = false
 
 
 func _input(event: InputEvent) -> void:
@@ -144,11 +145,11 @@ func _input(event: InputEvent) -> void:
 		return
 	# Skip dialog typing and show the full text
 	if not _display_completed and _can_skip and Input.is_action_just_pressed(
-			EditorSproutyDialogsSettingsManager.get_setting("continue_input_action")):
+			SproutyDialogsSettingsManager.get_setting("continue_input_action")):
 		_skip_dialog_typing()
 	# Continue dialog when the player press the continue button
 	elif _display_completed and Input.is_action_just_pressed(
-			EditorSproutyDialogsSettingsManager.get_setting("continue_input_action")):
+			SproutyDialogsSettingsManager.get_setting("continue_input_action")):
 			if _current_sentence < _sentences.size() - 1:
 				_current_sentence += 1
 				_display_new_sentence(_sentences[_current_sentence])
@@ -164,11 +165,11 @@ func play_dialog(character_name: String, display_name: String, dialog: String) -
 	if not visible:
 		show()
 
-	if _name_display: # Set the character name
-		_name_display.text = character_name
-		_name_display.visible = display_name != ""
+	if name_display: # Set the character name
+		name_display.text = character_name
+		name_display.visible = display_name != ""
 	_current_character = character_name
-	_dialog_display.text = dialog
+	dialog_display.text = dialog
 	_current_sentence = 0
 	_sentences = []
 
@@ -218,11 +219,11 @@ func stop_dialog(close_dialog: bool = false) -> void:
 
 ## Skip the dialog typing and show the full text
 func _skip_dialog_typing() -> void:
-	_dialog_display.visible_characters = _dialog_display.text.length()
+	dialog_display.visible_characters = dialog_display.text.length()
 	_type_timer.stop()
 	# Wait for the continue delay before allowing to skip again
 	await get_tree().create_timer(
-			EditorSproutyDialogsSettingsManager.get_setting("skip_continue_delay")).timeout
+			SproutyDialogsSettingsManager.get_setting("skip_continue_delay")).timeout
 	_can_skip = false # Prevent skipping too fast
 	_can_skip_timer.start()
 	_on_display_completed()
@@ -237,12 +238,12 @@ func is_displaying_portrait() -> bool:
 
 ## Set a portrait to be displayed in the dialog box
 func display_portrait(character_parent: Node, portrait_node: Node) -> void:
-	if not _portrait_display.has_node(NodePath(character_parent.name)):
+	if not portrait_display.has_node(NodePath(character_parent.name)):
 		character_parent.add_child(portrait_node)
-		_portrait_display.add_child(character_parent)
+		portrait_display.add_child(character_parent)
 	else:
 		# If the character node already exists, add the portrait to it
-		_portrait_display.get_node(NodePath(character_parent.name)).add_child(portrait_node)
+		portrait_display.get_node(NodePath(character_parent.name)).add_child(portrait_node)
 	_is_displaying_portrait = true
 
 #endregion
@@ -252,33 +253,33 @@ func display_portrait(character_parent: Node, portrait_node: Node) -> void:
 ## Display the dialog options
 func display_options(options: Array) -> void:
 	_is_displaying_options = true
-	if not _options_container:
+	if not options_container:
 		printerr("[SproutyDialogs] Dialog options container is not set. 
-			Please set the _options_container property on the inspector.")
+			Please set the options_container property on the inspector.")
 		return
-	if not _option_template:
+	if not option_template:
 		printerr("[SproutyDialogs] Dialog option template is not set. 
-			Please set the _option_template property on the inspector.")
+			Please set the option_template property on the inspector.")
 		return
 	# Clear previous options
-	for child in _options_container.get_children():
+	for child in options_container.get_children():
 		child.queue_free()
 
 	for index in options.size(): # Add new options
-		var option_node = _option_template.duplicate()
+		var option_node = option_template.duplicate()
 		option_node.option_index = index
 		option_node.set_text(options[index])
-		_options_container.add_child(option_node)
+		options_container.add_child(option_node)
 		option_node.option_selected.connect(option_selected.emit)
 		option_node.show()
-	_options_container.show()
+	options_container.show()
 	show()
 
 
 ## Hide the dialog options
 func hide_options() -> void:
-	if _options_container:
-		_options_container.hide()
+	if options_container:
+		options_container.hide()
 	_is_displaying_options = false
 
 #endregion
@@ -288,7 +289,7 @@ func hide_options() -> void:
 ## Split dialog by new lines if the setting is enabled.
 ## Splits the dialog by lines preserving the continuity of the bbcode tags.
 func _split_dialog_by_lines(dialog: String) -> Array:
-	if not EditorSproutyDialogsSettingsManager.get_setting("new_line_as_new_dialog"):
+	if not SproutyDialogsSettingsManager.get_setting("new_line_as_new_dialog"):
 		return [dialog]
 	
 	var lines = Array(dialog.split("\n"))
@@ -314,8 +315,8 @@ func _split_dialog_by_lines(dialog: String) -> Array:
 ## If the dialog is longer than the max characters limit, it will be split into
 ## multiple sentences, preserving the continuity of the bbcode tags.
 func _split_dialog_by_characters(dialog: String) -> Array:
-	if not EditorSproutyDialogsSettingsManager.get_setting("split_dialog_by_max_characters") \
-			or _max_characters > dialog.length():
+	if not SproutyDialogsSettingsManager.get_setting("split_dialog_by_max_characters") \
+			or max_characters > dialog.length():
 		return [dialog]
 	
 	var words: Array = dialog.split(" ")
@@ -334,7 +335,7 @@ func _split_dialog_by_characters(dialog: String) -> Array:
 		var clean_word = regex.sub(word, "", true)
 		var aux_sentence = clean_sentence + " " + clean_word
 		# If the sentence is short than the limit, add the word to the sentence
-		if aux_sentence.length() < _max_characters:
+		if aux_sentence.length() < max_characters:
 			sentence += " " + word
 			clean_sentence += "" + clean_word
 			opened_tags = _get_opened_tags_from_sentence(word, opened_tags, regex)
@@ -386,18 +387,18 @@ func _add_tags_to_sentence(sentence: String, tags: Array) -> String:
 
 ## Display a new sentence
 func _display_new_sentence(sentence: String) -> void:
-	_dialog_display.text = sentence
-	_dialog_display.visible_characters = 0
-	if _continue_indicator:
-		_continue_indicator.visible = false
+	dialog_display.text = sentence
+	dialog_display.visible_characters = 0
+	if continue_indicator:
+		continue_indicator.visible = false
 	_display_completed = false
 	_type_timer.start()
 
 
 ## Timer to type the dialog characters
 func _on_type_timer_timeout() -> void:
-	if _dialog_display.visible_characters < _dialog_display.text.length():
-		_dialog_display.visible_characters += 1
+	if dialog_display.visible_characters < dialog_display.text.length():
+		dialog_display.visible_characters += 1
 	else:
 		_type_timer.stop()
 		_on_display_completed()
@@ -405,8 +406,8 @@ func _on_type_timer_timeout() -> void:
 
 ## When the dialog finishes displaying a text
 func _on_display_completed() -> void:
-	if _continue_indicator:
-		_continue_indicator.visible = true
+	if continue_indicator:
+		continue_indicator.visible = true
 	_display_completed = true
 	dialog_typing_ends.emit(_current_character)
 
@@ -418,7 +419,7 @@ func _on_dialog_ended() -> void:
 
 ## When a meta tag is clicked in the dialog
 func _on_dialog_meta_clicked(meta: String) -> void:
-	if EditorSproutyDialogsSettingsManager.get_setting("open_url_on_meta_tag_click"):
+	if SproutyDialogsSettingsManager.get_setting("open_url_on_meta_tag_click"):
 		OS.shell_open(meta) # Open the URL in the default browser
 	meta_clicked.emit(meta)
 

@@ -1,10 +1,10 @@
-class_name DialogInterpreter
+class_name SproutyDialogsEventInterpreter
 extends Node
 
 # -----------------------------------------------------------------------------
-# Sprouty Dialogs Dialog Interpreter
+# Sprouty Dialogs Event Interpreter
 # -----------------------------------------------------------------------------
-## Node that process the nodes of a dialog tree from the Sprouty Dialogs plugin.
+## Node that process the event nodes of a dialog tree from the Sprouty Dialogs plugin.
 ##
 ## This node is used by the [DialogPlayer] to process the nodes of a dialog tree.
 ## You should not need to use this node directly.[br]
@@ -13,9 +13,9 @@ extends Node
 ## is used by the [DialogPlayer] to process the nodes by their type.
 # -----------------------------------------------------------------------------
 
-## Emitted when the node is processed and is ready to continue to the next node.
+## Emitted when a node is processed and is ready to continue to the next node.
 signal continue_to_node(to_node: String)
-## Emitted when the dialogue node was processed.
+## Emitted when a dialogue node was processed.
 signal dialogue_processed(
 	character_name: String,
 	translated_name: String,
@@ -23,12 +23,14 @@ signal dialogue_processed(
 	dialog: String,
 	next_node: String
 )
-## Emitted when the options node was processed.
+## Emitted when a options node was processed.
 signal options_processed(options: Array, next_nodes: Array)
-## Emitted when the signal node was processed.
+## Emitted when a signal node was processed.
 signal signal_processed(signal_argument: String, next_node: String)
 
 ## Node processors reference dictionary.
+## This dictionary maps the node type to its processing method.
+## You can call the processors from this dictionary.
 var node_processors: Dictionary = {
 	"start_node": _process_start,
 	"dialogue_node": _process_dialogue,
@@ -51,12 +53,12 @@ func _process_dialogue(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing dialogue node...")
 
 	# Get the translated dialog and parse variables
-	var dialog = EditorSproutyDialogsTranslationManager.get_translated_dialog(
+	var dialog = SproutyDialogsTranslationManager.get_translated_dialog(
 		node_data["dialog_key"], get_parent().get_dialog_data())
-	dialog = EditorSproutyDialogsVariableManager.parse_variables(dialog)
+	dialog = SproutyDialogsVariableManager.parse_variables(dialog)
 
 	# Get the translated character name
-	var display_name = EditorSproutyDialogsTranslationManager.get_translated_character_name(
+	var display_name = SproutyDialogsTranslationManager.get_translated_character_name(
 		node_data["character"], get_parent().get_character_data(node_data["character"]))
 
 	dialogue_processed.emit(node_data["character"], display_name,
@@ -65,7 +67,7 @@ func _process_dialogue(node_data: Dictionary) -> void:
 
 func _process_condition(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing condition node...")
-	var comparison_result = EditorSproutyDialogsVariableManager.get_comparison_result(
+	var comparison_result = SproutyDialogsVariableManager.get_comparison_result(
 		node_data.first_var, # First variable data
 		node_data.second_var, # Second variable data
 		node_data.operator # Comparison operator
@@ -80,26 +82,26 @@ func _process_options(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing options node...")
 	options_processed.emit(node_data.options_keys.map(
 		func(key): # Return the translated and parsed options
-			return EditorSproutyDialogsVariableManager.parse_variables(
-				EditorSproutyDialogsTranslationManager.get_translated_dialog(
+			return SproutyDialogsVariableManager.parse_variables(
+				SproutyDialogsTranslationManager.get_translated_dialog(
 					key, get_parent().get_dialog_data()))
 	), node_data.to_node)
 
 
 func _process_set_variable(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing set variable node...")
-	var variable = EditorSproutyDialogsVariableManager.get_variable(node_data.var_name)
+	var variable = SproutyDialogsVariableManager.get_variable(node_data.var_name)
 	if not variable: # If the variable is not found, print an error and return
 		printerr("[Sprouty Dialogs] Cannot set variable '" + node_data.var_name + "' not found. " +
 			"Please check if the variable exists in the Variables Manager or in the autoloads.")
 		return
-	var assignment_result = EditorSproutyDialogsVariableManager.get_assignment_result(
+	var assignment_result = SproutyDialogsVariableManager.get_assignment_result(
 		node_data.var_type, # Variable type
 		node_data.operator, # Assignment operator
 		variable.value, # Current variable value
 		node_data.new_value # New value to assign
 	)
-	EditorSproutyDialogsVariableManager.set_variable(node_data.var_name, assignment_result)
+	SproutyDialogsVariableManager.set_variable(node_data.var_name, assignment_result)
 	continue_to_node.emit(node_data.to_node[0])
 
 

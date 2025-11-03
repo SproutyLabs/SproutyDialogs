@@ -58,7 +58,7 @@ func show_text_editor(text_box: Variant) -> void:
 	text_input.text = _opened_text_box.text
 	if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
 		_opened_text_box.text_changed.connect(_on_text_box_text_changed)
-	_text_preview.text = EditorSproutyDialogsVariableManager.parse_variables(_opened_text_box.text, true)
+	_text_preview.text = SproutyDialogsVariableManager.parse_variables(_opened_text_box.text, true)
 	visible = true
 
 
@@ -69,7 +69,7 @@ func update_text_editor(text_box: Variant) -> void:
 		text_input.text = _opened_text_box.text
 		if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
 			_opened_text_box.text_changed.connect(_on_text_box_text_changed)
-		_text_preview.text = EditorSproutyDialogsVariableManager.parse_variables(_opened_text_box.text, true)
+		_text_preview.text = SproutyDialogsVariableManager.parse_variables(_opened_text_box.text, true)
 
 
 ## Hide the text editor
@@ -101,7 +101,7 @@ func _on_text_box_text_changed(_arg: Variant = null) -> void:
 	text_input.text = _opened_text_box.text
 	text_input.set_caret_line(caret_line)
 	text_input.set_caret_column(caret_column)
-	_text_preview.text = EditorSproutyDialogsVariableManager.parse_variables(text_input.text, true)
+	_text_preview.text = SproutyDialogsVariableManager.parse_variables(text_input.text, true)
 
 
 ## Update the text box and preview with the text editor input
@@ -111,7 +111,7 @@ func _on_code_edit_text_changed() -> void:
 		return
 	_opened_text_box.text = text_input.text
 	_opened_text_box.text_changed.emit(text_input.text)
-	_text_preview.text = EditorSproutyDialogsVariableManager.parse_variables(text_input.text, true)
+	_text_preview.text = SproutyDialogsVariableManager.parse_variables(text_input.text, true)
 
 
 ## Expsnd or collapse the text preview box

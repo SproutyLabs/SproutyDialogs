@@ -64,7 +64,7 @@ func _ready() -> void:
 	_show_remove_button()
 	_set_translation_text_boxes()
 	on_translation_enabled_changed( # Enable/disable translation section
-			EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
+			SproutyDialogsSettingsManager.get_setting("enable_translations")
 		)
 
 
@@ -133,9 +133,9 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 
 ## Set translation text boxes
 func _set_translation_text_boxes() -> void:
-	_translations_enabled = EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
-	_default_locale = EditorSproutyDialogsSettingsManager.get_setting("default_locale")
-	var locales = EditorSproutyDialogsSettingsManager.get_setting("locales")
+	_translations_enabled = SproutyDialogsSettingsManager.get_setting("enable_translations")
+	_default_locale = SproutyDialogsSettingsManager.get_setting("default_locale")
+	var locales = SproutyDialogsSettingsManager.get_setting("locales")
 	_translations_enabled = _translations_enabled and locales.size() > 0
 	_default_locale = _default_locale if _translations_enabled else ""
 	%DefaultLocaleLabel.text = "(" + _default_locale + ")"

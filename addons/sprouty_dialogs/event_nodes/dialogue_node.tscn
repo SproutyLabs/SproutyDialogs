@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg" id="4_urrmu"]
 [ext_resource type="Texture2D" uid="uid://j23crfderjkx" path="res://addons/sprouty_dialogs/editor/icons/character.svg" id="5_hoe8b"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/sprouty_dialogs/editor/components/translations_container.tscn" id="5_kt63k"]
-[ext_resource type="Script" uid="uid://bbxvuya7njed5" path="res://addons/sprouty_dialogs/nodes/scripts/dialogue_node.gd" id="5_v7cqa"]
+[ext_resource type="Script" uid="uid://bbxvuya7njed5" path="res://addons/sprouty_dialogs/event_nodes/scripts/dialogue_node.gd" id="5_v7cqa"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/sprouty_dialogs/editor/components/expandable_text_box.tscn" id="6_2llfw"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lcatj"]

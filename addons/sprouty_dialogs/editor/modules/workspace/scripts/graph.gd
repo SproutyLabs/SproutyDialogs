@@ -1,11 +1,12 @@
 @tool
+class_name EditorSproutyDialogsGraph
 extends GraphEdit
 
 # -----------------------------------------------------------------------------
-# Graph controller
+# Sprouty Dialogs Graph
 # -----------------------------------------------------------------------------
-## This script handles the graph edition, nodes creation and deletion, and
-## nodes connections. It also provides methods to get and load the nodes data.
+## This class represents the graph editor for Sprouty Dialogs plugin.
+## It handles the nodes, connections, and graph data.
 # -----------------------------------------------------------------------------
 
 ## Triggered when the graph is modified
@@ -29,7 +30,7 @@ signal locales_changed
 signal translation_enabled_changed(enabled: bool)
 
 ## Path to the nodes folder.
-const NODES_PATH = "res://addons/sprouty_dialogs/nodes/"
+const NODES_PATH = "res://addons/sprouty_dialogs/event_nodes/"
 
 ## Alerts container
 @onready var alerts: VBoxContainer = $Alerts
@@ -208,7 +209,49 @@ func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
 
 #region === Graph Data =========================================================
 
-## Get graph data in a dictionary
+## Return the graph data in a dictionary, including nodes data, dialogs, and 
+## characters. Each one is stored in a separate sub-dictionary.
+## The nodes data dictionary structure is as follows:
+## [codeblock]
+## 	"nodes_data": {
+## 		"start_node_id": {
+## 			"node_name": {
+## 				"node_type": "dialogue_node",
+## 				"node_index": 1,
+## 				"offset": Vector2(100, 100),
+## 				...
+## 			},
+## 			...
+## 		},
+## 		"unplugged_nodes": {
+## 			"node_name": {
+## 				"node_type": "options_node",
+## 				"node_index": 2,
+## 				"offset": Vector2(200, 200),
+## 				...
+## 			},
+## 			...
+## 	}[/codeblock]
+## The dialogs dictionary structure is as follows:
+## [codeblock]
+## 	"dialogs": {
+## 		"dialog_key": {
+## 			"locale_code_1": "Translated text in locale 1",
+## 			"locale_code_2": "Translated text in locale 2",
+## 			...
+## 		},
+## 		...
+## 	}[/codeblock]
+## The characters dictionary structure is as follows:
+## [codeblock]
+## 	"characters": {
+## 		"start_node_id": {
+## 			"character_name_1": UID of the character resource,
+## 			"character_name_2": UID of the character resource,
+## 			...
+## 		},
+## 		...
+## }[/codeblock]
 func get_graph_data() -> Dictionary:
 	var dict := {
 		"nodes_data": {},
@@ -291,13 +334,13 @@ func load_graph_data(data: SproutyDialogsDialogueData, dialogs: Dictionary) -> v
 func _load_dialogue_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 		data: SproutyDialogsDialogueData, dialogs: Dictionary) -> void:
 	# Flag to fallback to resource dialogs if key not found in CSV
-	var fallback_to_resource = EditorSproutyDialogsSettingsManager.get_setting("fallback_to_resource")
+	var fallback_to_resource = SproutyDialogsSettingsManager.get_setting("fallback_to_resource")
 	var node_data = data.graph_data[dialogue_id][node.name]
 
 	if not dialogs.has(node_data["dialog_key"]):
 		# Print error if no dialog is found for the dialogue node
 		printerr("[Sprouty Dialogs] No dialogue found for Dialogue Node #" + str(node_data["node_index"]) \
-			+" in the CSV file: " + ResourceUID.get_id_path(data.csv_translation_file) \
+			+" in the CSV file: " + ResourceUID.get_id_path(data.csv_file_uid) \
 			+". Check that the key '" + node_data["dialog_key"] \
 			+"' exists in the CSV translation file and that it is the correct CSV file." \
 			+ (" Loading '" + node_data["dialog_key"] + "' dialogue from '" \
@@ -316,7 +359,7 @@ func _load_dialogue_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 	var character_name = node_data["character"]
 	if character_name != "":
 		var character_uid = data.characters[dialogue_id][character_name]
-		if EditorSproutyDialogsFileUtils.check_valid_uid_path(character_uid):
+		if SproutyDialogsFileUtils.check_valid_uid_path(character_uid):
 			node.load_character(ResourceUID.get_id_path(character_uid))
 			node.load_portrait(node_data["portrait"])
 
@@ -325,7 +368,7 @@ func _load_dialogue_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 func _load_options_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 		data: SproutyDialogsDialogueData, dialogs: Dictionary) -> void:
 	# Flag to fallback to resource dialogs if key not found in CSV
-	var fallback_to_resource = EditorSproutyDialogsSettingsManager.get_setting("fallback_to_resource")
+	var fallback_to_resource = SproutyDialogsSettingsManager.get_setting("fallback_to_resource")
 	var node_data = data.graph_data[dialogue_id][node.name]
 
 	for option_key in node_data["options_keys"]:
@@ -334,7 +377,7 @@ func _load_options_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 			printerr("[Sprouty Dialogs] No dialogue found for Option #" \
 				+ str(int(option_key.split("_")[-1]) + 1) + " of Option Node #" \
 				+ str(node_data["node_index"]) + " in the CSV file:\n" \
-				+ ResourceUID.get_id_path(data.csv_translation_file) \
+				+ ResourceUID.get_id_path(data.csv_file_uid) \
 				+". Check that the key '" + option_key \
 				+"' exists in the CSV translation file and that it is the correct CSV file." \
 				+ (" Loading '" + option_key + "' dialogue from '" \

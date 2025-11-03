@@ -1,14 +1,10 @@
 extends DialogBox
 
 # -----------------------------------------------------------------------------
-# This is a template for a dialog box with a default behavior.
+# This is a template for a custom dialog box with a default behavior.
 # -----------------------------------------------------------------------------
 ## This script provides a basic implementation of a dialog box behavior.
 ## You can override the properties and methods to implement your own logic.
-##
-## The dialog box class handles the dialog box display and interaction.
-## You can use this script to add more functionality to your dialog box.
-## Like custom animations, sounds, or any other logic you need.
 ##
 ## -- NOTE -------------------------------------------------------------
 ## You should not override other DialogBox methods that are not here,

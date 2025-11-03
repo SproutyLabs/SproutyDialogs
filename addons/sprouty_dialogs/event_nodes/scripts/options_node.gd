@@ -13,7 +13,7 @@ signal open_text_editor(text_box: TextEdit)
 signal update_text_editor(text_box: TextEdit)
 
 ## Option container template
-@onready var _option_scene := preload("res://addons/sprouty_dialogs/nodes/components/option_container.tscn")
+@onready var _option_scene := preload("res://addons/sprouty_dialogs/editor/components/option_container.tscn")
 
 ## First option container
 var _first_option: EditorSproutyDialogsOptionContainer

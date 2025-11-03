@@ -1,4 +1,4 @@
-class_name EditorSproutyDialogsCSVFileManager
+class_name SproutyDialogsCSVFileManager
 extends RefCounted
 
 # -----------------------------------------------------------------------------
@@ -11,6 +11,9 @@ extends RefCounted
 
 
 ## Save data to a CSV file
+## The data is provided as an array of arrays, where each inner array
+## represents a row in the CSV file. The header is an array representing
+## the first row of the CSV file.
 static func save_file(header: Array, data: Array, file_path: String) -> void:
 	# Open file or create it for writing data
 	var file := FileAccess.open(file_path, FileAccess.WRITE)
@@ -37,6 +40,7 @@ static func save_file(header: Array, data: Array, file_path: String) -> void:
 
 
 ## Load data from a CSV file
+## Returns an array with the CSV data
 static func load_file(file_path: String) -> Array:
 	# Check if file exists
 	if FileAccess.file_exists(file_path):
@@ -63,6 +67,8 @@ static func load_file(file_path: String) -> Array:
 
 
 ## Add or update a row in a CSV file
+## If the row with the same key exists, it will be updated.
+## If not, it will be added to the end of the file.
 static func update_row(file_path: String, header: Array, row: Array) -> void:
 	# Load the CSV file
 	var csv_data = load_file(file_path)
@@ -98,21 +104,22 @@ static func update_row(file_path: String, header: Array, row: Array) -> void:
 #region === Dialogs translations ===============================================
 
 ## Create a new CSV template file
+## Returns the path of the created file or an empty string if an error occurred
 static func new_csv_template_file(name: String) -> String:
-	var csv_files_path: String = EditorSproutyDialogsSettingsManager.get_setting("csv_translations_folder")
+	var csv_files_path: String = SproutyDialogsSettingsManager.get_setting("csv_translations_folder")
 	if not DirAccess.dir_exists_absolute(csv_files_path):
 		printerr("[Sprouty Dialogs] Cannot create file, need a directory path to CSV translation files."
 				+" Please set 'CSV files path' in Settings > Translation.")
 		return ""
 	var path = csv_files_path + "/" + name.split(".")[0] + ".csv"
 	var header = ["key"]
-	for locale in EditorSproutyDialogsSettingsManager.get_setting("locales"):
+	for locale in SproutyDialogsSettingsManager.get_setting("locales"):
 		header.append(locale)
 	save_file(header, [], path)
 	return path
 
 
-## Save all Sprouty Dialogs on CSV file
+## Save all dialogs from a dictionary to a CSV file.
 ## Update existing rows or add new ones if the dialog key does not exist
 ## and save the file with all the dialogs without removing any existing data.
 static func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
@@ -163,8 +170,8 @@ static func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 ## [codeblock]
 ## { 
 ##    dialog_key: {
-##        locale_1: dialog_text,
-##        locale_2: dialog_text,
+##        locale_1: translated_dialog_1,
+##        locale_2: translated_dialog_2,
 ##        ...
 ##    },
 ##   ...
@@ -193,10 +200,10 @@ static func load_dialogs_from_csv(path: String) -> Dictionary:
 
 #region === Character names translations =======================================
 
-## Save character name translations on CSV file
+## Save character name translations on the CSV file.
 static func save_character_names_on_csv(key_name: String, name_data: Dictionary) -> void:
-	var char_names_csv = EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
+	var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
+	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
 		printerr("[Sprouty Dialogs] Cannot save character name translations, no CSV file set."
 				+" Please set 'Character names CSV' in Settings > Characters.")
 		return
@@ -229,13 +236,13 @@ static func save_character_names_on_csv(key_name: String, name_data: Dictionary)
 ## Returns a dictionary with the character names as:
 ## [codeblock]
 ## { 
-##    locale_1: character_name_1,
-##    locale_2: character_name_2,
+##    locale_1: translated_name_1,
+##    locale_2: translated_name_2,
 ##    ...
 ## }[/codeblock]
 static func load_character_names_from_csv(key_name: String) -> Dictionary:
-	var char_names_csv = EditorSproutyDialogsSettingsManager.get_setting("character_names_csv")
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
+	var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
+	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
 		printerr("[Sprouty Dialogs] Cannot load character names translations, no CSV file set."
 				+" Please set 'Character names CSV' in Settings > Characters.")
 		return {}

@@ -108,7 +108,7 @@ func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 	set_portrait_name(name)
 
 	# Set the portrait scene
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(data.portrait_scene_uid):
+	if not SproutyDialogsFileUtils.check_valid_uid_path(data.portrait_scene_uid):
 		if data.portrait_scene_uid != -1:
 			printerr("[Sprouty Dialogs] Portrait scene not found for portrait '"
 					+ name + "'. Check that the file '" + data.portrait_scene_path + "' exists.")
@@ -123,7 +123,7 @@ func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 	_portrait_export_properties.set_export_overrides(data.export_overrides)
 	
 	# Check if the scene file is valid and set the preview
-	if EditorSproutyDialogsFileUtils.check_valid_extension(
+	if SproutyDialogsFileUtils.check_valid_extension(
 			_portrait_scene_field.get_value(), _portrait_scene_field.file_filters):
 		_to_portrait_scene_button.visible = true
 		_new_portrait_scene_button.visible = false
@@ -205,7 +205,7 @@ func _on_reload_scene_button_pressed() -> void:
 
 ## Check if a portrait scene path is valid
 func _check_valid_portrait_scene(path: String, print_error: bool = true) -> bool:
-	var is_valid = EditorSproutyDialogsFileUtils.check_valid_extension(path,
+	var is_valid = SproutyDialogsFileUtils.check_valid_extension(path,
 			_portrait_scene_field.file_filters) and FileAccess.file_exists(path)
 	
 	if is_valid: # Check if the scene inherits from DialogPortrait class
@@ -260,24 +260,24 @@ func _on_portrait_scene_path_changed(path: String) -> void:
 
 ## Select a path to create a new portrait scene file
 func _on_new_portrait_scene_button_pressed() -> void:
-	_new_portrait_scene_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path("portrait_files"))
+	_new_portrait_scene_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("portrait_files"))
 	_new_portrait_scene_dialog.get_line_edit().text = "new_portrait.tscn"
 	_new_portrait_scene_dialog.popup_centered()
 
 
 ## Create a new portrait scene file
 func _new_portrait_scene(scene_path: String) -> void:
-	var default_uid = EditorSproutyDialogsSettingsManager.get_setting("default_portrait_scene")
+	var default_uid = SproutyDialogsSettingsManager.get_setting("default_portrait_scene")
 	var default_path = ""
 	
 	# If no default portrait scene is set or the resource does not exist, use the built-in default
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(default_uid):
+	if not SproutyDialogsFileUtils.check_valid_uid_path(default_uid):
 		printerr("[Sprouty Dialogs] No default portrait scene found." \
 				+" Check that the default portrait scene is set in Settings > General" \
 				+" plugin tab, and that the scene resource exists. Using built-in default instead.")
-		default_path = EditorSproutyDialogsSettingsManager.DEFAULT_PORTRAIT_PATH
+		default_path = SproutyDialogsSettingsManager.DEFAULT_PORTRAIT_PATH
 		# Use and set the setting to the built-in default
-		EditorSproutyDialogsSettingsManager.set_setting("default_portrait_scene",
+		SproutyDialogsSettingsManager.set_setting("default_portrait_scene",
 				ResourceSaver.get_resource_id_for_path(default_path, true))
 	else: # Use the user-defined default portrait scene
 		default_path = ResourceUID.get_id_path(default_uid)
@@ -307,7 +307,7 @@ func _new_portrait_scene(scene_path: String) -> void:
 	modified.emit(true)
 
 	# Set the recent file path
-	EditorSproutyDialogsFileUtils.set_recent_file_path("portrait_files", scene_path)
+	SproutyDialogsFileUtils.set_recent_file_path("portrait_files", scene_path)
 
 
 ## Open the portrait scene in the editor

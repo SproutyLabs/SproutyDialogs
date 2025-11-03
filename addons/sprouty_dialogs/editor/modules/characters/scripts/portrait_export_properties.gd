@@ -204,7 +204,7 @@ func _clear_exported_properties() -> void:
 
 ## Create a new exported property field
 func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
-	var field_data = EditorSproutyDialogsVariableManager.new_field_by_type(
+	var field_data = SproutyDialogsVariableManager.new_field_by_type(
 			property_data["type"], value, property_data,
 			_on_property_changed.bind(property_data["name"]),
 			_on_property_modified.bind(property_data["name"])
@@ -236,9 +236,9 @@ func _on_property_changed(value: Variant, type: Variant, field: Control, name: S
 	# --- UndoRedo -------------------------------------------------------------
 	undo_redo.create_action("Edit Portrait Property: " + name.capitalize(), 1)
 
-	undo_redo.add_do_method(EditorSproutyDialogsVariableManager,
+	undo_redo.add_do_method(SproutyDialogsVariableManager,
 			"set_field_value", field, type, value)
-	undo_redo.add_undo_method(EditorSproutyDialogsVariableManager,
+	undo_redo.add_undo_method(SproutyDialogsVariableManager,
 			"set_field_value", field, temp["type"], temp["value"])
 
 	undo_redo.add_do_method(self, "_set_property_on_dict", name, value, type)

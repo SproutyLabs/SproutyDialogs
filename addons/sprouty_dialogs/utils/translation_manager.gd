@@ -1,5 +1,5 @@
 @tool
-class_name EditorSproutyDialogsTranslationManager
+class_name SproutyDialogsTranslationManager
 extends Node
 
 # -----------------------------------------------------------------------------
@@ -10,12 +10,12 @@ extends Node
 # -----------------------------------------------------------------------------
 
 
-## Returns the translated dialog text
+## Returns the translated dialog text for a given key in a dialogue data
 static func get_translated_dialog(key: String,
 		dialog_data: SproutyDialogsDialogueData) -> String:
-	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations"):
+	if SproutyDialogsSettingsManager.get_setting("enable_translations"):
 		# If translation is enabled and using CSV, use the translation server
-		if EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
+		if SproutyDialogsSettingsManager.get_setting("use_csv"):
 			return TranslationServer.translate(key)
 		else: # Otherwise, get the dialog from the dialog resource
 			var locale = TranslationServer.get_locale()
@@ -34,14 +34,14 @@ static func get_translated_dialog(key: String,
 		return dialog_data.dialogs[key]["default"]
 
 
-## Returns the translated character name
+## Returns the translated character name for a given key in a character data
 static func get_translated_character_name(key_name: String,
 		character_data: SproutyDialogsCharacterData) -> String:
 	if key_name == "": return "" # No character
-	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
-			and EditorSproutyDialogsSettingsManager.get_setting("translate_character_names"):
+	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
+			and SproutyDialogsSettingsManager.get_setting("translate_character_names"):
 		# If translation is enabled and using CSV, use the translation server
-		if EditorSproutyDialogsSettingsManager.get_setting("use_csv_for_character_names"):
+		if SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names"):
 			return TranslationServer.translate(key_name)
 		else:
 			var locale = TranslationServer.get_locale()
@@ -68,7 +68,7 @@ static func get_translated_character_name(key_name: String,
 ## and add them to the project settings translations.
 ## This allow to use the translations from CSV files in the project.
 static func collect_translations() -> void:
-	var path = EditorSproutyDialogsSettingsManager.get_setting("csv_translations_folder")
+	var path = SproutyDialogsSettingsManager.get_setting("csv_translations_folder")
 	if path.is_empty():
 		printerr("[Sprouty Dialogs] Cannot collect translations, need a path to CSV translation files.")
 		return
@@ -86,7 +86,7 @@ static func collect_translations() -> void:
 	for file in all_translation_files:
 		if not FileAccess.file_exists(file):
 			continue # Skip files that do not exist
-		if EditorSproutyDialogsSettingsManager.get_setting("locales").has(file.split(".")[-2]):
+		if SproutyDialogsSettingsManager.get_setting("locales").has(file.split(".")[-2]):
 			valid_translation_files.append(file)
 	
 	ProjectSettings.set_setting(
@@ -97,7 +97,7 @@ static func collect_translations() -> void:
 	print("[Sprouty Dialogs] Translation files collected.")
 
 
-## Get the translation files from csv folder and its subfolders
+## Get the translation files from CSV folder and its subfolders
 static func _get_translation_files(path: String) -> Array:
 	var translation_files := []
 	var subfolders = Array(DirAccess.get_directories_at(path)).map(

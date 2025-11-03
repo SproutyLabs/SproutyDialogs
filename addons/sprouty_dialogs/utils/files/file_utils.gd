@@ -1,5 +1,5 @@
 @tool
-class_name EditorSproutyDialogsFileUtils
+class_name SproutyDialogsFileUtils
 extends Node
 
 # -----------------------------------------------------------------------------
@@ -7,7 +7,7 @@ extends Node
 # -----------------------------------------------------------------------------
 ## This module is responsible for some file operations and references.
 ## It provides methods to manage recent file paths, check file extensions,
-## and collect translation files from a specified folder.
+## validate resource UIDs, and ensure unique naming within a list.
 # -----------------------------------------------------------------------------
 
 ## Last used paths for file dialogs
@@ -21,14 +21,14 @@ static var recent_file_paths: Dictionary = {
 }
 
 
-## Get the last used path for a file in a file dialog
+## Get the last used path for a file type in a file dialog
 static func get_recent_file_path(file_type: String) -> String:
 	if recent_file_paths.has(file_type):
 		return recent_file_paths[file_type]
 	return "res://"
 
 
-## Set the last used path for a file in a file dialog
+## Set the last used path for a file type in a file dialog
 static func set_recent_file_path(file_type: String, path: String) -> void:
 	recent_file_paths[file_type] = path.get_base_dir()
 

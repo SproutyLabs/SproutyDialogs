@@ -120,13 +120,13 @@ func _ready() -> void:
 
 	await get_tree().process_frame # Wait a frame to ensure settings are loaded
 	on_translation_enabled_changed( # Enable/disable translation section
-			EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
+			SproutyDialogsSettingsManager.get_setting("enable_translations")
 		)
 
 
 ## Open a scene in the editor
 func open_scene_in_editor(path: String) -> void:
-	if EditorSproutyDialogsFileUtils.check_valid_extension(path, _dialog_box_scene_field.file_filters):
+	if SproutyDialogsFileUtils.check_valid_extension(path, _dialog_box_scene_field.file_filters):
 		if ResourceLoader.exists(path):
 			EditorInterface.open_scene_from_path(path)
 			await get_tree().process_frame
@@ -206,7 +206,7 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	_update_translations_state()
 
 	# Dialog box scene file
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(data.dialog_box_uid):
+	if not SproutyDialogsFileUtils.check_valid_uid_path(data.dialog_box_uid):
 		if data.dialog_box_uid != -1:
 			printerr("[Sprouty Dialogs] Dialog box not found for character '" + _key_name
 					+"'. Check that the file '" + data.dialog_box_path + "' exists.")
@@ -217,7 +217,7 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 		_dialog_box_path = ResourceUID.get_id_path(data.dialog_box_uid)
 		_dialog_box_scene_field.set_value(_dialog_box_path)
 	
-	if EditorSproutyDialogsFileUtils.check_valid_extension(
+	if SproutyDialogsFileUtils.check_valid_extension(
 			_dialog_box_scene_field.get_value(), _dialog_box_scene_field.file_filters):
 		_to_dialog_box_scene_button.visible = true
 		_new_dialog_box_scene_button.visible = false
@@ -265,8 +265,8 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 
 ## Update the translations state based on project settings
 func _update_translations_state() -> void:
-	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
-			and EditorSproutyDialogsSettingsManager.get_setting("translate_character_names"):
+	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
+			and SproutyDialogsSettingsManager.get_setting("translate_character_names"):
 		_name_translations_container.visible = true
 		_name_default_locale_label.visible = true
 	else:
@@ -306,9 +306,9 @@ func _load_name_translations(translations: Dictionary) -> void:
 
 ## Set character name translations text boxes
 func _set_translation_text_boxes() -> void:
-	_translations_enabled = EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
-	_default_locale = EditorSproutyDialogsSettingsManager.get_setting("default_locale")
-	var locales = EditorSproutyDialogsSettingsManager.get_setting("locales")
+	_translations_enabled = SproutyDialogsSettingsManager.get_setting("enable_translations")
+	_default_locale = SproutyDialogsSettingsManager.get_setting("default_locale")
+	var locales = SproutyDialogsSettingsManager.get_setting("locales")
 	_translations_enabled = _translations_enabled and locales.size() > 0
 	_default_locale = _default_locale if _translations_enabled else ""
 	_name_default_locale_label.text = "(" + _default_locale + ")"
@@ -351,7 +351,7 @@ func _on_default_display_focus_exited() -> void:
 
 ## Check if a dialog box scene path is valid
 func _check_valid_dialog_box_scene(path: String, print_error: bool = true) -> bool:
-	var is_valid = EditorSproutyDialogsFileUtils.check_valid_extension(path,
+	var is_valid = SproutyDialogsFileUtils.check_valid_extension(path,
 			_dialog_box_scene_field.file_filters) and FileAccess.file_exists(path)
 	
 	if is_valid: # Check if the scene inherits from DialogBox class
@@ -404,24 +404,24 @@ func _on_dialog_box_scene_button_pressed() -> void:
 
 ## Create a new dialog box scene and open it in the editor
 func _on_new_dialog_box_scene_pressed() -> void:
-	_new_dialog_box_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path("dialog_box_files"))
+	_new_dialog_box_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("dialog_box_files"))
 	_new_dialog_box_dialog.get_line_edit().text = "new_dialog_box.tscn"
 	_new_dialog_box_dialog.popup_centered()
 
 
 ## Create a new dialog box scene file
 func _new_dialog_box(path: String) -> void:
-	var default_uid = EditorSproutyDialogsSettingsManager.get_setting("default_dialog_box")
+	var default_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
 	var default_path = ""
 	
 	# If no default dialog box is set or the resource does not exist, use the built-in default
-	if not EditorSproutyDialogsFileUtils.check_valid_uid_path(default_uid):
+	if not SproutyDialogsFileUtils.check_valid_uid_path(default_uid):
 		printerr("[Sprouty Dialogs] No default dialog box scene found." \
 				+" Check that the default dialog box is set in Settings > General" \
 				+" plugin tab, and that the scene resource exists. Using built-in default instead.")
-		default_path = EditorSproutyDialogsSettingsManager.DEFAULT_DIALOG_BOX_PATH
+		default_path = SproutyDialogsSettingsManager.DEFAULT_DIALOG_BOX_PATH
 		# Use and set the setting to the built-in default
-		EditorSproutyDialogsSettingsManager.set_setting("default_dialog_box",
+		SproutyDialogsSettingsManager.set_setting("default_dialog_box",
 				ResourceSaver.get_resource_id_for_path(default_path, true))
 	else: # Use the user-defined default dialog box
 		default_path = ResourceUID.get_id_path(default_uid)
@@ -451,7 +451,7 @@ func _new_dialog_box(path: String) -> void:
 	_on_modified(true)
 
 	# Set the recent file path
-	EditorSproutyDialogsFileUtils.set_recent_file_path("dialog_box_files", path)
+	SproutyDialogsFileUtils.set_recent_file_path("dialog_box_files", path)
 
 
 ## Handle the text box portrait display toggle

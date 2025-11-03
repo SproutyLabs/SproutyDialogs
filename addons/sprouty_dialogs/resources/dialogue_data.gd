@@ -34,8 +34,8 @@ extends Resource
 ## [codeblock]
 ## {
 ##   "dialogue_id_1": {
-##     "locale_1": "Translated text in locale 1",
-##     "locale_2": "Translated text in locale 2",
+##     "locale_code_1": "Translated text in locale 1",
+##     "locale_code_2": "Translated text in locale 2",
 ##     ...
 ##   },
 ##   ...
@@ -57,7 +57,7 @@ extends Resource
 @export var characters: Dictionary = {}
 ## Reference to CSV file with the translations for the dialogues.
 ## This is the UID of the CSV file resource.
-@export var csv_translation_file: int = -1
+@export var csv_file_uid: int = -1
 
 
 ## Returns a list of the start IDs from the graph data.

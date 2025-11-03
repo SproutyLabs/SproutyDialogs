@@ -15,7 +15,7 @@ func _enable_plugin() -> void:
 	
 	# Initialize the default settings if they don't exist.
 	if not ProjectSettings.has_setting("graph_dialogs/variables/variables"):
-		EditorSproutyDialogsSettingsManager.initialize_default_settings()
+		SproutyDialogsSettingsManager.initialize_default_settings()
 
 
 func _disable_plugin() -> void:

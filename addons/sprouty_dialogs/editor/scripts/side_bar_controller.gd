@@ -27,8 +27,8 @@ func _ready():
 func csv_path_field_visible(visible: bool) -> void:
 	if _csv_file_field:
 		_csv_file_field.visible = (visible
-			and EditorSproutyDialogsSettingsManager.get_setting("enable_translations")
-			and EditorSproutyDialogsSettingsManager.get_setting("use_csv")
+			and SproutyDialogsSettingsManager.get_setting("enable_translations")
+			and SproutyDialogsSettingsManager.get_setting("use_csv")
 		)
 
 

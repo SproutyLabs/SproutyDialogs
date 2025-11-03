@@ -22,7 +22,7 @@ signal dialog_resumed(dialog_file: String, start_id: String)
 ## Emitted when the dialog is ended.
 signal dialog_ended(dialog_file: String, start_id: String)
 
-## Emitted when the dialog player stop.
+## Emitted when the dialog player stops.
 signal dialog_player_stop(dialog_player: DialogPlayer)
 
 ## Emitted when a dialog option is selected.
@@ -123,9 +123,9 @@ var _dialog_box_instances: Dictionary = {}
 var _portraits_instances: Dictionary = {}
 
 ## Dialog interpreter instance to process the dialog nodes.
-var _dialog_interpreter: DialogInterpreter
+var _dialog_interpreter: SproutyDialogsEventInterpreter
 ## Resource manager instance used to load resources for the dialogs.
-var _resource_manager: EditorSproutyDialogsResourceManager
+var _resource_manager: SproutyDialogsResourceManager
 
 ## Current dialog box being displayed.
 var _current_dialog_box: DialogBox
@@ -147,7 +147,7 @@ var _is_running: bool = false
 
 func _enter_tree() -> void:
 	if not Engine.is_editor_hint(): # Only run in game
-		_dialog_interpreter = DialogInterpreter.new()
+		_dialog_interpreter = SproutyDialogsEventInterpreter.new()
 		_dialog_interpreter.continue_to_node.connect(_process_node)
 		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
 		_dialog_interpreter.options_processed.connect(_on_options_processed)
@@ -166,7 +166,7 @@ func _exit_tree() -> void:
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		# In editor, check if the dialogue data resource exists
-		if not EditorSproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
+		if not SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
 			printerr("[Sprouty Dialogs] Dialog Player '" + name
 				+"' cannot find the dialogue data resource '" \
 				+ _dialog_file_name + ".tres'. Check if it was deleted.")
@@ -176,7 +176,7 @@ func _ready() -> void:
 			_start_id = "(Select a dialog)"
 			_starts_ids = []
 	else: # In game, load the dialogue data resources
-		if not _dialog_data and EditorSproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
+		if not _dialog_data and SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
 			_dialog_data = load(ResourceUID.get_id_path(_dialog_data_uid))
 			_starts_ids = _dialog_data.get_start_ids()
 		if _starts_ids.has(_start_id):

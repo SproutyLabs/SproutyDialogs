@@ -111,7 +111,7 @@ func _new_dictionary_item() -> EditorSproutyDialogsDictionaryFieldItem:
 	_items_container.add_child(item)
 	_items_container.move_child(item, index)
 	_collapse_button.text = "Dictionary (size " + str(index + 1) + ")"
-	item.set_key(EditorSproutyDialogsFileUtils.ensure_unique_name("", get_keys(), "None"))
+	item.set_key(SproutyDialogsFileUtils.ensure_unique_name("", get_keys(), "None"))
 	return item
 
 
@@ -126,7 +126,7 @@ func _on_key_modified(key: String, item: EditorSproutyDialogsDictionaryFieldItem
 	var keys = get_keys()
 	keys.erase(key)
 
-	var unique_key = EditorSproutyDialogsFileUtils.ensure_unique_name(key, keys, "None")
+	var unique_key = SproutyDialogsFileUtils.ensure_unique_name(key, keys, "None")
 	if key != unique_key:
 		item.set_key(unique_key)
 	

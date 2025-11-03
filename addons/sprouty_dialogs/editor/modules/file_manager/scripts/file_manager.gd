@@ -10,7 +10,7 @@ extends Control
 # -----------------------------------------------------------------------------
 
 ## Emitted when requesting to switch current graph in the workspace
-signal request_to_switch_graph(graph: GraphEdit)
+signal request_to_switch_graph(graph: EditorSproutyDialogsGraph)
 ## Emitted when requesting to switch current character in the character editor
 signal request_to_switch_character(char_editor: Control)
 ## Emitted when requesting to switch to a specific tab
@@ -99,14 +99,14 @@ func get_current_file_path() -> String:
 func new_dialog_file(path: String) -> void:
 	# Create a new dialogue data resource
 	var resource = SproutyDialogsDialogueData.new()
-	var csv_path = EditorSproutyDialogsSettingsManager.get_setting("csv_translations_folder") \
+	var csv_path = SproutyDialogsSettingsManager.get_setting("csv_translations_folder") \
 			+"/" + path.get_file().get_basename() + ".csv"
 	
-	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
-		and EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
+	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
+		and SproutyDialogsSettingsManager.get_setting("use_csv"):
 		if not FileAccess.file_exists(csv_path):
 			# Create a new CSV file for translations
-			csv_path = EditorSproutyDialogsCSVFileManager.new_csv_template_file(path.get_file())
+			csv_path = SproutyDialogsCSVFileManager.new_csv_template_file(path.get_file())
 			if csv_path.is_empty(): return
 			# Refresh the filesystem to ensure the CSV file is imported
 			EditorInterface.get_resource_filesystem().scan()
@@ -114,30 +114,30 @@ func new_dialog_file(path: String) -> void:
 		
 		_csv_file_field.set_value(csv_path)
 		_csv_file_field.get_parent().show()
-		resource.csv_translation_file = ResourceSaver.get_resource_id_for_path(csv_path, true)
+		resource.csv_file_uid = ResourceSaver.get_resource_id_for_path(csv_path, true)
 	
 	ResourceSaver.save(resource, path)
 	var graph = _new_graph_from_resource(resource)
 	_file_list.new_file_item(path, resource, graph, csv_path)
 	request_to_switch_tab.emit(0)
 	_save_file_button.disabled = false
-	EditorSproutyDialogsFileUtils.set_recent_file_path("dialog_files", path)
+	SproutyDialogsFileUtils.set_recent_file_path("dialog_files", path)
 	print("[Sprouty Dialogs] Dialog file '" + path.get_file() + "' created.")
 
 
 ## Create a new graph instance and load the data from a resource
-func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> GraphEdit:
+func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSproutyDialogsGraph:
 	var graph = _graph_scene.instantiate()
 	graph.modified.connect(_on_data_modified)
 	graph.undo_redo = undo_redo
 	add_child(graph)
 	var dialogs = resource.dialogs if resource.dialogs else {}
 	# Load dialogs from CSV file if translation is enabled
-	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
-		and EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
-		if EditorSproutyDialogsFileUtils.check_valid_uid_path(resource.csv_translation_file):
-			dialogs = EditorSproutyDialogsCSVFileManager.load_dialogs_from_csv(
-					ResourceUID.get_id_path(resource.csv_translation_file))
+	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
+		and SproutyDialogsSettingsManager.get_setting("use_csv"):
+		if SproutyDialogsFileUtils.check_valid_uid_path(resource.csv_file_uid):
+			dialogs = SproutyDialogsCSVFileManager.load_dialogs_from_csv(
+					ResourceUID.get_id_path(resource.csv_file_uid))
 	graph.load_graph_data(resource, dialogs)
 	graph.name = "Graph"
 	remove_child(graph)
@@ -156,7 +156,7 @@ func new_character_file(path: String) -> void:
 	request_to_switch_tab.emit(1)
 
 	_save_file_button.disabled = false
-	EditorSproutyDialogsFileUtils.set_recent_file_path("character_files", path)
+	SproutyDialogsFileUtils.set_recent_file_path("character_files", path)
 	print("[Sprouty Dialogs] Character file '" + path.get_file() + "' created.")
 
 
@@ -167,11 +167,11 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 	char_editor.undo_redo = undo_redo
 	add_child(char_editor)
 	var name_data = resource.display_name if resource.display_name else {}
-	if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
-		and EditorSproutyDialogsSettingsManager.get_setting("translate_character_names") \
-		and EditorSproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
-		and EditorSproutyDialogsSettingsManager.get_setting("use_csv"): # Load character names from CSV file
-		name_data = EditorSproutyDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
+	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
+		and SproutyDialogsSettingsManager.get_setting("translate_character_names") \
+		and SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
+		and SproutyDialogsSettingsManager.get_setting("use_csv"): # Load character names from CSV file
+		name_data = SproutyDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
 		name_data["default"] = resource.display_name["default"] if resource.display_name.has("default") else ""
 	char_editor.load_character(resource, name_data)
 	char_editor.name = "CharacterEditor"
@@ -185,21 +185,21 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 func load_file(path: String) -> void:
 	if FileAccess.file_exists(path):
 		var resource = load(path)
-		EditorSproutyDialogsFileUtils.set_recent_file_path("graph_dialogs_files", path)
+		SproutyDialogsFileUtils.set_recent_file_path("graph_dialogs_files", path)
 
 		if resource is SproutyDialogsDialogueData:
-			EditorSproutyDialogsFileUtils.set_recent_file_path("dialogue_files", path)
+			SproutyDialogsFileUtils.set_recent_file_path("dialogue_files", path)
 			var graph = _new_graph_from_resource(resource)
-			var csv_path_uid = resource.csv_translation_file
+			var csv_path_uid = resource.csv_file_uid
 			var csv_path = ""
-			if EditorSproutyDialogsFileUtils.check_valid_uid_path(csv_path_uid):
+			if SproutyDialogsFileUtils.check_valid_uid_path(csv_path_uid):
 				csv_path = ResourceUID.get_id_path(csv_path_uid)
 			_file_list.new_file_item(path, resource, graph, csv_path)
 			request_to_switch_tab.emit(0)
 			_save_file_button.disabled = false
 		
 		elif resource is SproutyDialogsCharacterData:
-			EditorSproutyDialogsFileUtils.set_recent_file_path("character_files", path)
+			SproutyDialogsFileUtils.set_recent_file_path("character_files", path)
 			var char_editor = _new_character_from_resource(resource)
 			_file_list.new_file_item(path, resource, char_editor)
 			request_to_switch_tab.emit(1)
@@ -229,31 +229,31 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		data.characters = graph_editor_data["characters"]
 
 		# Set the CSV file path if exists
-		if EditorSproutyDialogsFileUtils.check_valid_extension(_csv_file_field.get_value(), ["*.csv"]):
-			data.csv_translation_file = ResourceSaver.get_resource_id_for_path(_csv_file_field.get_value(), true)
+		if SproutyDialogsFileUtils.check_valid_extension(_csv_file_field.get_value(), ["*.csv"]):
+			data.csv_file_uid = ResourceSaver.get_resource_id_for_path(_csv_file_field.get_value(), true)
 		
 		file_metadata["data"] = data
 
 		# Save the CSV file with the dialogs
-		if EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
-			and EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
-			if EditorSproutyDialogsFileUtils.check_valid_uid_path(data.csv_translation_file):
-				EditorSproutyDialogsCSVFileManager.save_dialogs_on_csv(
+		if SproutyDialogsSettingsManager.get_setting("enable_translations") \
+			and SproutyDialogsSettingsManager.get_setting("use_csv"):
+			if SproutyDialogsFileUtils.check_valid_uid_path(data.csv_file_uid):
+				SproutyDialogsCSVFileManager.save_dialogs_on_csv(
 					graph_editor_data["dialogs"],
-					ResourceUID.get_id_path(data.csv_translation_file)
+					ResourceUID.get_id_path(data.csv_file_uid)
 				)
-				EditorSproutyDialogsTranslationManager.collect_translations()
+				SproutyDialogsTranslationManager.collect_translations()
 
 	elif data is SproutyDialogsCharacterData:
 		data = file_metadata["cache_node"].get_character_data()
 		file_metadata["data"] = data
 
 		# Save character names on csv file
-		if EditorSproutyDialogsSettingsManager.get_setting("translate_character_names") \
-			and EditorSproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
-			and EditorSproutyDialogsSettingsManager.get_setting("enable_translations") \
-			and EditorSproutyDialogsSettingsManager.get_setting("use_csv"):
-			EditorSproutyDialogsCSVFileManager.save_character_names_on_csv(data.key_name, data.display_name)
+		if SproutyDialogsSettingsManager.get_setting("translate_character_names") \
+			and SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
+			and SproutyDialogsSettingsManager.get_setting("enable_translations") \
+			and SproutyDialogsSettingsManager.get_setting("use_csv"):
+			SproutyDialogsCSVFileManager.save_character_names_on_csv(data.key_name, data.display_name)
 	
 	# Save file on the given path
 	ResourceSaver.save(file_metadata["data"], save_path)
@@ -268,19 +268,19 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 
 ## Open file dialog to select a file
 func on_open_file_pressed() -> void:
-	open_file_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path("graph_dialogs_files"))
+	open_file_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("graph_dialogs_files"))
 	open_file_dialog.popup_centered()
 
 
 ## Create new dialog file
 func on_new_dialog_pressed() -> void:
-	new_dialog_file_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path("dialogue_files"))
+	new_dialog_file_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("dialogue_files"))
 	new_dialog_file_dialog.popup_centered()
 
 
 ## Create new character file
 func on_new_character_pressed() -> void:
-	new_char_file_dialog.set_current_dir(EditorSproutyDialogsFileUtils.get_recent_file_path("character_files"))
+	new_char_file_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("character_files"))
 	new_char_file_dialog.popup_centered()
 
 #endregion
@@ -336,7 +336,7 @@ func _on_data_modified(modified: bool = true) -> void:
 
 ## Update the CSV file path to the current dialog file
 func _on_csv_file_path_changed(path: String) -> void:
-	if not EditorSproutyDialogsFileUtils.check_valid_extension(path, ["*.csv"]):
+	if not SproutyDialogsFileUtils.check_valid_extension(path, ["*.csv"]):
 		printerr("[Sprouty Dialogs] Invalid CSV file path: " + path)
 		return
 	_csv_file_field.set_value(path)
