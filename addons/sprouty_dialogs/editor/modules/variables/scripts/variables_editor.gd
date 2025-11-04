@@ -1,11 +1,12 @@
 @tool
+class_name EditorSproutyDialogsVariableEditor
 extends MarginContainer
 
 # -----------------------------------------------------------------------------
-# Variables Editor
+# Sprouty Dialogs Variable Editor
 # -----------------------------------------------------------------------------
-## This module is responsible for the variables editor.
-## It allows the user to add, remove, rename, filter and save variables.
+## This module is the main interface for managing variables in the Sprouty Dialogs 
+## editor. It allows the user to add, remove, rename, filter and save variables.
 # -----------------------------------------------------------------------------
 
 ## Emitted when a variable is changed
@@ -21,9 +22,9 @@ signal update_text_editor(text: String)
 @onready var _empty_label: Label = %EmptyLabel
 
 ## Preloaded variable field scene
-var _variable_item_scene: PackedScene = preload("res://addons/sprouty_dialogs/editor/modules/variables/variable_item.tscn")
+var _variable_item_scene: PackedScene = preload("res://addons/sprouty_dialogs/editor/modules/variables/components/variable_item.tscn")
 ## Preloaded variable group scene
-var _variable_group_scene: PackedScene = preload("res://addons/sprouty_dialogs/editor/modules/variables/variable_group.tscn")
+var _variable_group_scene: PackedScene = preload("res://addons/sprouty_dialogs/editor/modules/variables/components/variable_group.tscn")
 
 ## Group waiting for be removed
 var _remove_group: EditorSproutyDialogsVariableGroup = null

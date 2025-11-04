@@ -1,11 +1,12 @@
 @tool
+class_name EditorSproutyDialogsLocalesSelector
 extends VBoxContainer
 
 # -----------------------------------------------------------------------------
-#  Locales Selector Component
+# Sprouty Dialogs Locales Selector Component
 # -----------------------------------------------------------------------------
-##  Component that contains a list of locale fields to select the locales
-##  to be used in the translations of the dialog system.
+## Component that contains a list of locale fields to select the locales
+## to be used in the translations of the dialog system.
 # -----------------------------------------------------------------------------
 
 ## Triggered when the locales are changed.
@@ -17,7 +18,7 @@ signal locales_changed
 @onready var _confirm_panel: AcceptDialog = $ConfirmSaveLocales
 
 ## Locale field template.
-var _locale_field := preload("res://addons/sprouty_dialogs/editor/modules/settings/locale_field.tscn")
+var _locale_field := preload("res://addons/sprouty_dialogs/editor/modules/settings/components/locale_field.tscn")
 ## Current locales for save.
 var _current_locales: Array = []
 
@@ -52,10 +53,10 @@ func set_locale_list() -> void:
 
 
 ## Add a new locale field to the list.
-func _new_locale() -> Node:
+func _new_locale() -> EditorSproutyDialogsLocaleField:
 	var new_locale = _locale_field.instantiate()
-	new_locale.connect("locale_removed", _on_locale_removed)
-	new_locale.connect("locale_modified", _on_locales_modified)
+	new_locale.locale_removed.connect(_on_locale_removed)
+	new_locale.locale_modified.connect(_on_locales_modified)
 	_locales_container.add_child(new_locale)
 	$"%LocalesContainer" / Label.visible = false
 	return new_locale
@@ -76,7 +77,6 @@ func _on_locale_removed(locale_code: String) -> void:
 
 ## Save the locales selected.
 func _save_locales() -> void:
-	# Save locales in translation settings
 	SproutyDialogsSettingsManager.set_setting("locales", _current_locales)
 	locales_changed.emit()
 	_current_locales = []

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://r7iw7h16gilr" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/translation_settings.gd" id="1_dnk3v"]
 [ext_resource type="Texture2D" uid="uid://djj6crqjqkqpu" path="res://addons/sprouty_dialogs/editor/icons/translation.svg" id="2_2wqnh"]
 [ext_resource type="Texture2D" uid="uid://bvlhrp4lgb3vy" path="res://addons/sprouty_dialogs/editor/icons/csv_table.svg" id="2_qeqd1"]
-[ext_resource type="PackedScene" uid="uid://secb1eoygm27" path="res://addons/sprouty_dialogs/editor/modules/settings/locales_selector.tscn" id="2_qh116"]
+[ext_resource type="PackedScene" uid="uid://secb1eoygm27" path="res://addons/sprouty_dialogs/editor/modules/settings/components/locales_selector.tscn" id="2_qh116"]
 [ext_resource type="Texture2D" uid="uid://j23crfderjkx" path="res://addons/sprouty_dialogs/editor/icons/character.svg" id="3_rjao7"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="4_erkog"]
 

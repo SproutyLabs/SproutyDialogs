@@ -40,7 +40,7 @@ var node_index: int = 0
 var undo_redo: EditorUndoRedoManager
 
 
-## Get the node data as a dictionary.
+## Returns the node data as a dictionary.
 ## This method should be overridden in each node.
 @abstract func get_data() -> Dictionary
 
@@ -55,7 +55,7 @@ func _ready():
 	_set_node_titlebar()
 
 
-## Get the start node id of the dialog tree.
+## Returns the start node id of the dialog tree.
 func get_start_id() -> String:
 	if start_node == null: return ""
 	else: return start_node.get_start_id()

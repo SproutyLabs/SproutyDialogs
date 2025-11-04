@@ -1,8 +1,9 @@
 @tool
+class_name EditorSproutyDialogsPortraitEditor
 extends VBoxContainer
 
 # -----------------------------------------------------------------------------
-# Portrait Editor
+# Sprouty Dialogs Portrait Editor
 # ----------------------------------------------------------------------------- 
 ## This module allows the user to edit a portrait for a character.
 ## It provides a preview of the portrait and allows the user to set
@@ -74,7 +75,7 @@ func _ready():
 	_portrait_export_properties.undo_redo = undo_redo
 
 
-## Get the portrait data from the editor
+## Returns the portrait data from the editor
 func get_portrait_data() -> SproutyDialogsPortraitData:
 	var data = SproutyDialogsPortraitData.new()
 
@@ -103,7 +104,8 @@ func get_portrait_data() -> SproutyDialogsPortraitData:
 	return data
 
 
-## Load the portrait settings into the editor
+## Load the portrait data into the editor
+## The name parameter is used to set the portrait name in the preview.
 func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 	set_portrait_name(name)
 

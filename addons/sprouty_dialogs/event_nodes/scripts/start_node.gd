@@ -119,7 +119,7 @@ func _on_id_input_focus_exited() -> void:
 		_id_input_text.add_theme_stylebox_override("normal", _input_error_style)
 		if _id_error_alert == null:
 			_id_error_alert = get_parent().alerts.show_alert(
-				"Start Node #" + str(node_index) + " needs an ID", "ERROR")
+				"Start Node #" + str(node_index) + " needs an ID", 0)
 		else: get_parent().alerts.focus_alert(_id_error_alert)
 		_displaying_error = true
 	else:
@@ -132,7 +132,7 @@ func _on_id_input_focus_exited() -> void:
 				if _id_error_alert == null:
 					_id_error_alert = get_parent().alerts.show_alert(
 						"Start Node #" + str(node.node_index) + " already has the ID '" \
-						+ _id_input_text.text + "'", "ERROR")
+						+ _id_input_text.text + "'", 0)
 				else: get_parent().alerts.focus_alert(_id_error_alert)
 				_displaying_error = true
 				break

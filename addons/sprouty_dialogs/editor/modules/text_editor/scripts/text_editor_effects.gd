@@ -8,7 +8,7 @@ extends VBoxContainer
 # -----------------------------------------------------------------------------
 
 ## Text editor reference
-@export var text_editor: Panel
+@export var text_editor: EditorSproutyDialogsTextEditor
 ## Effects options bars (pulse, wave, shake, etc.)
 @onready var _effects_bars: Array = %EffectsContainer.get_children()
 ## Pulse effect color sample hex code

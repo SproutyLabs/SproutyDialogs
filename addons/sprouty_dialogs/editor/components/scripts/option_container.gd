@@ -77,7 +77,7 @@ func get_dialog_key() -> String:
 	return "UNPLUGGED_OPT" + str(get_parent().node_index) + "_" + str(option_index + 1)
 
 
-## Get dialog text and its translations
+## Returns dialog text and its translations
 func get_dialogs_text() -> Dictionary:
 	var dialogs = _dialogs_text
 	dialogs["default"] = _default_text_box.get_text()

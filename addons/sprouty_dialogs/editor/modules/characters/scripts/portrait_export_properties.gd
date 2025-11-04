@@ -2,8 +2,8 @@
 extends VBoxContainer
 
 # -----------------------------------------------------------------------------
-## Portrait Export Properties
-##
+# Portrait Export Properties
+# -----------------------------------------------------------------------------
 ## This module shows the exported properties of a portrait scene in the editor.
 ## It allows the user to modify the properties and see the changes in real time.
 # -----------------------------------------------------------------------------

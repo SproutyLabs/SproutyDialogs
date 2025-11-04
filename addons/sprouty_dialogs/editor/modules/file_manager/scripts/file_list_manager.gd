@@ -105,7 +105,7 @@ func get_characters_count() -> int:
 	return _characters_count
 
 
-## Get the metadata from a file item at the given index
+## Returns the metadata from a file item at the given index
 func get_item_metadata(index: int) -> Dictionary:
 	if index < 0 or index >= _file_list.item_count:
 		printerr("[Sprouty Dialogs] Invalid file index to get metadata.")
@@ -113,7 +113,7 @@ func get_item_metadata(index: int) -> Dictionary:
 	return _file_list.get_item_metadata(index)
 
 
-## Get the metadata from a file item at the given index
+## Returns the metadata from a file item at the given index
 func set_item_metadata(index: int, metadata: Dictionary) -> void:
 	if index < 0 or index >= _file_list.item_count:
 		printerr("[Sprouty Dialogs] Invalid file index to set metadata.")

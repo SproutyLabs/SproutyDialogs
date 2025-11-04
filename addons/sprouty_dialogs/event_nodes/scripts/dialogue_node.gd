@@ -113,12 +113,12 @@ func set_data(dict: Dictionary) -> void:
 
 #region === Characters =========================================================
 
-## Get the character file path
+## Returns the character file path
 func get_character_path() -> String:
 	return _character_file_field.get_value()
 
 
-## Get the selected character key name
+## Returns the selected character key name
 func get_character_name() -> String:
 	if _character_data != null:
 		return _character_data.key_name
@@ -126,7 +126,7 @@ func get_character_name() -> String:
 		return ""
 
 
-## Get the selected portrait
+## Returns the selected portrait
 func get_portrait() -> String:
 	var portrait = _portrait_dropdown.get_item_text(_portrait_dropdown.selected)
 	if portrait == "(No one)":
@@ -270,7 +270,7 @@ func get_dialog_translation_key() -> String:
 	else: return "UNPLUGGED_DIALOG_" + str(node_index)
 
 
-## Get dialog text and its translations
+## Returns dialog text and its translations
 func get_dialogs_text() -> Dictionary:
 	var dialogs = _dialogs_text
 	dialogs["default"] = _default_text_box.get_text()

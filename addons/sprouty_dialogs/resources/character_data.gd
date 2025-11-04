@@ -15,7 +15,8 @@ extends Resource
 ## Corresponds to the file name of the character's resource.
 @export var key_name: String = ""
 ## Name of the character that will be displayed in the dialogue.
-## This is a dictionary where each key is a locale code (e.g., "en", "fr")
+## The display name can be localized to different languages, so it is stored
+## as a dictionary where each key is a locale code (e.g., "en", "fr")
 ## and its value is the name translated in that locale. 
 ## Example: [codeblock]
 ## {

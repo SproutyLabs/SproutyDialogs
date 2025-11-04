@@ -3,7 +3,7 @@ class_name EditorSproutyDialogsFileField
 extends MarginContainer
 
 # -----------------------------------------------------------------------------
-#  Sprouty Dialogs File Field Component
+# Sprouty Dialogs File Field Component
 # -----------------------------------------------------------------------------
 ## Component that allows the user to select a file from the file system.
 ## Also can be configured to select a directory instead of a file.
@@ -47,7 +47,7 @@ func _ready():
 	open_directory(_open_directory)
 
 
-## Get the current value of the field.
+## Returns the current value of the field.
 func get_value() -> String:
 	return _path_field.text
 

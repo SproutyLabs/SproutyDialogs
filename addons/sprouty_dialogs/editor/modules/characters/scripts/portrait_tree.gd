@@ -45,7 +45,7 @@ func _ready() -> void:
 
 #region === Portrait Data ======================================================
 
-## Get the portrait data from the tree
+## Returns the portrait data from the tree
 func get_portraits_data(from: TreeItem = get_root()) -> Dictionary:
 	var data := {}
 	for item in from.get_children():
@@ -57,15 +57,19 @@ func get_portraits_data(from: TreeItem = get_root()) -> Dictionary:
 
 
 ## Load the portrait data into the tree
-func load_portraits_data(data: Dictionary, char_editor: Control, parent_item: TreeItem = get_root()) -> void:
+func load_portraits_data(
+		data: Dictionary,
+		portrait_editor_scene: PackedScene,
+		open_scene_callable: Callable,
+		parent_item: TreeItem = get_root()) -> void:
 	if not data:
 		return # If the data is empty, do nothing
 	
 	for item in data.keys():
 		if data[item] is SproutyDialogsPortraitData:
 			# If the item is a portrait, create it and load its data
-			var editor = char_editor.portrait_editor_scene.instantiate()
-			editor.request_open_scene_in_editor.connect(char_editor.open_scene_in_editor)
+			var editor = portrait_editor_scene.instantiate()
+			editor.request_open_scene_in_editor.connect(open_scene_callable)
 			editor.modified.connect(modified.emit)
 			add_child(editor)
 			new_portrait_item(item, data[item], parent_item, editor)
@@ -74,14 +78,15 @@ func load_portraits_data(data: Dictionary, char_editor: Control, parent_item: Tr
 		else:
 			# If the item is a group, create it and load its children
 			var group_item: TreeItem = new_portrait_group(item, parent_item)
-			load_portraits_data(data[item], char_editor, group_item)
+			load_portraits_data(data[item], portrait_editor_scene,
+					open_scene_callable, group_item)
 
 #endregion
 
 
 ## Adds a new portrait item to the tree
 func new_portrait_item(name: String, data: SproutyDialogsPortraitData,
-		parent_item: TreeItem, portrait_editor: Node) -> TreeItem:
+		parent_item: TreeItem, portrait_editor: EditorSproutyDialogsPortraitEditor) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
 	portrait_editor.undo_redo = undo_redo
 	item.set_icon(0, _portrait_icon)
@@ -181,7 +186,7 @@ func ensure_valid_item_name(item: TreeItem) -> void:
 		item.set_text(0, unique_name)
 
 
-## Get the path of the item in the tree
+## Returns the path of the item in the tree
 ## The path is a string with the format "Group/Item"
 func get_item_path(item: TreeItem) -> String:
 	var item_name := item.get_text(0)

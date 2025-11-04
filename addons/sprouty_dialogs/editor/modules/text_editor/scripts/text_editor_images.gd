@@ -9,7 +9,7 @@ extends VBoxContainer
 # -----------------------------------------------------------------------------
 
 ## Text editor reference
-@export var text_editor: Panel
+@export var text_editor: EditorSproutyDialogsTextEditor
 
 ## Image other options bar
 @onready var _image_other_options: Control = %ImageOptions
@@ -113,7 +113,7 @@ func _on_pixels_or_percent_item_selected(index: int) -> void:
 	_on_image_height_value_changed(_image_height)
 
 
-## Get the region attributes as a string
+## Returns the region attributes as a string
 func _get_region_attributes() -> String:
 	return (str(_region_x) + "," + str(_region_y) + ","
 			+ str(_region_width) + "," + str(_region_height))

@@ -9,7 +9,7 @@ extends VBoxContainer
 # -----------------------------------------------------------------------------
 
 ## Text editor reference
-@export var text_editor: Panel
+@export var text_editor: EditorSproutyDialogsTextEditor
 
 ## Font other options container
 @onready var _font_other_options: Control = %FontOptions

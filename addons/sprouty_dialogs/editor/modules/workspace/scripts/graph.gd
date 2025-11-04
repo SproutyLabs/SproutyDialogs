@@ -5,8 +5,8 @@ extends GraphEdit
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Graph
 # -----------------------------------------------------------------------------
-## This class represents the graph editor for Sprouty Dialogs plugin.
-## It handles the nodes, connections, and graph data.
+## This module is the graph editor where the dialog trees are edited in the
+## Sprouty Dialogs plugin. It handles the nodes, connections, and graph data.
 # -----------------------------------------------------------------------------
 
 ## Triggered when the graph is modified
@@ -32,7 +32,7 @@ signal translation_enabled_changed(enabled: bool)
 ## Path to the nodes folder.
 const NODES_PATH = "res://addons/sprouty_dialogs/event_nodes/"
 
-## Alerts container
+## Alerts container for displaying messages
 @onready var alerts: VBoxContainer = $Alerts
 ## Add node pop-up menu
 @onready var _add_node_menu: PopupMenu = $AddNodeMenu
@@ -211,7 +211,7 @@ func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
 
 ## Return the graph data in a dictionary, including nodes data, dialogs, and 
 ## characters. Each one is stored in a separate sub-dictionary.
-## The nodes data dictionary structure is as follows:
+## The nodes data has the graph data and the structure is as follows:
 ## [codeblock]
 ## 	"nodes_data": {
 ## 		"start_node_id": {
@@ -231,27 +231,8 @@ func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
 ## 				...
 ## 			},
 ## 			...
-## 	}[/codeblock]
-## The dialogs dictionary structure is as follows:
-## [codeblock]
-## 	"dialogs": {
-## 		"dialog_key": {
-## 			"locale_code_1": "Translated text in locale 1",
-## 			"locale_code_2": "Translated text in locale 2",
-## 			...
 ## 		},
-## 		...
 ## 	}[/codeblock]
-## The characters dictionary structure is as follows:
-## [codeblock]
-## 	"characters": {
-## 		"start_node_id": {
-## 			"character_name_1": UID of the character resource,
-## 			"character_name_2": UID of the character resource,
-## 			...
-## 		},
-## 		...
-## }[/codeblock]
 func get_graph_data() -> Dictionary:
 	var dict := {
 		"nodes_data": {},

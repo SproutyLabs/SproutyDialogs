@@ -4,14 +4,14 @@ extends Container
 # -----------------------------------------------------------------------------
 # Variables Panel
 # -----------------------------------------------------------------------------
-## This panel allows the user to manage variables in the Sprouty Dialogs editor.
-## It provides functionality to add, remove, rename, filter and save variables.
+## This panel handles the variables editor and text editor for manage the
+## variables in the Sprouty Dialogs editor.
 # -----------------------------------------------------------------------------
 
 ## Variables editor
-@onready var _variables_editor: Control = $VariablesEditor
+@onready var _variables_editor: EditorSproutyDialogsVariableEditor = $VariablesEditor
 ## Text editor for edit string variables
-@onready var _text_editor: Control = $TextEditor
+@onready var _text_editor: EditorSproutyDialogsTextEditor = $TextEditor
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager

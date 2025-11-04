@@ -15,7 +15,7 @@ signal open_character_file_pressed
 ## Start panel reference
 @onready var _start_panel: Control = $StartPanel
 ## Character editor container reference
-@onready var _character_editor: Control = $CharacterEditor
+@onready var _editor_panel: Control = $EditorPanel
 
 ## New character button reference (from start panel)
 @onready var _new_character_button: Button = %NewCharacterButton
@@ -35,33 +35,33 @@ func _ready() -> void:
 	show_start_panel()
 
 
-## Get the current character editor panel
-func get_current_character_editor() -> Container:
-	if get_child_count() > 1:
-		return get_child(1)
+## Returns the current character editor panel
+func get_current_character_editor() -> EditorSproutyDialogsCharacterEditor:
+	if _editor_panel.get_child_count() > 0:
+		return _editor_panel.get_child(0)
 	return null
 
 
 ## Switch the current character editor panel
-func switch_current_character_editor(new_editor: Container) -> void:
+func switch_current_character_editor(new_editor: EditorSproutyDialogsCharacterEditor) -> void:
 	# Remove old panel and switch to the new one
-	if get_child_count() > 1:
-		remove_child(get_child(1))
+	if _editor_panel.get_child_count() > 0:
+		_editor_panel.remove_child(_editor_panel.get_child(0))
 	
 	new_editor.undo_redo = undo_redo
-	add_child(new_editor)
+	_editor_panel.add_child(new_editor)
 	show_character_editor()
 
 
 ## Show the start panel instead of character panel
 func show_start_panel() -> void:
-	_character_editor.visible = false
+	_editor_panel.visible = false
 	_start_panel.visible = true
 
 
 ## Show the character panel
 func show_character_editor() -> void:
-	_character_editor.visible = true
+	_editor_panel.visible = true
 	_start_panel.visible = false
 
 

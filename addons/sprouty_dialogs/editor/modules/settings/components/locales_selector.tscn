@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://secb1eoygm27"]
 
-[ext_resource type="Script" uid="uid://fwv541qers6c" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/locales_selector.gd" id="1_ic1ok"]
+[ext_resource type="Script" uid="uid://fwv541qers6c" path="res://addons/sprouty_dialogs/editor/modules/settings/components/scripts/locales_selector.gd" id="1_ic1ok"]
 
 [node name="LocalesSelector" type="VBoxContainer"]
 anchors_preset = 15

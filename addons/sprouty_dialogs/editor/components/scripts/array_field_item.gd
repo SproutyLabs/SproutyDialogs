@@ -50,7 +50,7 @@ func _ready():
 	_set_value_field(_type_index) # Default type (String)
 
 
-## Get all the item data as a dictionary
+## Returns the item data as a dictionary
 func get_item_data() -> Dictionary:
 	return {
 		"index": get_item_index(),
@@ -60,23 +60,23 @@ func get_item_data() -> Dictionary:
 	}
 
 
-## Get the current value of the item
+## Returns the current value of the item
 func get_value() -> Variant:
 	return _item_value
 
 
-## Get the current type of the item
+## Returns the current type of the item
 func get_type() -> int:
 	return _item_type
 
 
-## Get the current metadata of the item type
+## Returns the current metadata of the item type
 func get_metadata() -> Dictionary:
 	var metadata = _type_dropdown.get_item_metadata(_type_index)
 	return metadata if metadata else {}
 
 
-## Return the current index of the item
+## Returns the current index of the item
 func get_item_index() -> int:
 	return int(_index_label.text)
 

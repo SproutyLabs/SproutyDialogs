@@ -30,7 +30,7 @@ func _ready():
 	$ExpandButton.icon = get_theme_icon("DistractionFree", "EditorIcons")
 
 
-## Get the text from the text box
+## Returns the text from the text box
 func get_text() -> String:
 	return _text_box.text
 

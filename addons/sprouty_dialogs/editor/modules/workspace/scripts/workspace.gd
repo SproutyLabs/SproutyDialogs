@@ -24,9 +24,9 @@ signal play_dialog_request(start_id: String)
 ## Start panel reference
 @onready var _start_panel: Panel = $StartPanel
 ## Graph editor container reference
-@onready var _graph_editor: Panel = $GraphEditor
+@onready var _graph_panel: Panel = $GraphEditor
 ## Text editor reference
-@onready var _text_editor: Panel = $TextEditor
+@onready var _text_editor: EditorSproutyDialogsTextEditor = $TextEditor
 
 ## New dialog button reference (from start panel)
 @onready var _new_dialog_button: Button = %NewDialogButton
@@ -43,23 +43,23 @@ func _ready() -> void:
 	
 	_new_dialog_button.icon = get_theme_icon("Add", "EditorIcons")
 	_open_dialog_button.icon = get_theme_icon("Folder", "EditorIcons")
-	if _graph_editor.get_child_count() > 0: # Destroy the placeholder graph
-		_graph_editor.get_child(0).queue_free()
+	if _graph_panel.get_child_count() > 0: # Destroy the placeholder graph
+		_graph_panel.get_child(0).queue_free()
 	show_start_panel()
 
 
-## Get the current graph on editor
+## Returns the current graph on editor
 func get_current_graph() -> EditorSproutyDialogsGraph:
-	if _graph_editor.get_child_count() > 0:
-		return _graph_editor.get_child(0)
+	if _graph_panel.get_child_count() > 0:
+		return _graph_panel.get_child(0)
 	else: return null
 
 
 ## Switch the current graph on editor
 func switch_current_graph(new_graph: EditorSproutyDialogsGraph) -> void:
 	# Remove old graph and switch to the new one
-	if _graph_editor.get_child_count() > 0:
-		_graph_editor.remove_child(_graph_editor.get_child(0))
+	if _graph_panel.get_child_count() > 0:
+		_graph_panel.remove_child(_graph_panel.get_child(0))
 	
 	# Connect signals to the new graph
 	if not new_graph.is_connected("open_text_editor", _text_editor.show_text_editor):
@@ -69,13 +69,13 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraph) -> void:
 		new_graph.play_dialog_request.connect(play_dialog_request.emit)
 	
 	new_graph.undo_redo = undo_redo
-	_graph_editor.add_child(new_graph)
+	_graph_panel.add_child(new_graph)
 	show_graph_editor()
 
 
 ## Show the start panel instead of graph editor
 func show_start_panel() -> void:
-	_graph_editor.visible = false
+	_graph_panel.visible = false
 	_text_editor.visible = false
 	_start_panel.visible = true
 	graph_editor_visible.emit(false)
@@ -83,7 +83,7 @@ func show_start_panel() -> void:
 
 ## Show the graph editor
 func show_graph_editor() -> void:
-	_graph_editor.visible = true
+	_graph_panel.visible = true
 	_start_panel.visible = false
 	graph_editor_visible.emit(true)
 

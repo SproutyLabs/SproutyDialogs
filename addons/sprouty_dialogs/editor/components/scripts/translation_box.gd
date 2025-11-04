@@ -48,7 +48,7 @@ func _ready():
 		_text_box.mouse_exited.connect(_on_text_focus_exited)
 
 
-## Get the text from the text box
+## Returns the text from the text box
 func get_text() -> String:
 	if _text_box is EditorSproutyDialogsExpandableTextBox:
 		return _text_box.get_text()
@@ -66,7 +66,7 @@ func set_text(text: String) -> void:
 		_translation_text = text
 
 
-## Get the locale code
+## Returns the locale code
 func get_locale() -> String:
 	return _locale_code
 

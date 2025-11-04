@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://ngq3wbnr5uin"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/editor/theme/main_theme.tres" id="1_coxnc"]
-[ext_resource type="Script" uid="uid://dgcneu5dp5vnr" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/locale_field.gd" id="2_edy3j"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_coxnc"]
+[ext_resource type="Script" uid="uid://dgcneu5dp5vnr" path="res://addons/sprouty_dialogs/editor/modules/settings/components/scripts/locale_field.gd" id="2_edy3j"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/editor/icons/text_editor/image.svg" id="3_24b7j"]
 
 [node name="LocaleField" type="MarginContainer"]

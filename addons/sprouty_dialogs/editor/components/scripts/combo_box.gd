@@ -3,10 +3,10 @@ class_name EditorSproutyDialogsComboBox
 extends LineEdit
 
 # -----------------------------------------------------------------------------
-#  Sprouty Dialogs Combo Box Component
+# Sprouty Dialogs Combo Box Component
 # -----------------------------------------------------------------------------
-##  Component that allows the user write in an input field and select from
-##  filtered options based on the input from a dropdown list.
+## Component that allows the user write in an input field and select from
+## filtered options based on the input from a dropdown list.
 # -----------------------------------------------------------------------------	
 
 ## Emitted when an option is selected from the dropdown list

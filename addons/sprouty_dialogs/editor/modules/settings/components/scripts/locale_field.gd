@@ -1,11 +1,12 @@
 @tool
+class_name EditorSproutyDialogsLocaleField
 extends MarginContainer
 
 # -----------------------------------------------------------------------------
-#  Locale Field Component
+# Sprouty Dialogs Locale Field Component
 # -----------------------------------------------------------------------------
-##  Component that allows the user to select a locale from the translation server
-##  selecting the language and country using dropdowns or manual input.
+## Component that allows the user to select a locale from the translation server
+## selecting the language and country using dropdowns or manual input.
 # -----------------------------------------------------------------------------
 
 ## Triggered when the locale is removed.
@@ -38,7 +39,7 @@ func _ready():
 	_set_countries_dropdown()
 
 
-## Get the locale code from the current input.
+## Returns the locale code from the current input.
 func get_locale_code() -> String:
 	var splited_code = _code_input.text.split("_")
 	var lang = splited_code[0]

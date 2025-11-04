@@ -46,7 +46,7 @@ func _ready():
 	_text_boxes.visible = false
 
 
-## Return the dialog translations text on a dict
+## Return the dialog translations text on a dictionary
 func get_translations_text() -> Dictionary:
 	var dialogs = {}
 	for box in _text_boxes.get_children():

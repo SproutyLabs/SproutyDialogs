@@ -9,13 +9,15 @@ extends VBoxContainer
 ## It provides methods to show, hide, and focus alerts.
 # -----------------------------------------------------------------------------
 
+enum AlertType {ERROR, WARNING}
+
 ## Templates for error alert
 var error_template = preload(
-	"res://addons/sprouty_dialogs/editor/modules/workspace/components/error_alert.tscn"
+	"res://addons/sprouty_dialogs/editor/modules/workspace/alerts/error_alert.tscn"
 	)
 ## Templates for warning alert
 var warning_template = preload(
-	"res://addons/sprouty_dialogs/editor/modules/workspace/components/warning_alert.tscn"
+	"res://addons/sprouty_dialogs/editor/modules/workspace/alerts/warning_alert.tscn"
 	)
 
 
@@ -27,26 +29,24 @@ func _ready() -> void:
 ## Check if there are some error alerts active
 func is_error_alert_active() -> bool:
 	for child in get_children():
-		if child.alert_type == "ERROR" and child.visible:
+		if child.alert_type == AlertType.ERROR and child.visible:
 			return true
 	return false
 
 
 ## Add a new alert and show it
-func show_alert(text: String, type: String) -> EditorSproutyDialogsAlert:
-	match type:
-		"ERROR":
-			var alert = error_template.instantiate()
-			self.add_child(alert)
-			alert.show_alert(text)
-			return alert
-		"WARNING":
-			var alert = warning_template.instantiate()
-			self.add_child(alert)
-			alert.show_alert(text)
-			return alert
-		_:
-			return null
+## The type can be AlertType.ERROR (0) or AlertType.WARNING (1)
+func show_alert(message: String, alert_type: int) -> EditorSproutyDialogsAlert:
+	var alert = null
+	match alert_type:
+		AlertType.ERROR:
+			alert = error_template.instantiate()
+		AlertType.WARNING:
+			alert = warning_template.instantiate()
+	
+	add_child(alert)
+	alert.show_alert(message)
+	return alert
 
 
 ## Hide and destroy a given alert

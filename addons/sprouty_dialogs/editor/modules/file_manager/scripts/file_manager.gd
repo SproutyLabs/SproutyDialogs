@@ -87,7 +87,7 @@ func _ready() -> void:
 	_file_list.undo_redo = undo_redo
 
 
-## Get the current open file path
+## Returns the current open file path
 func get_current_file_path() -> String:
 	var file_metadata = _file_list.get_item_metadata(_file_list.get_current_index())
 	return file_metadata["file_path"] if file_metadata else ""

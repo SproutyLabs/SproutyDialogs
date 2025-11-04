@@ -56,7 +56,7 @@ const CHAR_NAMES_CSV_NAME: String = "character_names.csv"
 ## Testing locale dropdown
 @onready var testing_locale_dropdown: OptionButton = %TestingLocale/OptionButton
 ## Locales selector container
-@onready var locales_selector: VBoxContainer = %LocalesSelector
+@onready var locales_selector: EditorSproutyDialogsLocalesSelector = %LocalesSelector
 
 
 func _ready() -> void:

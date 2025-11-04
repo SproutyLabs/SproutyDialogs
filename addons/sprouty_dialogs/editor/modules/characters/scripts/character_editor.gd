@@ -1,8 +1,9 @@
 @tool
+class_name EditorSproutyDialogsCharacterEditor
 extends HSplitContainer
 
 # -----------------------------------------------------------------------------
-# Character Editor
+# Sprouty Dialogs Character Editor
 # ---------------------------------------------------------------------------- 
 ## This module is responsible for the character files creation and editing.
 ## It allows the user to edit character data, including the character's name,
@@ -42,7 +43,7 @@ signal modified(modified: bool)
 @onready var _portrait_editor_container: Container = $PortraitSettings/Container
 
 ## Portrait settings panel scene
-var portrait_editor_scene := preload("res://addons/sprouty_dialogs/editor/modules/characters/portrait_editor.tscn")
+var _portrait_editor_scene := preload("res://addons/sprouty_dialogs/editor/modules/characters/portrait_editor.tscn")
 
 ## Current portrait selected
 var _current_portrait: TreeItem = null
@@ -124,7 +125,7 @@ func _ready() -> void:
 		)
 
 
-## Open a scene in the editor
+## Open a scene in the editor given its path
 func open_scene_in_editor(path: String) -> void:
 	if SproutyDialogsFileUtils.check_valid_extension(path, _dialog_box_scene_field.file_filters):
 		if ResourceLoader.exists(path):
@@ -171,7 +172,7 @@ func _on_description_focus_exited() -> void:
 
 #region === Character Data =====================================================
 
-## Get the character data from the editor
+## Returns the character data from the editor
 func get_character_data() -> SproutyDialogsCharacterData:
 	var data = SproutyDialogsCharacterData.new()
 	data.key_name = _key_name
@@ -191,7 +192,9 @@ func get_character_data() -> SproutyDialogsCharacterData:
 	return data
 
 
-## Load the character data into the editor
+## Load the character data into the editor.
+## If name_data is provided, it will be used to load the name translations.
+## Otherwise, the name translations will be loaded from the character data.
 func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) -> void:
 	_key_name = data.key_name
 	_key_name_label.text = _key_name.to_pascal_case()
@@ -225,7 +228,8 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	%PortraitOnDialogBoxToggle.button_pressed = _portrait_on_dialog_box
 
 	# Portraits
-	_portrait_tree.load_portraits_data(data.portraits, self)
+	_portrait_tree.load_portraits_data(data.portraits,
+			_portrait_editor_scene, open_scene_in_editor)
 	_modified_counter = 0
 
 #endregion
@@ -274,7 +278,7 @@ func _update_translations_state() -> void:
 		_name_translations_container.visible = false
 
 
-## Get character name translations
+## Returns character name translations
 func _get_name_translations() -> Dictionary:
 	var translations = _name_translations
 	translations["default"] = _name_default_locale_field.text
@@ -494,7 +498,7 @@ func _on_add_portrait_button_pressed() -> void:
 				parent = _portrait_tree.get_root()
 	
 	# Create a new portrait editor and create a new portrait item
-	var portrait_editor = portrait_editor_scene.instantiate()
+	var portrait_editor = _portrait_editor_scene.instantiate()
 	add_child(portrait_editor)
 	var item: TreeItem = _portrait_tree.new_portrait_item(
 			"New Portrait", portrait_editor.get_portrait_data(), parent, portrait_editor

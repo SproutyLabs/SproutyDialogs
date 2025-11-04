@@ -1,14 +1,14 @@
 @tool
+class_name EditorSproutyDialogsTextEditor
 extends Panel
 
 # -----------------------------------------------------------------------------
-# Text editor
+# Sprouty Dialogs Text editor
 # -----------------------------------------------------------------------------
-## The text editor is used to edit the dialogues from the dialog system.
-## It allows the user to add text effects, font styles, colors and others to
-## the dialogue in the text boxes using BBCode tags.
+## The text editor component is a panel that allows the user to add text effects, 
+## font styles, colors and others using BBCode tags in a user friendly way.
 ## 
-## The text editor is shown when the user clicks on the text box expand button.
+## The text editor is shown when the user clicks on a text box expand button.
 # -----------------------------------------------------------------------------
 
 ## Text boxes container from the text editor
@@ -52,7 +52,7 @@ func _ready():
 
 
 ## Show the text editor
-## Needs a LineEdit or TextEdit with the text to edit
+## Needs a LineEdit or TextEdit from where to get and update the text
 func show_text_editor(text_box: Variant) -> void:
 	_opened_text_box = text_box
 	text_input.text = _opened_text_box.text
@@ -176,6 +176,8 @@ func find_tags_around_cursor(open_tag: String, close_tag: String) -> Array[Vecto
 #region --- Insert tags --------------------------------------------------------
 
 ## Insert tags in the selected text
+## If there is no text selected, do nothing or add tags with a placeholder.
+## if add_on_empty is true, the placeholder will be added between the tags.
 func insert_tags_on_selected_text(
 		open_tag: String,
 		close_tag: String,
@@ -215,10 +217,15 @@ func insert_tags_at_cursor_pos(open_tag: String, close_tag: String) -> void:
 #region --- Update tags --------------------------------------------------------
 
 ## Update the code tags in the selected text
+## With ignore_attr you can specify an attribute that will not be updated.
+## If there is no text selected, do nothing or add tags with a placeholder.
+## if add_on_empty is true, the placeholder will be added between the tags.
+## For some cases, an additional tag can be added using add_another_tag array
+## with the open and close tag strings.
 func update_code_tags(
 		open_tag: String,
 		close_tag: String,
-		remove_attr: String = "",
+		ignore_attr: String = "",
 		add_on_empty: bool = false,
 		add_another_tag: Array = []
 		) -> void:
@@ -266,7 +273,7 @@ func update_code_tags(
 	# Get open tag with attributes and update it
 	selected_text = text_input.get_selected_text()
 	var old_open_tag = selected_text.split("]")[0] + "]"
-	open_tag = _update_tag_attributes(old_open_tag, open_tag, remove_attr)
+	open_tag = _update_tag_attributes(old_open_tag, open_tag, ignore_attr)
 
 	# Replace the tags in the selected text
 	text_input.remove_text(tags_pos[0].y, tags_pos[0].x,
@@ -278,6 +285,7 @@ func update_code_tags(
 
 
 ## Add an tag attribute to the selected text
+## If the value is the default value, the attribute will be removed from the tag
 func add_attribute_to_tag(
 		tag_name: String,
 		attr: String,
@@ -294,7 +302,7 @@ func add_attribute_to_tag(
 
 
 ## Update the attributes of a tag
-func _update_tag_attributes(old_tag: String, new_tag: String, remove_attr: String) -> String:
+func _update_tag_attributes(old_tag: String, new_tag: String, ignore_attr: String) -> String:
 	var old_tag_split = old_tag.replace("]", "").split(" ")
 	var new_tag_split = new_tag.replace("]", "").split(" ")
 	
@@ -311,7 +319,7 @@ func _update_tag_attributes(old_tag: String, new_tag: String, remove_attr: Strin
 	# Update the tag with the new attributes
 	var updated_tag = new_tag_split[0]
 	for atr in tag_attributes:
-		if atr == remove_attr:
+		if atr == ignore_attr:
 			continue
 		updated_tag += " " + atr + "=" + tag_attributes[atr]
 	

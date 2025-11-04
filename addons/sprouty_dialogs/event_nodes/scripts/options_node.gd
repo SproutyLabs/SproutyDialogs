@@ -66,7 +66,7 @@ func set_data(dict: Dictionary) -> void:
 #endregion
 
 
-## Get options text and its translations
+## Returns options text and its translations
 func get_options_text() -> Array:
 	var options_text = []
 	for child in get_children():

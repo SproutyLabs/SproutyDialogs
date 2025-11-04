@@ -9,13 +9,15 @@ extends MarginContainer
 ## It provides methods to show, hide, and focus the alert.
 # -----------------------------------------------------------------------------
 
-## Alert type to display. Can be "ERROR" or "WARNING".
-@export_enum("ERROR", "WARNING") var alert_type: String
+enum AlertType {ERROR, WARNING}
+
+## Alert type to display
+@export var alert_type: AlertType = AlertType.ERROR
 
 
 func _ready() -> void:
 	# Set alert icon based on alert type
-	if alert_type == "ERROR":
+	if alert_type == AlertType.ERROR:
 		$Panel/Container/Icon.texture = get_theme_icon("Close", "EditorIcons")
 	
 	# Hide alert outside the view
@@ -23,9 +25,9 @@ func _ready() -> void:
 	visible = false
 
 
-## Show an alert with the given text.
-func show_alert(text: String) -> void:
-	%TextLabel.text = text
+## Show an alert with the given message.
+func show_alert(message: String) -> void:
+	%TextLabel.text = message
 	visible = true
 	_play_show_animation()
 
