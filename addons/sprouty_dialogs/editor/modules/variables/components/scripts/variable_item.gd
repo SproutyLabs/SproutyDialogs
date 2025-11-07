@@ -10,22 +10,16 @@ extends Container
 # -----------------------------------------------------------------------------
 
 ## Emited when the variable is changed
-signal variable_changed(name: String, type: int, value: Variant)
+signal variable_changed(var_data: Dictionary)
 ## Emited when the variable is renamed
-signal variable_renamed(name: String)
+signal variable_renamed(old_name: String, new_name: String)
 ## Emited when the remove button is pressed
 signal remove_pressed()
+
 ## Emitted when a expand button is pressed to open the text editor
 signal open_text_editor(text_box: LineEdit)
 ## Emitted when change the focus to another text box to update the text editor
 signal update_text_editor(text_box: LineEdit)
-
-## The variable name
-@export var _variable_name: String = ""
-## The variable type
-@export var _variable_type: int = TYPE_STRING
-## The variable value
-@export var _variable_value: Variant = ""
 
 ## Variable name input field
 @onready var _name_input: LineEdit = $Container/NameInput
@@ -39,8 +33,23 @@ signal update_text_editor(text_box: LineEdit)
 ## Type dropdown selector
 var _type_dropdown: OptionButton
 
+## The variable name
+var _variable_name: String = "New Variable"
+## The variable type
+var _variable_type: int = TYPE_STRING
+## The variable type index in the dropdown
+var _variable_type_index: int = TYPE_STRING - 1
+## The variable value
+var _variable_value: Variant = ""
+
 ## Parent group of the item
 var parent_group: Node = null
+
+## Flag to indicate that the item has just been created
+var new_item: bool = true
+
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
 
 
 func _ready() -> void:
@@ -58,6 +67,7 @@ func _ready() -> void:
 
 	_drop_highlight.color = get_theme_color("accent_color", "Editor")
 	hide_drop_highlight()
+	_name_input.text = _variable_name
 
 	show_as_modified(false)
 	_on_name_changed(false) # Initialize the name input field
@@ -177,6 +187,7 @@ func _set_value_field(type_index: int) -> void:
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	_value_field.add_child(field_data.field)
 	_variable_value = field_data.default_value
+	_variable_type_index = type_index
 	_variable_type = type
 
 	# Connect the expand button to open the text editor
@@ -185,39 +196,62 @@ func _set_value_field(type_index: int) -> void:
 		field_data.field.get_node("ExpandButton").pressed.connect(
 			open_text_editor.emit.bind(text_box))
 		text_box.focus_entered.connect(update_text_editor.emit.bind(text_box))
-		
+
+
+## Set the value in the value field
+func _set_field_value(value: Variant, type: int) -> void:
+	SproutyDialogsVariableManager.set_field_value(_value_field.get_child(0), type, value)
+
 
 ## Handle the name change event
 func _on_name_changed(toggled_on: bool) -> void:
 	if toggled_on: return # Ignore when editing starts
 	var new_name = _name_input.text.strip_edges()
-	if new_name == "": new_name = "New Variable"
+	var old_name = _variable_name
 	_variable_name = new_name
+	variable_renamed.emit(old_name, new_name)
+	variable_changed.emit(get_variable_data())
 	show_as_modified(true)
-	variable_renamed.emit(_variable_name)
-	variable_changed.emit(_variable_name, _variable_type, _variable_value)
 
 
 ## Handle the type change event
 func _on_type_changed(type_index: int) -> void:
-	_set_value_field(type_index) # Update the value field based on the new type
+	var temp_type = _variable_type
+	var temp_value = _variable_value
+	var temp_index = _variable_type_index
+	_set_value_field(type_index)
 	show_as_modified(true)
-	variable_changed.emit(_variable_name, _variable_type, _variable_value)
+	variable_changed.emit(get_variable_data())
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Change '" + _variable_name + "' Variable Type")
+	undo_redo.add_do_method(_type_dropdown, "select", type_index)
+	undo_redo.add_do_method(self, "_set_value_field", type_index)
+	undo_redo.add_undo_method(_type_dropdown, "select", temp_index)
+	undo_redo.add_undo_method(self, "_set_value_field", temp_index)
+	undo_redo.add_undo_method(self, "_set_field_value", temp_value, temp_type)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
 
 
 ## Handle the value change event
 func _on_value_changed(value: Variant, type: int, field: Control) -> void:
+	var temp = _variable_value
 	_variable_value = value
 	show_as_modified(true)
-	variable_changed.emit(_variable_name, type, value)
+	variable_changed.emit(get_variable_data())
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Change '" + _variable_name + "' Variable Value", 1)
+	undo_redo.add_do_method(self, "_set_field_value", value, type)
+	undo_redo.add_undo_method(self, "_set_field_value", temp, type)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
 
 
 ## Handle the remove button pressed event
 func _on_remove_button_pressed() -> void:
 	remove_pressed.emit()
-	if get_parent(): # Remove this item from its parent
-		get_parent().remove_child(self)
-		queue_free()
 
 
 #region === Drag and Drop ======================================================
@@ -258,20 +292,47 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 func _drop_data(at_position: Vector2, data: Variant) -> void:
 	_drop_highlight.hide()
 	var from_group = data.group
+	var from_index = from_group.get_children().find(data.item)
 	var to_group = get_parent()
 	from_group.remove_child(data.item)
-	var index = to_group.get_children().find(self)
+	to_group.add_child(data.item)
+	var to_index = to_group.get_children().find(self)
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Move Variable "
+		+ ("Group" if data.type == "group" else "Item"))
+	
+	undo_redo.add_do_method(from_group, "remove_child", data.item)
+	undo_redo.add_do_method(to_group, "add_child", data.item)
+	undo_redo.add_undo_method(to_group, "remove_child", data.item)
+	undo_redo.add_undo_method(from_group, "add_child", data.item)
+	undo_redo.add_undo_reference(data.item)
+	# ----------------------------------------------------------------------
 
 	if at_position.y < size.y / 2:
 		# Insert at the top
-		to_group.add_child(data.item)
-		to_group.move_child(data.item, index)
+		to_group.move_child(data.item, to_index)
+		# --- UndoRedo ---------------------------------------------------------
+		undo_redo.add_do_method(to_group, "move_child", data.item, to_index)
+		# ----------------------------------------------------------------------
 	else:
 		# Insert at the bottom
-		to_group.add_child(data.item)
-		to_group.move_child(data.item, index + 1)
-	
+		to_group.move_child(data.item, to_index + 1)
+		# --- UndoRedo ---------------------------------------------------------
+		undo_redo.add_do_method(to_group, "move_child", data.item, to_index + 1)
+		# ----------------------------------------------------------------------
+
 	data.item.parent_group = parent_group
 	data.item.update_path_tooltip()
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.add_undo_method(from_group, "move_child", data.item, from_index)
+	undo_redo.add_undo_property(data.item, "parent_group", from_group)
+	undo_redo.add_undo_method(data.item, "update_path_tooltip")
+
+	undo_redo.add_do_property(data.item, "parent_group", to_group)
+	undo_redo.add_do_method(data.item, "update_path_tooltip")
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
 
 #endregion

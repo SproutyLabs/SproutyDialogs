@@ -10,14 +10,9 @@ extends Container
 # -----------------------------------------------------------------------------
 
 ## Emitted when the group is renamed
-signal group_renamed(name: String)
+signal group_renamed(old_name: String, new_name: String)
 ## Emitted when the remove button is pressed
 signal remove_pressed()
-
-## The variable group name
-@export var _group_name: String = ""
-## The variable group color
-@export var _group_color: Color = Color(1, 1, 1)
 
 ## Group name input field
 @onready var _name_input: LineEdit = %NameInput
@@ -40,8 +35,19 @@ var _collapse_down_icon: Texture2D = preload("res://addons/sprouty_dialogs/edito
 ## Preloaded style for the group
 var _group_style: StyleBoxFlat = preload("res://addons/sprouty_dialogs/editor/theme/variable_group_subpanel.tres")
 
+## The variable group name
+var _group_name: String = "New Group"
+## The variable group color
+var _group_color: Color = Color(1, 1, 1)
+
 ## Parent group of the item
 var parent_group: Node = null
+
+## Flag to indicate that the item has just been created
+var new_item: bool = true
+
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
 
 
 func _ready() -> void:
@@ -64,7 +70,8 @@ func _ready() -> void:
 	# Set highlight and group initial colors
 	_empty_label.get_child(0).color = get_theme_color("accent_color", "Editor")
 	_color_picker.color = get_theme_color("accent_color", "Editor")
-	_on_color_changed(_color_picker.color) # Set initial color
+	set_color(_color_picker.color) # Set initial color
+	_name_input.text = _group_name
 
 	show_as_modified(false) # Initialize the modified indicator
 	_on_name_changed(false) # Initialize the name input field
@@ -89,8 +96,6 @@ func set_item_name(new_name: String) -> void:
 	_group_name = new_name
 	_name_input.text = new_name
 	update_path_tooltip()
-	for item in get_items():
-		item.update_path_tooltip()
 
 
 ## Returns the group color
@@ -100,8 +105,7 @@ func get_color() -> Color:
 
 ## Set the group color
 func set_color(new_color: Color) -> void:
-	_color_picker.color = new_color
-	_on_color_changed(new_color)
+	_change_group_color(new_color)
 	show_as_modified(false)
 
 
@@ -140,29 +144,44 @@ func show_as_modified(show: bool) -> void:
 func update_path_tooltip() -> void:
 	var path = get_item_path()
 	_name_input.tooltip_text = path
+	for item in get_items():
+		item.update_path_tooltip()
 
 
 ## Handle the name change event
 func _on_name_changed(toggled_on: bool) -> void:
 	if toggled_on: return # Ignore when editing starts
 	var new_name = _name_input.text.strip_edges()
-	if new_name == "": new_name = "New Group"
+	var old_name = _group_name
 	_group_name = new_name
-	group_renamed.emit(_group_name)
+	group_renamed.emit(old_name, new_name)
 	show_as_modified(true)
-	update_path_tooltip()
-	for item in get_items():
-		item.update_path_tooltip()
 
 
-## Handle the color change event
-func _on_color_changed(new_color: Color) -> void:
+## Change the group color
+func _change_group_color(new_color: Color) -> void:
+	_color_picker.color = new_color
 	var style = _group_style.duplicate()
 	style.border_color = new_color
 	$Container/Header/Bar.add_theme_stylebox_override("panel", style)
 	$Container/SubPanel.add_theme_stylebox_override("panel", style)
 	_group_color = new_color
+
+
+## Handle the color change event
+func _on_color_changed(new_color: Color) -> void:
+	if new_color == _group_color:
+		return # No change
+	var old_color = _group_color
+	_change_group_color(new_color)
 	show_as_modified(true)
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Change '" + _group_name + "' Group Color")
+	undo_redo.add_do_method(self, "_change_group_color", new_color)
+	undo_redo.add_undo_method(self, "_change_group_color", old_color)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
 
 
 ## Handle the expandable button toggled event
@@ -214,10 +233,30 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	var item = data.item
 	var to_group = _items_container
 	var from_group = data.group
+	var from_index = from_group.get_children().find(item)
 	from_group.remove_child(item)
 	to_group.add_child(data.item)
 	data.item.parent_group = self
 	data.item.update_path_tooltip()
+
+	# --- UndoRedo ---------------------------------------------------------
+	undo_redo.create_action("Move Variable "
+		+ ("Group" if data.type == "group" else "Item")
+		+" inside Group '" + _group_name + "'")
+	
+	undo_redo.add_do_method(from_group, "remove_child", item)
+	undo_redo.add_do_method(to_group, "add_child", item)
+	undo_redo.add_do_property(item, "parent_group", self)
+	undo_redo.add_do_method(item, "update_path_tooltip")
+
+	undo_redo.add_undo_method(to_group, "remove_child", item)
+	undo_redo.add_undo_method(from_group, "add_child", item)
+	undo_redo.add_undo_method(from_group, "move_child", item, from_index)
+	undo_redo.add_undo_property(item, "parent_group", from_group)
+	undo_redo.add_undo_method(item, "update_path_tooltip")
+	undo_redo.add_undo_reference(item)
+	undo_redo.commit_action(false)
+	# ----------------------------------------------------------------------
 
 
 ## Handle mouse exit event to hide drop highlight

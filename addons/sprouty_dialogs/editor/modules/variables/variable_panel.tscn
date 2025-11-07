@@ -1,0 +1,143 @@
+[gd_scene load_steps=7 format=3 uid="uid://dpmnyxltkkjsq"]
+
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_li462"]
+[ext_resource type="Script" uid="uid://b45m8c1g5qxgr" path="res://addons/sprouty_dialogs/editor/modules/variables/scripts/variable_panel.gd" id="2_li462"]
+[ext_resource type="Script" uid="uid://vupjsrwi1ij8" path="res://addons/sprouty_dialogs/editor/modules/variables/scripts/variable_editor.gd" id="3_0du7a"]
+[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/sprouty_dialogs/editor/modules/text_editor/text_editor.tscn" id="4_l4246"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="5_qbyon"]
+
+[sub_resource type="DPITexture" id="DPITexture_li462"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
+[node name="VariablePanel" type="VSplitContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_li462")
+script = ExtResource("2_li462")
+
+[node name="VariableEditor" type="MarginContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("3_0du7a")
+
+[node name="Container" type="VBoxContainer" parent="VariableEditor"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VariableEditor/Container"]
+layout_mode = 2
+theme_type_variation = &"HeaderMedium"
+text = "Variables Manager"
+
+[node name="TopBar" type="HBoxContainer" parent="VariableEditor/Container"]
+layout_mode = 2
+
+[node name="SearchBar" type="LineEdit" parent="VariableEditor/Container/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Search variables..."
+right_icon = SubResource("DPITexture_li462")
+
+[node name="AddVarButton" type="Button" parent="VariableEditor/Container/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Add a new variable"
+icon = SubResource("DPITexture_li462")
+icon_alignment = 2
+
+[node name="AddGroupButton" type="Button" parent="VariableEditor/Container/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Add a new group"
+icon = SubResource("DPITexture_li462")
+icon_alignment = 2
+
+[node name="SaveButton" type="Button" parent="VariableEditor/Container/TopBar"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Save variables"
+icon = SubResource("DPITexture_li462")
+
+[node name="VariablePanel" type="Panel" parent="VariableEditor/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Container" type="VBoxContainer" parent="VariableEditor/Container/VariablePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="HBoxContainer" parent="VariableEditor/Container/VariablePanel/Container"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+horizontal_alignment = 1
+
+[node name="TypeLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/Header"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Type"
+horizontal_alignment = 1
+
+[node name="ValueLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+text = "Initial Value"
+horizontal_alignment = 1
+
+[node name="---" type="HSeparator" parent="VariableEditor/Container/VariablePanel/Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VariableEditor/Container/VariablePanel/Container"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VariableContainer" type="VBoxContainer" parent="VariableEditor/Container/VariablePanel/Container/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="EmptyLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/ScrollContainer/VariableContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+text = "Add some variables!"
+
+[node name="RemoveGroupDialog" type="ConfirmationDialog" parent="VariableEditor"]
+auto_translate_mode = 1
+initial_position = 4
+size = Vector2i(367, 106)
+ok_button_text = "Confirm"
+dialog_text = "Are you sure you want to remove this group? 
+All variables and groups inside will be removed."
+
+[node name="TextEditor" parent="." instance=ExtResource("4_l4246")]
+layout_mode = 2
+
+[node name="CloseButton" parent="TextEditor/Container/Toolbar" index="0"]
+icon = ExtResource("5_qbyon")
+
+[node name="TextPreview" parent="TextEditor/Container/TextBoxes/PreviewBox/Container" index="1"]
+text = ""
+
+[editable path="TextEditor"]
