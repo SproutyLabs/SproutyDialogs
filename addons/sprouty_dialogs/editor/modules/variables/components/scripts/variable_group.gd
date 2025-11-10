@@ -262,6 +262,10 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	data.item.mark_as_modified(true)
 	mark_as_modified(true)
 
+	# Emit renamed signal to ensure unique names
+	data.item.emit_signal(("group" if data.type == "group" else "variable") + "_renamed",
+			data.item.get_item_name(), data.item.get_item_name())
+	
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Move Variable "
 		+ ("Group" if data.type == "group" else "Item")

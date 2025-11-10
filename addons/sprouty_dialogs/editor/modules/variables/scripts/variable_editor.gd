@@ -231,6 +231,8 @@ func _ensure_unique_name(name: String, item: Variant) -> String:
 ## Ensure the variable or group name is unique when renaming an existing one
 func _on_item_rename(old_name: String, new_name: String, item: Variant) -> void:
 	var unique_name = _ensure_unique_name(new_name, item)
+	item.update_path_tooltip()
+	
 	if item.new_item:
 		item.new_item = false
 		return # Do not register undo redo
@@ -379,6 +381,10 @@ func _drop_data_in_container(at_position: Vector2, data: Variant) -> void:
 	item.parent_group = _variable_container
 	item.update_path_tooltip()
 	item.mark_as_modified(true)
+
+	# Emit renamed signal to ensure unique names
+	data.item.emit_signal(("group" if data.type == "group" else "variable") + "_renamed",
+			data.item.get_item_name(), data.item.get_item_name())
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Move Variable "

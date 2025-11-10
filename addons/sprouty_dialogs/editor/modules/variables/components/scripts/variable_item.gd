@@ -163,8 +163,6 @@ func mark_as_modified(was_modified: bool) -> void:
 			_modified_indicator.hide()
 			_modified_counter = 0
 			modified.emit(false)
-	
-	print("Variable '", _variable_name, "' modified state: ", _modified_counter)
 
 
 ## Clear the modified state of the variable item
@@ -352,6 +350,10 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	data.item.parent_group = parent_group
 	data.item.update_path_tooltip()
 	data.item.mark_as_modified(true)
+	
+	# Emit renamed signal to ensure unique names
+	data.item.emit_signal(("group" if data.type == "group" else "variable") + "_renamed",
+			data.item.get_item_name(), data.item.get_item_name())
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.add_undo_method(from_group, "move_child", data.item, from_index)

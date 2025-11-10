@@ -72,12 +72,12 @@ func load_portraits_data(
 			editor.request_open_scene_in_editor.connect(open_scene_callable)
 			editor.modified.connect(modified.emit)
 			add_child(editor)
-			new_portrait_item(item, data[item], parent_item, editor)
+			new_portrait_item(item, data[item], parent_item, editor, false)
 			editor.load_portrait_data(item, data[item])
 			remove_child(editor)
 		else:
 			# If the item is a group, create it and load its children
-			var group_item: TreeItem = new_portrait_group(item, parent_item)
+			var group_item: TreeItem = new_portrait_group(item, parent_item, false)
 			load_portraits_data(data[item], portrait_editor_scene,
 					open_scene_callable, group_item)
 
@@ -85,13 +85,14 @@ func load_portraits_data(
 
 
 ## Adds a new portrait item to the tree
-func new_portrait_item(name: String, data: SproutyDialogsPortraitData,
-		parent_item: TreeItem, portrait_editor: EditorSproutyDialogsPortraitEditor) -> TreeItem:
+func new_portrait_item(name: String, data: SproutyDialogsPortraitData, parent_item: TreeItem,
+		portrait_editor: EditorSproutyDialogsPortraitEditor, new_item: bool = true) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
 	portrait_editor.undo_redo = undo_redo
 	item.set_icon(0, _portrait_icon)
 	item.set_text(0, name)
 	item.set_meta("name", name)
+	item.set_meta("new_item", new_item)
 	item.set_metadata(0, {"portrait": data})
 	item.set_meta("item_path", get_item_path(item))
 	item.set_meta("portrait_editor", portrait_editor)
@@ -100,11 +101,12 @@ func new_portrait_item(name: String, data: SproutyDialogsPortraitData,
 
 
 ## Adds a new portrait group to the tree
-func new_portrait_group(name: String, parent_item: TreeItem = get_root()) -> TreeItem:
+func new_portrait_group(name: String, parent_item: TreeItem = get_root(), new_item: bool = true) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
 	item.set_icon(0, get_theme_icon("Folder", "EditorIcons"))
 	item.set_text(0, name)
 	item.set_meta("name", name)
+	item.set_meta("new_item", new_item)
 	item.set_metadata(0, {"group": true})
 	item.set_meta("item_path", get_item_path(item))
 	item.add_button(0, get_theme_icon("Remove", "EditorIcons"), 1, false, "Remove Group")
@@ -358,10 +360,15 @@ func _on_item_edited() -> void:
 	
 	var temp_name := item.get_meta("name")
 	item.set_meta("name", item.get_text(0))
-	modified.emit(true)
 
 	if not item.get_metadata(0).has("group"): # Update the portrait name
 		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
+	
+	if item.get_meta("new_item"):
+		item.set_meta("new_item", false)
+		return # If it's a new item, do not register the action
+	
+	modified.emit(true)
 
 	# --- UndoRedo -----------------------------------------------------
 	undo_redo.create_action("Rename Portrait")
