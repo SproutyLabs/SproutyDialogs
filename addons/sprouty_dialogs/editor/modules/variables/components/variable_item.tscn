@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://by1ux7iacms26" path="res://addons/sprouty_dialogs/editor/icons/variable.svg" id="3_re83m"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="4_l5q3k"]
 
-[sub_resource type="DPITexture" id="DPITexture_q6lul"]
+[sub_resource type="DPITexture" id="DPITexture_li462"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -16,7 +16,6 @@ size_flags_horizontal = 3
 mouse_filter = 1
 theme_override_styles/panel = ExtResource("4_l5q3k")
 script = ExtResource("1_bg4en")
-_variable_name = "New Variable"
 
 [node name="Container" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -39,6 +38,7 @@ stretch_mode = 3
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+text = "New Variable"
 placeholder_text = "Variable name..."
 
 [node name="--" type="VSeparator" parent="Container"]
@@ -57,18 +57,19 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_l5q3k")
 
-[node name="RemoveButton" type="Button" parent="Container"]
-layout_mode = 2
-icon = SubResource("DPITexture_q6lul")
-flat = true
-
 [node name="ModifiedIndicator" type="Label" parent="Container"]
+visible = false
 layout_mode = 2
 tooltip_text = "Unsaved changes"
 mouse_filter = 1
 text = "(*)"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="RemoveButton" type="Button" parent="Container"]
+layout_mode = 2
+icon = SubResource("DPITexture_li462")
+flat = true
 
 [node name="DropHighlight" type="ColorRect" parent="."]
 visible = false

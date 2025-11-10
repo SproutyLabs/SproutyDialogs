@@ -14,6 +14,9 @@ signal path_changed(path: String)
 ## Emitted when the file or folder path is submitted.
 signal path_submitted(path: String)
 
+## Emitted when the field loses focus.
+signal field_focus_exited()
+
 ## Flag to open a directory instead of a file.
 @export var _open_directory: bool = false
 ## Placeholder text to show when the field is empty.
@@ -37,6 +40,7 @@ func _ready():
 	# Connect signals
 	_path_field.text_submitted.connect(_on_field_text_submitted)
 	_path_field.text_changed.connect(_on_field_text_changed)
+	_path_field.focus_exited.connect(field_focus_exited.emit)
 	_open_button.button_down.connect(_on_open_pressed)
 	_clear_button.button_up.connect(clear_path)
 
@@ -65,11 +69,13 @@ func open_directory(open_dir: bool) -> void:
 		_open_dialog.file_mode = _open_dialog.FILE_MODE_OPEN_DIR
 		_open_dialog.ok_button_text = "Select Current Folder"
 		_open_dialog.title = "Select a Directory"
+		_path_field.placeholder_text = "Select a directory..."
 	else:
 		_open_dialog.file_selected.connect(_on_path_dialog_selected)
 		_open_dialog.file_mode = _open_dialog.FILE_MODE_OPEN_FILE
 		_open_dialog.ok_button_text = "Open File"
 		_open_dialog.title = "Open a File"
+		_path_field.placeholder_text = "Select a file..."
 
 
 ## Disable the field for editing.
@@ -92,6 +98,7 @@ func _on_path_dialog_selected(path: String) -> void:
 	path_changed.emit(path)
 	set_value(path)
 	SproutyDialogsFileUtils.set_recent_file_path(_recent_file_type, path)
+	field_focus_exited.emit()
 
 
 ## Handle the text change event of the field.

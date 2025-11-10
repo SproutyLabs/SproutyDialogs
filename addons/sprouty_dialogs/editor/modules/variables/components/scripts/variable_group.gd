@@ -9,6 +9,9 @@ extends Container
 ## It allows the user to set the group name and color, and contains variable items.
 # -----------------------------------------------------------------------------
 
+## Emitted when the group is modified
+signal modified(modified: bool)
+
 ## Emitted when the group is renamed
 signal group_renamed(old_name: String, new_name: String)
 ## Emitted when the remove button is pressed
@@ -20,6 +23,8 @@ signal remove_pressed()
 @onready var _color_picker: ColorPickerButton = %ColorPicker
 ## Expandable button to show/hide items
 @onready var _expandable_button: Button = %ExpandableButton
+## Modified indicator
+@onready var _modified_indicator: Label = %ModifiedIndicator
 
 ## Items container
 @onready var _items_container: VBoxContainer = %ItemsContainer
@@ -45,6 +50,9 @@ var parent_group: Node = null
 
 ## Flag to indicate that the item has just been created
 var new_item: bool = true
+
+## Modified counter to track changes
+var _modified_counter: int = 0
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
@@ -73,7 +81,7 @@ func _ready() -> void:
 	set_color(_color_picker.color) # Set initial color
 	_name_input.text = _group_name
 
-	show_as_modified(false) # Initialize the modified indicator
+	_modified_indicator.hide()
 	_on_name_changed(false) # Initialize the name input field
 	_on_mouse_exited() # Hide the drop highlight
 
@@ -106,7 +114,6 @@ func get_color() -> Color:
 ## Set the group color
 func set_color(new_color: Color) -> void:
 	_change_group_color(new_color)
-	show_as_modified(false)
 
 
 ## Returns all items in the group
@@ -128,24 +135,37 @@ func show_items() -> void:
 			item.show()
 
 
-## Show modified indicator for all items in the group
-func show_items_as_modified(show: bool) -> void:
-	for item in _items_container.get_children():
-		if item is EditorSproutyDialogsVariableItem or item is EditorSproutyDialogsVariableGroup:
-			item.show_as_modified(show)
-
-
-## Show the modified indicator for the group
-func show_as_modified(show: bool) -> void:
-	%ModifiedIndicator.visible = show
-
-
 ## Update the tooltip with the current group path
 func update_path_tooltip() -> void:
 	var path = get_item_path()
 	_name_input.tooltip_text = path
 	for item in get_items():
 		item.update_path_tooltip()
+
+
+## Mark the group as modified
+func mark_as_modified(was_modified: bool) -> void:
+	if was_modified:
+		if _modified_counter == 0:
+			_modified_indicator.show()
+			modified.emit(true)
+		_modified_counter += 1
+	else:
+		_modified_counter -= 1
+		if _modified_counter <= 0:
+			_modified_indicator.hide()
+			_modified_counter = 0
+			modified.emit(false)
+
+
+## Clear the modified state of the group and its items
+func clear_modified_state() -> void:
+	_modified_counter = 0
+	_modified_indicator.hide()
+	for item in _items_container.get_children():
+		if item is EditorSproutyDialogsVariableItem or \
+				item is EditorSproutyDialogsVariableGroup:
+			item.clear_modified_state()
 
 
 ## Handle the name change event
@@ -155,7 +175,6 @@ func _on_name_changed(toggled_on: bool) -> void:
 	var old_name = _group_name
 	_group_name = new_name
 	group_renamed.emit(old_name, new_name)
-	show_as_modified(true)
 
 
 ## Change the group color
@@ -174,12 +193,14 @@ func _on_color_changed(new_color: Color) -> void:
 		return # No change
 	var old_color = _group_color
 	_change_group_color(new_color)
-	show_as_modified(true)
+	mark_as_modified(true)
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Change '" + _group_name + "' Group Color")
 	undo_redo.add_do_method(self, "_change_group_color", new_color)
 	undo_redo.add_undo_method(self, "_change_group_color", old_color)
+	undo_redo.add_do_method(self, "mark_as_modified", true)
+	undo_redo.add_undo_method(self, "mark_as_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -238,6 +259,8 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	to_group.add_child(data.item)
 	data.item.parent_group = self
 	data.item.update_path_tooltip()
+	data.item.mark_as_modified(true)
+	mark_as_modified(true)
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Move Variable "
@@ -255,6 +278,11 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	undo_redo.add_undo_property(item, "parent_group", from_group)
 	undo_redo.add_undo_method(item, "update_path_tooltip")
 	undo_redo.add_undo_reference(item)
+	
+	undo_redo.add_do_method(item, "mark_as_modified", true)
+	undo_redo.add_undo_method(item, "mark_as_modified", false)
+	undo_redo.add_do_method(self, "mark_as_modified", true)
+	undo_redo.add_undo_method(self, "mark_as_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 

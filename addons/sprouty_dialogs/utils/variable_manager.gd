@@ -441,7 +441,7 @@ static func new_field_by_type(
 				field.button_pressed = init_value
 			default_value = field.button_pressed
 			field.toggled.connect(on_value_changed.bind(type, field))
-			field.mouse_exited.connect(on_modified_callable)
+			field.toggled.connect(on_modified_callable.unbind(1))
 		
 		TYPE_INT:
 			# Enum int
@@ -475,7 +475,7 @@ static func new_field_by_type(
 					field.value = init_value
 				default_value = field.value
 				field.value_changed.connect(on_value_changed.bind(type, field))
-				field.mouse_exited.connect(on_modified_callable)
+				field.get_line_edit().focus_exited.connect(on_modified_callable)
 		
 		TYPE_FLOAT:
 			field = SpinBox.new()
@@ -496,7 +496,7 @@ static func new_field_by_type(
 				field.value = init_value
 			default_value = field.value
 			field.value_changed.connect(on_value_changed.bind(type, field))
-			field.mouse_exited.connect(on_modified_callable)
+			field.get_line_edit().focus_exited.connect(on_modified_callable)
 		
 		TYPE_STRING:
 			var line_edit = LineEdit.new()
@@ -517,7 +517,7 @@ static func new_field_by_type(
 						field.ready.connect(func(): field.set_value(init_value))
 					default_value = init_value if init_value != null else ""
 					field.path_changed.connect(on_value_changed.bind(type, field))
-					field.path_changed.connect(on_modified_callable.unbind(1))
+					field.field_focus_exited.connect(on_modified_callable)
 				# Directory path string
 				elif property_data["hint"] == PROPERTY_HINT_DIR:
 					field = load(FILE_FIELD_PATH).instantiate()
@@ -529,7 +529,7 @@ static func new_field_by_type(
 						field.ready.connect(func(): field.set_value(init_value))
 					default_value = init_value if init_value != null else ""
 					field.path_changed.connect(on_value_changed.bind(type, field))
-					field.path_changed.connect(on_modified_callable.unbind(1))
+					field.field_focus_exited.connect(on_modified_callable)
 				# Enum string
 				elif property_data["hint"] == PROPERTY_HINT_ENUM:
 					field = OptionButton.new()
@@ -597,7 +597,7 @@ static func new_field_by_type(
 				default_value = Vector2.ZERO if type == TYPE_VECTOR2 \
 					else Vector3.ZERO if type == TYPE_VECTOR3 else Vector4.ZERO
 				
-				component_field.mouse_exited.connect(on_modified_callable)
+				component_field.get_line_edit().focus_exited.connect(on_modified_callable)
 				component_field.value_changed.connect(func(value):
 					var vector_value = default_value
 					for j in range(0, vector_n):

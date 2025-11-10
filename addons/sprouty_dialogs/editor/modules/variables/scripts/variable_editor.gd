@@ -20,6 +20,8 @@ signal update_text_editor(text: String)
 @onready var _variable_container: VBoxContainer = %VariableContainer
 ## Empty label to show when there are no variables
 @onready var _empty_label: Label = %EmptyLabel
+## Saved variables button
+@onready var _save_button: Button = %SaveButton
 
 ## Preloaded variable field scene
 var _variable_item_scene: PackedScene = preload("res://addons/sprouty_dialogs/editor/modules/variables/components/variable_item.tscn")
@@ -28,6 +30,9 @@ var _variable_group_scene: PackedScene = preload("res://addons/sprouty_dialogs/e
 
 ## Group waiting for be removed
 var _remove_group: EditorSproutyDialogsVariableGroup = null
+
+## Modified counter to track changes
+var _modified_counter: int = 0
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
@@ -39,12 +44,13 @@ func _ready():
 	%AddVarButton.pressed.connect(_on_add_var_button_pressed)
 	%AddGroupButton.pressed.connect(_on_add_group_button_pressed)
 	%SearchBar.text_changed.connect(_on_search_bar_text_changed)
-	%SaveButton.pressed.connect(_on_save_button_pressed)
+	_save_button.pressed.connect(_on_save_button_pressed)
 
 	%AddVarButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddGroupButton.icon = get_theme_icon("Folder", "EditorIcons")
 	%SearchBar.right_icon = get_theme_icon("Search", "EditorIcons")
-	%SaveButton.icon = get_theme_icon("Save", "EditorIcons")
+	_save_button.icon = get_theme_icon("Save", "EditorIcons")
+	_save_button.text = ""
 
 	_variable_container.set_drag_forwarding(
 		_get_container_drag_data,
@@ -121,6 +127,7 @@ func _new_variable_item() -> EditorSproutyDialogsVariableItem:
 	new_item.open_text_editor.connect(open_text_editor.emit)
 	new_item.update_text_editor.connect(update_text_editor.emit)
 	new_item.remove_pressed.connect(_on_remove_variable.bind(new_item))
+	new_item.modified.connect(_on_modified)
 	new_item.undo_redo = undo_redo
 	return new_item
 
@@ -130,8 +137,22 @@ func _new_variable_group() -> EditorSproutyDialogsVariableGroup:
 	var new_group = _variable_group_scene.instantiate()
 	new_group.group_renamed.connect(_on_item_rename.bind(new_group))
 	new_group.remove_pressed.connect(_on_remove_group.bind(new_group))
+	new_group.modified.connect(_on_modified)
 	new_group.undo_redo = undo_redo
 	return new_group
+
+
+## Mark the variable item as modified
+func _on_modified(was_modified: bool) -> void:
+	if was_modified:
+		if _modified_counter == 0:
+			_save_button.text = "(*)"
+		_modified_counter += 1
+	else:
+		_modified_counter -= 1
+		if _modified_counter <= 0:
+			_save_button.text = ""
+			_modified_counter = 0
 
 
 #region === Search and Filter ==================================================
@@ -215,12 +236,17 @@ func _on_item_rename(old_name: String, new_name: String, item: Variant) -> void:
 		return # Do not register undo redo
 	if unique_name == old_name:
 		return # Do not register undo redo
+	
+	item.mark_as_modified(true)
+
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Rename "
 		+ ("Group" if item is EditorSproutyDialogsVariableGroup else "Variable")
 		+" '" + old_name + "' to '" + unique_name + "'")
 	undo_redo.add_do_method(item, "set_item_name", unique_name)
 	undo_redo.add_undo_method(item, "set_item_name", _ensure_unique_name(old_name, item))
+	undo_redo.add_do_method(item, "mark_as_modified", true)
+	undo_redo.add_undo_method(item, "mark_as_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -230,12 +256,15 @@ func _on_add_var_button_pressed() -> void:
 	var new_item = _new_variable_item()
 	new_item.parent_group = _variable_container
 	_variable_container.add_child(new_item)
+	_on_modified(true)
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Add Variable")
 	undo_redo.add_do_reference(new_item)
 	undo_redo.add_do_method(_variable_container, "add_child", new_item)
 	undo_redo.add_undo_method(_variable_container, "remove_child", new_item)
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 	
@@ -245,12 +274,15 @@ func _on_add_group_button_pressed() -> void:
 	var new_item = _new_variable_group()
 	new_item.parent_group = _variable_container
 	_variable_container.add_child(new_item)
+	_on_modified(true)
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Add Variable Group")
 	undo_redo.add_do_reference(new_item)
 	undo_redo.add_do_method(_variable_container, "add_child", new_item)
 	undo_redo.add_undo_method(_variable_container, "remove_child", new_item)
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -264,11 +296,12 @@ func _on_variable_changed(var_data: Dictionary) -> void:
 func _on_save_button_pressed() -> void:
 	# Unmark all items as modified
 	for child in _variable_container.get_children():
-		if child is EditorSproutyDialogsVariableItem:
-			child.show_as_modified(false)
-		if child is EditorSproutyDialogsVariableGroup:
-			child.show_items_as_modified(false)
-			child.show_as_modified(false)
+		if child is EditorSproutyDialogsVariableItem or \
+			child is EditorSproutyDialogsVariableGroup:
+			child.clear_modified_state()
+	_modified_counter = 0
+	_save_button.text = ""
+
 	# Save the variables to project settings
 	var data = _get_variables_data()
 	SproutyDialogsVariableManager.save_variables(data)
@@ -279,11 +312,16 @@ func _on_remove_variable(item: EditorSproutyDialogsVariableItem) -> void:
 	var parent = item.get_parent()
 	if parent:
 		parent.remove_child(item)
+		_on_modified(true)
+
 		# --- UndoRedo -----------------------------------------------------
 		undo_redo.create_action("Remove Variable")
 		undo_redo.add_do_method(parent, "remove_child", item)
 		undo_redo.add_undo_method(parent, "add_child", item)
 		undo_redo.add_undo_reference(item)
+
+		undo_redo.add_do_method(self, "_on_modified", true)
+		undo_redo.add_undo_method(self, "_on_modified", false)
 		undo_redo.commit_action(false)
 		# ------------------------------------------------------------------
 
@@ -304,12 +342,15 @@ func _on_confirm_remove_group() -> void:
 		parent.remove_child(_remove_group)
 		var temp = _remove_group
 		_remove_group = null
+		_on_modified(true)
 
 		# --- UndoRedo -----------------------------------------------------
 		undo_redo.create_action("Remove Variable Group")
 		undo_redo.add_undo_reference(temp)
 		undo_redo.add_do_method(parent, "remove_child", temp)
 		undo_redo.add_undo_method(parent, "add_child", temp)
+		undo_redo.add_do_method(self, "_on_modified", true)
+		undo_redo.add_undo_method(self, "_on_modified", false)
 		undo_redo.commit_action(false)
 		# ------------------------------------------------------------------
 
@@ -337,6 +378,7 @@ func _drop_data_in_container(at_position: Vector2, data: Variant) -> void:
 	_variable_container.add_child(item)
 	item.parent_group = _variable_container
 	item.update_path_tooltip()
+	item.mark_as_modified(true)
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Move Variable "
@@ -353,6 +395,9 @@ func _drop_data_in_container(at_position: Vector2, data: Variant) -> void:
 	undo_redo.add_do_property(item, "parent_group", from_group)
 	undo_redo.add_undo_method(item, "update_path_tooltip")
 	undo_redo.add_undo_reference(item)
+
+	undo_redo.add_do_method(item, "mark_as_modified", true)
+	undo_redo.add_undo_method(item, "mark_as_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 

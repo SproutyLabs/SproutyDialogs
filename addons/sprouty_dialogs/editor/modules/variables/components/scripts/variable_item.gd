@@ -9,11 +9,14 @@ extends Container
 ## It allows the user to set the variable name, type and value.
 # -----------------------------------------------------------------------------
 
-## Emited when the variable is changed
+## Emitted when the variable is modified
+signal modified(modified: bool)
+
+## Emitted when the variable is changed
 signal variable_changed(var_data: Dictionary)
-## Emited when the variable is renamed
+## Emitted when the variable is renamed
 signal variable_renamed(old_name: String, new_name: String)
-## Emited when the remove button is pressed
+## Emitted when the remove button is pressed
 signal remove_pressed()
 
 ## Emitted when a expand button is pressed to open the text editor
@@ -48,6 +51,9 @@ var parent_group: Node = null
 ## Flag to indicate that the item has just been created
 var new_item: bool = true
 
+## Modified counter to track changes
+var _modified_counter: int = 0
+
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
 
@@ -68,8 +74,7 @@ func _ready() -> void:
 	_drop_highlight.color = get_theme_color("accent_color", "Editor")
 	hide_drop_highlight()
 	_name_input.text = _variable_name
-
-	show_as_modified(false)
+	_modified_indicator.hide()
 	_on_name_changed(false) # Initialize the name input field
 
 
@@ -136,12 +141,6 @@ func set_value(value: Variant) -> void:
 	if _value_field.get_child_count() > 0:
 		var field = _value_field.get_child(0)
 		SproutyDialogsVariableManager.set_field_value(field, _variable_type, value)
-	show_as_modified(false)
-
-
-## Show the modified indicator
-func show_as_modified(show: bool) -> void:
-	_modified_indicator.visible = show
 
 
 ## Update the tooltip with the current item path
@@ -149,6 +148,29 @@ func update_path_tooltip() -> void:
 	var path = get_item_path()
 	_name_input.tooltip_text = path
 	$Container/Icon.tooltip_text = path
+
+
+## Mark the variable item as modified
+func mark_as_modified(was_modified: bool) -> void:
+	if was_modified:
+		if _modified_counter == 0:
+			_modified_indicator.show()
+			modified.emit(true)
+		_modified_counter += 1
+	else:
+		_modified_counter -= 1
+		if _modified_counter <= 0:
+			_modified_indicator.hide()
+			_modified_counter = 0
+			modified.emit(false)
+	
+	print("Variable '", _variable_name, "' modified state: ", _modified_counter)
+
+
+## Clear the modified state of the variable item
+func clear_modified_state() -> void:
+	_modified_counter = 0
+	_modified_indicator.hide()
 
 
 ## Set the types dropdown
@@ -183,7 +205,7 @@ func _set_value_field(type_index: int) -> void:
 	
 	# Create the new value field
 	var field_data = SproutyDialogsVariableManager.new_field_by_type(
-			type, null, metadata, _on_value_changed)
+			type, null, metadata, _on_value_changed, mark_as_modified.bind(true))
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	_value_field.add_child(field_data.field)
 	_variable_value = field_data.default_value
@@ -211,7 +233,6 @@ func _on_name_changed(toggled_on: bool) -> void:
 	_variable_name = new_name
 	variable_renamed.emit(old_name, new_name)
 	variable_changed.emit(get_variable_data())
-	show_as_modified(true)
 
 
 ## Handle the type change event
@@ -220,16 +241,20 @@ func _on_type_changed(type_index: int) -> void:
 	var temp_value = _variable_value
 	var temp_index = _variable_type_index
 	_set_value_field(type_index)
-	show_as_modified(true)
 	variable_changed.emit(get_variable_data())
+	mark_as_modified(true)
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Change '" + _variable_name + "' Variable Type")
 	undo_redo.add_do_method(_type_dropdown, "select", type_index)
 	undo_redo.add_do_method(self, "_set_value_field", type_index)
+
 	undo_redo.add_undo_method(_type_dropdown, "select", temp_index)
 	undo_redo.add_undo_method(self, "_set_value_field", temp_index)
 	undo_redo.add_undo_method(self, "_set_field_value", temp_value, temp_type)
+
+	undo_redo.add_do_method(self, "mark_as_modified", true)
+	undo_redo.add_undo_method(self, "mark_as_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -238,13 +263,15 @@ func _on_type_changed(type_index: int) -> void:
 func _on_value_changed(value: Variant, type: int, field: Control) -> void:
 	var temp = _variable_value
 	_variable_value = value
-	show_as_modified(true)
 	variable_changed.emit(get_variable_data())
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Change '" + _variable_name + "' Variable Value", 1)
 	undo_redo.add_do_method(self, "_set_field_value", value, type)
 	undo_redo.add_undo_method(self, "_set_field_value", temp, type)
+
+	undo_redo.add_do_method(self, "mark_as_modified", true)
+	undo_redo.add_undo_method(self, "mark_as_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -324,6 +351,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 
 	data.item.parent_group = parent_group
 	data.item.update_path_tooltip()
+	data.item.mark_as_modified(true)
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.add_undo_method(from_group, "move_child", data.item, from_index)
@@ -332,6 +360,9 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 
 	undo_redo.add_do_property(data.item, "parent_group", to_group)
 	undo_redo.add_do_method(data.item, "update_path_tooltip")
+
+	undo_redo.add_do_method(data.item, "mark_as_modified", true)
+	undo_redo.add_undo_method(data.item, "mark_as_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
