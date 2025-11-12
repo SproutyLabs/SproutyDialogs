@@ -5,13 +5,12 @@ extends Panel
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Dialog Box
 # -----------------------------------------------------------------------------
-## Abstract class for dialog boxes from Sprouty Dialogs plugin.
+## Node that displays dialogue text on screen. Provides basic functionality to
+## displaying text with typing effect, character names, portraits, and options.
 ##
-## This class is used by a [DialogPlayer] to display a dialog. It provides the
-## basic functionality to display dialog text, character names, portraits, and
-## options.
-##
-## [br][br]You should inherit from this class to create your own dialog boxes.
+## You should not use this node directly to play a dialogue. You should use a
+## [DialogPlayer] node to play dialogues, which will use a dialog box to
+## display the dialog.
 # -----------------------------------------------------------------------------
 
 ## Emitted when the dialog is started.
@@ -55,7 +54,7 @@ signal option_selected(option_index: int)
 
 @export_category("Options Components")
 ## [Container] where the options will be displayed in the dialog box.
-## Recommended to use a [VBoxContainer] or [GridContainer] to display the options.
+## It is recommended a [VBoxContainer] or [GridContainer] to display the options.
 ## [color=red]This component is required to display the dialog options in it.[/color]
 @export var options_container: Container
 ## [Node] that will be used as a template for the options in the dialog box.
@@ -92,14 +91,14 @@ var _is_running: bool = false
 
 #region === Virtual methods ====================================================
 
-## Override this method to customize the behavior of the dialog box when starts 
-## at the beginning of the dialog.
+## Called when the dialog box starts at the beginning of the dialog.
+## Override this method to customize the behavior of the dialog box when starts.
 func _on_dialog_box_start() -> void:
 	show()
 
 
-## Override this method to customize the behavior of the dialog box when is closed
-## at the end of the dialog.
+## Called when the dialog box is closed at the end of the dialog.
+## Override this method to customize the behavior of the dialog box when is closed.
 func _on_dialog_box_close() -> void:
 	hide()
 

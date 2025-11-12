@@ -5,7 +5,7 @@ extends Container
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Variable Group Component
 # -----------------------------------------------------------------------------
-## This class represents a group of variables in the variable editor panel.
+## Component that represents a group of variables in the variable editor panel.
 ## It allows the user to set the group name and color, and contains variable items.
 # -----------------------------------------------------------------------------
 

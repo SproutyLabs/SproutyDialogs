@@ -5,7 +5,7 @@ extends Container
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Variable Item Component
 # -----------------------------------------------------------------------------
-## This class represents a single variable item in the variable editor panel.
+## Component that represents a single variable item in the variable editor panel.
 ## It allows the user to set the variable name, type and value.
 # -----------------------------------------------------------------------------
 

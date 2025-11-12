@@ -14,7 +14,7 @@ extends Panel
 ## Text boxes container from the text editor
 @onready var _text_boxes_container: VSplitContainer = %TextBoxes
 ## Input text box from the text editor
-@onready var text_input: CodeEdit = %TextBox
+@onready var _text_input: CodeEdit = %TextBox
 ## Text preview label from the text editor
 @onready var _text_preview: RichTextLabel = %TextPreview
 ## Preview box from the text editor
@@ -51,11 +51,16 @@ func _ready():
 	hide_text_editor()
 
 
+## Return the text input from the text editor
+func get_text_input() -> CodeEdit:
+	return _text_input
+
+
 ## Show the text editor
 ## Needs a LineEdit or TextEdit from where to get and update the text
 func show_text_editor(text_box: Variant) -> void:
 	_opened_text_box = text_box
-	text_input.text = _opened_text_box.text
+	_text_input.text = _opened_text_box.text
 	if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
 		_opened_text_box.text_changed.connect(_on_text_box_text_changed)
 	_text_preview.text = SproutyDialogsVariableManager.parse_variables(_opened_text_box.text, true)
@@ -66,7 +71,7 @@ func show_text_editor(text_box: Variant) -> void:
 func update_text_editor(text_box: Variant) -> void:
 	if visible and text_box != _opened_text_box:
 		_opened_text_box = text_box
-		text_input.text = _opened_text_box.text
+		_text_input.text = _opened_text_box.text
 		if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
 			_opened_text_box.text_changed.connect(_on_text_box_text_changed)
 		_text_preview.text = SproutyDialogsVariableManager.parse_variables(_opened_text_box.text, true)
@@ -75,7 +80,7 @@ func update_text_editor(text_box: Variant) -> void:
 ## Hide the text editor
 func hide_text_editor() -> void:
 	_text_preview.text = ""
-	text_input.text = ""
+	_text_input.text = ""
 	visible = false
 
 
@@ -94,14 +99,14 @@ func _on_close_button_pressed() -> void:
 
 ## Update text on text editor with the text box content when it changes
 func _on_text_box_text_changed(_arg: Variant = null) -> void:
-	if text_input.text == _opened_text_box.text:
+	if _text_input.text == _opened_text_box.text:
 		return # If the text is the same, do nothing
-	var caret_line = text_input.get_caret_line()
-	var caret_column = text_input.get_caret_column()
-	text_input.text = _opened_text_box.text
-	text_input.set_caret_line(caret_line)
-	text_input.set_caret_column(caret_column)
-	_text_preview.text = SproutyDialogsVariableManager.parse_variables(text_input.text, true)
+	var caret_line = _text_input.get_caret_line()
+	var caret_column = _text_input.get_caret_column()
+	_text_input.text = _opened_text_box.text
+	_text_input.set_caret_line(caret_line)
+	_text_input.set_caret_column(caret_column)
+	_text_preview.text = SproutyDialogsVariableManager.parse_variables(_text_input.text, true)
 
 
 ## Update the text box and preview with the text editor input
@@ -109,9 +114,9 @@ func _on_code_edit_text_changed() -> void:
 	if not _opened_text_box:
 		hide_text_editor()
 		return
-	_opened_text_box.text = text_input.text
-	_opened_text_box.text_changed.emit(text_input.text)
-	_text_preview.text = SproutyDialogsVariableManager.parse_variables(text_input.text, true)
+	_opened_text_box.text = _text_input.text
+	_opened_text_box.text_changed.emit(_text_input.text)
+	_text_preview.text = SproutyDialogsVariableManager.parse_variables(_text_input.text, true)
 
 
 ## Expsnd or collapse the text preview box
@@ -133,26 +138,26 @@ func _on_preview_expand_button_toggled(toggled_on: bool) -> void:
 func get_selected_text_position() -> Array[Vector2i]:
 	return [
 		Vector2i( # From position: x: column, y: line
-			text_input.get_selection_from_column(),
-			text_input.get_selection_from_line(),
+			_text_input.get_selection_from_column(),
+			_text_input.get_selection_from_line(),
 		),
 		Vector2i( # To position: x: column, y: line
-			text_input.get_selection_to_column(),
-			text_input.get_selection_to_line()
+			_text_input.get_selection_to_column(),
+			_text_input.get_selection_to_line()
 		)
 	]
 
 ## Find the given tags around the cursor position
 func find_tags_around_cursor(open_tag: String, close_tag: String) -> Array[Vector2i]:
-	var caret_line = text_input.get_caret_line()
-	var caret_column = text_input.get_caret_column()
+	var caret_line = _text_input.get_caret_line()
+	var caret_column = _text_input.get_caret_column()
 	
-	var open_tag_pos = text_input.search(
+	var open_tag_pos = _text_input.search(
 			open_tag, TextEdit.SEARCH_BACKWARDS, caret_line, caret_column)
-	var close_tag_pos = text_input.search(
+	var close_tag_pos = _text_input.search(
 			close_tag, TextEdit.SEARCH_WHOLE_WORDS, caret_line, caret_column)
 
-	var before_close_tag = text_input.search(
+	var before_close_tag = _text_input.search(
 			close_tag, TextEdit.SEARCH_BACKWARDS, caret_line, caret_column)
 
 	if open_tag_pos.x == -1 or close_tag_pos.x == -1:
@@ -168,7 +173,7 @@ func find_tags_around_cursor(open_tag: String, close_tag: String) -> Array[Vecto
 			and (before_close_tag.y > open_tag_pos.y or before_close_tag.x > open_tag_pos.x)):
 		return [] # If there are a close tag between the open tag and the cursor, tags not found
 
-	text_input.select(open_tag_pos.y, open_tag_pos.x,
+	_text_input.select(open_tag_pos.y, open_tag_pos.x,
 		close_tag_pos.y, close_tag_pos.x + close_tag.length())
 	
 	return [open_tag_pos, close_tag_pos]
@@ -185,7 +190,7 @@ func insert_tags_on_selected_text(
 		placeholder: String = ""
 		) -> void:
 	# If there is no text selected
-	if not text_input.has_selection():
+	if not _text_input.has_selection():
 		if add_on_empty: # Add the tags with a placeholder
 			insert_tags_at_cursor_pos(open_tag + placeholder, close_tag)
 		return
@@ -193,9 +198,9 @@ func insert_tags_on_selected_text(
 	var selection_pos = get_selected_text_position()
 	
 	# Insert the tags in the selected text
-	text_input.insert_text(close_tag, selection_pos[1].y, selection_pos[1].x)
-	text_input.insert_text(open_tag, selection_pos[0].y, selection_pos[0].x)
-	text_input.select(
+	_text_input.insert_text(close_tag, selection_pos[1].y, selection_pos[1].x)
+	_text_input.insert_text(open_tag, selection_pos[0].y, selection_pos[0].x)
+	_text_input.select(
 			selection_pos[0].y,
 			selection_pos[0].x - open_tag.length(),
 			selection_pos[1].y,
@@ -205,11 +210,11 @@ func insert_tags_on_selected_text(
 
 ## Insert tags at the cursor position
 func insert_tags_at_cursor_pos(open_tag: String, close_tag: String) -> void:
-	var caret_line = text_input.get_caret_line()
-	var caret_column = text_input.get_caret_column()
+	var caret_line = _text_input.get_caret_line()
+	var caret_column = _text_input.get_caret_column()
 
-	text_input.insert_text(open_tag + close_tag, caret_line, caret_column)
-	text_input.select(caret_line, caret_column, caret_line,
+	_text_input.insert_text(open_tag + close_tag, caret_line, caret_column)
+	_text_input.select(caret_line, caret_column, caret_line,
 			caret_column + open_tag.length() + close_tag.length())
 
 #endregion
@@ -231,22 +236,22 @@ func update_code_tags(
 		) -> void:
 	# Get open tag without attributes
 	var open_tag_begin = open_tag.split("=")[0].split(" ")[0].replace("]", "")
-	var selected_text = text_input.get_selected_text()
+	var selected_text = _text_input.get_selected_text()
 	var tags_pos = []
 
 	# If there is text selected
-	if text_input.has_selection():
+	if _text_input.has_selection():
 		# If the selected text contains the open tag
 		if selected_text.contains(open_tag_begin):
 			tags_pos = get_selected_text_position()
 
 			# If the selected text does not begin with the open tag, find it
 			if not selected_text.begins_with(open_tag_begin):
-				var open_tag_pos = text_input.search(
+				var open_tag_pos = _text_input.search(
 						open_tag_begin, TextEdit.SEARCH_WHOLE_WORDS,
 						tags_pos[0].y, tags_pos[0].x)
 				
-				text_input.select(open_tag_pos.y, open_tag_pos.x, tags_pos[1].y, tags_pos[1].x)
+				_text_input.select(open_tag_pos.y, open_tag_pos.x, tags_pos[1].y, tags_pos[1].x)
 				tags_pos[0] = open_tag_pos # Update the open tag position
 		else:
 			# If the selected text is a color, find the color tags to update
@@ -271,16 +276,16 @@ func update_code_tags(
 			return
 	
 	# Get open tag with attributes and update it
-	selected_text = text_input.get_selected_text()
+	selected_text = _text_input.get_selected_text()
 	var old_open_tag = selected_text.split("]")[0] + "]"
 	open_tag = _update_tag_attributes(old_open_tag, open_tag, ignore_attr)
 
 	# Replace the tags in the selected text
-	text_input.remove_text(tags_pos[0].y, tags_pos[0].x,
+	_text_input.remove_text(tags_pos[0].y, tags_pos[0].x,
 			tags_pos[0].y, tags_pos[0].x + old_open_tag.length())
 
-	text_input.insert_text(open_tag, tags_pos[0].y, tags_pos[0].x)
-	text_input.select(tags_pos[0].y, tags_pos[0].x,
+	_text_input.insert_text(open_tag, tags_pos[0].y, tags_pos[0].x)
+	_text_input.select(tags_pos[0].y, tags_pos[0].x,
 		tags_pos[0].y, tags_pos[0].x + open_tag.length())
 
 

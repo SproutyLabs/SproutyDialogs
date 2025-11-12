@@ -5,8 +5,8 @@ extends HBoxContainer
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Expandable Text Box Component
 # -----------------------------------------------------------------------------
-## Component to write and edit dialog text allowing the user to expand the
-## text opening a text editor window.
+## Component that extends a text box with an expand button to open a larger 
+## text editor.
 # -----------------------------------------------------------------------------
 
 ## Emitted when the text in the text box changes

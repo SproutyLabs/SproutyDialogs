@@ -5,15 +5,15 @@ extends LineEdit
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Combo Box Component
 # -----------------------------------------------------------------------------
-## Component that allows the user write in an input field and select from
-## filtered options based on the input from a dropdown list.
+## Component that combines a text input with a dropdown list of selectable options. 
+## Users can either pick an item from the list or type a custom value directly.
 # -----------------------------------------------------------------------------	
 
 ## Emitted when an option is selected from the dropdown list
 signal option_selected(option: String)
 ## Emitted when the text in the input field changes
 signal input_changed(text: String)
-## Emitted when the user submits the input (presses Enter)
+## Emitted when the user submits the input
 signal input_submitted(text: String)
 ## Emitted when the input field loses focus
 signal input_focus_exited()

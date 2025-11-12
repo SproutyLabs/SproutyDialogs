@@ -65,7 +65,8 @@ func _on_image_path_submitted(path: String) -> void:
 		return
 	
 	# Find the position of the path inside the tags
-	var selected_text = text_editor.text_input.get_selected_text()
+	var text_input = text_editor.get_text_input()
+	var selected_text = text_input.get_selected_text()
 	var open_tag_split = selected_text.split("]")
 
 	var open_tag_end = open_tag_split[0].length() + 1
@@ -75,13 +76,13 @@ func _on_image_path_submitted(path: String) -> void:
 	tags_pos[1].x = tags_pos[0].x + close_tag_start # End path position
 	tags_pos[0].x += open_tag_end # Start path position
 
-	text_editor.text_input.remove_text(
+	text_input.remove_text(
 			tags_pos[0].y, tags_pos[0].x,
 			tags_pos[0].y, tags_pos[1].x)
 	
-	text_editor.text_input.insert_text(path, tags_pos[0].y, tags_pos[0].x)
+	text_input.insert_text(path, tags_pos[0].y, tags_pos[0].x)
 
-	text_editor.text_input.select(
+	text_input.select(
 			tags_pos[0].y, tags_pos[0].x,
 			tags_pos[0].y, tags_pos[0].x + path.length())
 
