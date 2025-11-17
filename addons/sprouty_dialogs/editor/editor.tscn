@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://chmw64xy0cmck"]
+[gd_scene load_steps=12 format=3 uid="uid://chmw64xy0cmck"]
 
 [ext_resource type="Script" uid="uid://cqis4e6pcwteo" path="res://addons/sprouty_dialogs/editor/scripts/editor.gd" id="1_gu2d1"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_h283m"]
@@ -7,6 +7,9 @@
 [ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/sprouty_dialogs/editor/modules/workspace/workspace.tscn" id="4_yuhh0"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/sprouty_dialogs/editor/modules/variables/variable_panel.tscn" id="6_4jako"]
 [ext_resource type="PackedScene" uid="uid://pdcicn3rbwbs" path="res://addons/sprouty_dialogs/editor/modules/settings/settings_panel.tscn" id="7_xlq8u"]
+[ext_resource type="PackedScene" uid="uid://b3ttyn7bfc2v0" path="res://addons/sprouty_dialogs/editor/about_panel.tscn" id="8_d78hy"]
+[ext_resource type="Script" uid="uid://dnfcwr3jd1n3b" path="res://addons/sprouty_dialogs/editor/scripts/update_manager.gd" id="8_j2ohl"]
+[ext_resource type="PackedScene" uid="uid://bsuv8fchs6lyc" path="res://addons/sprouty_dialogs/editor/update_panel.tscn" id="10_hbm63"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_22uar"]
 
@@ -76,5 +79,20 @@ metadata/_tab_index = 3
 [node name="SettingsPanel" parent="MainContainer/TabContainer/Settings" instance=ExtResource("7_xlq8u")]
 unique_name_in_owner = true
 layout_mode = 1
+
+[node name="UpdateManager" type="Node" parent="."]
+script = ExtResource("8_j2ohl")
+
+[node name="UpdateCheckRequest" type="HTTPRequest" parent="UpdateManager"]
+timeout = 5.0
+
+[node name="DownloadUpdateRequest" type="HTTPRequest" parent="UpdateManager"]
+
+[node name="AboutPanel" parent="." instance=ExtResource("8_d78hy")]
+visible = false
+
+[node name="UpdatePanel" parent="AboutPanel" instance=ExtResource("10_hbm63")]
+size = Vector2i(608, 699)
+visible = false
 
 [connection signal="tab_selected" from="MainContainer/TabContainer" to="." method="_on_tab_selected"]

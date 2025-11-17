@@ -122,7 +122,7 @@ func _ready() -> void:
 	# Connect meta clicked signal to handle meta tags
 	if not dialog_display:
 		printerr("[Sprouty Dialogs] Dialog display is not set. Please set the " \
-				+"dialog_display property on the inspector.")
+				+"'dialog_display' property in the '" + name + "' Dialog Box on the inspector.")
 		return
 	if not dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
 		dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
@@ -254,11 +254,11 @@ func display_options(options: Array) -> void:
 	_is_displaying_options = true
 	if not options_container:
 		printerr("[SproutyDialogs] Dialog options container is not set. 
-			Please set the options_container property on the inspector.")
+			Please set the 'options_container' property in the '" + name + "' Dialog Box on the inspector.")
 		return
 	if not option_template:
 		printerr("[SproutyDialogs] Dialog option template is not set. 
-			Please set the option_template property on the inspector.")
+			Please set the 'option_template' property in the '" + name + "' Dialog Box on the inspector.")
 		return
 	# Clear previous options
 	for child in options_container.get_children():

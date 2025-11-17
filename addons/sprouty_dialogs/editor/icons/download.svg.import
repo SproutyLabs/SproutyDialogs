@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cka2spagpv2d7"
-path="res://.godot/imported/plugin_icon.svg-1d214d7a8f612b5871220941d4cae265.ctex"
+uid="uid://c3w1ffsgmmhoi"
+path="res://.godot/imported/download.svg-4e9b22907e6a0f056fea8d53889d5008.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg"
-dest_files=["res://.godot/imported/plugin_icon.svg-1d214d7a8f612b5871220941d4cae265.ctex"]
+source_file="res://addons/sprouty_dialogs/editor/icons/download.svg"
+dest_files=["res://.godot/imported/download.svg-4e9b22907e6a0f056fea8d53889d5008.ctex"]
 
 [params]
 

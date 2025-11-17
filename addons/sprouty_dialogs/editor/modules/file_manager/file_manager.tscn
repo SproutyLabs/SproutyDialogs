@@ -1,15 +1,16 @@
-[gd_scene load_steps=10 format=3 uid="uid://dpscdg0f7o6ft"]
+[gd_scene load_steps=11 format=3 uid="uid://dpscdg0f7o6ft"]
 
 [ext_resource type="Script" uid="uid://cv23xnc0v5l0t" path="res://addons/sprouty_dialogs/editor/modules/file_manager/scripts/file_manager.gd" id="1_3v21c"]
 [ext_resource type="Script" uid="uid://xuu4omf67pq3" path="res://addons/sprouty_dialogs/editor/scripts/side_bar_controller.gd" id="1_avlcx"]
-[ext_resource type="Texture2D" uid="uid://dv53yhmd7k3d5" path="res://addons/sprouty_dialogs/editor/editor/icons/add-dialog.svg" id="2_fjick"]
-[ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/sprouty_dialogs/editor/editor/icons/add-char.svg" id="3_ljhu2"]
+[ext_resource type="Texture2D" uid="uid://dv53yhmd7k3d5" path="res://addons/sprouty_dialogs/editor/icons/add-dialog.svg" id="2_fjick"]
+[ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/sprouty_dialogs/editor/icons/add-char.svg" id="3_ljhu2"]
 [ext_resource type="Script" uid="uid://dlco4x1xmoek0" path="res://addons/sprouty_dialogs/editor/modules/file_manager/scripts/file_list_manager.gd" id="4_r5dun"]
-[ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/sprouty_dialogs/editor/editor/icons/interactable/collapse-left.svg" id="8_72tq1"]
+[ext_resource type="Texture2D" uid="uid://cka2spagpv2d7" path="res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg" id="7_uexgy"]
+[ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-left.svg" id="8_72tq1"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="8_wehoa"]
-[ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/sprouty_dialogs/editor/editor/icons/interactable/collapse-right.svg" id="9_xltsg"]
+[ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-right.svg" id="9_xltsg"]
 
-[sub_resource type="DPITexture" id="DPITexture_6bto2"]
+[sub_resource type="DPITexture" id="DPITexture_uexgy"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -64,7 +65,7 @@ layout_mode = 2
 [node name="OpenFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
-icon = SubResource("DPITexture_6bto2")
+icon = SubResource("DPITexture_uexgy")
 flat = true
 
 [node name="VSeparator3" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions"]
@@ -74,7 +75,7 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 disabled = true
-icon = SubResource("DPITexture_6bto2")
+icon = SubResource("DPITexture_uexgy")
 flat = true
 
 [node name="FileList" type="VBoxContainer" parent="ContentContainer/Container/FileManager"]
@@ -85,7 +86,7 @@ script = ExtResource("4_r5dun")
 [node name="FileSearch" type="LineEdit" parent="ContentContainer/Container/FileManager/FileList"]
 layout_mode = 2
 placeholder_text = "Search files..."
-right_icon = SubResource("DPITexture_6bto2")
+right_icon = SubResource("DPITexture_uexgy")
 caret_blink = true
 caret_blink_interval = 0.5
 
@@ -124,18 +125,18 @@ unique_name_in_owner = true
 size = Vector2i(108, 120)
 item_count = 5
 item_0/text = "Save"
-item_0/icon = SubResource("DPITexture_6bto2")
+item_0/icon = SubResource("DPITexture_uexgy")
 item_0/id = 0
 item_1/text = "Save As..."
-item_1/icon = SubResource("DPITexture_6bto2")
+item_1/icon = SubResource("DPITexture_uexgy")
 item_1/id = 1
 item_2/id = 4
 item_2/separator = true
 item_3/text = "Close"
-item_3/icon = SubResource("DPITexture_6bto2")
+item_3/icon = SubResource("DPITexture_uexgy")
 item_3/id = 2
 item_4/text = "Close All"
-item_4/icon = SubResource("DPITexture_6bto2")
+item_4/icon = SubResource("DPITexture_uexgy")
 item_4/id = 3
 
 [node name="ConfirmCloseFiles" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
@@ -179,13 +180,14 @@ filters = PackedStringArray("*.tres")
 [node name="BottomContainer" type="HBoxContainer" parent="ContentContainer/Container"]
 layout_mode = 2
 
-[node name="Version" type="Label" parent="ContentContainer/Container/BottomContainer"]
+[node name="VersionButton" type="Button" parent="ContentContainer/Container/BottomContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.619608, 0.611765, 0.568627, 1)
-text = "v0.0.1
-"
-vertical_alignment = 1
+text = "v1.0.0"
+icon = ExtResource("7_uexgy")
+flat = true
+alignment = 0
 
 [node name="CloseButton" type="Button" parent="ContentContainer/Container/BottomContainer"]
 layout_mode = 2

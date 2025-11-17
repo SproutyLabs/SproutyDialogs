@@ -18,9 +18,28 @@ extends VSplitContainer
 ## Expand button to show the file manager
 @onready var _expand_bar: Container = $ExpandBar
 
+## Version button reference
+@onready var version_button: Button = %VersionButton
+
 
 func _ready():
 	_on_expand_button_pressed() # File manager is expanded by default
+
+
+## Set the plugin version on the version button
+func set_plugin_version(version: String) -> void:
+	version_button.text = "v" + version
+
+
+## Set the version status on the version button
+func set_version_status(status: int) -> void:
+	match status:
+		0: # Up to date
+			version_button.modulate = Color.WHITE
+		1: # Update available
+			version_button.modulate = Color.ORANGE
+		2: # Failure
+			version_button.modulate = Color.GRAY
 
 
 ## Show or hide the CSV file path field

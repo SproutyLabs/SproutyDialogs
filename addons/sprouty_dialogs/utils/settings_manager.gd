@@ -10,9 +10,9 @@ extends Node
 # -----------------------------------------------------------------------------
 
 ## Default dialog box path to load if no dialog box is specified.
-const DEFAULT_DIALOG_BOX_PATH = "res://addons/sprouty_dialogs/objects/defaults/default_dialog_box.tscn"
+const DEFAULT_DIALOG_BOX_PATH = "res://addons/sprouty_dialogs/nodes/defaults/default_dialog_box.tscn"
 ## Default portrait scene path to load when creating a new portrait.
-const DEFAULT_PORTRAIT_PATH = "res://addons/sprouty_dialogs/objects/defaults/default_portrait.tscn"
+const DEFAULT_PORTRAIT_PATH = "res://addons/sprouty_dialogs/nodes/defaults/default_portrait.tscn"
 
 ## Settings paths used in the plugin.
 ## This dictionary maps setting names to their paths in the project settings.

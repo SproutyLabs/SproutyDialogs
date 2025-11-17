@@ -8,6 +8,9 @@ extends Control
 ## different modules of the plugin.
 # -----------------------------------------------------------------------------
 
+## Test scene path used to play dialogs in the editor.
+const TEST_SCENE_PATH = "res://addons/sprouty_dialogs/utils/test_scene/dialog_test_scene.tscn"
+
 ## Side bar reference
 @onready var side_bar: Control = %SideBar
 ## File manager reference
@@ -34,6 +37,13 @@ extends Control
 	preload("res://addons/sprouty_dialogs/editor/icons/variable.svg"),
 	preload("res://addons/sprouty_dialogs/editor/icons/settings.svg")
 ]
+
+## About panel reference
+@onready var _about_panel: PopupPanel = $AboutPanel
+## Update panel reference
+@onready var _update_panel: PopupPanel = $AboutPanel/UpdatePanel
+## Update manager reference
+@onready var _update_manager: Node = $UpdateManager
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
@@ -73,6 +83,27 @@ func _ready():
 	# Settings panel signals
 	_connect_settings_panel_signals()
 
+	# Set plugin version in about panel and side bar
+	var version = _update_manager.get_current_version()
+	side_bar.version_button.pressed.connect(_about_panel.popup)
+	side_bar.set_plugin_version(version)
+	_about_panel.set_plugin_version(version)
+
+	# Check for updates
+	_update_panel.install_update_requested.connect(_update_manager.request_download_update)
+	_update_manager.new_version_received.connect(_update_panel.set_update_info)
+	_update_manager.update_checked.connect(func(result: int) -> void:
+		_about_panel.set_version_status(result)
+		side_bar.set_version_status(result)
+	)
+	_update_manager.download_completed.connect(func(result: int) -> void:
+		_about_panel.set_version_status(result)
+		side_bar.set_version_status(result)
+
+		# TODO: Update version after download
+	)
+	_update_manager.request_update_check()
+	
 
 ## Connect signals from settings panel to other modules
 func _connect_settings_panel_signals() -> void:
@@ -103,7 +134,7 @@ func play_dialog_scene(start_id: String, dialog_path: String = "") -> void:
 			return
 	SproutyDialogsSettingsManager.set_setting("play_dialog_path", dialog_path)
 	SproutyDialogsSettingsManager.set_setting("play_start_id", start_id)
-	EditorInterface.play_custom_scene("res://addons/sprouty_dialogs/objects/test_scene/dialog_test_scene.tscn")
+	EditorInterface.play_custom_scene(TEST_SCENE_PATH)
 
 
 ## Set the tab menu icons

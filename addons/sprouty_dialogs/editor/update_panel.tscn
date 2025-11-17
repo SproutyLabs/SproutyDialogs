@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://bsuv8fchs6lyc"]
+
+[ext_resource type="Script" uid="uid://cxxoamql014l1" path="res://addons/sprouty_dialogs/editor/scripts/update_panel.gd" id="1_amqc6"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="2_e6pg5"]
+[ext_resource type="Texture2D" uid="uid://c3w1ffsgmmhoi" path="res://addons/sprouty_dialogs/editor/icons/download.svg" id="3_e6pg5"]
+
+[node name="UpdatePanel" type="PopupPanel"]
+oversampling_override = 1.0
+title = "Install New Version"
+initial_position = 4
+size = Vector2i(608, 608)
+visible = true
+borderless = false
+script = ExtResource("1_amqc6")
+
+[node name="Container" type="VBoxContainer" parent="."]
+custom_minimum_size = Vector2(600, 600)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = -4.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="VersionLabel" type="RichTextLabel" parent="Container"]
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_e6pg5")
+bbcode_enabled = true
+text = "[color=orange][b][i]New version 0.0.0 available!
+"
+fit_content = true
+
+[node name="HSeparator" type="HSeparator" parent="Container"]
+layout_mode = 2
+
+[node name="InfoLabel" type="RichTextLabel" parent="Container"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/normal = ExtResource("2_e6pg5")
+bbcode_enabled = true
+text = "[detail]"
+
+[node name="InstallButton" type="Button" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 4
+tooltip_text = "Warning!
+This will delete the addons/sprouty-dialogs folder and install the new version.
+Any custom changes in that folder will be lost!"
+text = "Install"
+icon = ExtResource("3_e6pg5")
