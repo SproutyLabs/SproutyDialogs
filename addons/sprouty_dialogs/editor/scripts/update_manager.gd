@@ -29,8 +29,8 @@ const TEMP_ZIP_PATH := "user://temp.zip"
 ## Download update HTTP request
 @onready var _download_request: HTTPRequest = $DownloadUpdateRequest
 
-## New version zip download URL
-var new_version_zip_url: String = ""
+## New version release info
+var new_version_info: Dictionary = {}
 
 
 func _ready():
@@ -71,14 +71,18 @@ func _on_update_check_request_completed(result: int, response_code: int,
 
 	# Notify if an update is available
 	if _compare_versions(last_release, current_version):
-		new_version_zip_url = response[0]["zipball_url"]
+		new_version_info = response[0]
 		update_checked.emit(UpdateCheckResult.UPDATE_AVAILABLE)
 		new_version_received.emit({
 			"version": last_release,
-			"body": response[0]["body"]
+			"date": new_version_info.published_at.split("T")[0],
+			"author": new_version_info.author.login,
+			"body": new_version_info.body
 		})
 	else:
 		update_checked.emit(UpdateCheckResult.UP_TO_DATE)
+	
+	print("Current version: %s, Last release: %s" % [current_version, last_release])
 
 
 ## Compare two semantic version strings
@@ -94,7 +98,7 @@ func _compare_versions(v1: String, v2: String) -> bool:
 
 ## Request to download the update
 func request_download_update() -> void:
-	_download_request.request(new_version_zip_url)
+	_download_request.request(new_version_info.zipball_url)
 
 
 ## Handle download request completed

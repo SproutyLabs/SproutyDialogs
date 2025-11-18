@@ -38,13 +38,13 @@ func set_plugin_version(version: String) -> void:
 func set_version_status(status: int) -> void:
 	match status:
 		0: # Up to date
-			_version_status_label.bbcode_text = "[center][color=lime-green]The plugin is up to date.[/color]"
+			_version_status_label.bbcode_text = "[center][color=white]The plugin is up to date[/color]"
 			_update_button.visible = false
 		1: # Update available
 			_version_status_label.bbcode_text = "[center][color=orange]A new version is available![/color]"
 			_update_button.visible = true
 		2: # Failure
-			_version_status_label.bbcode_text = "[center][color=gray]Could not check for updates.[/color]"
+			_version_status_label.bbcode_text = "[center][color=gray]Could not check for updates[/color]"
 			_update_button.visible = false
 
 

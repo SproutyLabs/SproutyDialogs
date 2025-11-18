@@ -99,8 +99,6 @@ func _ready():
 	_update_manager.download_completed.connect(func(result: int) -> void:
 		_about_panel.set_version_status(result)
 		side_bar.set_version_status(result)
-
-		# TODO: Update version after download
 	)
 	_update_manager.request_update_check()
 	

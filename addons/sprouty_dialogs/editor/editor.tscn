@@ -92,7 +92,6 @@ timeout = 5.0
 visible = false
 
 [node name="UpdatePanel" parent="AboutPanel" instance=ExtResource("10_hbm63")]
-size = Vector2i(608, 699)
 visible = false
 
 [connection signal="tab_selected" from="MainContainer/TabContainer" to="." method="_on_tab_selected"]

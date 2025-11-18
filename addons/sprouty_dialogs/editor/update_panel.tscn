@@ -25,23 +25,36 @@ offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 3
-size_flags_vertical = 3
+size_flags_vertical = 0
 
-[node name="VersionLabel" type="RichTextLabel" parent="Container"]
+[node name="Header" type="PanelContainer" parent="Container"]
+layout_mode = 2
+
+[node name="Container" type="VBoxContainer" parent="Container/Header"]
+layout_mode = 2
+
+[node name="VersionLabel" type="RichTextLabel" parent="Container/Header/Container"]
 layout_mode = 2
 theme_override_styles/normal = ExtResource("2_e6pg5")
 bbcode_enabled = true
-text = "[color=orange][b][i]New version 0.0.0 available!
+text = "[color=orange][b][i][font s=36]New version 0.0.0 available!
 "
 fit_content = true
 
-[node name="HSeparator" type="HSeparator" parent="Container"]
+[node name="PublishedInfoLabel" type="RichTextLabel" parent="Container/Header/Container"]
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_e6pg5")
+bbcode_enabled = true
+text = "[color=gray][i]Published at [date] by [author]
+"
+fit_content = true
+
+[node name="HSeparator" type="HSeparator" parent="Container/Header/Container"]
 layout_mode = 2
 
-[node name="InfoLabel" type="RichTextLabel" parent="Container"]
+[node name="ReleaseInfoLabel" type="RichTextLabel" parent="Container"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_styles/normal = ExtResource("2_e6pg5")
 bbcode_enabled = true
 text = "[detail]"
 
