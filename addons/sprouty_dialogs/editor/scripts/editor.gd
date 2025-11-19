@@ -51,7 +51,6 @@ var undo_redo: EditorUndoRedoManager
 
 func _ready():
 	set_tabs_icons()
-	
 	# Set undo redo manager
 	workspace.undo_redo = undo_redo
 	character_panel.undo_redo = undo_redo
@@ -80,26 +79,11 @@ func _ready():
 	character_panel.open_character_file_pressed.connect(
 			file_manager.on_open_file_pressed)
 	
-	# Settings panel signals
+	# Settings and update manager setup
 	_connect_settings_panel_signals()
+	_setup_update_manager()
 
-	# Set plugin version in about panel and side bar
-	var version = _update_manager.get_current_version()
-	side_bar.version_button.pressed.connect(_about_panel.popup)
-	side_bar.set_plugin_version(version)
-	_about_panel.set_plugin_version(version)
-
-	# Check for updates
-	_update_panel.install_update_requested.connect(_update_manager.request_download_update)
-	_update_manager.new_version_received.connect(_update_panel.set_update_info)
-	_update_manager.update_checked.connect(func(result: int) -> void:
-		_about_panel.set_version_status(result)
-		side_bar.set_version_status(result)
-	)
-	_update_manager.download_completed.connect(func(result: int) -> void:
-		_about_panel.set_version_status(result)
-		side_bar.set_version_status(result)
-	)
+	# Check for updates on startup
 	_update_manager.request_update_check()
 	
 
@@ -120,6 +104,33 @@ func _connect_settings_panel_signals() -> void:
 			character_panel.on_locales_changed)
 	settings_panel.translation_settings.default_locale_changed.connect(
 			character_panel.on_locales_changed)
+
+
+## Connect update manager signals and setup version
+func _setup_update_manager() -> void:
+	side_bar.version_button.pressed.connect(_about_panel.popup)
+	_about_panel.check_updates_requested.connect(_update_manager.request_update_check)
+	_update_panel.install_update_requested.connect(_update_manager.request_download_update)
+	_update_manager.new_version_received.connect(_update_panel.set_release_info)
+	
+	# Update UI when update check is completed
+	_update_manager.update_checked.connect(func(result: int) -> void:
+		_about_panel.set_version_status(result)
+		side_bar.set_version_status(result)
+	)
+	# Update UI when download is completed
+	_update_manager.download_completed.connect(func(result):
+		_update_panel.download_completed(result)
+		_about_panel.set_version_status(result)
+		side_bar.set_version_status(result)
+		if result == 0: # Success
+			side_bar.set_plugin_version(_update_manager.get_current_version())
+			_about_panel.set_plugin_version(_update_manager.get_current_version())
+		)
+	# Set plugin version in about panel and side bar
+	var version = _update_manager.get_current_version()
+	side_bar.set_plugin_version(version)
+	_about_panel.set_plugin_version(version)
 
 
 ## Play a dialog from the current graph starting from the given ID

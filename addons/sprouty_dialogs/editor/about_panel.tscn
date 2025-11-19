@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://b3ttyn7bfc2v0"]
+[gd_scene load_steps=8 format=3 uid="uid://b3ttyn7bfc2v0"]
 
 [ext_resource type="Script" uid="uid://84gckqfa1ts8" path="res://addons/sprouty_dialogs/editor/scripts/about_panel.gd" id="1_mxuji"]
 [ext_resource type="Texture2D" uid="uid://cka2spagpv2d7" path="res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg" id="1_owu31"]
@@ -7,14 +7,20 @@
 [ext_resource type="Texture2D" uid="uid://d1ktado0bvpv7" path="res://addons/sprouty_dialogs/editor/icons/github.svg" id="4_dhkc0"]
 [ext_resource type="Texture2D" uid="uid://cl8faicjvrgi2" path="res://addons/sprouty_dialogs/editor/icons/heart.svg" id="5_4kbvv"]
 
+[sub_resource type="DPITexture" id="DPITexture_jwyc3"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
 [node name="AboutPanel" type="PopupPanel"]
 disable_3d = true
 oversampling_override = 1.0
-title = "About - Sprouty Dialogs"
+title = "Sprouty Dialogs"
 initial_position = 4
 size = Vector2i(296, 231)
 visible = true
 borderless = false
+max_size = Vector2i(16384, 400)
+keep_title_visible = true
 script = ExtResource("1_mxuji")
 
 [node name="Container" type="VBoxContainer" parent="."]
@@ -43,10 +49,17 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_styles/normal = ExtResource("2_mxuji")
 bbcode_enabled = true
-text = "[center](Up to Date!)"
+text = "[center][color=greenyellow]The plugin is up to date[/color]"
 fit_content = true
 
+[node name="CheckUpdatesButton" type="Button" parent="Container"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Check for updates"
+icon = SubResource("DPITexture_jwyc3")
+
 [node name="UpdateButton" type="Button" parent="Container"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Update to last version"

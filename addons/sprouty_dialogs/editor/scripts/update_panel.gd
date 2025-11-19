@@ -12,26 +12,57 @@ extends PopupPanel
 signal install_update_requested()
 
 ## Version label reference
-@onready var _version_label: RichTextLabel = $Container/Header/Container/VersionLabel
+@onready var _version_label: RichTextLabel = $NewVersionContainer/Header/Container/VersionLabel
 ## Published info label reference
-@onready var _published_info_label: RichTextLabel = $Container/Header/Container/PublishedInfoLabel
+@onready var _published_info_label: RichTextLabel = $NewVersionContainer/Header/Container/PublishedInfoLabel
 ## Release info label reference
-@onready var _release_info_label: RichTextLabel = $Container/ReleaseInfoLabel
+@onready var _release_info_label: RichTextLabel = $NewVersionContainer/ReleaseInfoLabel
 
 ## Install button reference
-@onready var _install_button: Button = $Container/InstallButton
+@onready var _install_button: Button = $NewVersionContainer/InstallButton
+## Restart button reference
+@onready var _restart_button: Button = $InstallCompletePanel/Container/RestartButton
+## Back button reference
+@onready var _back_button: Button = $InstallCompletePanel/Container/BackButton
 
 
 func _ready() -> void:
+	_release_info_label.meta_clicked.connect(_on_url_meta_clicked)
 	_install_button.pressed.connect(_on_install_button_pressed)
+	_restart_button.pressed.connect(_on_restart_button_pressed)
+	_back_button.pressed.connect(func() -> void:
+		$InstallCompletePanel.hide()
+		$NewVersionContainer.show()
+	)
+	_restart_button.icon = get_theme_icon("Reload", "EditorIcons")
+	$NewVersionContainer.show()
+	$InstallCompletePanel.hide()
+	$LoadingPanel.hide()
 	hide()
 
 
-## Set the update information for the update panel
-func set_update_info(update_info: Dictionary) -> void:
+## Set the release information for the update panel
+func set_release_info(update_info: Dictionary) -> void:
 	_version_label.text = "[color=orange][b][i][font s=36]New Version " + update_info.version + " Available!"
 	_published_info_label.text = "[color=gray][i]Published on " + update_info.date + " by " + update_info.author
 	_release_info_label.text = _markdown_to_bbcode(update_info.body)
+
+
+## Handle download completed
+func download_completed(result: int) -> void:
+	$InstallCompletePanel.show()
+	$LoadingPanel.hide()
+	match result:
+		0: # Success
+			$InstallCompletePanel/Container/Label.text = "The update was installed successfully!" \
+					+"\n\nPlease restart the editor to apply the update."
+			_restart_button.show()
+			_back_button.hide()
+		1: # Failure
+			$InstallCompletePanel/Container/Label.text = "The update could not be installed." \
+					+"\n\nPlease try again later."
+			_restart_button.hide()
+			_back_button.show()
 
 
 ## Convert markdown text to BBCode
@@ -95,6 +126,17 @@ func _markdown_to_bbcode(text: String) -> String:
 
 ## Handle Install button pressed
 func _on_install_button_pressed() -> void:
+	$LoadingPanel.show()
+	$NewVersionContainer.hide()
 	install_update_requested.emit()
-	
-	# TODO: Add waiting for installation feedback
+	$LoadingPanel/Container/LoadingIcon/Animation.play()
+
+
+## Handle Restart button pressed
+func _on_restart_button_pressed() -> void:
+	EditorInterface.restart_editor(true)
+
+
+## Handle URLs clicked in release info
+func _on_url_meta_clicked(meta: Variant) -> void:
+	OS.shell_open(str(meta))

@@ -29,8 +29,10 @@ const TEMP_ZIP_PATH := "user://temp.zip"
 ## Download update HTTP request
 @onready var _download_request: HTTPRequest = $DownloadUpdateRequest
 
-## New version release info
-var new_version_info: Dictionary = {}
+## Current version of the plugin
+var _current_version: String = ""
+## New version release zip file URL
+var _release_zip_url: String = ""
 
 
 func _ready():
@@ -40,6 +42,8 @@ func _ready():
 
 ## Get the current version of the plugin
 func get_current_version() -> String:
+	if _current_version != "":
+		return _current_version
 	var plugin_cfg := ConfigFile.new()
 	plugin_cfg.load("res://addons/sprouty_dialogs/plugin.cfg")
 	return plugin_cfg.get_value("plugin", "version", "unknown")
@@ -49,6 +53,11 @@ func get_current_version() -> String:
 func request_update_check() -> void:
 	if _update_check_request.get_http_client_status() == HTTPClient.STATUS_DISCONNECTED:
 		_update_check_request.request(RELEASES_URL)
+
+
+## Request to download the update
+func request_download_update() -> void:
+	_download_request.request(_release_zip_url)
 
 
 ## Handle update check request completed
@@ -64,25 +73,25 @@ func _on_update_check_request_completed(result: int, response_code: int,
 	if typeof(response) != TYPE_ARRAY: return
 
 	var current_version := get_current_version()
-	var last_release = response[0]["tag_name"].strip_edges().trim_prefix('v')
+	var last_release = response[0]
+	var last_version = last_release["tag_name"].strip_edges().trim_prefix('v')
 
-	if last_release.split(".").size() < 3:
-		last_release += ".0" # Ensure semantic versioning format
+	if last_version.split(".").size() < 3:
+		last_version += ".0" # Ensure semantic versioning format
 
 	# Notify if an update is available
-	if _compare_versions(last_release, current_version):
-		new_version_info = response[0]
+	if _compare_versions(last_version, current_version):
+		_current_version = last_version
+		_release_zip_url = last_release.zipball_url
 		update_checked.emit(UpdateCheckResult.UPDATE_AVAILABLE)
 		new_version_received.emit({
-			"version": last_release,
-			"date": new_version_info.published_at.split("T")[0],
-			"author": new_version_info.author.login,
-			"body": new_version_info.body
+			"version": last_version,
+			"date": last_release.published_at.split("T")[0],
+			"author": last_release.author.login,
+			"body": last_release.body
 		})
 	else:
 		update_checked.emit(UpdateCheckResult.UP_TO_DATE)
-	
-	print("Current version: %s, Last release: %s" % [current_version, last_release])
 
 
 ## Compare two semantic version strings
@@ -96,16 +105,12 @@ func _compare_versions(v1: String, v2: String) -> bool:
 	return false
 
 
-## Request to download the update
-func request_download_update() -> void:
-	_download_request.request(new_version_info.zipball_url)
-
-
 ## Handle download request completed
 func _on_download_request_completed(result: int, response_code: int,
 		headers: PackedStringArray, body: PackedByteArray) -> void:
 	# Check for request success
 	if result != HTTPRequest.RESULT_SUCCESS:
+		_current_version = ""
 		download_completed.emit(DownloadUpdateResult.FAILURE)
 		return
 	
