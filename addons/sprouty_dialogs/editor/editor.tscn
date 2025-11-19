@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_h283m"]
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/sprouty_dialogs/editor/modules/file_manager/file_manager.tscn" id="1_qbi36"]
 [ext_resource type="PackedScene" uid="uid://d0gf52rcd1hn" path="res://addons/sprouty_dialogs/editor/modules/characters/character_panel.tscn" id="3_7mghu"]
-[ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/sprouty_dialogs/editor/modules/workspace/workspace.tscn" id="4_yuhh0"]
+[ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/sprouty_dialogs/editor/modules/graph_editor/dialogue_panel.tscn" id="4_yuhh0"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/sprouty_dialogs/editor/modules/variables/variable_panel.tscn" id="6_4jako"]
 [ext_resource type="PackedScene" uid="uid://pdcicn3rbwbs" path="res://addons/sprouty_dialogs/editor/modules/settings/settings_panel.tscn" id="7_xlq8u"]
 [ext_resource type="PackedScene" uid="uid://b3ttyn7bfc2v0" path="res://addons/sprouty_dialogs/editor/about_panel.tscn" id="8_d78hy"]
@@ -45,11 +45,11 @@ size_flags_vertical = 3
 theme_override_styles/tabbar_background = SubResource("StyleBoxEmpty_22uar")
 current_tab = 0
 
-[node name="Dialogue" type="TabBar" parent="MainContainer/TabContainer"]
+[node name="Dialogues" type="TabBar" parent="MainContainer/TabContainer"]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="Workspace" parent="MainContainer/TabContainer/Dialogue" instance=ExtResource("4_yuhh0")]
+[node name="DialoguePanel" parent="MainContainer/TabContainer/Dialogues" instance=ExtResource("4_yuhh0")]
 unique_name_in_owner = true
 layout_mode = 1
 
@@ -67,7 +67,7 @@ visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="VariablesPanel" parent="MainContainer/TabContainer/Variables" instance=ExtResource("6_4jako")]
+[node name="VariablePanel" parent="MainContainer/TabContainer/Variables" instance=ExtResource("6_4jako")]
 unique_name_in_owner = true
 layout_mode = 1
 

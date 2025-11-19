@@ -16,12 +16,12 @@ const TEST_SCENE_PATH = "res://addons/sprouty_dialogs/utils/test_scene/dialog_te
 ## File manager reference
 @onready var file_manager: Control = side_bar.file_manager
 
-## Workspace reference
-@onready var workspace: Control = %Workspace
+## Dialogue panel reference
+@onready var dialogue_panel: Control = %DialoguePanel
 ## Character panel reference
 @onready var character_panel: Control = %CharacterPanel
 ## Variable panel reference
-@onready var variables_panel: Control = %VariablesPanel
+@onready var variable_panel: Control = %VariablePanel
 ## Settings panel reference
 @onready var settings_panel: Control = %SettingsPanel
 
@@ -52,26 +52,26 @@ var undo_redo: EditorUndoRedoManager
 func _ready():
 	set_tabs_icons()
 	# Set undo redo manager
-	workspace.undo_redo = undo_redo
+	dialogue_panel.undo_redo = undo_redo
 	character_panel.undo_redo = undo_redo
-	variables_panel.undo_redo = undo_redo
+	variable_panel.undo_redo = undo_redo
 	settings_panel.undo_redo = undo_redo
 	file_manager.undo_redo = undo_redo
 
 	# File manager signals
-	file_manager.all_dialog_files_closed.connect(workspace.show_start_panel)
+	file_manager.all_dialog_files_closed.connect(dialogue_panel.show_start_panel)
 	file_manager.all_character_files_closed.connect(character_panel.show_start_panel)
 	file_manager.request_to_switch_tab.connect(switch_active_tab)
-	file_manager.request_to_switch_graph.connect(workspace.switch_current_graph)
+	file_manager.request_to_switch_graph.connect(dialogue_panel.switch_current_graph)
 	file_manager.request_to_switch_character.connect(
 			character_panel.switch_current_character_editor)
 	
-	# Workspace signals
-	workspace.graph_editor_visible.connect(side_bar.csv_path_field_visible)
-	workspace.new_dialog_file_pressed.connect(file_manager.on_new_dialog_pressed)
-	workspace.open_dialog_file_pressed.connect(file_manager.on_open_file_pressed)
-	workspace.open_character_file_request.connect(file_manager.load_file.unbind(1))
-	workspace.play_dialog_request.connect(play_dialog_scene)
+	# Dialogue panel signals
+	dialogue_panel.graph_editor_visible.connect(side_bar.csv_path_field_visible)
+	dialogue_panel.new_dialog_file_pressed.connect(file_manager.on_new_dialog_pressed)
+	dialogue_panel.open_dialog_file_pressed.connect(file_manager.on_open_file_pressed)
+	dialogue_panel.open_character_file_request.connect(file_manager.load_file.unbind(1))
+	dialogue_panel.play_dialog_request.connect(play_dialog_scene)
 
 	# Character panel signals
 	character_panel.new_character_file_pressed.connect(
@@ -91,11 +91,11 @@ func _ready():
 func _connect_settings_panel_signals() -> void:
 	# Graph editor signals
 	settings_panel.translation_settings.translation_enabled_changed.connect(
-			workspace.on_translation_enabled_changed)
+			dialogue_panel.on_translation_enabled_changed)
 	settings_panel.translation_settings.locales_changed.connect(
-			workspace.on_locales_changed)
+			dialogue_panel.on_locales_changed)
 	settings_panel.translation_settings.default_locale_changed.connect(
-			workspace.on_locales_changed)
+			dialogue_panel.on_locales_changed)
 	
 	# Character panel signals
 	settings_panel.translation_settings.translate_character_names_changed.connect(
@@ -112,7 +112,7 @@ func _setup_update_manager() -> void:
 	_about_panel.check_updates_requested.connect(_update_manager.request_update_check)
 	_update_panel.install_update_requested.connect(_update_manager.request_download_update)
 	_update_manager.new_version_received.connect(_update_panel.set_release_info)
-	
+
 	# Update UI when update check is completed
 	_update_manager.update_checked.connect(func(result: int) -> void:
 		_about_panel.set_version_status(result)
@@ -160,12 +160,12 @@ func switch_active_tab(tab: int):
 ## Handle the tab selection
 func _on_tab_selected(tab: int):
 	match tab:
-		0: # Graph dialog tab
+		0: # Dialogues tab
 			if side_bar:
-				if workspace.get_current_graph() != null:
+				if dialogue_panel.get_current_graph() != null:
 					side_bar.csv_path_field_visible(true)
 				file_manager.switch_to_file_on_tab(
-						tab, workspace.get_current_graph())
+						tab, dialogue_panel.get_current_graph())
 		1: # Character tab
 			if file_manager:
 				side_bar.csv_path_field_visible(false)

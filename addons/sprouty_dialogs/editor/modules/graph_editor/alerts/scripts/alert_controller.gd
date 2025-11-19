@@ -13,11 +13,11 @@ enum AlertType {ERROR, WARNING}
 
 ## Templates for error alert
 var error_template = preload(
-	"res://addons/sprouty_dialogs/editor/modules/workspace/alerts/error_alert.tscn"
+	"res://addons/sprouty_dialogs/editor/modules/graph_editor/alerts/error_alert.tscn"
 	)
 ## Templates for warning alert
 var warning_template = preload(
-	"res://addons/sprouty_dialogs/editor/modules/workspace/alerts/warning_alert.tscn"
+	"res://addons/sprouty_dialogs/editor/modules/graph_editor/alerts/warning_alert.tscn"
 	)
 
 

@@ -9,8 +9,8 @@ extends Control
 ## It allows creating, opening, saving and switching between dialog and character files.
 # -----------------------------------------------------------------------------
 
-## Emitted when requesting to switch current graph in the workspace
-signal request_to_switch_graph(graph: EditorSproutyDialogsGraph)
+## Emitted when requesting to switch current graph in the dialogue editor
+signal request_to_switch_graph(graph: EditorSproutyDialogsGraphEditor)
 ## Emitted when requesting to switch current character in the character editor
 signal request_to_switch_character(char_editor: Control)
 ## Emitted when requesting to switch to a specific tab
@@ -48,7 +48,7 @@ var _new_dialog_icon := preload("res://addons/sprouty_dialogs/editor/icons/add-d
 var _new_char_icon := preload("res://addons/sprouty_dialogs/editor/icons/add-char.svg")
 
 ## Prefab scenes reference
-var _graph_scene := preload("res://addons/sprouty_dialogs/editor/modules/workspace/graph.tscn")
+var _graph_scene := preload("res://addons/sprouty_dialogs/editor/modules/graph_editor/graph_editor.tscn")
 var _char_scene := preload("res://addons/sprouty_dialogs/editor/modules/characters/character_editor.tscn")
 
 ## UndoRedo manager
@@ -126,7 +126,7 @@ func new_dialog_file(path: String) -> void:
 
 
 ## Create a new graph instance and load the data from a resource
-func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSproutyDialogsGraph:
+func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSproutyDialogsGraphEditor:
 	var graph = _graph_scene.instantiate()
 	graph.modified.connect(_on_data_modified)
 	graph.undo_redo = undo_redo

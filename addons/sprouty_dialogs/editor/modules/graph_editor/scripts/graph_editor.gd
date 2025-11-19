@@ -1,9 +1,9 @@
 @tool
-class_name EditorSproutyDialogsGraph
+class_name EditorSproutyDialogsGraphEditor
 extends GraphEdit
 
 # -----------------------------------------------------------------------------
-# Sprouty Dialogs Graph
+# Sprouty Dialogs Graph Editor
 # -----------------------------------------------------------------------------
 ## This module is the graph editor where the dialog trees are edited in the
 ## Sprouty Dialogs plugin. It handles the nodes, connections, and graph data.

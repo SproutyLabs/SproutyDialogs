@@ -86,7 +86,7 @@ func _set_node_titlebar():
 	var remove_button = TextureButton.new()
 	remove_button.texture_normal = get_theme_icon('Remove', 'EditorIcons')
 	remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
-	if get_parent() is EditorSproutyDialogsGraph:
+	if get_parent() is EditorSproutyDialogsGraphEditor:
 		remove_button.pressed.connect(get_parent().delete_node.bind(self))
 	node_titlebar.add_child(remove_button)
 

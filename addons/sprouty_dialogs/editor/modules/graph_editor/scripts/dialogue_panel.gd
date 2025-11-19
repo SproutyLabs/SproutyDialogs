@@ -2,10 +2,9 @@
 extends Control
 
 # -----------------------------------------------------------------------------
-# Workspace controller
+# Dialogue Panel
 # -----------------------------------------------------------------------------
-## This script handles the workspace, the main view of the editor. It contains
-## the graph editor and the text editor for dialogues.
+## Handles the tab panel for dialogues with the graph editor and text editor.
 # -----------------------------------------------------------------------------
 
 ## Emitted when the graph editor is visible
@@ -49,14 +48,14 @@ func _ready() -> void:
 
 
 ## Returns the current graph on editor
-func get_current_graph() -> EditorSproutyDialogsGraph:
+func get_current_graph() -> EditorSproutyDialogsGraphEditor:
 	if _graph_panel.get_child_count() > 0:
 		return _graph_panel.get_child(0)
 	else: return null
 
 
 ## Switch the current graph on editor
-func switch_current_graph(new_graph: EditorSproutyDialogsGraph) -> void:
+func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 	# Remove old graph and switch to the new one
 	if _graph_panel.get_child_count() > 0:
 		_graph_panel.remove_child(_graph_panel.get_child(0))

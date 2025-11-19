@@ -1,29 +1,29 @@
 [gd_scene load_steps=7 format=3 uid="uid://bo8iha2w2kgt5"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_1tvdf"]
-[ext_resource type="Script" uid="uid://ydw8d8wnxyoq" path="res://addons/sprouty_dialogs/editor/modules/workspace/scripts/workspace.gd" id="2_yu0sn"]
-[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="3_jcsqd"]
-[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/sprouty_dialogs/editor/modules/text_editor/text_editor.tscn" id="6_00hgx"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_5b8ac"]
+[ext_resource type="Script" uid="uid://ydw8d8wnxyoq" path="res://addons/sprouty_dialogs/editor/modules/graph_editor/scripts/dialogue_panel.gd" id="2_ve4xc"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="3_vlcqi"]
+[ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/sprouty_dialogs/editor/modules/text_editor/text_editor.tscn" id="4_41lhd"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gxvii"]
 
-[sub_resource type="DPITexture" id="DPITexture_q6lul"]
+[sub_resource type="DPITexture" id="DPITexture_ru1qf"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="Workspace" type="HSplitContainer"]
+[node name="DialoguePanel" type="HSplitContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_1tvdf")
-script = ExtResource("2_yu0sn")
+theme = ExtResource("1_5b8ac")
+script = ExtResource("2_ve4xc")
 
 [node name="StartPanel" type="Panel" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_styles/panel = ExtResource("3_jcsqd")
+theme_override_styles/panel = ExtResource("3_vlcqi")
 
 [node name="Container" type="VBoxContainer" parent="StartPanel"]
 layout_mode = 1
@@ -60,18 +60,18 @@ alignment = 1
 unique_name_in_owner = true
 layout_mode = 2
 text = "New Dialogue"
-icon = SubResource("DPITexture_q6lul")
+icon = SubResource("DPITexture_ru1qf")
 
 [node name="OpenDialogButton" type="Button" parent="StartPanel/Container/ButtonsContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Open Dialogue"
-icon = SubResource("DPITexture_q6lul")
+icon = SubResource("DPITexture_ru1qf")
 
 [node name="GraphEditor" type="Panel" parent="."]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TextEditor" parent="." instance=ExtResource("6_00hgx")]
+[node name="TextEditor" parent="." instance=ExtResource("4_41lhd")]
 layout_mode = 2
