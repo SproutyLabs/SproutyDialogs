@@ -1,6 +1,6 @@
 @icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_box.svg")
 class_name DialogBox
-extends Panel
+extends Control
 
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Dialog Box
@@ -37,29 +37,29 @@ signal option_selected(option_index: int)
 
 @export_category("Dialog Box Components")
 ## [RichTextLabel] where dialogue will be displayed.[br][br]
-## [color=red]This component is required to display the text in it.[/color]
+## [color=tomato]This component is required to display the text in it.[/color]
 @export var dialog_display: RichTextLabel
 ## [RichTextLabel] where character name will be displayed.[br][br]
-## [color=red]If you want to display the character name in the dialog box, 
+## [color=tomato]If you want to display the character name in the dialog box, 
 ## you need to set this property.[/color]
 @export var name_display: RichTextLabel
 ## Visual indicator to indicate press for continue the dialogue (e.g. an arrow).
-## [br][br][color=red]If you want to display a continue indicator in the
+## [br][br][color=tomato]If you want to display a continue indicator in the
 ## dialog box,you need to set this property.[/color]
 @export var continue_indicator: Control
 ## [Node] where the character portrait will be displayed (portrait parent).[br][br]
-## [color=red]If you want to display the portrait in the dialog box, 
+## [color=tomato]If you want to display the portrait in the dialog box, 
 ## you need to set this property.[/color]
 @export var portrait_display: Node
 
 @export_category("Options Components")
 ## [Container] where the options will be displayed in the dialog box.
 ## It is recommended a [VBoxContainer] or [GridContainer] to display the options.
-## [color=red]This component is required to display the dialog options in it.[/color]
+## [color=tomato]This component is required to display the dialog options in it.[/color]
 @export var options_container: Container
 ## [Node] that will be used as a template for the options in the dialog box.
 ## It should be a [DialogOption] node or another node that extends it.
-## [br][br][color=red]This component is required to display the dialog options. [/color]
+## [br][br][color=tomato]This component is required to display the dialog options. [/color]
 @export var option_template: Control
 
 ## Timer to control the typing speed of the dialog.
@@ -102,6 +102,21 @@ func _on_dialog_box_start() -> void:
 func _on_dialog_box_close() -> void:
 	hide()
 
+
+## Called when the dialog options are displayed.
+## Override this method to customize the behavior of the dialog box when options are displayed.
+func _on_options_displayed() -> void:
+	if options_container:
+		options_container.show()
+
+
+## Called when the dialog options are hidden.
+## Override this method to customize the behavior of the dialog box when options are hidden.
+func _on_options_hidden() -> void:
+	if options_container:
+		options_container.hide()
+
+
 #endregion
 
 
@@ -132,9 +147,9 @@ func _ready() -> void:
 	if option_template:
 		option_template = option_template.duplicate()
 	if continue_indicator:
-		continue_indicator.visible = false
+		continue_indicator.hide()
 	if options_container:
-		options_container.visible = false
+		options_container.hide()
 
 
 func _input(event: InputEvent) -> void:
@@ -271,14 +286,13 @@ func display_options(options: Array) -> void:
 		options_container.add_child(option_node)
 		option_node.option_selected.connect(option_selected.emit)
 		option_node.show()
-	options_container.show()
+	_on_options_displayed()
 	show()
 
 
 ## Hide the dialog options
 func hide_options() -> void:
-	if options_container:
-		options_container.hide()
+	_on_options_hidden()
 	_is_displaying_options = false
 
 #endregion

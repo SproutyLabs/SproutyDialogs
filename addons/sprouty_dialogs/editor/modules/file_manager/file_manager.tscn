@@ -47,6 +47,7 @@ size_flags_horizontal = 6
 [node name="NewDialogButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "New dialogue"
 icon = ExtResource("2_fjick")
 flat = true
 
@@ -56,6 +57,7 @@ layout_mode = 2
 [node name="NewCharButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "New Character"
 icon = ExtResource("3_ljhu2")
 flat = true
 
@@ -65,6 +67,7 @@ layout_mode = 2
 [node name="OpenFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Open a file"
 icon = SubResource("DPITexture_uexgy")
 flat = true
 
@@ -74,6 +77,7 @@ layout_mode = 2
 [node name="SaveFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Save current file"
 disabled = true
 icon = SubResource("DPITexture_uexgy")
 flat = true
@@ -148,7 +152,7 @@ dialog_text = "The file/s contains unsaved changes.
 Are you sure you want to close this file/s?"
 
 [node name="NewDialog" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
-title = "New Dialog"
+title = "New Dialogue"
 initial_position = 4
 size = Vector2i(600, 400)
 ok_button_text = "Create File"

@@ -379,7 +379,7 @@ func start() -> void:
 	# Search for start node and start processing from there
 	for node in _dialog_data.graph_data[_start_id]:
 		if node.contains("start_node"):
-			if print_debug:
+			if _print_debug:
 				print("[Sprouty Dialogs] Starting dialog with ID: " + _start_id)
 			_is_running = true
 			_process_node(node)
@@ -390,7 +390,7 @@ func start() -> void:
 
 ## Pause processing the dialog tree
 func pause() -> void:
-	if print_debug: print("[Sprouty Dialogs] Dialog paused.")
+	if _print_debug: print("[Sprouty Dialogs] Dialog paused.")
 	_is_running = false
 	# If there is a current dialog box, pause it
 	if _current_dialog_box:
@@ -405,7 +405,7 @@ func pause() -> void:
 
 ## Resume processing the dialog tree
 func resume() -> void:
-	if print_debug: print("[Sprouty Dialogs] Dialog resumed.")
+	if _print_debug: print("[Sprouty Dialogs] Dialog resumed.")
 	_is_running = true
 	# If there is a current dialog box, resume it
 	if _current_dialog_box:
@@ -421,7 +421,7 @@ func resume() -> void:
 
 ## Stop processing the dialog tree
 func stop() -> void:
-	if print_debug: print("[Sprouty Dialogs] Dialog ended.")
+	if _print_debug: print("[Sprouty Dialogs] Dialog ended.")
 	_is_running = false
 	_current_portrait = null
 	_current_node = ""

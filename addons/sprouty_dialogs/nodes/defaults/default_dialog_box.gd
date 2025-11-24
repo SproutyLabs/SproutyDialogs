@@ -38,3 +38,23 @@ func _on_dialog_box_close() -> void:
 	# --------------------------------------------------------------------------
 	# In this base case, the dialog box only is hidden when closed
 	hide()
+
+
+func _on_options_displayed() -> void:
+	# --------------------------------------------------------------------------
+	# This method is called when the dialog options are displayed.
+	# You can add your own logic here to handle when the options are displayed.
+	# (e.g. play an animation to display the options)
+	# --------------------------------------------------------------------------
+	if options_container:
+		options_container.show()
+
+
+func _on_options_hidden() -> void:
+	# --------------------------------------------------------------------------
+	# This method is called when the dialog options are hidden.
+	# You can add your own logic here to handle when the options are hidden.
+	# (e.g. play an animation to hide the options)
+	# --------------------------------------------------------------------------
+	if options_container:
+		options_container.hide()
