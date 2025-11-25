@@ -12,12 +12,17 @@ extends DialogBox
 ## ---------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 
+
 func _enter_tree() -> void:
 	super () # Do not remove this line! It is required to initialize the dialog box.
 
 
 func _ready():
 	super () # Do not remove this line! It is required to initialize the dialog box.
+
+
+func _input(event: InputEvent) -> void:
+	super (event) # Do not remove this line! It is required to use the dialog box.
 
 
 func _on_dialog_box_start() -> void:
@@ -46,8 +51,7 @@ func _on_options_displayed() -> void:
 	# You can add your own logic here to handle when the options are displayed.
 	# (e.g. play an animation to display the options)
 	# --------------------------------------------------------------------------
-	if options_container:
-		options_container.show()
+	options_container.show()
 
 
 func _on_options_hidden() -> void:
@@ -56,5 +60,4 @@ func _on_options_hidden() -> void:
 	# You can add your own logic here to handle when the options are hidden.
 	# (e.g. play an animation to hide the options)
 	# --------------------------------------------------------------------------
-	if options_container:
-		options_container.hide()
+	options_container.hide()

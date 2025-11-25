@@ -26,7 +26,7 @@ signal dialog_ended(dialog_file: String, start_id: String)
 signal dialog_player_stop(dialog_player: DialogPlayer)
 
 ## Emitted when a dialog option is selected.
-signal option_selected(current_node: String, option_index: int)
+signal option_selected(option_index: int, option_dialog: Dictionary)
 ## Emitted when a signal event is emitted.
 signal signal_event(argument: String)
 
@@ -489,7 +489,7 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 	_next_node = next_node
 	_update_dialog_box(character_name)
 	await _update_portrait(character_name, portrait)
-	_current_dialog_box.play_dialog(character_name, translated_name, dialog)
+	_current_dialog_box.play_dialog(translated_name, dialog)
 
 
 ## Handle when the options node is processed
@@ -503,7 +503,12 @@ func _on_options_processed(options: Array, next_nodes: Array) -> void:
 ## Process the next node of the option selected
 func _on_option_selected(option_index: int) -> void:
 	_current_dialog_box.hide_options()
-	option_selected.emit(_current_node, option_index)
+	var option_key = _start_id + "_OPT" \
+			+ _current_node.split("_")[-1] + "_" + str(option_index + 1)
+	var option_dialog = _dialog_data.dialogs[option_key]
+	option_dialog["key"] = option_key
+	
+	option_selected.emit(option_index + 1, option_dialog)
 	_process_node(_next_options[option_index])
 
 
@@ -587,20 +592,20 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 
 
 ## Handle when the dialog display starts for a character.
-func _on_dialog_display_starts(character_name: String) -> void:
-	if _current_portrait and _current_portrait.get_parent().name == character_name:
+func _on_dialog_display_starts() -> void:
+	if _current_portrait:
 		_current_portrait.on_portrait_talk()
 
 
 ## Handle when the dialog display ends for a character.
-func _on_dialog_display_ends(character_name: String) -> void:
-	if _current_portrait and _current_portrait.get_parent().name == character_name:
+func _on_dialog_display_ends() -> void:
+	if _current_portrait:
 		_current_portrait.unhighlight_portrait()
 
 
 ## Handle when the dialog typing ends for a character.
-func _on_dialog_typing_ends(character_name: String) -> void:
-	if _current_portrait and _current_portrait.get_parent().name == character_name:
+func _on_dialog_typing_ends() -> void:
+	if _current_portrait:
 		_current_portrait.on_portrait_stop_talking()
 
 #endregion

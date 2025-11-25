@@ -14,11 +14,11 @@ extends Control
 # -----------------------------------------------------------------------------
 
 ## Emitted when the dialog is started.
-signal dialog_starts(character_name: String)
+signal dialog_starts
 ## Emitted when the dialog ends typing.
-signal dialog_typing_ends(character_name: String)
+signal dialog_typing_ends
 ## Emitted when the dialog is ended.
-signal dialog_ends(character_name: String)
+signal dialog_ends
 
 ## Emitted when the player press the continue button to continue the dialog tree 
 signal continue_dialog
@@ -76,8 +76,6 @@ var _sentences: Array[String] = []
 
 ## Index of the current sentence being displayed.
 var _current_sentence: int = 0
-## Current character that is being displayed in the dialog.
-var _current_character: String = ""
 
 ## Flag to check if the dialog box is displaying a portrait.
 var _is_displaying_portrait: bool = false
@@ -121,10 +119,11 @@ func _on_options_hidden() -> void:
 
 
 func _enter_tree() -> void:
-	_type_timer = Timer.new()
-	add_child(_type_timer)
-	_type_timer.wait_time = typing_speed
-	_type_timer.timeout.connect(_on_type_timer_timeout)
+	if typing_speed > 0.0:
+		_type_timer = Timer.new()
+		add_child(_type_timer)
+		_type_timer.wait_time = typing_speed
+		_type_timer.timeout.connect(_on_type_timer_timeout)
 
 	_can_skip_timer = Timer.new()
 	add_child(_can_skip_timer)
@@ -172,7 +171,7 @@ func _input(event: InputEvent) -> void:
 
 
 ## Play a dialog on dialog box
-func play_dialog(character_name: String, display_name: String, dialog: String) -> void:
+func play_dialog(character_name: String, dialog: String) -> void:
 	if not _is_started: # First time the dialog is started
 		await _on_dialog_box_start()
 	hide_options()
@@ -181,8 +180,7 @@ func play_dialog(character_name: String, display_name: String, dialog: String) -
 
 	if name_display: # Set the character name
 		name_display.text = character_name
-		name_display.visible = display_name != ""
-	_current_character = character_name
+		name_display.visible = character_name != ""
 	dialog_display.text = dialog
 	_current_sentence = 0
 	_sentences = []
@@ -201,24 +199,26 @@ func play_dialog(character_name: String, display_name: String, dialog: String) -
 	_is_running = true
 	_display_completed = false
 	_display_new_sentence(_sentences[_current_sentence])
-	dialog_starts.emit(character_name)
+	dialog_starts.emit()
 
 
 ## Pause the dialog
 func pause_dialog() -> void:
 	_is_running = false
-	_type_timer.paused = true
+	if _type_timer:
+		_type_timer.paused = true
 
 
 ## Resume the dialog
 func resume_dialog() -> void:
 	_is_running = true
-	_type_timer.paused = false
+	if _type_timer:
+		_type_timer.paused = false
 
 
 ## Stop the dialog
 func stop_dialog(close_dialog: bool = false) -> void:
-	dialog_ends.emit(_current_character)
+	dialog_ends.emit()
 	_display_completed = false
 	_current_sentence = 0
 	_is_running = false
@@ -234,7 +234,8 @@ func stop_dialog(close_dialog: bool = false) -> void:
 ## Skip the dialog typing and show the full text
 func _skip_dialog_typing() -> void:
 	dialog_display.visible_characters = dialog_display.text.length()
-	_type_timer.stop()
+	if _type_timer:
+		_type_timer.stop()
 	# Wait for the continue delay before allowing to skip again
 	await get_tree().create_timer(
 			SproutyDialogsSettingsManager.get_setting("skip_continue_delay")).timeout
@@ -292,7 +293,8 @@ func display_options(options: Array) -> void:
 
 ## Hide the dialog options
 func hide_options() -> void:
-	_on_options_hidden()
+	if options_container:
+		_on_options_hidden()
 	_is_displaying_options = false
 
 #endregion
@@ -401,11 +403,15 @@ func _add_tags_to_sentence(sentence: String, tags: Array) -> String:
 ## Display a new sentence
 func _display_new_sentence(sentence: String) -> void:
 	dialog_display.text = sentence
-	dialog_display.visible_characters = 0
-	if continue_indicator:
-		continue_indicator.visible = false
-	_display_completed = false
-	_type_timer.start()
+	if typing_speed <= 0.0: # If typing speed is 0, show the full text
+		dialog_display.visible_characters = dialog_display.text.length()
+		_on_display_completed()
+	else: # Start typing the dialog
+		dialog_display.visible_characters = 0
+		if continue_indicator:
+			continue_indicator.hide()
+		_display_completed = false
+		_type_timer.start()
 
 
 ## Timer to type the dialog characters
@@ -420,9 +426,9 @@ func _on_type_timer_timeout() -> void:
 ## When the dialog finishes displaying a text
 func _on_display_completed() -> void:
 	if continue_indicator:
-		continue_indicator.visible = true
+		continue_indicator.show()
 	_display_completed = true
-	dialog_typing_ends.emit(_current_character)
+	dialog_typing_ends.emit()
 
 
 ## When the dialog ends, close the dialog box
