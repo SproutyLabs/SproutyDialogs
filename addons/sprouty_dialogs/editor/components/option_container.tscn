@@ -5,15 +5,12 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="2_ynjo5"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/sprouty_dialogs/editor/components/expandable_text_box.tscn" id="3_5qfnu"]
 
-[sub_resource type="DPITexture" id="DPITexture_f80rf"]
+[sub_resource type="DPITexture" id="DPITexture_63p5b"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
 [node name="OptionContainer" type="VBoxContainer"]
 script = ExtResource("1_csyed")
-
-[node name="HSeparator" type="HSeparator" parent="."]
-layout_mode = 2
 
 [node name="OptionHeader" type="HBoxContainer" parent="."]
 layout_mode = 2
@@ -24,16 +21,17 @@ text = "Option #1"
 
 [node name="DefaultLocaleLabel" type="Label" parent="OptionHeader"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_ynjo5")
 theme_type_variation = &"LocaleLabel"
-text = "(en)"
+text = "()"
 
 [node name="RemoveButton" type="Button" parent="OptionHeader"]
 visible = false
 layout_mode = 2
-icon = SubResource("DPITexture_f80rf")
+icon = SubResource("DPITexture_63p5b")
 flat = true
 
 [node name="ExpandableTextBox" parent="." instance=ExtResource("3_5qfnu")]
@@ -41,4 +39,8 @@ custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
 [node name="TranslationsContainer" parent="." instance=ExtResource("2_6k3ms")]
+visible = false
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="."]
 layout_mode = 2

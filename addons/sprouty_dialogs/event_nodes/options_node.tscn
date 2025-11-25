@@ -25,19 +25,19 @@ border_width_right = 2
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="DPITexture" id="DPITexture_wpcnx"]
+[sub_resource type="DPITexture" id="DPITexture_63p5b"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
 [node name="OptionsNode" type="GraphNode"]
 custom_minimum_size = Vector2(250, 0)
 offset_right = 250.0
-offset_bottom = 281.0
+offset_bottom = 237.0
 size_flags_vertical = 3
 theme = ExtResource("1_4odiy")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_5pi1r")
 theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_p6a38")
-position_offset = Vector2(0, 0.14)
+position_offset = Vector2(0, 0.17000002)
 resizable = true
 title = "Options Node"
 slot/0/left_enabled = true
@@ -58,25 +58,13 @@ slot/1/right_type = 0
 slot/1/right_color = Color(1, 1, 1, 1)
 slot/1/right_icon = null
 slot/1/draw_stylebox = true
-slot/2/left_enabled = false
-slot/2/left_type = 0
-slot/2/left_color = Color(1, 1, 1, 1)
-slot/2/left_icon = null
-slot/2/right_enabled = false
-slot/2/right_type = 0
-slot/2/right_color = Color(1, 1, 1, 1)
-slot/2/right_icon = null
-slot/2/draw_stylebox = true
 script = ExtResource("5_jgvn8")
 node_color = Color(0.13186, 0.623383, 0.509555, 1)
 node_icon = ExtResource("3_d57bv")
 
-[node name="HSeparator" type="HSeparator" parent="."]
-layout_mode = 2
-
 [node name="AddOptionButton" type="Button" parent="."]
 layout_mode = 2
 text = "Add Option"
-icon = SubResource("DPITexture_wpcnx")
+icon = SubResource("DPITexture_63p5b")
 
 [connection signal="pressed" from="AddOptionButton" to="." method="_on_add_option_button_pressed"]

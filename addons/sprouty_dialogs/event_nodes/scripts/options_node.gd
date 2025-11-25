@@ -119,7 +119,7 @@ func _new_option() -> EditorSproutyDialogsOptionContainer:
 ## Add a new option
 func _add_new_option() -> EditorSproutyDialogsOptionContainer:
 	var new_option = _new_option()
-	var option_index = get_child_count() - 2
+	var option_index = get_child_count() - 1
 	
 	add_child(new_option, true)
 	move_child(new_option, option_index)
@@ -137,7 +137,7 @@ func _add_option(index: int, new_option: EditorSproutyDialogsOptionContainer) ->
 	new_option.update_option_index(index)
 
 	# Add a new slot
-	set_slot(get_child_count() - 3, false, 0, Color.WHITE, true, 0, Color.WHITE)
+	set_slot(get_child_count() - 2, false, 0, Color.WHITE, true, 0, Color.WHITE)
 
 	# Update the following options to the new one, by moving them downwards
 	var options = get_children().filter(func(c): return c is EditorSproutyDialogsOptionContainer)
@@ -171,7 +171,7 @@ func _remove_option(index: int) -> void:
 	remove_child(get_child(index))
 
 	# Remove the last remaining port
-	set_slot(get_child_count() - 2, false, 0, Color.WHITE, false, 0, Color.WHITE)
+	set_slot(get_child_count() - 1, false, 0, Color.WHITE, false, 0, Color.WHITE)
 	_on_resized() # Resize container vertically
 
 
@@ -183,7 +183,7 @@ func _on_add_option_button_pressed() -> void:
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Add Option")
 	undo_redo.add_do_method(self, "_add_new_option")
-	undo_redo.add_undo_method(self, "_remove_option", get_child_count() - 3)
+	undo_redo.add_undo_method(self, "_remove_option", get_child_count() - 2)
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
