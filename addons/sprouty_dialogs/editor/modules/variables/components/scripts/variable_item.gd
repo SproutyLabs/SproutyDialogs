@@ -140,7 +140,7 @@ func set_value(value: Variant) -> void:
 	_variable_value = value
 	if _value_field.get_child_count() > 0:
 		var field = _value_field.get_child(0)
-		SproutyDialogsVariableManager.set_field_value(field, _variable_type, value)
+		SproutyDialogsVariableUtils.set_field_value(field, _variable_type, value)
 
 
 ## Update the tooltip with the current item path
@@ -175,7 +175,7 @@ func clear_modified_state() -> void:
 func _set_types_dropdown() -> void:
 	if $Container/TypeField.get_child_count() > 0:
 		$Container/TypeField/TypeDropdown.queue_free()
-	_type_dropdown = SproutyDialogsVariableManager.get_types_dropdown(true, [
+	_type_dropdown = SproutyDialogsVariableUtils.get_types_dropdown(true, [
 		"Nil", "Variable", "Dictionary", "Array" # Excluded from options
 	])
 	_type_dropdown.select(_type_dropdown.get_item_index(TYPE_STRING))
@@ -202,7 +202,7 @@ func _set_value_field(type_index: int) -> void:
 			type = TYPE_STRING # File/Dir Path is treated as String type
 	
 	# Create the new value field
-	var field_data = SproutyDialogsVariableManager.new_field_by_type(
+	var field_data = SproutyDialogsVariableUtils.new_field_by_type(
 			type, null, metadata, _on_value_changed, mark_as_modified.bind(true))
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)
 	_value_field.add_child(field_data.field)
@@ -220,7 +220,7 @@ func _set_value_field(type_index: int) -> void:
 
 ## Set the value in the value field
 func _set_field_value(value: Variant, type: int) -> void:
-	SproutyDialogsVariableManager.set_field_value(_value_field.get_child(0), type, value)
+	SproutyDialogsVariableUtils.set_field_value(_value_field.get_child(0), type, value)
 
 
 ## Handle the name change event

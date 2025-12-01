@@ -38,7 +38,7 @@ func _ready():
 	
 	# Set the operators in the operator dropdown
 	operator_dropdown.item_selected.connect(_on_operator_selected)
-	var operators = SproutyDialogsVariableManager.get_comparison_operators()
+	var operators = SproutyDialogsVariableUtils.get_comparison_operators()
 	operator_dropdown.clear()
 	for operator in operators.keys():
 		operator_dropdown.add_item(operator, operators[operator])
@@ -46,7 +46,7 @@ func _ready():
 
 ## Set the type dropdowns and connect their signals
 func _set_type_dropdown(dropdown_field: Node, field_index: int) -> void:
-	var types_dropdown = SproutyDialogsVariableManager.get_types_dropdown(
+	var types_dropdown = SproutyDialogsVariableUtils.get_types_dropdown(
 			true, ["Nil", "Dictionary", "Array"] # Excluded from options
 		)
 	dropdown_field.add_child(types_dropdown)
@@ -147,7 +147,7 @@ func _set_value_field(type_index: int, field_index: int) -> void:
 		field.queue_free()
 	
 	# Set the value field based on the variable type
-	var field_data = SproutyDialogsVariableManager.new_field_by_type(
+	var field_data = SproutyDialogsVariableUtils.new_field_by_type(
 			type, null, _type_dropdowns[field_index].get_item_metadata(type_index),
 			_on_value_changed.bind(field_index), _on_value_input_modified.bind(field_index)
 		)
@@ -170,7 +170,7 @@ func _set_value_field(type_index: int, field_index: int) -> void:
 ## Set the input field value
 func _set_field_value(value: Variant, type: int, field_index: int) -> void:
 	_var_values[field_index] = value
-	SproutyDialogsVariableManager.set_field_value(
+	SproutyDialogsVariableUtils.set_field_value(
 			_value_inputs[field_index], type, value)
 
 

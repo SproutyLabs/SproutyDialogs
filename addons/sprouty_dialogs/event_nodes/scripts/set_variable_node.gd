@@ -45,7 +45,7 @@ func _ready():
 
 	# Set the type dropdown and connect its signal
 	$Container/VarField/TypeField.add_child(
-		SproutyDialogsVariableManager.get_types_dropdown(true,
+		SproutyDialogsVariableUtils.get_types_dropdown(true,
 				["Nil", "Variable", "Dictionary", "Array"] # Excluded from options
 			))
 	_type_dropdown = $Container/VarField/TypeField/TypeDropdown
@@ -120,11 +120,11 @@ func _set_variable_type(index: int) -> void:
 			type = TYPE_STRING # File/Dir Path is treated as String type
 
 	# Set the variable dropdown based on the selected type and update the value field
-	_name_input.set_options(SproutyDialogsVariableManager.get_variable_list(type))
+	_name_input.set_options(SproutyDialogsVariableUtils.get_variables_of_type(type))
 	_set_value_field(type, index)
 
 	# Set the operator dropdown based on the variable type
-	var operators = SproutyDialogsVariableManager.get_assignment_operators(type)
+	var operators = SproutyDialogsVariableUtils.get_assignment_operators(type)
 	_operator_dropdown.clear()
 	for operator in operators.keys():
 		_operator_dropdown.add_item(operator, operators[operator])
@@ -143,7 +143,7 @@ func _set_value_field(type: int, index: int) -> void:
 		field.queue_free()
 	
 	# Create new field based on type
-	var field_data = SproutyDialogsVariableManager.new_field_by_type(
+	var field_data = SproutyDialogsVariableUtils.new_field_by_type(
 			type, null, _type_dropdown.get_item_metadata(index),
 			_on_value_changed, _on_value_input_modified
 		)
@@ -168,7 +168,7 @@ func _set_value_field(type: int, index: int) -> void:
 ## Set the input field value
 func _set_field_value(value: Variant, type: int) -> void:
 	_var_value = value
-	SproutyDialogsVariableManager.set_field_value(_value_input, type, value)
+	SproutyDialogsVariableUtils.set_field_value(_value_input, type, value)
 
 
 ## Handle when the type is selected from the dropdown

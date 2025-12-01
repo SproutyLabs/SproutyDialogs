@@ -1,5 +1,5 @@
 @tool
-@icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_player.svg")
+@icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_svg")
 class_name DialogPlayer
 extends Node
 
@@ -147,6 +147,7 @@ var _is_running: bool = false
 
 func _enter_tree() -> void:
 	if not Engine.is_editor_hint(): # Only run in game
+		# Create a event intepreter instance
 		_dialog_interpreter = SproutyDialogsEventInterpreter.new()
 		_dialog_interpreter.continue_to_node.connect(_process_node)
 		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
@@ -155,7 +156,18 @@ func _enter_tree() -> void:
 		_dialog_interpreter.print_debug = _print_debug
 		add_child(_dialog_interpreter)
 
-		_resource_manager = get_node("/root/SproutyDialogs").get_resource_manager()
+		var sprouty_dialogs_manager = get_node("/root/SproutyDialogs")
+		_resource_manager = sprouty_dialogs_manager.resources
+
+		# Connect signals to autoload manager
+		dialog_started.connect(func(dialog_file, start_id):
+			sprouty_dialogs_manager.dialog_players_running.append(self)
+			sprouty_dialogs_manager.dialog_started.emit(dialog_file, start_id)
+		)
+		dialog_player_stop.connect(sprouty_dialogs_manager.dialog_players_running.erase)
+		dialog_paused.connect(sprouty_dialogs_manager.dialog_paused.emit)
+		dialog_resumed.connect(sprouty_dialogs_manager.dialog_resumed.emit)
+		dialog_ended.connect(sprouty_dialogs_manager.dialog_ended.emit)
 
 
 func _exit_tree() -> void:
@@ -237,7 +249,7 @@ func get_current_dialog_box() -> DialogBox:
 
 ## Set the dialogue data and start ID to play a dialog tree.
 ## This method loads the dialog resources and prepares the player to process
-## the dialog tree before calling the [method DialogPlayer.start()]method.
+## the dialog tree before calling the [method Dialogstart()]method.
 func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
 		portrait_parents: Dictionary = {}, dialog_box_parents: Dictionary = {}) -> void:
 	if not data:
@@ -366,7 +378,7 @@ func _set(property: StringName, value: Variant) -> bool:
 #region === Run dialog =========================================================
 
 ## Start processing a dialog tree
-## Need to set the [member DialogPlayer._dialog_data] and [member DialogPlayer._start_id] 
+## Need to set the [member Dialog_dialog_data] and [member Dialog_start_id] 
 ## before calling this method. The resources are loaded on the [method _ready()] method,
 func start() -> void:
 	if not _dialog_data: # Check if dialogue data is set
@@ -383,7 +395,6 @@ func start() -> void:
 				print("[Sprouty Dialogs] Starting dialog with ID: " + _start_id)
 			_is_running = true
 			_process_node(node)
-			get_node("/root/SproutyDialogs").set_dialog_player_as_running(self)
 			dialog_started.emit(_dialog_file_name, _start_id)
 			break
 

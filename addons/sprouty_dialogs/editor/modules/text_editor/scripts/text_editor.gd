@@ -35,6 +35,9 @@ extends Panel
 ## Outline sample color hex code
 @onready var _outline_color_sample_hex: RichTextLabel = %OutlineColorSample
 
+## Variable manager instance to parse variables
+@onready var _variable_manager := SproutyDialogsVariableManager.new()
+
 ## Current option bar shown in the text editor
 var _current_option_bar: Control = null
 
@@ -49,6 +52,7 @@ var collapse_icon: Texture = preload("res://addons/sprouty_dialogs/editor/icons/
 
 func _ready():
 	hide_text_editor()
+	add_child(_variable_manager)
 
 
 ## Return the text input from the text editor
@@ -63,7 +67,7 @@ func show_text_editor(text_box: Variant) -> void:
 	_text_input.text = _opened_text_box.text
 	if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
 		_opened_text_box.text_changed.connect(_on_text_box_text_changed)
-	_text_preview.text = SproutyDialogsVariableManager.parse_variables(_opened_text_box.text, true)
+	_text_preview.text = _variable_manager.parse_variables(_opened_text_box.text, true)
 	visible = true
 
 
@@ -74,7 +78,7 @@ func update_text_editor(text_box: Variant) -> void:
 		_text_input.text = _opened_text_box.text
 		if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
 			_opened_text_box.text_changed.connect(_on_text_box_text_changed)
-		_text_preview.text = SproutyDialogsVariableManager.parse_variables(_opened_text_box.text, true)
+		_text_preview.text = _variable_manager.parse_variables(_opened_text_box.text, true)
 
 
 ## Hide the text editor
@@ -106,7 +110,7 @@ func _on_text_box_text_changed(_arg: Variant = null) -> void:
 	_text_input.text = _opened_text_box.text
 	_text_input.set_caret_line(caret_line)
 	_text_input.set_caret_column(caret_column)
-	_text_preview.text = SproutyDialogsVariableManager.parse_variables(_text_input.text, true)
+	_text_preview.text = _variable_manager.parse_variables(_text_input.text, true)
 
 
 ## Update the text box and preview with the text editor input
@@ -116,7 +120,7 @@ func _on_code_edit_text_changed() -> void:
 		return
 	_opened_text_box.text = _text_input.text
 	_opened_text_box.text_changed.emit(_text_input.text)
-	_text_preview.text = SproutyDialogsVariableManager.parse_variables(_text_input.text, true)
+	_text_preview.text = _variable_manager.parse_variables(_text_input.text, true)
 
 
 ## Expsnd or collapse the text preview box

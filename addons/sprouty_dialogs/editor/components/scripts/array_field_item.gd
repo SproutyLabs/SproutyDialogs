@@ -40,7 +40,7 @@ func _ready():
 
 	# Set the type dropdown and connect its signal
 	$TypeField.add_child(
-		SproutyDialogsVariableManager.get_types_dropdown(false, ["Variable"]))
+		SproutyDialogsVariableUtils.get_types_dropdown(false, ["Variable"]))
 	_type_dropdown = $TypeField/TypeDropdown
 	_type_dropdown.item_selected.connect(_on_type_selected)
 
@@ -90,7 +90,7 @@ func set_item_index(index: int) -> void:
 func set_value(value: Variant, type: int, metadata: Dictionary) -> void:
 	set_type(type, metadata)
 	_item_value = value
-	SproutyDialogsVariableManager.set_field_value(_value_input, type, value)
+	SproutyDialogsVariableUtils.set_field_value(_value_input, type, value)
 
 
 ## Set the variable type
@@ -127,7 +127,7 @@ func _set_value_field(index: int, type: int = -1) -> void:
 			type = TYPE_STRING # File/Dir Path is treated as String type
 	
 	# Create new field based on type
-	var field_data = SproutyDialogsVariableManager.new_field_by_type(
+	var field_data = SproutyDialogsVariableUtils.new_field_by_type(
 			type, null, metadata, _on_value_changed, modified.emit
 		)
 	field_data.field.set_h_size_flags(Control.SIZE_EXPAND_FILL)

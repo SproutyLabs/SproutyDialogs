@@ -43,6 +43,9 @@ var node_processors: Dictionary = {
 ## # If true, will print debug messages to the console
 var print_debug: bool = true
 
+# Sprouty dialogs manager reference
+@onready var _sprouty_dialogs: SproutyDialogsManager = get_node("/root/SproutyDialogs")
+
 
 func _process_start(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing start node...")
@@ -55,12 +58,12 @@ func _process_dialogue(node_data: Dictionary) -> void:
 	# Get the translated dialog and parse variables
 	var dialog = SproutyDialogsTranslationManager.get_translated_dialog(
 		node_data["dialog_key"], get_parent().get_dialog_data())
-	dialog = SproutyDialogsVariableManager.parse_variables(dialog)
+	dialog = _sprouty_dialogs.variables.parse_variables(dialog)
 
 	# Get the translated character name
 	var display_name = SproutyDialogsTranslationManager.get_translated_character_name(
 		node_data["character"], get_parent().get_character_data(node_data["character"]))
-	display_name = SproutyDialogsVariableManager.parse_variables(display_name)
+	display_name = _sprouty_dialogs.variables.parse_variables(display_name)
 
 	dialogue_processed.emit(node_data["character"], display_name,
 			node_data["portrait"], dialog, node_data["to_node"][0])
@@ -68,7 +71,7 @@ func _process_dialogue(node_data: Dictionary) -> void:
 
 func _process_condition(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing condition node...")
-	var comparison_result = SproutyDialogsVariableManager.get_comparison_result(
+	var comparison_result = _sprouty_dialogs.variables.get_comparison_result(
 		node_data.first_var, # First variable data
 		node_data.second_var, # Second variable data
 		node_data.operator # Comparison operator
@@ -83,7 +86,7 @@ func _process_options(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing options node...")
 	options_processed.emit(node_data.options_keys.map(
 		func(key): # Return the translated and parsed options
-			return SproutyDialogsVariableManager.parse_variables(
+			return _sprouty_dialogs.variables.parse_variables(
 				SproutyDialogsTranslationManager.get_translated_dialog(
 					key, get_parent().get_dialog_data()))
 	), node_data.to_node)
@@ -91,18 +94,18 @@ func _process_options(node_data: Dictionary) -> void:
 
 func _process_set_variable(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing set variable node...")
-	var variable = SproutyDialogsVariableManager.get_variable(node_data.var_name)
-	if not variable: # If the variable is not found, print an error and return
+	var variable = _sprouty_dialogs.variables.get_variable(node_data.var_name)
+	if variable == null: # If the variable is not found, print an error and return
 		printerr("[Sprouty Dialogs] Cannot set variable '" + node_data.var_name + "' not found. " +
 			"Please check if the variable exists in the Variables Manager or in the autoloads.")
 		return
-	var assignment_result = SproutyDialogsVariableManager.get_assignment_result(
+	var assignment_result = _sprouty_dialogs.variables.get_assignment_result(
 		node_data.var_type, # Variable type
 		node_data.operator, # Assignment operator
-		variable.value, # Current variable value
+		variable, # Current variable value
 		node_data.new_value # New value to assign
 	)
-	SproutyDialogsVariableManager.set_variable(node_data.var_name, assignment_result)
+	_sprouty_dialogs.variables.set_variable(node_data.var_name, assignment_result)
 	continue_to_node.emit(node_data.to_node[0])
 
 

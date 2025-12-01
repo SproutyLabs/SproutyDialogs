@@ -61,7 +61,7 @@ func _ready():
 		_empty_label.show() # Show the empty label if there are no variables
 	
 	await get_tree().process_frame # Wait a frame to ensure settings are loaded
-	_load_variables_data(SproutyDialogsVariableManager.get_variables())
+	_load_variables_data(SproutyDialogsSettingsManager.get_setting("variables"))
 
 
 ## Get the variables data from the container
@@ -306,7 +306,7 @@ func _on_save_button_pressed() -> void:
 
 	# Save the variables to project settings
 	var data = _get_variables_data()
-	SproutyDialogsVariableManager.save_variables(data)
+	SproutyDialogsSettingsManager.set_setting("variables", data)
 
 
 ## Handle the removal of a variable item
