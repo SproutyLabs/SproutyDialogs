@@ -1,6 +1,6 @@
 @tool
 class_name SproutyDialogsSettingsManager
-extends Node
+extends RefCounted
 
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Settings Manager

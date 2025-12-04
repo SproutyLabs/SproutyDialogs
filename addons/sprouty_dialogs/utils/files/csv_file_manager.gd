@@ -169,10 +169,10 @@ static func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 ## Returns a dictionary with the dialogue data as:
 ## [codeblock]
 ## { 
-##    dialog_key: {
-##        locale_1: translated_dialog_1,
-##        locale_2: translated_dialog_2,
-##        ...
+##    "dialogue_id_1": {
+##    	"locale_code_1": "Translated text in locale 1",
+##    	"locale_code_2": "Translated text in locale 2",
+##    	...
 ##    },
 ##   ...
 ## }[/codeblock]
@@ -236,8 +236,8 @@ static func save_character_names_on_csv(key_name: String, name_data: Dictionary)
 ## Returns a dictionary with the character names as:
 ## [codeblock]
 ## { 
-##    locale_1: translated_name_1,
-##    locale_2: translated_name_2,
+##    "locale_code_1": "Translated name in locale 1",
+##    "locale_code_2": "Translated name in locale 2",
 ##    ...
 ## }[/codeblock]
 static func load_character_names_from_csv(key_name: String) -> Dictionary:

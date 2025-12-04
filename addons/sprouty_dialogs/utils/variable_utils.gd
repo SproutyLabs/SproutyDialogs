@@ -1,6 +1,6 @@
 @tool
 class_name SproutyDialogsVariableUtils
-extends Node
+extends RefCounted
 
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Variable Utils
@@ -166,10 +166,11 @@ static func get_types_dropdown(label: bool = true, excluded: Array[String] = [])
 	return dropdown
 
 
-## Create a new field based on the variable type
+## Create a new field based on the variable type.
+## Returns a dictionary with the field created and its default value.
 ## You can pass an initial value and property data for hints.
 ## Also, you can pass callables for when the value changes
-## or when the field is modified (mostly for mouse exit events).
+## or when the field is modified.
 static func new_field_by_type(
 		type: int,
 		init_value: Variant = null,
@@ -427,7 +428,7 @@ static func new_field_by_type(
 	}
 
 
-## Sets the value in the given field based on its type
+## Sets a value in the given field based on its type.
 static func set_field_value(field: Control, type: int, value: Variant) -> void:
 	if value == null:
 		return # Do nothing if value is null
@@ -487,7 +488,7 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 
 #region === Variable Type Operators ============================================
 
-## Returns a list of assignment operators by type
+## Returns a list of assignment operators by type.
 static func get_assignment_operators(type: int) -> Dictionary:
 	match type:
 		TYPE_BOOL:
@@ -529,7 +530,7 @@ static func get_assignment_operators(type: int) -> Dictionary:
 			}
 
 
-## Returns all the comparison operators as a dictionary
+## Returns all the comparison operators as a dictionary.
 static func get_comparison_operators() -> Dictionary:
 	return {
 		"==": OP_EQUAL,

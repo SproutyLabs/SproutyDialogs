@@ -6,7 +6,8 @@ extends Node
 # Sprouty Dialogs Variable Manager
 # -----------------------------------------------------------------------------
 ## This class manages the variables in the Sprouty Dialogs plugin.
-## It provides methods to get, set, check and parse variables.
+## It provides methods to get, set, check, parse variables in strings
+## and get assigment and comparision operations results.
 # -----------------------------------------------------------------------------
 
 ## Dictionary to store variable names, types and values
@@ -39,24 +40,16 @@ func _init() -> void:
 
 ## Returns all the variables data as a dictionary.
 ## If the variables are not loaded, it will load them from project settings.
-func get_all_variables() -> Dictionary:
+func get_variables_data() -> Dictionary:
 	if _variables.is_empty():
 		_variables = SproutyDialogsSettingsManager.get_setting("variables").duplicate(true)
 	return _variables
 
 
-## Get the value of a variable defined in the Variable Editor or from the autoloads.
+## Get the data of a variable defined in the variable editor or from the autoloads.
 ## If the variable is found, it returns a dictionary with its data.
-## If the variable does not exist, it returns null.
-func get_variable(name: String) -> Variant:
-	var var_data = get_variable_data(name)
-	return var_data.value if var_data else null
-
-
-## Get the data of a variable defined in the Variable Editor or from the autoloads.
-## If the variable is found, it returns a dictionary with its data.
-## If the variable does not exist, it returns null.
-func get_variable_data(name: String) -> Variant:
+## If the variable does not exist, it returns an empty dictionary.
+func get_variable_data(name: String) -> Dictionary:
 	if _variables.has(name): # If the variable is a directly in the dictionary
 		var variable = _variables[name]
 		return {
@@ -96,10 +89,18 @@ func get_variable_data(name: String) -> Variant:
 				"hint_string": prop["hint_string"]
 			}
 		}
-	return null
-	
+	return {}
 
-## Set or update a variable defined in the Variable Editor or from the autoloads.
+
+## Get the value of a variable defined in the variable editor or from the autoloads.
+## If the variable is found, it returns a dictionary with its data.
+## If the variable does not exist, it returns null.
+func get_variable(name: String) -> Variant:
+	var var_data = get_variable_data(name)
+	return var_data.value if not var_data.is_empty() else null
+
+
+## Set or update the value of a variable defined in the variable editor or from the autoloads.
 func set_variable(name: String, value: Variant) -> void:
 	if _variables.has(name): # If the variable is directly in the dictionary
 		_variables[name].value = value
@@ -130,14 +131,63 @@ func set_variable(name: String, value: Variant) -> void:
 	printerr("[Sprouty Dialogs] Cannot set variable '" + name + "'. Variable not found.")
 
 
-## Check if a variable exists
-func has_variable(name: String, group: Dictionary = _variables) -> bool:
-	return get_variable_data(name) != null
+## Check if a variable exists in the variable editor or in the autoloads.
+func has_variable(name: String) -> bool:
+	return not get_variable_data(name).is_empty()
+
+
+## Retuns a list with the names of the variables in a group.
+## If no group is especified, return the top-level variables.
+func get_variables_in_group(group_name: String) -> Array:
+	if group_name == "":
+		var names := []
+		for key in _variables.keys():
+			var child = _variables[key]
+			if child.has("variables"):
+				continue # Skip entries that are groups
+			names.append(key)
+		return names
+	# Support nested groups separated by '/'
+	var parts = group_name.split("/")
+	var current_group = _variables
+	for i in range(parts.size()):
+		var part = parts[i]
+		if not current_group.has(part):
+			printerr("[Sprouty Dialogs] Cannot get variables in group '" \
+				+ group_name + "'. '" + parts[i] + "' group not found.")
+			return []
+		var child = current_group[part]
+		if child.has("variables"):
+			# If this is the last part, return the variable names
+			if i == parts.size() - 1:
+				var names := []
+				for key in child.variables.keys():
+					var _var = child.variables[key]
+					if _var.has("variables"):
+						continue # Skip entries that are groups
+					names.append(key)
+				return names
+			# Otherwise descend into the group's variables dictionary
+			current_group = child.variables
+		else: # This part is not a group
+			printerr("[Sprouty Dialogs] Cannot get variables in group '" \
+				+ group_name + "'. '" + parts[i] + "' is a variable not a group.")
+			return []
+	# Fallback, no group found
+	printerr("[Sprouty Dialogs] Cannot get variables from group '" + group_name \
+		+"'. Group not found, please check the variable editor.")
+	return []
+
+
+## Check if a variable is in a given group.
+func is_variable_in_group(variable_name: String, group_name: String) -> bool:
+	var vars = get_variables_in_group(group_name)
+	return vars.has(variable_name)
 
 
 ## Reset a variable to its initial value.
 ## If no variable is specified, reset all variables.
-## This method only resets variables defined in the Variable Editor,
+## This method only resets variables defined in the variable editor,
 ## you cannot reset variables from autoloads here.
 func reset_variable(name: String = "") -> void:
 	var vars_data = SproutyDialogsSettingsManager.get_setting("variables")
@@ -166,7 +216,8 @@ func reset_variable(name: String = "") -> void:
 
 
 #region === Parse Variables ====================================================
-## Replaces all variables ({}) in a text with their corresponding values
+
+## Replaces all variables ({}) in a text with their corresponding values.
 func parse_variables(text: String, ignore_error: bool = false) -> String:
 	if not "{" in text:
 		return text # No variables to parse
@@ -203,7 +254,7 @@ func parse_variables(text: String, ignore_error: bool = false) -> String:
 func _get_parsed_variable(var_name: String, ignore_error: bool = false,
 		only_parse_var: bool = false) -> Variant:
 	var variable = get_variable_data(var_name)
-	if variable:
+	if not variable.is_empty():
 		if variable.type == TYPE_STRING:
 			# If the variable is an expression, execute it
 			if variable.metadata.has("hint") and \
@@ -246,8 +297,8 @@ func _get_parsed_variable(var_name: String, ignore_error: bool = false,
 	return variable
 
 
-## Executes a expression with variables parsed
-## Returns the result of the expression
+## Executes a expression with variables parsed.
+## Returns the result of the expression.
 func _execute_expression(command: String, ignore_error: bool = false) -> Variant:
 	var parsed_command = parse_variables(command, true)
 	var autoloads = _get_autoloads()

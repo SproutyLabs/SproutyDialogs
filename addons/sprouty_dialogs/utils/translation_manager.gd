@@ -1,6 +1,6 @@
 @tool
 class_name SproutyDialogsTranslationManager
-extends Node
+extends RefCounted
 
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Translation Manager

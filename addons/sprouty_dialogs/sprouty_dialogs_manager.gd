@@ -21,7 +21,7 @@ signal dialog_resumed(dialog_file: String, start_id: String)
 ## Emitted when the dialog is ended.
 signal dialog_ended(dialog_file: String, start_id: String)
 
-## Variable manager instancce
+## Variable manager instance
 var variables := SproutyDialogsVariableManager.new()
 ## Resource manager instance
 var resources := SproutyDialogsResourceManager.new()
@@ -42,8 +42,6 @@ func _ready():
 	add_child(variables)
 	add_child(resources)
 
-func get_lol() -> String:
-	return "lol"
 
 #region === Run dialog =========================================================
 ## Start a dialog with the given data and start ID.

@@ -1,6 +1,6 @@
 @tool
 class_name SproutyDialogsFileUtils
-extends Node
+extends RefCounted
 
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs File Utils
@@ -11,7 +11,7 @@ extends Node
 # -----------------------------------------------------------------------------
 
 ## Last used paths for file dialogs
-static var recent_file_paths: Dictionary = {
+static var _recent_file_paths: Dictionary = {
 	"graph_dialogs_files": "res://",
 	"dialogue_files": "res://",
 	"character_files": "res://",
@@ -23,14 +23,14 @@ static var recent_file_paths: Dictionary = {
 
 ## Get the last used path for a file type in a file dialog
 static func get_recent_file_path(file_type: String) -> String:
-	if recent_file_paths.has(file_type):
-		return recent_file_paths[file_type]
+	if _recent_file_paths.has(file_type):
+		return _recent_file_paths[file_type]
 	return "res://"
 
 
 ## Set the last used path for a file type in a file dialog
 static func set_recent_file_path(file_type: String, path: String) -> void:
-	recent_file_paths[file_type] = path.get_base_dir()
+	_recent_file_paths[file_type] = path.get_base_dir()
 
 
 ## Check if the path has valid extension
