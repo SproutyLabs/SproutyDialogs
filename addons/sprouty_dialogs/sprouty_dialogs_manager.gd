@@ -21,14 +21,16 @@ signal dialog_resumed(dialog_file: String, start_id: String)
 ## Emitted when the dialog is ended.
 signal dialog_ended(dialog_file: String, start_id: String)
 
-## Variable manager instance
-var variables := SproutyDialogsVariableManager.new()
-## Resource manager instance
-var resources := SproutyDialogsResourceManager.new()
-
 ## The list of dialog players currently running.
 ## This is used to keep track of multiple dialog players running at the same time.
 var dialog_players_running: Array[DialogPlayer] = []
+
+## Resource manager singleton instance
+var Resources := SproutyDialogsResourceManager.new()
+## Variable manager singleton instance
+var Variables := SproutyDialogsVariableManager.new()
+## Settings manager reference
+var Settings := SproutyDialogsSettingsManager
 
 
 func _ready():
@@ -37,10 +39,10 @@ func _ready():
 		Engine.register_singleton("SproutyDialogs", self)
 
 	# Set managers instances
-	variables.name = "VariablesManager"
-	resources.name = "ResourcesManager"
-	add_child(variables)
-	add_child(resources)
+	Variables.name = "VariablesManager"
+	Resources.name = "ResourcesManager"
+	add_child(Variables)
+	add_child(Resources)
 
 
 #region === Run dialog =========================================================
