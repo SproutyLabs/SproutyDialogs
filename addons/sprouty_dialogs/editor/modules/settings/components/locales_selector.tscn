@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://secb1eoygm27"]
+[gd_scene load_steps=3 format=3 uid="uid://secb1eoygm27"]
 
 [ext_resource type="Script" uid="uid://fwv541qers6c" path="res://addons/sprouty_dialogs/editor/modules/settings/components/scripts/locales_selector.gd" id="1_ic1ok"]
+
+[sub_resource type="DPITexture" id="DPITexture_sgbsg"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
 
 [node name="LocalesSelector" type="VBoxContainer"]
 anchors_preset = 15
@@ -23,7 +27,7 @@ text = "Locales"
 
 [node name="AddButton" type="Button" parent="TopBar"]
 layout_mode = 2
-size_flags_horizontal = 10
+size_flags_horizontal = 8
 text = "New +"
 
 [node name="Panel" type="Panel" parent="."]
@@ -102,6 +106,7 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Save Locales"
+icon = SubResource("DPITexture_sgbsg")
 alignment = 2
 
 [node name="ConfirmSaveLocales" type="AcceptDialog" parent="."]

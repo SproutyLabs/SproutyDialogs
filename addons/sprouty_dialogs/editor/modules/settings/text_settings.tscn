@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://ryk2rxuf4sbx"]
+[gd_scene load_steps=6 format=3 uid="uid://ryk2rxuf4sbx"]
 
 [ext_resource type="Script" uid="uid://dmsryopl4atwi" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/text_settings.gd" id="1_22qb6"]
-[ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/editor/editor/icons/text_editor/text.svg" id="2_fgisi"]
-[ext_resource type="Texture2D" uid="uid://b7nifwp3mwmc3" path="res://addons/sprouty_dialogs/editor/editor/icons/dialog_nodes/dialog_box.svg" id="3_kpwi1"]
-[ext_resource type="Texture2D" uid="uid://co8x6yovoum6i" path="res://addons/sprouty_dialogs/editor/editor/icons/fast-forward.svg" id="4_kpwi1"]
+[ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/editor/icons/text_editor/text.svg" id="2_fgisi"]
+[ext_resource type="Texture2D" uid="uid://b7nifwp3mwmc3" path="res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_box.svg" id="3_kpwi1"]
+[ext_resource type="Texture2D" uid="uid://cf5ef41yo6jl6" path="res://addons/dialogue_nodes/icons/Reload.svg" id="3_nqvb2"]
+[ext_resource type="Texture2D" uid="uid://co8x6yovoum6i" path="res://addons/sprouty_dialogs/editor/icons/fast-forward.svg" id="4_kpwi1"]
 
 [node name="TextSettings" type="HSplitContainer"]
 anchors_preset = 15
@@ -49,6 +50,11 @@ The higher the number, the longer it will take to reveal the next character."
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Default typing speed"
+
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed"]
+layout_mode = 2
+icon = ExtResource("3_nqvb2")
+flat = true
 
 [node name="TypingSpeedField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed"]
 unique_name_in_owner = true
@@ -111,6 +117,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Max characters"
 
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters"]
+layout_mode = 2
+icon = ExtResource("3_nqvb2")
+flat = true
+
 [node name="MaxCharacterField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -152,6 +163,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Can skip delay"
 
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay"]
+layout_mode = 2
+icon = ExtResource("3_nqvb2")
+flat = true
+
 [node name="CanSkipDelayField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -169,6 +185,11 @@ tooltip_text = "Time in seconds during which you must wait for the dialogue to c
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Skip continue delay"
+
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay"]
+layout_mode = 2
+icon = ExtResource("3_nqvb2")
+flat = true
 
 [node name="SkipContinueDelayField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay"]
 unique_name_in_owner = true

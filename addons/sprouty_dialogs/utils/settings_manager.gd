@@ -165,15 +165,18 @@ static func has_setting(setting_name: String) -> bool:
 			or setting_name == "testing_locale" # Special case for testing_locale
 
 
+## Returns the default value of a setting.
+static func get_default_setting(setting_name: String) -> Variant:
+	return _settings_paths[setting_name]["default"]
+
+
 ## Reset a setting to its default value.
-## Returns the default value.
-static func reset_setting(setting_name: String) -> Variant:
+static func reset_setting(setting_name: String) -> void:
 	ProjectSettings.set_setting(
 			_settings_paths[setting_name]["path"],
 			_settings_paths[setting_name]["default"]
 		)
 	ProjectSettings.save()
-	return _settings_paths[setting_name]["default"]
 
 
 ## Initializes the default settings for the plugin.

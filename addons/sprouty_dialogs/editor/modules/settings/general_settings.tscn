@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://bbabgt3yvpmw5"]
+[gd_scene load_steps=8 format=3 uid="uid://bbabgt3yvpmw5"]
 
 [ext_resource type="Script" uid="uid://d0js6iit3n6uq" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/general_settings.gd" id="1_il2y2"]
 [ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="2_0s7dw"]
 [ext_resource type="Texture2D" uid="uid://c30bvh5pxcwpi" path="res://addons/sprouty_dialogs/editor/icons/cursor-arrow.svg" id="2_kixug"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="3_hokrq"]
+[ext_resource type="Texture2D" uid="uid://cf5ef41yo6jl6" path="res://addons/dialogue_nodes/icons/Reload.svg" id="3_lylrf"]
 [ext_resource type="Texture2D" uid="uid://t7ujqvnbwl36" path="res://addons/sprouty_dialogs/editor/icons/settings.svg" id="4_kixug"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/editor/icons/text_editor/image.svg" id="5_kixug"]
 
@@ -50,6 +51,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Continue input action"
 
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction"]
+layout_mode = 2
+icon = ExtResource("3_lylrf")
+flat = true
+
 [node name="ContinueInputActionField" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction" instance=ExtResource("2_0s7dw")]
 unique_name_in_owner = true
 layout_mode = 2
@@ -93,6 +99,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Default dialog box"
 
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
+layout_mode = 2
+icon = ExtResource("3_lylrf")
+flat = true
+
 [node name="DefaultDialogBoxField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" instance=ExtResource("3_hokrq")]
 unique_name_in_owner = true
 layout_mode = 2
@@ -118,6 +129,11 @@ The root of the scene must be a node inherited from the DialogPortrait class."
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Default portrait scene"
+
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
+layout_mode = 2
+icon = ExtResource("3_lylrf")
+flat = true
 
 [node name="DefaultPortraitSceneField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" instance=ExtResource("3_hokrq")]
 unique_name_in_owner = true
@@ -153,6 +169,11 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Dialog box canvas layer"
 
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
+layout_mode = 2
+icon = ExtResource("3_lylrf")
+flat = true
+
 [node name="DialogBoxCanvasLayerField" type="SpinBox" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -169,6 +190,11 @@ tooltip_text = "Layer index for draw order in the canvas layer when portraits ar
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Portrait canvas layer"
+
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
+layout_mode = 2
+icon = ExtResource("3_lylrf")
+flat = true
 
 [node name="PortraitCanvasLayerField" type="SpinBox" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
 unique_name_in_owner = true

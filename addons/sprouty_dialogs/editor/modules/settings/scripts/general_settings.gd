@@ -27,7 +27,7 @@ extends HSplitContainer
 
 
 func _ready():
-	_continue_input_action_field.input_submitted.connect(_on_continue_input_action_changed)
+	_continue_input_action_field.input_changed.connect(_on_continue_input_action_changed)
 	_default_dialog_box_field.path_changed.connect(_on_default_dialog_box_path_changed)
 	_default_potrait_scene_field.path_changed.connect(_on_default_portrait_scene_path_changed)
 	_dialog_box_canvas_layer_field.value_changed.connect(_on_dialog_box_canvas_layer_changed)
@@ -43,12 +43,19 @@ func _ready():
 	_load_settings()
 
 
+## Update settings when the panel is selected
+func update_settings() -> void:
+	_load_settings()
+
+
 ## Load settings and set the values in the UI
 func _load_settings() -> void:
 	# Load the continue input action
 	_continue_input_action_field.set_value(
 		SproutyDialogsSettingsManager.get_setting("continue_input_action")
 	)
+	_set_reset_button(_continue_input_action_field, "continue_input_action")
+
 	# Load the default dialog box
 	var default_dialog_box = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
 	if not SproutyDialogsFileUtils.check_valid_uid_path(default_dialog_box):
@@ -60,6 +67,7 @@ func _load_settings() -> void:
 	else:
 		_default_dialog_box_warning.visible = false
 		_default_dialog_box_field.set_value(ResourceUID.get_id_path(default_dialog_box))
+	_set_reset_button(_default_dialog_box_field, "default_dialog_box")
 	
 	# Load the default portrait scene
 	var default_portrait = SproutyDialogsSettingsManager.get_setting("default_portrait_scene")
@@ -72,22 +80,72 @@ func _load_settings() -> void:
 	else:
 		_default_portrait_warning.visible = false
 		_default_potrait_scene_field.set_value(ResourceUID.get_id_path(default_portrait))
+	_set_reset_button(_default_potrait_scene_field, "default_portrait_scene")
 	
 	# Load Canvas layers settings
 	_dialog_box_canvas_layer_field.value = \
 		SproutyDialogsSettingsManager.get_setting("dialog_box_canvas_layer")
+	_set_reset_button(_dialog_box_canvas_layer_field, "dialog_box_canvas_layer")
+
 	_portrait_canvas_layer_field.value = \
 		SproutyDialogsSettingsManager.get_setting("portraits_canvas_layer")
+	_set_reset_button(_portrait_canvas_layer_field, "portraits_canvas_layer")
 
 
-## Update settings when the panel is selected
-func update_settings() -> void:
-	_load_settings()
+## Setup the reset button of a field
+func _set_reset_button(field: Control, setting_name: String) -> void:
+	var default_value = SproutyDialogsSettingsManager.get_default_setting(setting_name)
+	var reset_button = field.get_parent().get_child(1)
+
+	if field is EditorSproutyDialogsComboBox or field is EditorSproutyDialogsFileField:
+		if default_value is int and ResourceUID.has_id(default_value):
+			default_value = ResourceUID.get_id_path(default_value)
+		reset_button.pressed.connect(func():
+			SproutyDialogsSettingsManager.reset_setting(setting_name)
+			field.set_value(default_value)
+			reset_button.hide()
+		)
+		if field.get_value() == default_value:
+			reset_button.hide()
+		else:
+			reset_button.show()
+	
+	if field is SpinBox:
+		reset_button.pressed.connect(func():
+			SproutyDialogsSettingsManager.reset_setting(setting_name)
+			field.set_value_no_signal(default_value)
+			reset_button.hide()
+		)
+		if field.value == default_value:
+			reset_button.hide()
+		else:
+			reset_button.show()
+
+
+## Show the reset button of a field
+func _show_reset_button(field: Control, setting_name: String) -> void:
+	var default_value = SproutyDialogsSettingsManager.get_default_setting(setting_name)
+	var reset_button = field.get_parent().get_child(1)
+
+	if field is EditorSproutyDialogsComboBox or field is EditorSproutyDialogsFileField:
+		if default_value is int and ResourceUID.has_id(default_value):
+			default_value = ResourceUID.get_id_path(default_value)
+		if field.get_value() == default_value:
+			reset_button.hide()
+			return
+	
+	if field is SpinBox:
+		if field.value == default_value:
+			reset_button.hide()
+			return
+	
+	reset_button.show()
 
 
 ## Handle when the continue input action is changed
 func _on_continue_input_action_changed(new_value: String) -> void:
 	SproutyDialogsSettingsManager.set_setting("continue_input_action", new_value)
+	_show_reset_button(_continue_input_action_field, "continue_input_action")
 
 
 ## Handle when the default dialog box path is changed
@@ -99,6 +157,7 @@ func _on_default_dialog_box_path_changed(new_path: String) -> void:
 	_default_dialog_box_warning.visible = false
 	SproutyDialogsSettingsManager.set_setting("default_dialog_box",
 			ResourceSaver.get_resource_id_for_path(new_path, true))
+	_show_reset_button(_default_dialog_box_field, "default_dialog_box")
 
 
 ## Handle when the default portrait scene path is changed
@@ -110,13 +169,16 @@ func _on_default_portrait_scene_path_changed(new_path: String) -> void:
 	_default_portrait_warning.visible = false
 	SproutyDialogsSettingsManager.set_setting("default_portrait_scene",
 			ResourceSaver.get_resource_id_for_path(new_path, true))
+	_show_reset_button(_default_potrait_scene_field, "default_portrait_scene")
 
 
 ## Handle when the dialog box canvas layer is changed
 func _on_dialog_box_canvas_layer_changed(new_value: int) -> void:
 	SproutyDialogsSettingsManager.set_setting("dialog_box_canvas_layer", new_value)
+	_show_reset_button(_dialog_box_canvas_layer_field, "dialog_box_canvas_layer")
 
 
 ## Handle when the portrait canvas layer is changed
 func _on_portrait_canvas_layer_changed(new_value: int) -> void:
 	SproutyDialogsSettingsManager.set_setting("portraits_canvas_layer", new_value)
+	_show_reset_button(_portrait_canvas_layer_field, "portraits_canvas_layer")
