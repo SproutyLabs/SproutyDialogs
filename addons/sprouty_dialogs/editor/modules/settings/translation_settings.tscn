@@ -43,9 +43,9 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for translations.
-Otherwise, translations will be saved in the dialog file."
+Otherwise, translations will be saved in the dialogue data file."
 button_pressed = true
-text = "Use CSV files for translation"
+text = "Use CSV files"
 icon = ExtResource("2_qeqd1")
 
 [node name="CSVFolderWarning" type="RichTextLabel" parent="TranslationSettings/ScrollContainer/Container"]
@@ -64,7 +64,7 @@ This directory must contain all the CSV files used for the dialogs.
 
 [node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/CSVFolder"]
 layout_mode = 2
-text = "CSV Translations Folder"
+text = "CSV translations folder"
 
 [node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/CSVFolder"]
 visible = false
@@ -81,13 +81,13 @@ _placeholder_text = "Select a folder..."
 
 [node name="FallbackToResource" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
-tooltip_text = "When a dialog key is not found in the CSV file, the dialog will be loaded from the dialog file.
+tooltip_text = "When a dialog key is not found in the CSV file, the dialog will be loaded from the dialogue data file.
 (This only applies when opening a dialog file in the editor, not when running the dialog)."
 
 [node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Fallback to resource if key is not in CSV"
+text = "Fallback to resource"
 
 [node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
 layout_mode = 2
@@ -112,12 +112,12 @@ icon = ExtResource("3_rjao7")
 [node name="UseCSVForNames" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for character name translations.
-Otherwise, translations will be saved in the character file."
+Otherwise, translations will be saved in the character data file."
 
 [node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Use a CSV file for character names"
+text = "Use CSV for character names"
 
 [node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames"]
 layout_mode = 2
@@ -139,11 +139,11 @@ fit_content = true
 
 [node name="CharCSVFile" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
-tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV file directory."
+tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV translations folder."
 
 [node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile"]
 layout_mode = 2
-text = "Character Names CSV"
+text = "Character names CSV"
 
 [node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile"]
 visible = false

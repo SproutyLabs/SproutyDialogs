@@ -103,7 +103,7 @@ func new_dialog_file(path: String) -> void:
 			+"/" + path.get_file().get_basename() + ".csv"
 	
 	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
-		and SproutyDialogsSettingsManager.get_setting("use_csv"):
+		and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
 		if not FileAccess.file_exists(csv_path):
 			# Create a new CSV file for translations
 			csv_path = SproutyDialogsCSVFileManager.new_csv_template_file(path.get_file())
@@ -134,7 +134,7 @@ func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSpr
 	var dialogs = resource.dialogs if resource.dialogs else {}
 	# Load dialogs from CSV file if translation is enabled
 	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
-		and SproutyDialogsSettingsManager.get_setting("use_csv"):
+		and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
 		if SproutyDialogsFileUtils.check_valid_uid_path(resource.csv_file_uid):
 			dialogs = SproutyDialogsCSVFileManager.load_dialogs_from_csv(
 					ResourceUID.get_id_path(resource.csv_file_uid))
@@ -170,7 +170,7 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
 		and SproutyDialogsSettingsManager.get_setting("translate_character_names") \
 		and SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
-		and SproutyDialogsSettingsManager.get_setting("use_csv"): # Load character names from CSV file
+		and SproutyDialogsSettingsManager.get_setting("use_csv_files"): # Load character names from CSV file
 		name_data = SproutyDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
 		name_data["default"] = resource.display_name["default"] if resource.display_name.has("default") else ""
 	char_editor.load_character(resource, name_data)
@@ -236,7 +236,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 
 		# Save the CSV file with the dialogs
 		if SproutyDialogsSettingsManager.get_setting("enable_translations") \
-			and SproutyDialogsSettingsManager.get_setting("use_csv"):
+			and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
 			if SproutyDialogsFileUtils.check_valid_uid_path(data.csv_file_uid):
 				SproutyDialogsCSVFileManager.save_dialogs_on_csv(
 					graph_editor_data["dialogs"],
@@ -252,7 +252,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		if SproutyDialogsSettingsManager.get_setting("translate_character_names") \
 			and SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
 			and SproutyDialogsSettingsManager.get_setting("enable_translations") \
-			and SproutyDialogsSettingsManager.get_setting("use_csv"):
+			and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
 			SproutyDialogsCSVFileManager.save_character_names_on_csv(data.key_name, data.display_name)
 	
 	# Save file on the given path

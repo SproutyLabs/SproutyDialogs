@@ -81,8 +81,8 @@ static var _settings_paths: Dictionary = {
 		"default": false
 	},
 	# Translation/CSV files settings
-	"use_csv": {
-		"path": "graph_dialogs/translation/csv_files/use_csv",
+	"use_csv_files": {
+		"path": "graph_dialogs/translation/csv_files/use_csv_files",
 		"default": false
 	},
 	"csv_translations_folder": {

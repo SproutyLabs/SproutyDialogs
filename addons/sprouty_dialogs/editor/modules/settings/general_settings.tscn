@@ -44,7 +44,7 @@ text = "Input"
 
 [node name="ContinueInputAction" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "The input action that allows dialogue to continue."
+tooltip_text = "The input action that allows the dialog to continue."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction"]
 layout_mode = 2
@@ -52,6 +52,7 @@ size_flags_horizontal = 3
 text = "Continue input action"
 
 [node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_lylrf")
 flat = true
@@ -100,6 +101,7 @@ size_flags_horizontal = 3
 text = "Default dialog box"
 
 [node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_lylrf")
 flat = true
@@ -131,6 +133,7 @@ size_flags_horizontal = 3
 text = "Default portrait scene"
 
 [node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_lylrf")
 flat = true
@@ -162,7 +165,8 @@ text = "Canvas Layers"
 
 [node name="DialogBoxCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Layer index for draw order in the canvas layer when dialog boxes are displayed by default."
+tooltip_text = "Layer index for the draw order of the canvas layer where dialog boxes will be displayed by default, 
+if the dialog box parent is not overriden."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
 layout_mode = 2
@@ -170,6 +174,7 @@ size_flags_horizontal = 3
 text = "Dialog box canvas layer"
 
 [node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_lylrf")
 flat = true
@@ -184,7 +189,8 @@ allow_lesser = true
 
 [node name="PortraitsCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Layer index for draw order in the canvas layer when portraits are displayed by default."
+tooltip_text = "Layer index for the draw order of the canvas layer where portraits will be displayed by default, 
+if the portrait parent is not overriden."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
 layout_mode = 2
@@ -192,6 +198,7 @@ size_flags_horizontal = 3
 text = "Portrait canvas layer"
 
 [node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_lylrf")
 flat = true

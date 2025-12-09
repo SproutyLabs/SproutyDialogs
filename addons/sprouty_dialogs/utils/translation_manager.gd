@@ -15,7 +15,7 @@ static func get_translated_dialog(key: String,
 		dialog_data: SproutyDialogsDialogueData) -> String:
 	if SproutyDialogsSettingsManager.get_setting("enable_translations"):
 		# If translation is enabled and using CSV, use the translation server
-		if SproutyDialogsSettingsManager.get_setting("use_csv"):
+		if SproutyDialogsSettingsManager.get_setting("use_csv_files"):
 			return TranslationServer.translate(key)
 		else: # Otherwise, get the dialog from the dialog resource
 			var locale = TranslationServer.get_locale()

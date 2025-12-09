@@ -52,6 +52,7 @@ size_flags_horizontal = 3
 text = "Default typing speed"
 
 [node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_nqvb2")
 flat = true
@@ -67,7 +68,7 @@ suffix = "s"
 
 [node name="OpenURL" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Open the URL hyperlink when clicking on a URL tag during the dialogue.
+tooltip_text = "If enabled, opens a hyperlink in the browser when a URL tag is clicked during a dialog.
 By default the URL tags are handled by 'meta_clicked' signal on RichTextLabels.
 You can do the same with the 'meta_clicked' signal in a DialogBox to more advanced use cases."
 
@@ -77,6 +78,7 @@ size_flags_horizontal = 3
 text = "Open URL on meta tag click"
 
 [node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_nqvb2")
 flat = true
@@ -106,15 +108,15 @@ text = "Dialogue Display"
 
 [node name="NewLine" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Line breaks will be considered paragraphs. Each paragraph is displayed as a new dialog (or block of text in the dialog box).
-Otherwise, the text is displayed all at once."
+tooltip_text = "Line breaks will be considered paragraphs. Each paragraph is displayed as a new dialog (or block of text in the dialog box). Otherwise, the text is displayed all at once."
 
 [node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "New line as new dialogue"
+text = "New line as new dialog"
 
 [node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_nqvb2")
 flat = true
@@ -126,15 +128,15 @@ button_pressed = true
 
 [node name="SplitDialog" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "The text is divided into paragraphs according to a max character limit.
-Otherwise, it is displayed all at once."
+tooltip_text = "The text is divided into paragraphs according to a character limit. Otherwise, it is displayed all at once."
 
 [node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Split dialogue by max characters "
+text = "Split dialog by max characters "
 
 [node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_nqvb2")
 flat = true
@@ -145,8 +147,7 @@ layout_mode = 2
 
 [node name="MaxCharacters" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Maximum character limit.
-This is only used if the dialogue is splited by max characters."
+tooltip_text = "Maximum character limit. Only used if the dialogue is split by a character limit."
 
 [node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters"]
 layout_mode = 2
@@ -154,6 +155,7 @@ size_flags_horizontal = 3
 text = "Max characters"
 
 [node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_nqvb2")
 flat = true
@@ -192,6 +194,7 @@ size_flags_horizontal = 3
 text = "Allow skip text reveal"
 
 [node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_nqvb2")
 flat = true
@@ -212,6 +215,7 @@ size_flags_horizontal = 3
 text = "Can skip delay"
 
 [node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_nqvb2")
 flat = true
@@ -235,6 +239,7 @@ size_flags_horizontal = 3
 text = "Skip continue delay"
 
 [node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_nqvb2")
 flat = true

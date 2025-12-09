@@ -112,7 +112,7 @@ func _load_settings() -> void:
 	_enable_translations_toggle.button_pressed = \
 		SproutyDialogsSettingsManager.get_setting("enable_translations")
 	_use_csv_files_toggle.button_pressed = \
-		SproutyDialogsSettingsManager.get_setting("use_csv")
+		SproutyDialogsSettingsManager.get_setting("use_csv_files")
 	_fallback_to_resource_toggle.button_pressed = \
 		SproutyDialogsSettingsManager.get_setting("fallback_to_resource")
 	_translate_names_toggle.button_pressed = \
@@ -305,7 +305,7 @@ func _on_use_translation_toggled(checked: bool) -> void:
 
 ## Toggle the use of CSV files for translations
 func _on_use_csv_files_toggled(checked: bool) -> void:
-	SproutyDialogsSettingsManager.set_setting("use_csv", checked)
+	SproutyDialogsSettingsManager.set_setting("use_csv_files", checked)
 	
 	csv_folder_field.disable_field(not (checked and _enable_translations_toggle.is_pressed()))
 	csv_folder_field.get_parent().visible = checked
