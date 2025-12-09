@@ -65,14 +65,26 @@ value = 0.05
 allow_greater = true
 suffix = "s"
 
-[node name="OpenUrlOnMetaToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer"]
-unique_name_in_owner = true
+[node name="OpenURL" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Open the URL hyperlink when clicking on a URL tag during the dialogue.
 By default the URL tags are handled by 'meta_clicked' signal on RichTextLabels.
 You can do the same with the 'meta_clicked' signal in a DialogBox to more advanced use cases."
-button_pressed = true
+
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Open URL on meta tag click"
+
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL"]
+layout_mode = 2
+icon = ExtResource("3_nqvb2")
+flat = true
+
+[node name="OpenUrlOnMetaToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
 
 [node name="---" type="HSeparator" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -92,20 +104,44 @@ size_flags_vertical = 1
 theme_type_variation = &"HeaderSmall"
 text = "Dialogue Display"
 
-[node name="NewLineToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer"]
-unique_name_in_owner = true
+[node name="NewLine" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Line breaks will be considered paragraphs. Each paragraph is displayed as a new dialog (or block of text in the dialog box).
 Otherwise, the text is displayed all at once."
-button_pressed = true
+
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "New line as new dialogue"
 
-[node name="SplitDialogToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine"]
+layout_mode = 2
+icon = ExtResource("3_nqvb2")
+flat = true
+
+[node name="NewLineToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine"]
 unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+
+[node name="SplitDialog" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "The text is divided into paragraphs according to a max character limit.
 Otherwise, it is displayed all at once."
+
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Split dialogue by max characters "
+
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog"]
+layout_mode = 2
+icon = ExtResource("3_nqvb2")
+flat = true
+
+[node name="SplitDialogToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog"]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="MaxCharacters" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
@@ -146,12 +182,24 @@ size_flags_vertical = 1
 theme_type_variation = &"HeaderSmall"
 text = "Skip Text Reveal"
 
-[node name="AllowSkipRevealToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer"]
-unique_name_in_owner = true
+[node name="AllowSkipReveal" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 tooltip_text = "Allows to skip text reveal and display everything at once."
-button_pressed = true
+
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Allow skip text reveal"
+
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal"]
+layout_mode = 2
+icon = ExtResource("3_nqvb2")
+flat = true
+
+[node name="AllowSkipRevealToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
 
 [node name="CanSkipDelay" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
 layout_mode = 2

@@ -44,6 +44,7 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for translations.
 Otherwise, translations will be saved in the dialog file."
+button_pressed = true
 text = "Use CSV files for translation"
 icon = ExtResource("2_qeqd1")
 
@@ -56,7 +57,6 @@ text = "[color=tomato]Please select a valid directory for the CSV files."
 fit_content = true
 
 [node name="CSVFolder" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
-visible = false
 layout_mode = 2
 tooltip_text = "Path to the directory of the CSV translation files.
 This directory must contain all the CSV files used for the dialogs. 
@@ -66,6 +66,12 @@ This directory must contain all the CSV files used for the dialogs.
 layout_mode = 2
 text = "CSV Translations Folder"
 
+[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/CSVFolder"]
+visible = false
+layout_mode = 2
+icon = ExtResource("4_aahm7")
+flat = true
+
 [node name="CSVFolderField" parent="TranslationSettings/ScrollContainer/Container/CSVFolder" instance=ExtResource("4_erkog")]
 unique_name_in_owner = true
 layout_mode = 2
@@ -73,15 +79,24 @@ size_flags_horizontal = 3
 _open_directory = true
 _placeholder_text = "Select a folder..."
 
-[node name="FallbackToResourceToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
-unique_name_in_owner = true
-visible = false
+[node name="FallbackToResource" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "When a dialog key is not found in the CSV file, the dialog will be loaded from the dialog file.
 (This only applies when opening a dialog file in the editor, not when running the dialog)."
-disabled = true
-button_pressed = true
+
+[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Fallback to resource if key is not in CSV"
+
+[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
+layout_mode = 2
+icon = ExtResource("4_aahm7")
+flat = true
+
+[node name="FallbackToResourceToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="---" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
@@ -90,17 +105,29 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable translation for the character names."
+button_pressed = true
 text = "Translate character names"
 icon = ExtResource("3_rjao7")
 
-[node name="UseCSVForNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
-unique_name_in_owner = true
-visible = false
+[node name="UseCSVForNames" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for character name translations.
 Otherwise, translations will be saved in the character file."
-disabled = true
+
+[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Use a CSV file for character names"
+
+[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames"]
+layout_mode = 2
+icon = ExtResource("4_aahm7")
+flat = true
+
+[node name="UseCSVForNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
 
 [node name="CharCSVWarning" type="RichTextLabel" parent="TranslationSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
@@ -111,13 +138,18 @@ text = "[color=tomato]Please select a valid CSV file for character name translat
 fit_content = true
 
 [node name="CharCSVFile" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
-visible = false
 layout_mode = 2
 tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV file directory."
 
 [node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile"]
 layout_mode = 2
 text = "Character Names CSV"
+
+[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile"]
+visible = false
+layout_mode = 2
+icon = ExtResource("4_aahm7")
+flat = true
 
 [node name="CharNamesCSVField" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile" instance=ExtResource("4_erkog")]
 unique_name_in_owner = true
@@ -136,7 +168,6 @@ layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Collect the translations from CSV files into Godot so they can be used. You can find the collected translations 
 in Project > Project settings > Localization > Translations."
-disabled = true
 text = "Collect Translations"
 icon = ExtResource("2_2wqnh")
 
@@ -167,6 +198,7 @@ layout_mode = 2
 text = "Default Locale"
 
 [node name="ResetButton" type="Button" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale"]
+visible = false
 layout_mode = 2
 icon = ExtResource("4_aahm7")
 flat = true
@@ -194,6 +226,7 @@ layout_mode = 2
 text = "Testing Locale"
 
 [node name="ResetButton" type="Button" parent="LocalesSettings/ScrollContainer/Container/TestingLocale"]
+visible = false
 layout_mode = 2
 icon = ExtResource("4_aahm7")
 flat = true
@@ -201,7 +234,7 @@ flat = true
 [node name="OptionButton" type="OptionButton" parent="LocalesSettings/ScrollContainer/Container/TestingLocale"]
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 1
+selected = 0
 item_count = 4
 popup/item_0/text = "(no one)"
 popup/item_0/id = 0

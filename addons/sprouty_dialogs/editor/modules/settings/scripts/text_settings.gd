@@ -69,7 +69,11 @@ func _load_settings() -> void:
 			SproutyDialogsSettingsManager.get_setting("skip_continue_delay")
 	
 	_set_reset_button(_typing_speed_field, "default_typing_speed")
+	_set_reset_button(_open_url_on_meta_toggle, "open_url_on_meta_tag_click")
+	_set_reset_button(_new_line_toggle, "new_line_as_new_dialog")
+	_set_reset_button(_split_dialog_toggle, "split_dialog_by_max_characters")
 	_set_reset_button(_max_character_field, "max_characters")
+	_set_reset_button(_allow_skip_reveal_toggle, "allow_skip_text_reveal")
 	_set_reset_button(_can_skip_delay_field, "can_skip_delay")
 	_set_reset_button(_skip_continue_delay_field, "skip_continue_delay")
 
@@ -79,29 +83,21 @@ func _set_reset_button(field: Control, setting_name: String) -> void:
 	var default_value = SproutyDialogsSettingsManager.get_default_setting(setting_name)
 	var reset_button = field.get_parent().get_child(1)
 
-	if field is EditorSproutyDialogsComboBox or field is EditorSproutyDialogsFileField:
-		if default_value is int and ResourceUID.has_id(default_value):
-			default_value = ResourceUID.get_id_path(default_value)
-		reset_button.pressed.connect(func():
-			SproutyDialogsSettingsManager.reset_setting(setting_name)
-			field.set_value(default_value)
-			reset_button.hide()
-		)
-		if field.get_value() == default_value:
-			reset_button.hide()
-		else:
-			reset_button.show()
-	
 	if field is SpinBox:
 		reset_button.pressed.connect(func():
 			SproutyDialogsSettingsManager.reset_setting(setting_name)
 			field.set_value_no_signal(default_value)
 			reset_button.hide()
 		)
-		if field.value == default_value:
+		reset_button.visible = field.value != default_value
+	
+	elif field is CheckButton:
+		reset_button.pressed.connect(func():
+			SproutyDialogsSettingsManager.reset_setting(setting_name)
+			field.set_pressed_no_signal(default_value)
 			reset_button.hide()
-		else:
-			reset_button.show()
+		)
+		reset_button.visible = field.button_pressed != default_value
 
 
 ## Show the reset button of a field
@@ -109,19 +105,10 @@ func _show_reset_button(field: Control, setting_name: String) -> void:
 	var default_value = SproutyDialogsSettingsManager.get_default_setting(setting_name)
 	var reset_button = field.get_parent().get_child(1)
 
-	if field is EditorSproutyDialogsComboBox or field is EditorSproutyDialogsFileField:
-		if default_value is int and ResourceUID.has_id(default_value):
-			default_value = ResourceUID.get_id_path(default_value)
-		if field.get_value() == default_value:
-			reset_button.hide()
-			return
-	
 	if field is SpinBox:
-		if field.value == default_value:
-			reset_button.hide()
-			return
-	
-	reset_button.show()
+		reset_button.visible = field.value != default_value
+	elif field is CheckButton:
+		reset_button.visible = field.button_pressed != default_value
 
 
 ## Handle when the typing speed is changed
@@ -133,16 +120,19 @@ func _on_typing_speed_changed(value: float) -> void:
 ## Handle when the open URL on meta tag toggle is changed
 func _on_open_url_on_meta_toggled(pressed: bool) -> void:
 	SproutyDialogsSettingsManager.set_setting("open_url_on_meta_tag_click", pressed)
+	_show_reset_button(_open_url_on_meta_toggle, "open_url_on_meta_tag_click")
 
 
 ## Handle when the new line as new dialog toggle is changed
 func _on_new_line_toggled(pressed: bool) -> void:
 	SproutyDialogsSettingsManager.set_setting("new_line_as_new_dialog", pressed)
+	_show_reset_button(_new_line_toggle, "new_line_as_new_dialog")
 
 
 ## Handle when the split dialog by max characters toggle is changed
 func _on_split_dialog_toggled(pressed: bool) -> void:
 	SproutyDialogsSettingsManager.set_setting("split_dialog_by_max_characters", pressed)
+	_show_reset_button(_split_dialog_toggle, "split_dialog_by_max_characters")
 
 
 ## Handle when the max characters per dialog is changed
@@ -154,15 +144,16 @@ func _on_max_character_changed(value: float) -> void:
 ## Handle when the allow skip reveal toggle is changed
 func _on_allow_skip_reveal_toggled(pressed: bool) -> void:
 	SproutyDialogsSettingsManager.set_setting("allow_skip_text_reveal", pressed)
+	_show_reset_button(_allow_skip_reveal_toggle, "allow_skip_text_reveal")
 
 
 ## Handle when the can skip delay is changed
 func _on_can_skip_delay_changed(value: float) -> void:
 	SproutyDialogsSettingsManager.set_setting("can_skip_delay", value)
-	_set_reset_button(_can_skip_delay_field, "can_skip_delay")
+	_show_reset_button(_can_skip_delay_field, "can_skip_delay")
 
 
 ## Handle when the skip continue delay is changed
 func _on_skip_continue_delay_changed(value: float) -> void:
 	SproutyDialogsSettingsManager.set_setting("skip_continue_delay", value)
-	_set_reset_button(_skip_continue_delay_field, "skip_continue_delay")
+	_show_reset_button(_skip_continue_delay_field, "skip_continue_delay")

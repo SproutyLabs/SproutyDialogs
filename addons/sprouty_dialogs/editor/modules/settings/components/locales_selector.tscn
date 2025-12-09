@@ -22,12 +22,15 @@ layout_mode = 2
 [node name="Label" type="Label" parent="TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Set the locales (languages) into which the dialogs will be translated."
+mouse_filter = 1
 theme_type_variation = &"HeaderSmall"
 text = "Locales"
 
 [node name="AddButton" type="Button" parent="TopBar"]
 layout_mode = 2
 size_flags_horizontal = 8
+tooltip_text = "Add a new locale."
 text = "New +"
 
 [node name="Panel" type="Panel" parent="."]
@@ -105,6 +108,7 @@ horizontal_alignment = 1
 [node name="SaveButton" type="Button" parent="."]
 layout_mode = 2
 size_flags_horizontal = 8
+tooltip_text = "Save the current locales."
 text = "Save Locales"
 icon = SubResource("DPITexture_sgbsg")
 alignment = 2

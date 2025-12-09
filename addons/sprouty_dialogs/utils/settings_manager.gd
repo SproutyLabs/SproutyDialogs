@@ -113,7 +113,7 @@ static var _settings_paths: Dictionary = {
 	},
 	"testing_locale": {
 		"path": "internationalization/locale/test",
-		"default": OS.get_locale()
+		"default": ""
 	},
 	"locales": {
 		"path": "graph_dialogs/translation/localization/locales",

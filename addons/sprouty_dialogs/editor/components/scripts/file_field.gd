@@ -113,5 +113,5 @@ func _on_field_text_submitted(new_text: String) -> void:
 
 ## Clear the current value of the field.
 func clear_path() -> void:
-	path_changed.emit("")
 	set_value("")
+	path_changed.emit("")
