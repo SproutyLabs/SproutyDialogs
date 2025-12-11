@@ -171,11 +171,13 @@ func _set_reset_button(field: Control, setting_name: String) -> void:
 	
 	elif field is OptionButton:
 		reset_button.pressed.connect(func():
-			SproutyDialogsSettingsManager.set_setting(setting_name,
-				field.get_item_text(0) if field.get_item_text(0) != "(no one)" else ""
-			)
 			field.select(0)
 			reset_button.hide()
+
+			if setting_name == "default_locale":
+				_on_default_locale_selected(0)
+			if setting_name == "testing_locale":
+				_on_testing_locale_selected(0)
 		)
 		reset_button.visible = field.selected != 0
 

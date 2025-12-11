@@ -44,7 +44,6 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for translations.
 Otherwise, translations will be saved in the dialogue data file."
-button_pressed = true
 text = "Use CSV files"
 icon = ExtResource("2_qeqd1")
 
@@ -57,6 +56,7 @@ text = "[color=tomato]Please select a valid directory for the CSV files."
 fit_content = true
 
 [node name="CSVFolder" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
+visible = false
 layout_mode = 2
 tooltip_text = "Path to the directory of the CSV translation files.
 This directory must contain all the CSV files used for the dialogs. 
@@ -80,6 +80,7 @@ _open_directory = true
 _placeholder_text = "Select a folder..."
 
 [node name="FallbackToResource" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
+visible = false
 layout_mode = 2
 tooltip_text = "When a dialog key is not found in the CSV file, the dialog will be loaded from the dialogue data file.
 (This only applies when opening a dialog file in the editor, not when running the dialog)."
@@ -90,6 +91,7 @@ size_flags_horizontal = 3
 text = "Fallback to resource"
 
 [node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
+visible = false
 layout_mode = 2
 icon = ExtResource("4_aahm7")
 flat = true
@@ -97,6 +99,8 @@ flat = true
 [node name="FallbackToResourceToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
 unique_name_in_owner = true
 layout_mode = 2
+disabled = true
+button_pressed = true
 
 [node name="---" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container"]
 layout_mode = 2
@@ -105,11 +109,11 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable translation for the character names."
-button_pressed = true
 text = "Translate character names"
 icon = ExtResource("3_rjao7")
 
 [node name="UseCSVForNames" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
+visible = false
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for character name translations.
 Otherwise, translations will be saved in the character data file."
@@ -127,6 +131,7 @@ flat = true
 [node name="UseCSVForNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames"]
 unique_name_in_owner = true
 layout_mode = 2
+disabled = true
 button_pressed = true
 
 [node name="CharCSVWarning" type="RichTextLabel" parent="TranslationSettings/ScrollContainer/Container"]
@@ -138,6 +143,7 @@ text = "[color=tomato]Please select a valid CSV file for character name translat
 fit_content = true
 
 [node name="CharCSVFile" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
+visible = false
 layout_mode = 2
 tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV translations folder."
 
@@ -168,6 +174,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 tooltip_text = "Collect the translations from CSV files into Godot so they can be used. You can find the collected translations 
 in Project > Project settings > Localization > Translations."
+disabled = true
 text = "Collect Translations"
 icon = ExtResource("2_2wqnh")
 
@@ -186,7 +193,7 @@ size_flags_vertical = 3
 [node name="Title" type="Label" parent="LocalesSettings/ScrollContainer/Container"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
-text = "Localization Settings"
+text = "Locales Settings"
 
 [node name="DefaultLocale" type="HBoxContainer" parent="LocalesSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
@@ -207,13 +214,9 @@ flat = true
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
-item_count = 3
+item_count = 1
 popup/item_0/text = "en"
 popup/item_0/id = 0
-popup/item_1/text = "es"
-popup/item_1/id = 1
-popup/item_2/text = "ja"
-popup/item_2/id = 2
 
 [node name="TestingLocale" type="HBoxContainer" parent="LocalesSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
@@ -235,15 +238,11 @@ flat = true
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
-item_count = 4
+item_count = 2
 popup/item_0/text = "(no one)"
 popup/item_0/id = 0
 popup/item_1/text = "en"
 popup/item_1/id = 1
-popup/item_2/text = "es"
-popup/item_2/id = 2
-popup/item_3/text = "ja"
-popup/item_3/id = 3
 
 [node name="HSeparator" type="HSeparator" parent="LocalesSettings/ScrollContainer/Container"]
 layout_mode = 2

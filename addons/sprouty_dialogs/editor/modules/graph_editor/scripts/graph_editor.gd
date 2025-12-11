@@ -170,9 +170,9 @@ func _connect_node_signals(node: SproutyDialogsBaseNode) -> void:
 		node.update_text_editor.connect(update_text_editor.emit)
 	
 	# Connect translation signals
-	if node.has_signal("on_locales_changed"):
+	if node.has_method("on_locales_changed"):
 		locales_changed.connect(node.on_locales_changed)
-	if node.has_signal("on_translation_enabled_changed"):
+	if node.has_method("on_translation_enabled_changed"):
 		translation_enabled_changed.connect(node.on_translation_enabled_changed)
 	
 	match node.node_type: # Connect specific node signals

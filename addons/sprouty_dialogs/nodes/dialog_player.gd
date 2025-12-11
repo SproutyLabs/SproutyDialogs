@@ -157,7 +157,7 @@ func _enter_tree() -> void:
 		add_child(_dialog_interpreter)
 
 		var sprouty_dialogs_manager = get_node("/root/SproutyDialogs")
-		_resource_manager = sprouty_dialogs_manager.resources
+		_resource_manager = sprouty_dialogs_manager.Resources
 
 		# Connect signals to autoload manager
 		dialog_started.connect(func(dialog_file, start_id):

@@ -109,7 +109,7 @@ static var _settings_paths: Dictionary = {
 	# Translation/Localization settings
 	"default_locale": {
 		"path": "graph_dialogs/translation/localization/default_locale",
-		"default": OS.get_locale()
+		"default": "en"
 	},
 	"testing_locale": {
 		"path": "internationalization/locale/test",
@@ -117,7 +117,7 @@ static var _settings_paths: Dictionary = {
 	},
 	"locales": {
 		"path": "graph_dialogs/translation/localization/locales",
-		"default": [OS.get_locale()]
+		"default": ["en"]
 	},
 	# -- Variable settings -----------------------------------------------------
 	"variables": {
