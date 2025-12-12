@@ -35,8 +35,6 @@ var _translations_enabled: bool = false
 ## Flag to indicate if the dialog has no translation (only default)
 var _dialog_without_translation: bool = true
 
-## Dialog texts and their translations
-var _dialogs_text: Dictionary = {}
 ## Character data resource
 var _character_data: SproutyDialogsCharacterData
 
@@ -272,18 +270,16 @@ func get_dialog_translation_key() -> String:
 
 ## Returns dialog text and its translations
 func get_dialogs_text() -> Dictionary:
-	var dialogs = _dialogs_text
+	var dialogs = _translation_boxes.get_translations_text()
 	dialogs["default"] = _default_text_box.get_text()
 	if _translations_enabled:
 		if _default_locale != "":
 			dialogs[_default_locale] = _default_text_box.get_text()
-		dialogs.merge(_translation_boxes.get_translations_text())
 	return dialogs
 
 
 ## Load dialog and translations
 func load_dialogs(dialogs: Dictionary) -> void:
-	_dialogs_text = dialogs
 	if dialogs.size() > 1: # There are translations
 		_dialog_without_translation = false
 	
@@ -311,7 +307,6 @@ func on_locales_changed() -> void:
 			dialogs[previous_default_locale] = dialogs["default"]
 		dialogs["default"] = dialogs[_default_locale] \
 				if dialogs.has(_default_locale) else dialogs["default"]
-		_dialogs_text = dialogs
 	load_dialogs(dialogs)
 
 

@@ -214,7 +214,7 @@ static func save_character_names_on_csv(key_name: String, name_data: Dictionary)
 	var header = csv_file[0]
 
 	# Parse name data to an array and sort by header locales
-	var row = [key_name]
+	var row = [key_name.to_upper() + "_CHAR"]
 	for i in range(header.size()):
 		if header[i] == "keys":
 			continue
