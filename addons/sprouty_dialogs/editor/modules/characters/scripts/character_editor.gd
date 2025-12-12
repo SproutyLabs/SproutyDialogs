@@ -52,8 +52,6 @@ var _previous_portrait: TreeItem = null
 
 ## Key name of the character (file name)
 var _key_name: String = ""
-## Character name translations
-var _name_translations = {}
 ## Default locale for dialog text
 var _default_locale: String = ""
 ## Flag to indicate if translations are enabled
@@ -202,9 +200,13 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 
 	# Character name and its translations
 	_set_translation_text_boxes()
-	if name_data.is_empty(): # Load from character data
+	if name_data.is_empty():
 		_load_name_translations(data.display_name)
 	else: # Load from provided name CSV data
+		if SproutyDialogsSettingsManager.get_setting("fallback_to_resource"):
+			for locale in name_data.keys():
+				if name_data[locale] == "":
+					name_data[locale] = data.display_name[locale]
 		_load_name_translations(name_data)
 	_update_translations_state()
 
@@ -254,7 +256,6 @@ func on_locales_changed() -> void:
 			translations["default"] = translations[_default_locale] \
 					if translations.has(_default_locale) else translations["default"]
 			_default_display_name = translations["default"]
-			_name_translations = translations
 		_load_name_translations(translations)
 
 
@@ -280,18 +281,16 @@ func _update_translations_state() -> void:
 
 ## Returns character name translations
 func _get_name_translations() -> Dictionary:
-	var translations = _name_translations
+	var translations = _name_translations_container.get_translations_text()
 	translations["default"] = _name_default_locale_field.text
 	if _translations_enabled:
 		if _default_locale != "":
 			translations[_default_locale] = _name_default_locale_field.text
-		translations.merge(_name_translations_container.get_translations_text())
 	return translations
 
 
 ## Load character name translations
 func _load_name_translations(translations: Dictionary) -> void:
-	_name_translations = translations
 	if translations.size() > 1: # There are translations
 		_name_without_translation = false
 

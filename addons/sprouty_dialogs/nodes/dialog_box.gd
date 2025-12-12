@@ -1,4 +1,4 @@
-@icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_box.svg")
+@icon("res://addons/sprouty_dialogs/editor/icons/nodes/dialog_box.svg")
 class_name DialogBox
 extends Control
 

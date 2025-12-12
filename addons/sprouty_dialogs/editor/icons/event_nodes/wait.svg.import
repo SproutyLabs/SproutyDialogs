@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdnfwcuasgtqk"
-path="res://.godot/imported/play.svg-affdb13faabcd450d8d9a2e6fa86302d.ctex"
+uid="uid://me1oaiuyigif"
+path="res://.godot/imported/wait.svg-6e790609bbd41f5fce08b03f5359aeb3.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/sprouty_dialogs/editor/icons/nodes/play.svg"
-dest_files=["res://.godot/imported/play.svg-affdb13faabcd450d8d9a2e6fa86302d.ctex"]
+source_file="res://addons/sprouty_dialogs/editor/icons/event_nodes/wait.svg"
+dest_files=["res://.godot/imported/wait.svg-6e790609bbd41f5fce08b03f5359aeb3.ctex"]
 
 [params]
 

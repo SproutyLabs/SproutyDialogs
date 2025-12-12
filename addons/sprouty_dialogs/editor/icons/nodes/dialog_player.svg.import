@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xthom8qls1aa"
-path="res://.godot/imported/signal.svg-7ff8be5420556982cea25659fab27693.ctex"
+uid="uid://bfc8byweecc2p"
+path="res://.godot/imported/dialog_player.svg-e41daec15067b7b3c8cf10e0f48eb1ea.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/sprouty_dialogs/editor/icons/nodes/signal.svg"
-dest_files=["res://.godot/imported/signal.svg-7ff8be5420556982cea25659fab27693.ctex"]
+source_file="res://addons/sprouty_dialogs/editor/icons/nodes/dialog_player.svg"
+dest_files=["res://.godot/imported/dialog_player.svg-e41daec15067b7b3c8cf10e0f48eb1ea.ctex"]
 
 [params]
 

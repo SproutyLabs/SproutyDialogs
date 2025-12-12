@@ -1,5 +1,5 @@
 @tool
-@icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_svg")
+@icon("res://addons/sprouty_dialogs/editor/icons/nodes/dialog_player.svg")
 class_name DialogPlayer
 extends Node
 

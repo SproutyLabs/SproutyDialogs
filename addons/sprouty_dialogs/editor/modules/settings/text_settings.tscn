@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dmsryopl4atwi" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/text_settings.gd" id="1_22qb6"]
 [ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/editor/icons/text_editor/text.svg" id="2_fgisi"]
-[ext_resource type="Texture2D" uid="uid://b7nifwp3mwmc3" path="res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_box.svg" id="3_kpwi1"]
+[ext_resource type="Texture2D" uid="uid://b7nifwp3mwmc3" path="res://addons/sprouty_dialogs/editor/icons/nodes/dialog_box.svg" id="3_kpwi1"]
 [ext_resource type="Texture2D" uid="uid://cf5ef41yo6jl6" path="res://addons/dialogue_nodes/icons/Reload.svg" id="3_nqvb2"]
 [ext_resource type="Texture2D" uid="uid://co8x6yovoum6i" path="res://addons/sprouty_dialogs/editor/icons/fast-forward.svg" id="4_kpwi1"]
 

@@ -1,4 +1,4 @@
-@icon("res://addons/sprouty_dialogs/editor/icons/dialog_nodes/dialog_option.svg")
+@icon("res://addons/sprouty_dialogs/editor/icons/nodes/dialog_option.svg")
 class_name DialogOption
 extends Button
 

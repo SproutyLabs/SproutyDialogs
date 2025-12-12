@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dutvcwiqufcor"
-path="res://.godot/imported/comment.svg-207fa98817da63c581c2839acfb5749d.ctex"
+uid="uid://dn1gpd7ov6qk5"
+path="res://.godot/imported/options.svg-58ba281541351f097d537549c9a6a772.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/sprouty_dialogs/editor/icons/nodes/comment.svg"
-dest_files=["res://.godot/imported/comment.svg-207fa98817da63c581c2839acfb5749d.ctex"]
+source_file="res://addons/sprouty_dialogs/editor/icons/event_nodes/options.svg"
+dest_files=["res://.godot/imported/options.svg-58ba281541351f097d537549c9a6a772.ctex"]
 
 [params]
 
@@ -39,6 +39,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=0.5
+svg/scale=1.0
 editor/scale_with_editor_scale=true
 editor/convert_colors_with_editor_theme=true

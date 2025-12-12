@@ -28,7 +28,7 @@ static func save_file(header: Array, data: Array, file_path: String) -> void:
 	# Store data by rows in csv file
 	if not data.is_empty():
 		for row in data:
-			if row != []: # Skip empty rows
+			if row != [] and row.count("EMPTY") != header.size(): # Skip empty rows
 				file.store_csv_line(PackedStringArray(row), ",")
 	else:
 		# Add empty row to avoid translation import error
@@ -112,7 +112,7 @@ static func new_csv_template_file(name: String) -> String:
 				+" Please set 'CSV files path' in Settings > Translation.")
 		return ""
 	var path = csv_files_path + "/" + name.split(".")[0] + ".csv"
-	var header = ["key"]
+	var header = ["keys"]
 	for locale in SproutyDialogsSettingsManager.get_setting("locales"):
 		header.append(locale)
 	save_file(header, [], path)
@@ -123,7 +123,7 @@ static func new_csv_template_file(name: String) -> String:
 ## Update existing rows or add new ones if the dialog key does not exist
 ## and save the file with all the dialogs without removing any existing data.
 static func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
-	var header = ["key"]
+	var header = ["keys"]
 	var csv_data = []
 	
 	# Collect all locales for the header
@@ -216,7 +216,7 @@ static func save_character_names_on_csv(key_name: String, name_data: Dictionary)
 	# Parse name data to an array and sort by header locales
 	var row = [key_name]
 	for i in range(header.size()):
-		if header[i] == "key":
+		if header[i] == "keys":
 			continue
 		if name_data.has(header[i]):
 			row.append(name_data[header[i]])
