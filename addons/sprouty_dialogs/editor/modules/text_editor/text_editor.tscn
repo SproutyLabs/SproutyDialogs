@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://deethj56qlsml"]
+[gd_scene load_steps=37 format=3 uid="uid://deethj56qlsml"]
 
 [ext_resource type="Script" uid="uid://6s5bseebujdb" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-right.svg" id="2_bd7d8"]
@@ -28,6 +28,7 @@
 [ext_resource type="Texture2D" uid="uid://bu4fhmasoepps" path="res://addons/sprouty_dialogs/editor/icons/text_editor/tornado.svg" id="22_2gb2p"]
 [ext_resource type="Texture2D" uid="uid://ckqdg3q4kjmpk" path="res://addons/sprouty_dialogs/editor/icons/text_editor/shake.svg" id="23_w4102"]
 [ext_resource type="Texture2D" uid="uid://bi8srcf0vhr15" path="res://addons/sprouty_dialogs/editor/icons/text_editor/ghost.svg" id="24_5moyk"]
+[ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="24_v57nx"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="25_dx6e2"]
 [ext_resource type="Script" uid="uid://bvccjdgrn6fpx" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor_effects.gd" id="26_g04n3"]
 [ext_resource type="Script" uid="uid://dpylhhrt6aoaq" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor_images.gd" id="28_qnqd5"]
@@ -39,7 +40,6 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
 
 [node name="TextEditor" type="Panel"]
-visible = false
 clip_contents = true
 custom_minimum_size = Vector2(500, 0)
 anchors_preset = 15
@@ -512,10 +512,15 @@ flat = true
 [node name="---" type="VSeparator" parent="Container/OptionMenus/VariableBar"]
 layout_mode = 2
 
-[node name="VariableNameInput" type="LineEdit" parent="Container/OptionMenus/VariableBar"]
+[node name="VariableTypeField" type="PanelContainer" parent="Container/OptionMenus/VariableBar"]
+unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
+
+[node name="VariableNameInput" parent="Container/OptionMenus/VariableBar" instance=ExtResource("24_v57nx")]
+unique_name_in_owner = true
+layout_mode = 2
 placeholder_text = "Write a variable name..."
+_placeholder_text = "Write a variable name..."
 
 [node name="ImageBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
 visible = false
@@ -1225,7 +1230,6 @@ visible = false
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "Text preview..."
 
 [connection signal="pressed" from="Container/Header/RunButton" to="." method="_on_close_button_pressed"]
 [connection signal="pressed" from="Container/Toolbar/CloseButton" to="." method="_on_close_button_pressed"]
@@ -1260,7 +1264,7 @@ text = "Text preview..."
 [connection signal="color_changed" from="Container/OptionMenus/OutlineBar/ColorButton" to="." method="_on_outline_color_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/TextColorBar/TextColorPicker" to="." method="_on_text_color_picker_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/BGColorBar/BgColorPicker" to="." method="_on_bg_color_picker_changed"]
-[connection signal="text_submitted" from="Container/OptionMenus/VariableBar/VariableNameInput" to="." method="_on_variable_name_input_text_submitted"]
+[connection signal="input_submitted" from="Container/OptionMenus/VariableBar/VariableNameInput" to="." method="_on_variable_name_submitted"]
 [connection signal="path_submitted" from="Container/OptionMenus/ImageBar/PathContainer/ImagePathField" to="Container/OptionMenus/ImageBar" method="_on_image_path_submitted"]
 [connection signal="toggled" from="Container/OptionMenus/ImageBar/OptionsHeader/Label" to="Container/OptionMenus/ImageBar" method="_on_image_options_expand_toggled"]
 [connection signal="toggled" from="Container/OptionMenus/ImageBar/OptionsHeader/ImageOptionsExpandButton" to="Container/OptionMenus/ImageBar" method="_on_image_options_expand_toggled"]

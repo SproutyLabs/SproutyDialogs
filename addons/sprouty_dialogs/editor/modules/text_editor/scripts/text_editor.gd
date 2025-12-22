@@ -35,6 +35,11 @@ extends Panel
 ## Outline sample color hex code
 @onready var _outline_color_sample_hex: RichTextLabel = %OutlineColorSample
 
+## Variable name input
+@onready var _variable_name_input: EditorSproutyDialogsComboBox = %VariableNameInput
+## Variable type dropdown
+@onready var _variable_type_dropdown: OptionButton
+
 ## Variable manager instance to parse variables
 @onready var _variable_manager := SproutyDialogsVariableManager.new()
 
@@ -51,6 +56,15 @@ var collapse_icon: Texture = preload("res://addons/sprouty_dialogs/editor/icons/
 
 
 func _ready():
+	# Set variable type dropdown
+	%VariableTypeField.add_child(
+		SproutyDialogsVariableUtils.get_types_dropdown(false,
+			["Nil", "Variable", "Dictionary", "Array"] # Excluded from options
+		))
+	_variable_type_dropdown = %VariableTypeField.get_child(0)
+	_variable_type_dropdown.item_selected.connect(_on_variable_type_selected)
+	_variable_name_input.option_selected.connect(_on_variable_name_submitted)
+
 	hide_text_editor()
 	add_child(_variable_manager)
 
@@ -356,18 +370,26 @@ func _get_tag_atributes(tag: String) -> Dictionary:
 
 ## Add bold text to the selected text
 func _on_add_bold_pressed() -> void:
+	if _current_option_bar:
+		_current_option_bar.hide()
 	insert_tags_on_selected_text("[b]", "[/b]", true, "text")
 
 ## Add italic text to the selected text
 func _on_add_italic_pressed() -> void:
+	if _current_option_bar:
+		_current_option_bar.hide()
 	insert_tags_on_selected_text("[i]", "[/i]", true, "text")
 
 ## Add underline text to the selected text
 func _on_add_underline_pressed() -> void:
+	if _current_option_bar:
+		_current_option_bar.hide()
 	insert_tags_on_selected_text("[u]", "[/u]", true, "text")
 
 ## Add strikethrough text to the selected text
 func _on_add_strikethrough_pressed() -> void:
+	if _current_option_bar:
+		_current_option_bar.hide()
 	insert_tags_on_selected_text("[s]", "[/s]", true, "text")
 #endregion
 
@@ -375,18 +397,26 @@ func _on_add_strikethrough_pressed() -> void:
 
 ## Align the text to the left
 func _on_align_text_left_pressed() -> void:
+	if _current_option_bar:
+		_current_option_bar.hide()
 	insert_tags_on_selected_text("[left]", "[/left]", true, "text")
 
 ## Align the text to the center
 func _on_align_text_center_pressed() -> void:
+	if _current_option_bar:
+		_current_option_bar.hide()
 	insert_tags_on_selected_text("[center]", "[/center]", true, "text")
 
 ## Align the text to the right
 func _on_align_text_right_pressed() -> void:
+	if _current_option_bar:
+		_current_option_bar.hide()
 	insert_tags_on_selected_text("[right]", "[/right]", true, "text")
 
 ## Align the text to fill the width (justify)
 func _on_align_text_fill_pressed() -> void:
+	if _current_option_bar:
+		_current_option_bar.hide()
 	insert_tags_on_selected_text("[fill]", "[/fill]", true, "text")
 #endregion
 
@@ -462,8 +492,17 @@ func _on_add_variable_pressed() -> void:
 	change_option_bar(4)
 
 
+## Update the variable type to filter variables
+func _on_variable_type_selected(index: int) -> void:
+	var type = _variable_type_dropdown.get_item_id(index)
+	var metadata = _variable_type_dropdown.get_item_metadata(index)
+	_variable_name_input.set_options(
+		SproutyDialogsVariableUtils.get_variables_of_type(type, metadata)
+	)
+
+
 ## Update the variable tags in the selected text
-func _on_variable_name_input_text_submitted(new_text: String) -> void:
+func _on_variable_name_submitted(new_text: String) -> void:
 	update_code_tags("{" + new_text, "}", "", true)
 
 

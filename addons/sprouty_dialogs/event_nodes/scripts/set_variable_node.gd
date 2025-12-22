@@ -120,7 +120,7 @@ func _set_variable_type(index: int) -> void:
 			type = TYPE_STRING # File/Dir Path is treated as String type
 
 	# Set the variable dropdown based on the selected type and update the value field
-	_name_input.set_options(SproutyDialogsVariableUtils.get_variables_of_type(type))
+	_name_input.set_options(SproutyDialogsVariableUtils.get_variables_of_type(type, metadata))
 	_set_value_field(type, index)
 
 	# Set the operator dropdown based on the variable type

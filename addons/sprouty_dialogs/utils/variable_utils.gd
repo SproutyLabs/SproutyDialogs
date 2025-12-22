@@ -35,18 +35,19 @@ const FILE_FIELD_PATH := "res://addons/sprouty_dialogs/editor/components/file_fi
 ## If a type is specified, it returns only the variables of that type.
 ## If no type is specified, it returns all variables.
 ## If no variables are found, it returns an empty array.
-static func get_variables_of_type(type: int = -1, group: Dictionary = {}) -> Array:
+static func get_variables_of_type(type: int = -1, metadata: Dictionary = {}, group: Dictionary = {}) -> Array:
 	if group.is_empty(): # Get all variables
 		group = SproutyDialogsSettingsManager.get_setting("variables")
 	
 	var variable_list: Array = []
 	for key in group.keys():
 		if group[key].has("variables"): # Recursively check in groups
-			var sub_variables = get_variables_of_type(type, group[key].variables)
+			var sub_variables = get_variables_of_type(type, metadata, group[key].variables)
 			for sub_key in sub_variables:
 				variable_list.append(key + "/" + sub_key)
 		# Check if the variable type matches or if no type is specified
-		elif type == -1 or group[key].type == type:
+		elif type == -1 or (group[key].type == type and metadata == {}) \
+				or (group[key].type == type and group[key].metadata == metadata):
 			variable_list.append(key)
 	return variable_list
 
