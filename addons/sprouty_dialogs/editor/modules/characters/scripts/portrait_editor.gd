@@ -12,8 +12,6 @@ extends VBoxContainer
 
 ## Emitted when the portrait is modified
 signal modified(modified: bool)
-## Emitted to request opening a scene in the editor
-signal request_open_scene_in_editor(scene_path: String)
 
 ## Portrait name label
 @onready var _portrait_name: Label = $Title/PortraitName
@@ -269,53 +267,22 @@ func _on_new_portrait_scene_button_pressed() -> void:
 
 ## Create a new portrait scene file
 func _new_portrait_scene(scene_path: String) -> void:
-	var default_uid = SproutyDialogsSettingsManager.get_setting("default_portrait_scene")
-	var default_path = ""
-	
-	# If no default portrait scene is set or the resource does not exist, use the built-in default
-	if not SproutyDialogsFileUtils.check_valid_uid_path(default_uid):
-		printerr("[Sprouty Dialogs] No default portrait scene found." \
-				+" Check that the default portrait scene is set in Settings > General" \
-				+" plugin tab, and that the scene resource exists. Using built-in default instead.")
-		default_path = SproutyDialogsSettingsManager.DEFAULT_PORTRAIT_PATH
-		# Use and set the setting to the built-in default
-		SproutyDialogsSettingsManager.set_setting("default_portrait_scene",
-				ResourceSaver.get_resource_id_for_path(default_path, true))
-	else: # Use the user-defined default portrait scene
-		default_path = ResourceUID.get_id_path(default_uid)
-	
-	var new_scene = load(default_path).instantiate()
-	new_scene.name = scene_path.get_file().split(".")[0].to_pascal_case()
-
-	# Creates and set a template script for the new scene
-	var script_path := scene_path.get_basename() + ".gd"
-	var script = GDScript.new()
-	script.source_code = new_scene.get_script().source_code
-	ResourceSaver.save(script, script_path)
-	new_scene.set_script(load(script_path))
-
-	# Save the new scene file
-	var packed_scene = PackedScene.new()
-	packed_scene.pack(new_scene)
-	ResourceSaver.save(packed_scene, scene_path)
-	new_scene.queue_free()
+	SproutyDialogsFileUtils.create_new_scene_file(scene_path, "portrait_scene")
 
 	# Set the field and preview to the new scene file
 	_portrait_scene_field.set_value(scene_path)
 	_on_portrait_scene_path_changed(scene_path)
 
 	# Open the new scene in the editor
-	request_open_scene_in_editor.emit(scene_path)
+	SproutyDialogsFileUtils.open_scene_in_editor(scene_path, get_tree())
 	modified.emit(true)
-
-	# Set the recent file path
-	SproutyDialogsFileUtils.set_recent_file_path("portrait_files", scene_path)
 
 
 ## Open the portrait scene in the editor
 func _on_to_portrait_scene_button_pressed() -> void:
 	if _portrait_scene_field.get_value() != "":
-		request_open_scene_in_editor.emit(_portrait_scene_field.get_value())
+		SproutyDialogsFileUtils.open_scene_in_editor(
+				_portrait_scene_field.get_value(), get_tree())
 	else:
 		printerr("[Sprouty Dialogs] No scene file selected.")
 

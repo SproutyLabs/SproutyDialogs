@@ -123,17 +123,6 @@ func _ready() -> void:
 		)
 
 
-## Open a scene in the editor given its path
-func open_scene_in_editor(path: String) -> void:
-	if SproutyDialogsFileUtils.check_valid_extension(path, _dialog_box_scene_field.file_filters):
-		if ResourceLoader.exists(path):
-			EditorInterface.open_scene_from_path(path)
-			await get_tree().process_frame
-			EditorInterface.set_main_screen_editor("2D")
-	else:
-		printerr("[Sprouty Dialogs] Invalid scene file path.")
-
-
 ## Emit the modified signal
 func _on_modified(mark_as_modified: bool) -> void:
 	if mark_as_modified:
@@ -230,8 +219,7 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	%PortraitOnDialogBoxToggle.button_pressed = _portrait_on_dialog_box
 
 	# Portraits
-	_portrait_tree.load_portraits_data(data.portraits,
-			_portrait_editor_scene, open_scene_in_editor)
+	_portrait_tree.load_portraits_data(data.portraits, _portrait_editor_scene)
 	_modified_counter = 0
 
 #endregion
@@ -403,7 +391,8 @@ func _on_dialog_box_scene_path_changed(path: String) -> void:
 
 ## Handle the dialog box scene button press
 func _on_dialog_box_scene_button_pressed() -> void:
-	open_scene_in_editor(_dialog_box_scene_field.get_value())
+	SproutyDialogsFileUtils.open_scene_in_editor(
+			_dialog_box_scene_field.get_value(), get_tree())
 
 
 ## Create a new dialog box scene and open it in the editor
@@ -414,48 +403,16 @@ func _on_new_dialog_box_scene_pressed() -> void:
 
 
 ## Create a new dialog box scene file
-func _new_dialog_box(path: String) -> void:
-	var default_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
-	var default_path = ""
+func _new_dialog_box(scene_path: String) -> void:
+	SproutyDialogsFileUtils.create_new_scene_file(scene_path, "dialog_box")
 	
-	# If no default dialog box is set or the resource does not exist, use the built-in default
-	if not SproutyDialogsFileUtils.check_valid_uid_path(default_uid):
-		printerr("[Sprouty Dialogs] No default dialog box scene found." \
-				+" Check that the default dialog box is set in Settings > General" \
-				+" plugin tab, and that the scene resource exists. Using built-in default instead.")
-		default_path = SproutyDialogsSettingsManager.DEFAULT_DIALOG_BOX_PATH
-		# Use and set the setting to the built-in default
-		SproutyDialogsSettingsManager.set_setting("default_dialog_box",
-				ResourceSaver.get_resource_id_for_path(default_path, true))
-	else: # Use the user-defined default dialog box
-		default_path = ResourceUID.get_id_path(default_uid)
-	
-	var new_scene = load(default_path).instantiate()
-	new_scene.name = path.get_file().split(".")[0].to_pascal_case()
-
-	# Creates and set a template script for the new scene
-	var script_path := path.get_basename() + ".gd"
-	var script = GDScript.new()
-	script.source_code = new_scene.get_script().source_code
-	ResourceSaver.save(script, script_path)
-	new_scene.set_script(load(script_path))
-
-	# Save the new scene file
-	var packed_scene = PackedScene.new()
-	packed_scene.pack(new_scene)
-	ResourceSaver.save(packed_scene, path)
-	new_scene.queue_free()
-
 	# Set the dialog box scene path
-	_dialog_box_scene_field.set_value(path)
-	_on_dialog_box_scene_path_changed(path)
+	_dialog_box_scene_field.set_value(scene_path)
+	_on_dialog_box_scene_path_changed(scene_path)
 
 	# Open the new scene in the editor
-	open_scene_in_editor(path)
+	SproutyDialogsFileUtils.open_scene_in_editor(scene_path, get_tree())
 	_on_modified(true)
-
-	# Set the recent file path
-	SproutyDialogsFileUtils.set_recent_file_path("dialog_box_files", path)
 
 
 ## Handle the text box portrait display toggle
@@ -503,7 +460,6 @@ func _on_add_portrait_button_pressed() -> void:
 	var item: TreeItem = _portrait_tree.new_portrait_item(
 			"New Portrait", portrait_editor.get_portrait_data(), parent, portrait_editor
 		)
-	portrait_editor.request_open_scene_in_editor.connect(open_scene_in_editor)
 	portrait_editor.modified.connect(_on_modified)
 	remove_child(portrait_editor)
 	item.set_editable(0, true)

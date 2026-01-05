@@ -20,6 +20,19 @@ extends HSplitContainer
 ## Warning label for default dialog box
 @onready var _default_dialog_box_warning: RichTextLabel = %DefaultDialogBoxWarning
 
+## New dialog box button
+@onready var _new_dialog_box_button: Button = %NewDialogBoxButton
+## New portrait scene button
+@onready var _new_portrait_scene_button: Button = %NewPortraitSceneButton
+## New dialog box scene dialog
+@onready var _new_dialog_box_dialog: FileDialog = $NewDialogBoxDialog
+## New portrait scene dialog
+@onready var _new_portrait_scene_dialog: FileDialog = $NewPortraitSceneDialog
+## Dialog box scene button
+@onready var _to_dialog_box_scene_button: Button = %ToDialogBoxSceneButton
+## Portrait scene button
+@onready var _to_portrait_scene_button: Button = %ToPortraitSceneButton
+
 ## Dialog box canvas layer field
 @onready var _dialog_box_canvas_layer_field: SpinBox = %DialogBoxCanvasLayerField
 ## Portrait canvas layer field
@@ -32,12 +45,25 @@ func _ready():
 	_default_potrait_scene_field.path_changed.connect(_on_default_portrait_scene_path_changed)
 	_dialog_box_canvas_layer_field.value_changed.connect(_on_dialog_box_canvas_layer_changed)
 	_portrait_canvas_layer_field.value_changed.connect(_on_portrait_canvas_layer_changed)
+
+	_to_dialog_box_scene_button.pressed.connect(_on_dialog_box_scene_button_pressed)
+	_to_portrait_scene_button.pressed.connect(_on_portrait_scene_button_pressed)
+	_new_portrait_scene_button.pressed.connect(_on_new_portrait_scene_pressed)
+	_new_portrait_scene_dialog.file_selected.connect(_new_portrait_scene)
+	_new_dialog_box_button.pressed.connect(_on_new_dialog_box_pressed)
+	_new_dialog_box_dialog.file_selected.connect(_new_dialog_box)
+
 	_continue_input_action_field.set_options(InputMap.get_actions().filter(
 		func(action: String) -> bool: # Filter out built-in UI actions
 			return (not action.begins_with("ui_")) and (not action.begins_with("spatial_editor"))
 	))
-	_default_portrait_warning.visible = false
+	_to_dialog_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
+	_to_portrait_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
+	_new_dialog_box_button.icon = get_theme_icon("Add", "EditorIcons")
+	_new_portrait_scene_button.icon = get_theme_icon("Add", "EditorIcons")
+
 	_default_dialog_box_warning.visible = false
+	_default_portrait_warning.visible = false
 
 	await get_tree().process_frame # Wait a frame to ensure settings are loaded
 	_load_settings()
@@ -62,10 +88,14 @@ func _load_settings() -> void:
 		printerr("[Sprouty Dialogs] Default dialog box scene not found." \
 				+" Check that the default dialog box is set in Settings > General" \
 				+" plugin tab, and that the scene resource exists.")
-		_default_dialog_box_warning.visible = true
+		_default_dialog_box_warning.show()
 		_default_dialog_box_field.set_value("")
+		_to_dialog_box_scene_button.hide()
+		_new_dialog_box_button.show()
 	else:
-		_default_dialog_box_warning.visible = false
+		_new_dialog_box_button.hide()
+		_to_dialog_box_scene_button.show()
+		_default_dialog_box_warning.hide()
 		_default_dialog_box_field.set_value(ResourceUID.get_id_path(default_dialog_box))
 	_set_reset_button(_default_dialog_box_field, "default_dialog_box")
 	
@@ -75,10 +105,14 @@ func _load_settings() -> void:
 		printerr("[Sprouty Dialogs] Default portrait scene not found." \
 				+" Check that the default portrait scene is set in Settings > General" \
 				+" plugin tab, and that the scene resource exists.")
-		_default_portrait_warning.visible = true
+		_default_portrait_warning.show()
 		_default_potrait_scene_field.set_value("")
+		_to_portrait_scene_button.hide()
+		_new_portrait_scene_button.show()
 	else:
-		_default_portrait_warning.visible = false
+		_new_portrait_scene_button.hide()
+		_to_portrait_scene_button.show()
+		_default_portrait_warning.hide()
 		_default_potrait_scene_field.set_value(ResourceUID.get_id_path(default_portrait))
 	_set_reset_button(_default_potrait_scene_field, "default_portrait_scene")
 	
@@ -113,11 +147,15 @@ func _set_reset_button(field: Control, setting_name: String) -> void:
 			SproutyDialogsSettingsManager.reset_setting(setting_name)
 			field.set_value(default_value)
 			reset_button.hide()
-			# Hide fields warnings
+			# Hide fields warnings and handle scene buttons
 			if setting_name.contains("dialog_box"):
 				_default_dialog_box_warning.hide()
+				_new_dialog_box_button.hide()
+				_to_dialog_box_scene_button.show()
 			if setting_name.contains("portrait_scene"):
 				_default_portrait_warning.hide()
+				_new_portrait_scene_button.hide()
+				_to_portrait_scene_button.show()
 		)
 		reset_button.visible = field.get_value() != default_value
 
@@ -153,11 +191,17 @@ func _on_continue_input_action_changed(new_value: String) -> void:
 ## Handle when the default dialog box path is changed
 func _on_default_dialog_box_path_changed(new_path: String) -> void:
 	_show_reset_button(_default_dialog_box_field, "default_dialog_box")
+	_new_dialog_box_button.visible = new_path.is_empty()
+
 	if not ResourceLoader.exists(new_path) or \
 			not SproutyDialogsFileUtils.check_valid_extension(new_path, ["*.tscn"]):
-		_default_dialog_box_warning.visible = true
+		_default_dialog_box_warning.show()
+		_to_dialog_box_scene_button.hide()
 		return # Ignore empty or invalid paths
-	_default_dialog_box_warning.visible = false
+	
+	_default_dialog_box_warning.hide()
+	_to_dialog_box_scene_button.show()
+
 	SproutyDialogsSettingsManager.set_setting("default_dialog_box",
 			ResourceSaver.get_resource_id_for_path(new_path, true))
 
@@ -165,11 +209,17 @@ func _on_default_dialog_box_path_changed(new_path: String) -> void:
 ## Handle when the default portrait scene path is changed
 func _on_default_portrait_scene_path_changed(new_path: String) -> void:
 	_show_reset_button(_default_potrait_scene_field, "default_portrait_scene")
+	_new_portrait_scene_button.visible = new_path.is_empty()
+
 	if not ResourceLoader.exists(new_path) or \
 			not SproutyDialogsFileUtils.check_valid_extension(new_path, ["*.tscn"]):
-		_default_portrait_warning.visible = true
+		_default_portrait_warning.show()
+		_to_portrait_scene_button.hide()
 		return # Ignore empty or invalid paths
-	_default_portrait_warning.visible = false
+	
+	_default_portrait_warning.hide()
+	_to_portrait_scene_button.show()
+
 	SproutyDialogsSettingsManager.set_setting("default_portrait_scene",
 			ResourceSaver.get_resource_id_for_path(new_path, true))
 
@@ -184,3 +234,52 @@ func _on_dialog_box_canvas_layer_changed(new_value: int) -> void:
 func _on_portrait_canvas_layer_changed(new_value: int) -> void:
 	SproutyDialogsSettingsManager.set_setting("portraits_canvas_layer", new_value)
 	_show_reset_button(_portrait_canvas_layer_field, "portraits_canvas_layer")
+
+
+## Create a new dialog box scene and open it in the editor
+func _on_new_dialog_box_pressed() -> void:
+	_new_dialog_box_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("dialog_box_files"))
+	_new_dialog_box_dialog.get_line_edit().text = "new_dialog_box.tscn"
+	_new_dialog_box_dialog.popup_centered()
+
+
+func _on_new_portrait_scene_pressed() -> void:
+	_new_portrait_scene_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("portrait_files"))
+	_new_portrait_scene_dialog.get_line_edit().text = "new_portrait.tscn"
+	_new_portrait_scene_dialog.popup_centered()
+
+
+## Create a new dialog box scene file
+func _new_dialog_box(scene_path: String) -> void:
+	SproutyDialogsFileUtils.create_new_scene_file(scene_path, "dialog_box")
+
+	# Set the dialog box scene path
+	_default_dialog_box_field.set_value(scene_path)
+	_on_default_dialog_box_path_changed(scene_path)
+
+	# Open the new scene in the editor
+	SproutyDialogsFileUtils.open_scene_in_editor(scene_path, get_tree())
+
+
+## Create a new dialog box scene file
+func _new_portrait_scene(scene_path: String) -> void:
+	SproutyDialogsFileUtils.create_new_scene_file(scene_path, "portrait_scene")
+
+	# Set the dialog box scene path
+	_default_potrait_scene_field.set_value(scene_path)
+	_on_default_portrait_scene_path_changed(scene_path)
+
+	# Open the new scene in the editor
+	SproutyDialogsFileUtils.open_scene_in_editor(scene_path, get_tree())
+
+
+## Handle the dialog box scene button press
+func _on_dialog_box_scene_button_pressed() -> void:
+	SproutyDialogsFileUtils.open_scene_in_editor(
+			_default_dialog_box_field.get_value(), get_tree())
+
+
+## Handle the dialog box scene button press
+func _on_portrait_scene_button_pressed() -> void:
+	SproutyDialogsFileUtils.open_scene_in_editor(
+			_default_potrait_scene_field.get_value(), get_tree())

@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://bbabgt3yvpmw5"]
+[gd_scene load_steps=10 format=3 uid="uid://bbabgt3yvpmw5"]
 
 [ext_resource type="Script" uid="uid://d0js6iit3n6uq" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/general_settings.gd" id="1_il2y2"]
 [ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="2_0s7dw"]
@@ -7,6 +7,14 @@
 [ext_resource type="Texture2D" uid="uid://cf5ef41yo6jl6" path="res://addons/dialogue_nodes/icons/Reload.svg" id="3_lylrf"]
 [ext_resource type="Texture2D" uid="uid://t7ujqvnbwl36" path="res://addons/sprouty_dialogs/editor/icons/settings.svg" id="4_kixug"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/editor/icons/text_editor/image.svg" id="5_kixug"]
+
+[sub_resource type="DPITexture" id="DPITexture_v013n"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
+[sub_resource type="DPITexture" id="DPITexture_euhf0"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
 
 [node name="GeneralSettings" type="HSplitContainer"]
 anchors_preset = 15
@@ -106,6 +114,19 @@ layout_mode = 2
 icon = ExtResource("3_lylrf")
 flat = true
 
+[node name="NewDialogBoxButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+icon = SubResource("DPITexture_v013n")
+
+[node name="ToDialogBoxSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+tooltip_text = "Open the dialog box scene."
+icon = SubResource("DPITexture_euhf0")
+
 [node name="DefaultDialogBoxField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" instance=ExtResource("3_hokrq")]
 unique_name_in_owner = true
 layout_mode = 2
@@ -137,6 +158,19 @@ visible = false
 layout_mode = 2
 icon = ExtResource("3_lylrf")
 flat = true
+
+[node name="NewPortraitSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+icon = SubResource("DPITexture_v013n")
+
+[node name="ToPortraitSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+tooltip_text = "Open the dialog box scene."
+icon = SubResource("DPITexture_euhf0")
 
 [node name="DefaultPortraitSceneField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" instance=ExtResource("3_hokrq")]
 unique_name_in_owner = true
@@ -215,3 +249,21 @@ allow_lesser = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="NewDialogBoxDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+oversampling_override = 1.0
+title = "New Dialog Box Scene"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Create file"
+filters = PackedStringArray("*.tscn")
+
+[node name="NewPortraitSceneDialog" type="FileDialog" parent="."]
+auto_translate_mode = 1
+oversampling_override = 1.0
+title = "New Portrait Scene"
+initial_position = 4
+size = Vector2i(600, 400)
+ok_button_text = "Create file"
+filters = PackedStringArray("*.tscn")

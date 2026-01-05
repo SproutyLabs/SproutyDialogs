@@ -7,7 +7,7 @@ extends RefCounted
 # -----------------------------------------------------------------------------
 ## This module is responsible for some file operations and references.
 ## It provides methods to manage recent file paths, check file extensions,
-## validate resource UIDs, and ensure unique naming within a list.
+## validate resource UIDs, and other useful methods.
 # -----------------------------------------------------------------------------
 
 ## Last used paths for file dialogs
@@ -74,3 +74,58 @@ static func ensure_unique_name(name: String, existing_names: Array,
 		new_name = clean_name + " (" + str(suffix) + ")"
 	
 	return new_name
+
+
+## Open a scene in the editor given its path.
+## Also, needs a reference to the SceneTree (using Node.get_tree()) to process a timer.
+static func open_scene_in_editor(scene_path: String, scene_tree: SceneTree) -> void:
+	if check_valid_extension(scene_path, ["*.tscn", "*.scn"]):
+		if ResourceLoader.exists(scene_path):
+			EditorInterface.open_scene_from_path(scene_path)
+			await scene_tree.process_frame
+			EditorInterface.set_main_screen_editor("2D")
+	else:
+		printerr("[Sprouty Dialogs] Invalid scene file path.")
+
+
+## Create a new dialog box or portrait scene file.
+## Needs the path where save the scene file and the type of the scene that can
+## be "dialog_box" or "portrait_scene".
+static func create_new_scene_file(scene_path: String, scene_type: String) -> void:
+	var default_uid = SproutyDialogsSettingsManager.get_setting("default_" + scene_type)
+	var default_path = ""
+	
+	# If no default portrait scene is set or the resource does not exist, use the built-in default
+	if not SproutyDialogsFileUtils.check_valid_uid_path(default_uid):
+		printerr("[Sprouty Dialogs] No default " + scene_type + " found." \
+				+" Check that the default portrait scene is set in Settings > General" \
+				+" plugin tab, and that the scene resource exists. Using built-in default instead.")
+		match scene_type: # Use and set the setting to the built-in default
+			"dialog_box":
+				default_path = SproutyDialogsSettingsManager.DEFAULT_DIALOG_BOX_PATH
+			"portrait_scene":
+				default_path = SproutyDialogsSettingsManager.DEFAULT_PORTRAIT_PATH
+		
+		SproutyDialogsSettingsManager.set_setting("default_" + scene_type,
+				ResourceSaver.get_resource_id_for_path(default_path, true))
+	else: # Use the user-defined default portrait scene
+		default_path = ResourceUID.get_id_path(default_uid)
+	
+	var new_scene = load(default_path).instantiate()
+	new_scene.name = scene_path.get_file().split(".")[0].to_pascal_case()
+
+	# Creates and set a template script for the new scene
+	var script_path := scene_path.get_basename() + ".gd"
+	var script = GDScript.new()
+	script.source_code = new_scene.get_script().source_code
+	ResourceSaver.save(script, script_path)
+	new_scene.set_script(load(script_path))
+
+	# Save the new scene file
+	var packed_scene = PackedScene.new()
+	packed_scene.pack(new_scene)
+	ResourceSaver.save(packed_scene, scene_path)
+	new_scene.queue_free()
+
+	# Set the recent file path
+	set_recent_file_path(scene_type.replace("_scene", "") + "_files", scene_path)

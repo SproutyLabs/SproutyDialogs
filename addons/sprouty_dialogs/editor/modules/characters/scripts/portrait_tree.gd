@@ -60,7 +60,6 @@ func get_portraits_data(from: TreeItem = get_root()) -> Dictionary:
 func load_portraits_data(
 		data: Dictionary,
 		portrait_editor_scene: PackedScene,
-		open_scene_callable: Callable,
 		parent_item: TreeItem = get_root()) -> void:
 	if not data:
 		return # If the data is empty, do nothing
@@ -69,7 +68,6 @@ func load_portraits_data(
 		if data[item] is SproutyDialogsPortraitData:
 			# If the item is a portrait, create it and load its data
 			var editor = portrait_editor_scene.instantiate()
-			editor.request_open_scene_in_editor.connect(open_scene_callable)
 			editor.modified.connect(modified.emit)
 			add_child(editor)
 			new_portrait_item(item, data[item], parent_item, editor, false)
@@ -78,8 +76,7 @@ func load_portraits_data(
 		else:
 			# If the item is a group, create it and load its children
 			var group_item: TreeItem = new_portrait_group(item, parent_item, false)
-			load_portraits_data(data[item], portrait_editor_scene,
-					open_scene_callable, group_item)
+			load_portraits_data(data[item], portrait_editor_scene, group_item)
 
 #endregion
 
