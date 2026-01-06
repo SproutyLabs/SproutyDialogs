@@ -1,3 +1,4 @@
+@tool
 @icon("res://addons/sprouty_dialogs/editor/icons/nodes/dialog_box.svg")
 class_name DialogBox
 extends Control
@@ -38,7 +39,11 @@ signal option_selected(option_index: int)
 @export_category("Dialog Box Components")
 ## [RichTextLabel] where dialogue will be displayed.[br][br]
 ## [color=tomato]This component is required to display the text in it.[/color]
-@export var dialog_display: RichTextLabel
+@export var dialog_display: RichTextLabel:
+	set(value):
+		dialog_display = value
+		if Engine.is_editor_hint():
+			update_configuration_warnings()
 ## [RichTextLabel] where character name will be displayed.[br][br]
 ## [color=tomato]If you want to display the character name in the dialog box, 
 ## you need to set this property.[/color]
@@ -60,7 +65,7 @@ signal option_selected(option_index: int)
 ## [Node] that will be used as a template for the options in the dialog box.
 ## It should be a [DialogOption] node or another node that extends it.
 ## [br][br][color=tomato]This component is required to display the dialog options. [/color]
-@export var option_template: Control
+@export var option_template: DialogOption
 
 ## Timer to control the typing speed of the dialog.
 var _type_timer: Timer
@@ -87,71 +92,66 @@ var _is_started: bool = false
 var _is_running: bool = false
 
 
-#region === Virtual methods ====================================================
-
-## Called when the dialog box starts at the beginning of the dialog.
-## Override this method to customize the behavior of the dialog box when starts.
-func _on_dialog_box_start() -> void:
-	show()
-
-
-## Called when the dialog box is closed at the end of the dialog.
-## Override this method to customize the behavior of the dialog box when is closed.
-func _on_dialog_box_close() -> void:
-	hide()
-
-
-## Called when the dialog options are displayed.
-## Override this method to customize the behavior of the dialog box when options are displayed.
-func _on_options_displayed() -> void:
-	if options_container:
-		options_container.show()
-
-
-## Called when the dialog options are hidden.
-## Override this method to customize the behavior of the dialog box when options are hidden.
-func _on_options_hidden() -> void:
-	if options_container:
-		options_container.hide()
-
-
-#endregion
+## Handle editor warnings
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings: PackedStringArray = []
+	if not dialog_display: # Check if the node is empty or invalid
+		warnings.push_back("A dialog display component must be provided to display the dialogues. "
+			+"Please assign a RichTextLabel node as dialog display in the Inspector.")
+	return warnings
 
 
 func _enter_tree() -> void:
-	if typing_speed > 0.0:
-		_type_timer = Timer.new()
-		add_child(_type_timer)
-		_type_timer.wait_time = typing_speed
-		_type_timer.timeout.connect(_on_type_timer_timeout)
+	if not Engine.is_editor_hint():
+		if typing_speed > 0.0:
+			_type_timer = Timer.new()
+			add_child(_type_timer)
+			_type_timer.wait_time = typing_speed
+			_type_timer.timeout.connect(_on_type_timer_timeout)
 
-	_can_skip_timer = Timer.new()
-	add_child(_can_skip_timer)
-	_can_skip_timer.wait_time = SproutyDialogsSettingsManager.get_setting("can_skip_delay")
-	_can_skip_timer.timeout.connect(func(): _can_skip = true)
-	hide()
+		_can_skip_timer = Timer.new()
+		add_child(_can_skip_timer)
+		_can_skip_timer.wait_time = SproutyDialogsSettingsManager.get_setting("can_skip_delay")
+		_can_skip_timer.timeout.connect(func(): _can_skip = true)
+		hide()
 
 
 func _ready() -> void:
-	# Connect meta clicked signal to handle meta tags
-	if not dialog_display:
-		printerr("[Sprouty Dialogs] Dialog display is not set. Please set the " \
-				+"'dialog_display' property in the '" + name + "' Dialog Box on the inspector.")
-		return
-	if not dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
-		dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
-	
-	dialog_display.bbcode_enabled = true
+	## Set predefined components in default dialog box
+	var default_dialog_path = "DialogPanel/MarginContainer/DialogContainer"
+	if not dialog_display and get_node_or_null(default_dialog_path + "/DialogDisplay"):
+		dialog_display = get_node(default_dialog_path + "/DialogDisplay")
+	if not name_display and get_node_or_null(default_dialog_path + "/NameDisplay"):
+		name_display = get_node(default_dialog_path + "/NameDisplay")
+	if not continue_indicator and get_node_or_null(default_dialog_path + "/ContinueIndicator"):
+		continue_indicator = get_node(default_dialog_path + "/ContinueIndicator")
+	if not options_container and get_node_or_null("OptionsContainer"):
+		options_container = get_node("OptionsContainer")
+	if not option_template and get_node_or_null("OptionsContainer/DialogOption"):
+		option_template = get_node("OptionsContainer/DialogOption")
 
-	if option_template:
-		option_template = option_template.duplicate()
-	if continue_indicator:
-		continue_indicator.hide()
-	if options_container:
-		options_container.hide()
+	if not Engine.is_editor_hint():
+		# Connect meta clicked signal to handle meta tags
+		if not dialog_display:
+			printerr("[Sprouty Dialogs] Dialog display is not set. Please set the " \
+					+"'dialog_display' property in the '" + name + "' Dialog Box on the inspector.")
+			return
+		if not dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
+			dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
+		
+		dialog_display.bbcode_enabled = true
+
+		if option_template:
+			option_template = option_template.duplicate()
+		if continue_indicator:
+			continue_indicator.hide()
+		if options_container:
+			options_container.hide()
 
 
 func _input(event: InputEvent) -> void:
+	if Engine.is_editor_hint():
+		return
 	if not _is_running:
 		return
 	if _is_displaying_options:
@@ -173,7 +173,7 @@ func _input(event: InputEvent) -> void:
 ## Play a dialog on dialog box
 func play_dialog(character_name: String, dialog: String) -> void:
 	if not _is_started: # First time the dialog is started
-		await _on_dialog_box_start()
+		await _on_dialog_box_open()
 	hide_options()
 	if not visible:
 		show()
@@ -244,6 +244,35 @@ func _skip_dialog_typing() -> void:
 	_on_display_completed()
 
 
+#region === Virtual methods ====================================================
+
+## Called when the dialog box is open at the beginning of the dialog.
+## Override this method to customize the behavior of the dialog box when is open.
+func _on_dialog_box_open() -> void:
+	show()
+
+
+## Called when the dialog box is closed at the end of the dialog.
+## Override this method to customize the behavior of the dialog box when is closed.
+func _on_dialog_box_close() -> void:
+	hide()
+
+
+## Called when the dialog options are displayed.
+## Override this method to customize the behavior of the dialog box when options are displayed.
+func _on_options_displayed() -> void:
+	if options_container:
+		options_container.show()
+
+
+## Called when the dialog options are hidden.
+## Override this method to customize the behavior of the dialog box when options are hidden.
+func _on_options_hidden() -> void:
+	if options_container:
+		options_container.hide()
+
+#endregion
+
 #region === Display portrait ===================================================
 
 ## Return if the dialog box is displaying a portrait
@@ -253,6 +282,9 @@ func is_displaying_portrait() -> bool:
 
 ## Set a portrait to be displayed in the dialog box
 func display_portrait(character_parent: Node, portrait_node: Node) -> void:
+	if not portrait_display:
+		printerr("[Sprouty Dialogs] Cannot display the portrait in the dialog box. The dialog box doesn't have a portrait display.")
+	
 	if not portrait_display.has_node(NodePath(character_parent.name)):
 		character_parent.add_child(portrait_node)
 		portrait_display.add_child(character_parent)

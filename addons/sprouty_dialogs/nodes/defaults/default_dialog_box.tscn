@@ -21,9 +21,11 @@ grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_et7ao")
-dialog_display = NodePath("DialogPanel/MarginContainer/VBoxContainer/DialogDisplay")
-name_display = NodePath("DialogPanel/MarginContainer/VBoxContainer/NameDisplay")
-continue_indicator = NodePath("DialogPanel/MarginContainer/VBoxContainer/ContinueIndicator")
+typing_speed = 0.05
+max_characters = 0
+dialog_display = NodePath("DialogPanel/MarginContainer/DialogContainer/DialogDisplay")
+name_display = NodePath("DialogPanel/MarginContainer/DialogContainer/NameDisplay")
+continue_indicator = NodePath("DialogPanel/MarginContainer/DialogContainer/ContinueIndicator")
 options_container = NodePath("OptionsContainer")
 option_template = NodePath("OptionsContainer/DialogOption")
 
@@ -53,22 +55,22 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="DialogPanel/MarginContainer"]
+[node name="DialogContainer" type="VBoxContainer" parent="DialogPanel/MarginContainer"]
 layout_mode = 2
 
-[node name="NameDisplay" type="RichTextLabel" parent="DialogPanel/MarginContainer/VBoxContainer"]
+[node name="NameDisplay" type="RichTextLabel" parent="DialogPanel/MarginContainer/DialogContainer"]
 layout_mode = 2
 bbcode_enabled = true
 text = "Name"
 fit_content = true
 
-[node name="DialogDisplay" type="RichTextLabel" parent="DialogPanel/MarginContainer/VBoxContainer"]
+[node name="DialogDisplay" type="RichTextLabel" parent="DialogPanel/MarginContainer/DialogContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "Dialog text"
 
-[node name="ContinueIndicator" type="TextureRect" parent="DialogPanel/MarginContainer/VBoxContainer"]
+[node name="ContinueIndicator" type="TextureRect" parent="DialogPanel/MarginContainer/DialogContainer"]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -112,4 +114,4 @@ metadata/_custom_type_script = "uid://cdtkvrnke623v"
 
 [node name="Timer" type="Timer" parent="."]
 
-[connection signal="meta_clicked" from="DialogPanel/MarginContainer/VBoxContainer/DialogDisplay" to="." method="_on_dialog_meta_clicked"]
+[connection signal="meta_clicked" from="DialogPanel/MarginContainer/DialogContainer/DialogDisplay" to="." method="_on_dialog_meta_clicked"]

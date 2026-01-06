@@ -1,3 +1,4 @@
+@tool
 extends DialogBox
 
 # -----------------------------------------------------------------------------
@@ -13,19 +14,7 @@ extends DialogBox
 # -----------------------------------------------------------------------------
 
 
-func _enter_tree() -> void:
-	super () # Do not remove this line! It is required to initialize the dialog box.
-
-
-func _ready():
-	super () # Do not remove this line! It is required to initialize the dialog box.
-
-
-func _input(event: InputEvent) -> void:
-	super (event) # Do not remove this line! It is required to use the dialog box.
-
-
-func _on_dialog_box_start() -> void:
+func _on_dialog_box_open() -> void:
 	# --------------------------------------------------------------------------
 	# This method is called when the dialog box starts.
 	# You can add your own logic here to handle the start of the dialog box.
@@ -51,7 +40,8 @@ func _on_options_displayed() -> void:
 	# You can add your own logic here to handle when the options are displayed.
 	# (e.g. play an animation to display the options)
 	# --------------------------------------------------------------------------
-	options_container.show()
+	if options_container:
+		options_container.show()
 
 
 func _on_options_hidden() -> void:
@@ -60,4 +50,5 @@ func _on_options_hidden() -> void:
 	# You can add your own logic here to handle when the options are hidden.
 	# (e.g. play an animation to hide the options)
 	# --------------------------------------------------------------------------
-	options_container.hide()
+	if options_container:
+		options_container.hide()

@@ -48,7 +48,10 @@ var _dialog_data: SproutyDialogsDialogueData:
 			_dialog_data_uid = -1
 			_dialog_file_name = ""
 			_starts_ids = []
-		notify_property_list_changed()
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
+			update_configuration_warnings()
+
 ## Start ID of the dialog tree to play.
 var _start_id: String:
 	set(value):
@@ -57,7 +60,9 @@ var _start_id: String:
 			for char in _dialog_data.characters[value]:
 				_portrait_parents[char] = null
 				_dialog_box_parents[char] = null
-		notify_property_list_changed()
+		if Engine.is_editor_hint():
+			notify_property_list_changed()
+			update_configuration_warnings()
 
 ## Play the dialog when the node is ready.
 var _play_on_ready: bool = false
@@ -145,135 +150,22 @@ var _current_node: String = ""
 var _is_running: bool = false
 
 
-func _enter_tree() -> void:
-	if not Engine.is_editor_hint(): # Only run in game
-		# Create a event intepreter instance
-		_dialog_interpreter = SproutyDialogsEventInterpreter.new()
-		_dialog_interpreter.continue_to_node.connect(_process_node)
-		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
-		_dialog_interpreter.options_processed.connect(_on_options_processed)
-		_dialog_interpreter.signal_processed.connect(_on_signal_processed)
-		_dialog_interpreter.print_debug = _print_debug
-		add_child(_dialog_interpreter)
-
-		var sprouty_dialogs_manager = get_node("/root/SproutyDialogs")
-		_resource_manager = sprouty_dialogs_manager.Resources
-
-		# Connect signals to autoload manager
-		dialog_started.connect(func(dialog_file, start_id):
-			sprouty_dialogs_manager.dialog_players_running.append(self)
-			sprouty_dialogs_manager.dialog_started.emit(dialog_file, start_id)
-		)
-		dialog_player_stop.connect(sprouty_dialogs_manager.dialog_players_running.erase)
-		dialog_paused.connect(sprouty_dialogs_manager.dialog_paused.emit)
-		dialog_resumed.connect(sprouty_dialogs_manager.dialog_resumed.emit)
-		dialog_ended.connect(sprouty_dialogs_manager.dialog_ended.emit)
-
-
-func _exit_tree() -> void:
-	if _resource_manager:
-		_resource_manager.release_resources(_dialog_data, _start_id)
-
-
-func _ready() -> void:
-	if Engine.is_editor_hint():
-		# In editor, check if the dialogue data resource exists
-		if not SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
-			printerr("[Sprouty Dialogs] Dialog Player '" + name
-				+"' cannot find the dialogue data resource '" \
-				+ _dialog_file_name + ".tres'. Check if it was deleted.")
-			_dialog_data = null
-			_dialog_data_uid = -1
-			_dialog_file_name = ""
-			_start_id = "(Select a dialog)"
-			_starts_ids = []
-	else: # In game, load the dialogue data resources
-		if not _dialog_data and SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
-			_dialog_data = load(ResourceUID.get_id_path(_dialog_data_uid))
-			_starts_ids = _dialog_data.get_start_ids()
-		if _starts_ids.has(_start_id):
-			if not _resource_manager.is_node_ready():
-				await _resource_manager.ready
-			_resource_manager.load_resources(_dialog_data, _start_id)
-			# Start processing the dialog tree if the play on ready is enabled
-			if _play_on_ready:
-				start()
-		elif _start_id == "(Select a dialog)":
-			printerr("[Sprouty Dialogs] No dialog ID selected to play.")
-			return
-
-
-## Set play on ready flag to play the dialog when the node is ready.
-## If true, the dialog will start processing when the dialog player node is ready.
-func play_on_ready(play_on_ready: bool) -> void:
-	_play_on_ready = play_on_ready
-
-
-## Set the flag to destroy the dialog player when the dialog ends.
-## If true, the player will be freed from the scene tree when the dialog ends.
-## If false, the player will remain in the scene tree to be reused later.
-func destroy_on_end(destroy: bool) -> void:
-	_destroy_on_end = destroy
-
-
-## Returns the dialogue data resource being processed
-func get_dialog_data() -> SproutyDialogsDialogueData:
-	return _dialog_data
-
-
-## Returns the start ID of the dialog tree being processed
-func get_start_id() -> String:
-	if _start_id == "(Select a dialog)":
-		return ""
-	return _start_id
-
-
-## Returns character data for a given character key name
-func get_character_data(key_name: String) -> SproutyDialogsCharacterData:
-	if _resource_manager:
-		var character_data = _resource_manager.get_character_data(key_name)
-		if character_data:
-			return character_data
-	return null
-
-
-## Returns the current portrait being displayed
-func get_current_portrait() -> DialogPortrait:
-	return _current_portrait
-
-
-## Returns the current dialog box being displayed
-func get_current_dialog_box() -> DialogBox:
-	return _current_dialog_box
-
-
-## Set the dialogue data and start ID to play a dialog tree.
-## This method loads the dialog resources and prepares the player to process
-## the dialog tree before calling the [method Dialogstart()]method.
-func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
-		portrait_parents: Dictionary = {}, dialog_box_parents: Dictionary = {}) -> void:
-	if not data:
-		printerr("[Sprouty Dialogs] No dialogue data provided to set.")
-		return
-	_dialog_data = data
-	_start_id = start_id
-
-	if not _starts_ids.has(_start_id): # Check if the dialog with given id exists
-		printerr("[Sprouty Dialogs] Cannot find'" + _start_id + "'ID on dialogue data.")
-		_start_id = "(Select a dialog)"
-		_dialog_data = null
-		return
-	
-	if not portrait_parents.is_empty():
-		_portrait_parents = portrait_parents
-	if not dialog_box_parents.is_empty():
-		_dialog_box_parents = dialog_box_parents
-	
-	# Load the resources
-	_resource_manager.load_resources(_dialog_data, _start_id)
-
-
 #region === Editor properties ==================================================
+
+## Handle editor warnings
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings: PackedStringArray = []
+	if not _dialog_data: # Check if the node is empty or invalid
+		warnings.push_back("A dialog data must be provided to play a dialogue. "
+			+"Please assign a '.tres' dialogue data file in the inspector.")
+	elif not SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
+		warnings.push_back("The dialog data assigned is invalid, please check that the file exist.")
+	elif _start_id == "(Select a dialog)":
+		warnings.push_back("A start ID must be provided to play a dialogue. "
+			+"Please select a start ID in the inspector.")
+	return warnings
+
+
 ## Set extra properties on editor
 func _get_property_list():
 	if Engine.is_editor_hint():
@@ -374,6 +266,135 @@ func _set(property: StringName, value: Variant) -> bool:
 	return false
 
 #endregion
+
+
+func _enter_tree() -> void:
+	if not Engine.is_editor_hint(): # Only run in game
+		# Create a event intepreter instance
+		_dialog_interpreter = SproutyDialogsEventInterpreter.new()
+		_dialog_interpreter.continue_to_node.connect(_process_node)
+		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
+		_dialog_interpreter.options_processed.connect(_on_options_processed)
+		_dialog_interpreter.signal_processed.connect(_on_signal_processed)
+		_dialog_interpreter.print_debug = _print_debug
+		add_child(_dialog_interpreter)
+
+		var sprouty_dialogs_manager = get_node("/root/SproutyDialogs")
+		_resource_manager = sprouty_dialogs_manager.Resources
+
+		# Connect signals to autoload manager
+		dialog_started.connect(func(dialog_file, start_id):
+			sprouty_dialogs_manager.dialog_players_running.append(self)
+			sprouty_dialogs_manager.dialog_started.emit(dialog_file, start_id)
+		)
+		dialog_player_stop.connect(sprouty_dialogs_manager.dialog_players_running.erase)
+		dialog_paused.connect(sprouty_dialogs_manager.dialog_paused.emit)
+		dialog_resumed.connect(sprouty_dialogs_manager.dialog_resumed.emit)
+		dialog_ended.connect(sprouty_dialogs_manager.dialog_ended.emit)
+
+
+func _exit_tree() -> void:
+	if _resource_manager:
+		_resource_manager.release_resources(_dialog_data, _start_id)
+
+
+func _ready() -> void:
+	if Engine.is_editor_hint():
+		# In editor, check if the dialogue data resource exists
+		if _dialog_data_uid != -1 and not SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
+			printerr("[Sprouty Dialogs] Dialog Player '" + name
+				+"' cannot find the dialogue data resource '" \
+				+ _dialog_file_name + ".tres'. Check if it was deleted.")
+			_dialog_data = null
+			_dialog_data_uid = -1
+			_dialog_file_name = ""
+			_start_id = "(Select a dialog)"
+			_starts_ids = []
+	else: # In game, load the dialogue data resources
+		if not _dialog_data and SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
+			_dialog_data = load(ResourceUID.get_id_path(_dialog_data_uid))
+			_starts_ids = _dialog_data.get_start_ids()
+		if _starts_ids.has(_start_id):
+			if not _resource_manager.is_node_ready():
+				await _resource_manager.ready
+			_resource_manager.load_resources(_dialog_data, _start_id)
+			# Start processing the dialog tree if the play on ready is enabled
+			if _play_on_ready:
+				start()
+		elif _start_id == "(Select a dialog)":
+			printerr("[Sprouty Dialogs] No dialog ID selected to play.")
+			return
+
+
+## Set play on ready flag to play the dialog when the node is ready.
+## If true, the dialog will start processing when the dialog player node is ready.
+func play_on_ready(play_on_ready: bool) -> void:
+	_play_on_ready = play_on_ready
+
+
+## Set the flag to destroy the dialog player when the dialog ends.
+## If true, the player will be freed from the scene tree when the dialog ends.
+## If false, the player will remain in the scene tree to be reused later.
+func destroy_on_end(destroy: bool) -> void:
+	_destroy_on_end = destroy
+
+
+## Returns the dialogue data resource being processed
+func get_dialog_data() -> SproutyDialogsDialogueData:
+	return _dialog_data
+
+
+## Returns the start ID of the dialog tree being processed
+func get_start_id() -> String:
+	if _start_id == "(Select a dialog)":
+		return ""
+	return _start_id
+
+
+## Returns character data for a given character key name
+func get_character_data(key_name: String) -> SproutyDialogsCharacterData:
+	if _resource_manager:
+		var character_data = _resource_manager.get_character_data(key_name)
+		if character_data:
+			return character_data
+	return null
+
+
+## Returns the current portrait being displayed
+func get_current_portrait() -> DialogPortrait:
+	return _current_portrait
+
+
+## Returns the current dialog box being displayed
+func get_current_dialog_box() -> DialogBox:
+	return _current_dialog_box
+
+
+## Set the dialogue data and start ID to play a dialog tree.
+## This method loads the dialog resources and prepares the player to process
+## the dialog tree before calling the [method Dialogstart()]method.
+func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
+		portrait_parents: Dictionary = {}, dialog_box_parents: Dictionary = {}) -> void:
+	if not data:
+		printerr("[Sprouty Dialogs] No dialogue data provided to set.")
+		return
+	_dialog_data = data
+	_start_id = start_id
+
+	if not _starts_ids.has(_start_id): # Check if the dialog with given id exists
+		printerr("[Sprouty Dialogs] Cannot find'" + _start_id + "'ID on dialogue data.")
+		_start_id = "(Select a dialog)"
+		_dialog_data = null
+		return
+	
+	if not portrait_parents.is_empty():
+		_portrait_parents = portrait_parents
+	if not dialog_box_parents.is_empty():
+		_dialog_box_parents = dialog_box_parents
+	
+	# Load the resources
+	_resource_manager.load_resources(_dialog_data, _start_id)
+
 
 #region === Run dialog =========================================================
 
