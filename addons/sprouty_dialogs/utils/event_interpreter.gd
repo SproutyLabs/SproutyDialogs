@@ -118,5 +118,5 @@ func _process_signal(node_data: Dictionary) -> void:
 
 func _process_wait(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing wait node...")
-	await get_tree().create_timer(node_data.time).timeout
+	await get_tree().create_timer(node_data.wait_time).timeout
 	continue_to_node.emit(node_data.to_node[0])

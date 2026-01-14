@@ -1,0 +1,59 @@
+[gd_scene load_steps=6 format=3 uid="uid://dyqd2p3t57lwa"]
+
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_n0obq"]
+[ext_resource type="Script" uid="uid://ck1rjlfxm126n" path="res://addons/sprouty_dialogs/event_nodes/custom_event_nodes/scripts/custom_node.gd" id="2_0v1xp"]
+[ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/editor/icons/text_editor/text.svg" id="3_ym2dh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ym2dh"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.7854326, 0.10140889, 0.09717562, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0a8n1"]
+content_margin_left = 18.0
+content_margin_top = 12.0
+content_margin_right = 18.0
+content_margin_bottom = 12.0
+bg_color = Color(0.7854326, 0.10140889, 0.09717562, 1)
+border_color = Color(0.325, 0.325, 0.325, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="CustomNode" type="GraphNode"]
+custom_minimum_size = Vector2(200, 0)
+offset_right = 200.0
+offset_bottom = 155.0
+theme = ExtResource("1_n0obq")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_ym2dh")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_0a8n1")
+resizable = true
+title = "Custom Node"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("2_0v1xp")
+node_color = Color(0.7854326, 0.10140889, 0.09717562, 1)
+node_icon = ExtResource("3_ym2dh")
+
+[node name="TextInput" type="TextEdit" parent="."]
+custom_minimum_size = Vector2(150, 100)
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Write a text to print..."
+wrap_mode = 1

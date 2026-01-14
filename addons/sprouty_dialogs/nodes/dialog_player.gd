@@ -14,21 +14,21 @@ extends Node
 # -----------------------------------------------------------------------------
 
 ## Emitted when the dialog starts.
-signal dialog_started(dialog_file: String, start_id: String)
+signal dialog_started()
 ## Emitted when the dialog is paused.
-signal dialog_paused(dialog_file: String, start_id: String)
+signal dialog_paused()
 ## Emitted when the dialog is resumed.
-signal dialog_resumed(dialog_file: String, start_id: String)
+signal dialog_resumed()
 ## Emitted when the dialog is ended.
-signal dialog_ended(dialog_file: String, start_id: String)
-
-## Emitted when the dialog player stops.
-signal dialog_player_stop(dialog_player: DialogPlayer)
+signal dialog_ended()
 
 ## Emitted when a dialog option is selected.
 signal option_selected(option_index: int, option_dialog: Dictionary)
 ## Emitted when a signal event is emitted.
 signal signal_event(argument: String)
+
+## Emitted when the dialog player stops.
+signal dialog_player_stop()
 
 ## UID of the dialogue data resource to play.
 @export_storage var _dialog_data_uid: int = -1
@@ -270,8 +270,15 @@ func _set(property: StringName, value: Variant) -> bool:
 
 func _enter_tree() -> void:
 	if not Engine.is_editor_hint(): # Only run in game
-		# Create a event intepreter instance
-		_dialog_interpreter = SproutyDialogsEventInterpreter.new()
+		if SproutyDialogsSettingsManager.get_setting("use_custom_event_nodes"):
+			var interpreter_uid = SproutyDialogsSettingsManager.get_setting("custom_event_interpreter")
+			# Use a custom event interpreter
+			if SproutyDialogsFileUtils.check_valid_uid_path(interpreter_uid):
+				_dialog_interpreter = load(ResourceUID.get_id_path(interpreter_uid)).new()
+		
+		if not _dialog_interpreter: # Create a event intepreter instance
+			_dialog_interpreter = SproutyDialogsEventInterpreter.new()
+		
 		_dialog_interpreter.continue_to_node.connect(_process_node)
 		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
 		_dialog_interpreter.options_processed.connect(_on_options_processed)
@@ -283,14 +290,16 @@ func _enter_tree() -> void:
 		_resource_manager = sprouty_dialogs_manager.Resources
 
 		# Connect signals to autoload manager
-		dialog_started.connect(func(dialog_file, start_id):
+		dialog_started.connect(func():
 			sprouty_dialogs_manager.dialog_players_running.append(self)
-			sprouty_dialogs_manager.dialog_started.emit(dialog_file, start_id)
+			sprouty_dialogs_manager.dialog_started.emit()
 		)
-		dialog_player_stop.connect(sprouty_dialogs_manager.dialog_players_running.erase)
+		dialog_player_stop.connect(sprouty_dialogs_manager.dialog_players_running.erase.bind(self))
 		dialog_paused.connect(sprouty_dialogs_manager.dialog_paused.emit)
 		dialog_resumed.connect(sprouty_dialogs_manager.dialog_resumed.emit)
 		dialog_ended.connect(sprouty_dialogs_manager.dialog_ended.emit)
+		option_selected.connect(sprouty_dialogs_manager.option_selected.emit)
+		signal_event.connect(sprouty_dialogs_manager.signal_event.emit)
 
 
 func _exit_tree() -> void:
@@ -372,7 +381,7 @@ func get_current_dialog_box() -> DialogBox:
 
 ## Set the dialogue data and start ID to play a dialog tree.
 ## This method loads the dialog resources and prepares the player to process
-## the dialog tree before calling the [method Dialogstart()]method.
+## the dialog tree before calling the [method start()]method.
 func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
 		portrait_parents: Dictionary = {}, dialog_box_parents: Dictionary = {}) -> void:
 	if not data:
@@ -399,7 +408,7 @@ func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
 #region === Run dialog =========================================================
 
 ## Start processing a dialog tree
-## Need to set the [member Dialog_dialog_data] and [member Dialog_start_id] 
+## Need to set the [member _dialog_data] and [member _start_id] 
 ## before calling this method. The resources are loaded on the [method _ready()] method,
 func start() -> void:
 	if not _dialog_data: # Check if dialogue data is set
@@ -416,7 +425,7 @@ func start() -> void:
 				print("[Sprouty Dialogs] Starting dialog with ID: " + _start_id)
 			_is_running = true
 			_process_node(node)
-			dialog_started.emit(_dialog_file_name, _start_id)
+			dialog_started.emit()
 			break
 
 
@@ -432,7 +441,7 @@ func pause() -> void:
 	# If not, save the current node to resume later
 	elif _current_node != "":
 		_paused_node = _current_node
-	dialog_paused.emit(_dialog_file_name, _start_id)
+	dialog_paused.emit()
 
 
 ## Resume processing the dialog tree
@@ -448,7 +457,7 @@ func resume() -> void:
 	elif _paused_node != "":
 		_process_node(_paused_node)
 		_paused_node = ""
-	dialog_resumed.emit(_dialog_file_name, _start_id)
+	dialog_resumed.emit()
 
 
 ## Stop processing the dialog tree
@@ -460,7 +469,7 @@ func stop() -> void:
 	_paused_node = ""
 	_next_node = ""
 
-	if not _current_dialog_box.is_displaying_portrait():
+	if _current_dialog_box and not _current_dialog_box.is_displaying_portrait():
 		await _current_dialog_box.stop_dialog(true)
 		_current_dialog_box = null
 	
@@ -486,8 +495,8 @@ func stop() -> void:
 	
 	_portraits_instances.clear()
 	_dialog_box_instances.clear()
-	dialog_ended.emit(_dialog_file_name, _start_id)
-	dialog_player_stop.emit(self)
+	dialog_ended.emit()
+	dialog_player_stop.emit()
 	if _destroy_on_end:
 		queue_free()
 

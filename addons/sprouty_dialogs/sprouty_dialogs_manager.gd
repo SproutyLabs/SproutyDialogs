@@ -13,13 +13,18 @@ extends Node
 # -----------------------------------------------------------------------------
 
 ## Emitted when the dialog starts.
-signal dialog_started(dialog_file: String, start_id: String)
+signal dialog_started()
 ## Emitted when the dialog is paused.
-signal dialog_paused(dialog_file: String, start_id: String)
+signal dialog_paused()
 ## Emitted when the dialog is resumed.
-signal dialog_resumed(dialog_file: String, start_id: String)
+signal dialog_resumed()
 ## Emitted when the dialog is ended.
-signal dialog_ended(dialog_file: String, start_id: String)
+signal dialog_ended()
+
+## Emitted when a dialog option is selected.
+signal option_selected(option_index: int, option_dialog: Dictionary)
+## Emitted when a signal event is emitted.
+signal signal_event(argument: String)
 
 ## The list of dialog players currently running.
 ## This is used to keep track of multiple dialog players running at the same time.
@@ -56,14 +61,15 @@ func _ready():
 ## [DialogPlayer] instance instead of calling this method from here. 
 ## The dialog player will handle the resource loading on _ready(), loading the
 ## resources only once and reusing them for the dialog.
-func start_dialog(data: SproutyDialogsDialogueData, start_id: String) -> DialogPlayer:
+func start_dialog(data: SproutyDialogsDialogueData, start_id: String,
+		portrait_parents: Dictionary = {}, dialog_box_parents: Dictionary = {}) -> DialogPlayer:
 	# Create a new dialog player instance
 	var new_dialog_player = DialogPlayer.new()
 	new_dialog_player.destroy_on_end(true)
 	add_child(new_dialog_player)
 
 	# Set the dialogue data and start running the dialog
-	new_dialog_player.set_dialog(data, start_id)
+	new_dialog_player.set_dialog(data, start_id, portrait_parents, dialog_box_parents)
 	new_dialog_player.start()
 	return new_dialog_player
 

@@ -7,10 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cf5ef41yo6jl6" path="res://addons/dialogue_nodes/icons/Reload.svg" id="3_lylrf"]
 [ext_resource type="Texture2D" uid="uid://t7ujqvnbwl36" path="res://addons/sprouty_dialogs/editor/icons/settings.svg" id="4_kixug"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/editor/icons/text_editor/image.svg" id="5_kixug"]
-
-[sub_resource type="DPITexture" id="DPITexture_v013n"]
-_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
-"
+[ext_resource type="Texture2D" uid="uid://3ygkqeueqkrd" path="res://addons/sprouty_dialogs/editor/icons/text_editor/magic-wand.svg" id="8_euhf0"]
 
 [sub_resource type="DPITexture" id="DPITexture_euhf0"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
@@ -118,11 +115,10 @@ flat = true
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-icon = SubResource("DPITexture_v013n")
+icon = SubResource("DPITexture_euhf0")
 
 [node name="ToDialogBoxSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 tooltip_text = "Open the dialog box scene."
 icon = SubResource("DPITexture_euhf0")
@@ -163,11 +159,10 @@ flat = true
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-icon = SubResource("DPITexture_v013n")
+icon = SubResource("DPITexture_euhf0")
 
 [node name="ToPortraitSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 tooltip_text = "Open the dialog box scene."
 icon = SubResource("DPITexture_euhf0")
@@ -244,6 +239,103 @@ size_flags_horizontal = 3
 value = 1.0
 allow_greater = true
 allow_lesser = true
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CustomTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomTitle"]
+layout_mode = 2
+icon = ExtResource("8_euhf0")
+flat = true
+
+[node name="CustomLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomTitle"]
+layout_mode = 2
+theme_type_variation = &"HeaderSmall"
+text = "Custom Event Nodes"
+
+[node name="UseCustomNodes" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Line breaks will be considered paragraphs. Each paragraph is displayed as a new dialog (or block of text in the dialog box). Otherwise, the text is displayed all at once."
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Use custom event nodes"
+
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes"]
+layout_mode = 2
+icon = ExtResource("3_lylrf")
+flat = true
+
+[node name="UseCustomNodesToggle" type="CheckButton" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+
+[node name="CustomNodesFolderWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=tomato]Please select a valid directory for the custom event nodes."
+fit_content = true
+
+[node name="CustomNodesFolder" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Path to the directory of the CSV translation files.
+This directory must contain all the CSV files used for the dialogs. 
+(It is necessary to collect all translations in godot)."
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Custom event nodes folder"
+
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder"]
+layout_mode = 2
+icon = ExtResource("3_lylrf")
+flat = true
+
+[node name="CustomNodesFolderField" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder" instance=ExtResource("3_hokrq")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+_open_directory = true
+_placeholder_text = "Select a folder..."
+
+[node name="CustomInterpreterWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=tomato]Please select a valid script (.gd) that extends the SproutyDialogsEventInterpreter class."
+fit_content = true
+
+[node name="CustomInterpreter" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV translations folder."
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Custom event interpreter"
+
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter"]
+visible = false
+layout_mode = 2
+icon = ExtResource("3_lylrf")
+flat = true
+
+[node name="CustomInterpreterField" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter" instance=ExtResource("3_hokrq")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+_open_directory = false
+_placeholder_text = "Select a script file..."
+file_filters = PackedStringArray("*.gd")
 
 [node name="MarginContainer2" type="MarginContainer" parent="."]
 visible = false

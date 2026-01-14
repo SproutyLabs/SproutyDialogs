@@ -14,4 +14,4 @@ func _ready() -> void:
 
 	print("[Sprouty Dialogs] Playing dialog test scene...")
 	autoload.start_dialog(load(dialog_path), start_id)
-	autoload.dialog_ended.connect(get_tree().quit.unbind(2)) # Quit when done
+	autoload.dialog_ended.connect(get_tree().quit) # Quit when done

@@ -88,6 +88,13 @@ func _ready():
 	_node_actions_menu.id_pressed.connect(_on_node_actions_menu_selected)
 
 	_nodes_references = _get_nodes_references(NODES_PATH)
+	# Include custom nodes
+	if SproutyDialogsSettingsManager.get_setting("use_custom_event_nodes"):
+		var custom_path = SproutyDialogsSettingsManager.get_setting("custom_event_nodes_folder")
+		if custom_path != "" and DirAccess.dir_exists_absolute(custom_path):
+			var custom_nodes = _get_nodes_references(custom_path)
+			_nodes_references.merge(custom_nodes)
+
 	_set_node_actions_menu()
 	_set_add_node_menu()
 
@@ -120,11 +127,15 @@ func _on_modified(mark_as_modified: bool) -> void:
 ## Get the nodes scene references from the nodes folder
 func _get_nodes_references(path: String) -> Dictionary:
 	var nodes_dict = {}
-	var nodes_scenes = DirAccess.get_files_at(NODES_PATH)
+	var nodes_scenes = DirAccess.get_files_at(path)
 	for node in nodes_scenes:
 		if node.ends_with(".tscn"):
 			var node_name = node.replace(".tscn", "")
-			nodes_dict[node_name] = load(NODES_PATH + node)
+			var node_scene = load(path + "/" + node)
+			var instance = node_scene.instantiate()
+			if instance is SproutyDialogsBaseNode:
+				nodes_dict[node_name] = node_scene
+			instance.queue_free()
 	return nodes_dict
 
 
@@ -144,7 +155,14 @@ func _get_next_available_index(node_type: String) -> int:
 
 # Create a new node of a given type
 func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_count: bool = true) -> GraphNode:
-	var new_node = _nodes_references[node_type].instantiate()
+	var new_node: SproutyDialogsBaseNode = null
+	if not _nodes_references.has(node_type):
+		printerr("[Sprouty Dialogs] Cannot load '" + node_type + "' node."
+			+"Go to Settings > General, check that the custom nodes are enabled "
+			+"and that the '" + node_type + "' scene exist in the custom event nodes folder.")
+		new_node = _nodes_references["placeholder_node"].instantiate()
+	else:
+		new_node = _nodes_references[node_type].instantiate()
 	new_node.name = node_type + "_" + str(node_index)
 	new_node.title += " #" + str(node_index)
 	new_node.position_offset = node_offset
@@ -856,6 +874,8 @@ func _set_add_node_menu() -> void:
 	_add_node_menu.clear()
 	var index = 0
 	for node in _nodes_references:
+		if node == "placeholder_node":
+			continue # Skip the placeholder node
 		var node_aux = _nodes_references[node].instantiate()
 		_add_node_menu.add_icon_item(node_aux.node_icon, node_aux.name.capitalize(), index)
 		_add_node_menu.set_item_metadata(index, node)

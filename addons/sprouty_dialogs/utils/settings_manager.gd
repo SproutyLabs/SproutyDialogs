@@ -40,6 +40,19 @@ static var _settings_paths: Dictionary = {
 		"path": "graph_dialogs/general/canvas/portraits_canvas_layer",
 		"default": 1
 	},
+	# Custom event nodes
+	"use_custom_event_nodes": {
+		"path": "graph_dialogs/general/custom/use_custom_event_nodes",
+		"default": false
+	},
+	"custom_event_nodes_folder": {
+		"path": "graph_dialogs/general/custom/custom_event_nodes_folder",
+		"default": ""
+	},
+	"custom_event_interpreter": {
+		"path": "graph_dialogs/general/custom/custom_event_interpreter",
+		"default": - 1
+	},
 	# --- Text settings --------------------------------------------------------
 	"default_typing_speed": {
 		"path": "graph_dialogs/text/default_typing_speed",

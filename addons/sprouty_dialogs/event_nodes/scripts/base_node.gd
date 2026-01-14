@@ -20,6 +20,7 @@ signal modified(modified: bool)
 
 ## Node color to display on the node titlebar.
 @export_color_no_alpha var node_color: Color
+
 ## Icon to display on the node titlebar.
 @export var node_icon: Texture2D
 
@@ -64,16 +65,7 @@ func get_start_id() -> String:
 ## Set the node titlebar with the node type icon and remove button.
 func _set_node_titlebar():
 	var node_titlebar = get_titlebar_hbox()
-	
-	if not has_theme_stylebox_override("titlebar"):
-		var titlebar_stylebox = get_theme_stylebox("titlebar").duplicate()
-		titlebar_stylebox.bg_color = node_color
-		add_theme_stylebox_override("titlebar", titlebar_stylebox)
-	
-	if not has_theme_stylebox_override("titlebar_selected"):
-		var titlebar_selected_stylebox = get_theme_stylebox("titlebar_selected").duplicate()
-		titlebar_selected_stylebox.bg_color = node_color
-		add_theme_stylebox_override("titlebar_selected", titlebar_selected_stylebox)
+	_set_titlebar_color()
 	
 	# Add node type icon
 	var icon_button = TextureButton.new()
@@ -89,6 +81,17 @@ func _set_node_titlebar():
 	if get_parent() is EditorSproutyDialogsGraphEditor:
 		remove_button.pressed.connect(get_parent().delete_node.bind(self))
 	node_titlebar.add_child(remove_button)
+
+
+## Set the node titlebar color
+func _set_titlebar_color() -> void:
+	var titlebar_stylebox = get_theme_stylebox("titlebar").duplicate()
+	titlebar_stylebox.bg_color = node_color
+	add_theme_stylebox_override("titlebar", titlebar_stylebox)
+	
+	var titlebar_selected_stylebox = get_theme_stylebox("titlebar_selected").duplicate()
+	titlebar_selected_stylebox.bg_color = node_color
+	add_theme_stylebox_override("titlebar_selected", titlebar_selected_stylebox)
 
 
 func _on_resized() -> void:

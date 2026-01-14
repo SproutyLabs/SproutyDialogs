@@ -116,6 +116,9 @@ func release_resources(dialog_data: SproutyDialogsDialogueData, start_id: String
 	if not dialog_data: return
 	var portraits = dialog_data.get_portraits_on_dialog(start_id)
 
+	if not dialog_data.characters.has(start_id):
+		return # # If no characters data, Nothing to release
+
 	for char in dialog_data.characters[start_id]:
 		# Remove the dialog boxes loaded if they are not used anymore
 		if _characters_data.has(char):
@@ -169,6 +172,9 @@ func _new_canvas_layer(name: String, layer: int) -> CanvasLayer:
 func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -> void:
 	if not dialog_data: return
 	var portraits = dialog_data.get_portraits_on_dialog(start_id)
+
+	if not dialog_data.characters.has(start_id):
+		return # If no characters data, nothing to load
 
 	for char in dialog_data.characters[start_id]:
 		# Load the character data resource if not already loaded

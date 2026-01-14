@@ -38,6 +38,17 @@ extends HSplitContainer
 ## Portrait canvas layer field
 @onready var _portrait_canvas_layer_field: SpinBox = %PortraitCanvasLayerField
 
+## Use custom event nodes toggle
+@onready var _use_custom_nodes_toggle: CheckButton = %UseCustomNodesToggle
+## Custom event nodes folder field
+@onready var _custom_nodes_folder_field: EditorSproutyDialogsFileField = %CustomNodesFolderField
+## Custom event interpreter field
+@onready var _custom_interpreter_field: EditorSproutyDialogsFileField = %CustomInterpreterField
+## Custom event nodes folder warning
+@onready var _custom_nodes_folder_warning: RichTextLabel = %CustomNodesFolderWarning
+## Custom event nodes interpreter warning
+@onready var _custom_interpreter_warning: RichTextLabel = %CustomInterpreterWarning
+
 
 func _ready():
 	_continue_input_action_field.input_changed.connect(_on_continue_input_action_changed)
@@ -53,6 +64,10 @@ func _ready():
 	_new_dialog_box_button.pressed.connect(_on_new_dialog_box_pressed)
 	_new_dialog_box_dialog.file_selected.connect(_new_dialog_box)
 
+	_use_custom_nodes_toggle.toggled.connect(_on_use_custom_nodes_toggled)
+	_custom_nodes_folder_field.path_changed.connect(_on_custom_nodes_folder_path_changed)
+	_custom_interpreter_field.path_changed.connect(_on_custom_interpreter_path_changed)
+
 	_continue_input_action_field.set_options(InputMap.get_actions().filter(
 		func(action: String) -> bool: # Filter out built-in UI actions
 			return (not action.begins_with("ui_")) and (not action.begins_with("spatial_editor"))
@@ -62,8 +77,10 @@ func _ready():
 	_new_dialog_box_button.icon = get_theme_icon("Add", "EditorIcons")
 	_new_portrait_scene_button.icon = get_theme_icon("Add", "EditorIcons")
 
-	_default_dialog_box_warning.visible = false
-	_default_portrait_warning.visible = false
+	_default_dialog_box_warning.hide()
+	_default_portrait_warning.hide()
+	_custom_nodes_folder_warning.hide()
+	_custom_interpreter_warning.hide()
 
 	await get_tree().process_frame # Wait a frame to ensure settings are loaded
 	_load_settings()
@@ -125,6 +142,39 @@ func _load_settings() -> void:
 		SproutyDialogsSettingsManager.get_setting("portraits_canvas_layer")
 	_set_reset_button(_portrait_canvas_layer_field, "portraits_canvas_layer")
 
+	# Load custom settings
+	_use_custom_nodes_toggle.button_pressed = \
+			SproutyDialogsSettingsManager.get_setting("use_custom_event_nodes")
+	_set_reset_button(_use_custom_nodes_toggle, "use_custom_event_nodes")
+
+	# Load custom event nodes folder
+	var custom_nodes_folder = SproutyDialogsSettingsManager.get_setting("custom_event_nodes_folder")
+	if not DirAccess.dir_exists_absolute(custom_nodes_folder):
+		if _use_custom_nodes_toggle.button_pressed:
+			printerr("[Sprouty Dialogs] Custom event nodes folder not found." \
+					+" Check that the folder path is set in Settings > General" \
+					+" plugin tab, and that the directory exists.")
+			_custom_nodes_folder_warning.show()
+		_custom_nodes_folder_field.set_value("")
+	else:
+		_custom_nodes_folder_warning.hide()
+		_custom_nodes_folder_field.set_value(custom_nodes_folder)
+	_set_reset_button(_custom_nodes_folder_field, "custom_event_nodes_folder")
+
+	# Load custom event nodes interpreter
+	var custom_interpreter = SproutyDialogsSettingsManager.get_setting("custom_event_interpreter")
+	if not SproutyDialogsFileUtils.check_valid_uid_path(custom_interpreter):
+		if _use_custom_nodes_toggle.button_pressed:
+			printerr("[Sprouty Dialogs] Custom event nodes interpreter not found." \
+				+" Check that the script is set in Settings > General" \
+				+" plugin tab, and that the file exists.")
+			_custom_interpreter_warning.show()
+		_custom_interpreter_field.set_value("")
+	else:
+		_custom_interpreter_warning.hide()
+		_custom_interpreter_field.set_value(ResourceUID.get_id_path(custom_interpreter))
+	_set_reset_button(_custom_interpreter_field, "custom_event_interpreter")
+
 
 ## Setup the reset button of a field
 func _set_reset_button(field: Control, setting_name: String) -> void:
@@ -140,24 +190,28 @@ func _set_reset_button(field: Control, setting_name: String) -> void:
 		reset_button.visible = field.get_value() != default_value
 	
 	elif field is EditorSproutyDialogsFileField:
-		if default_value is int and ResourceUID.has_id(default_value):
-			default_value = ResourceUID.get_id_path(default_value)
-		
+		# Use the previous saved settings instead of default
 		reset_button.pressed.connect(func():
-			SproutyDialogsSettingsManager.reset_setting(setting_name)
-			field.set_value(default_value)
+			field.set_value(_get_saved_setting(setting_name))
 			reset_button.hide()
 			# Hide fields warnings and handle scene buttons
 			if setting_name.contains("dialog_box"):
 				_default_dialog_box_warning.hide()
 				_new_dialog_box_button.hide()
 				_to_dialog_box_scene_button.show()
+			
 			if setting_name.contains("portrait_scene"):
 				_default_portrait_warning.hide()
 				_new_portrait_scene_button.hide()
 				_to_portrait_scene_button.show()
+			
+			if setting_name == "custom_event_nodes_folder":
+				_custom_nodes_folder_warning.hide()
+			
+			if setting_name == "custom_event_interpreter":
+				_custom_interpreter_warning.hide()
 		)
-		reset_button.visible = field.get_value() != default_value
+		reset_button.visible = field.get_value() != _get_saved_setting(setting_name)
 
 	elif field is SpinBox:
 		reset_button.pressed.connect(func():
@@ -166,6 +220,18 @@ func _set_reset_button(field: Control, setting_name: String) -> void:
 			reset_button.hide()
 		)
 		reset_button.visible = field.value != default_value
+	
+	elif field is CheckButton:
+		reset_button.pressed.connect(func():
+			SproutyDialogsSettingsManager.reset_setting(setting_name)
+			field.set_pressed_no_signal(default_value)
+			reset_button.hide()
+
+			if setting_name.contains("use_custom"):
+				_on_custom_nodes_folder_path_changed(_custom_nodes_folder_field.get_value())
+				_on_custom_interpreter_path_changed(_custom_interpreter_field.get_value())
+		)
+		reset_button.visible = field.button_pressed != default_value
 
 
 ## Show the reset button of a field
@@ -173,13 +239,29 @@ func _show_reset_button(field: Control, setting_name: String) -> void:
 	var default_value = SproutyDialogsSettingsManager.get_default_setting(setting_name)
 	var reset_button = field.get_parent().get_child(1)
 
-	if field is EditorSproutyDialogsComboBox or field is EditorSproutyDialogsFileField:
-		if default_value is int and ResourceUID.has_id(default_value):
-			default_value = ResourceUID.get_id_path(default_value)
+	if field is EditorSproutyDialogsComboBox:
 		reset_button.visible = field.get_value() != default_value
+	
+	elif field is EditorSproutyDialogsFileField:
+		reset_button.visible = field.get_value() != _get_saved_setting(setting_name)
 	
 	elif field is SpinBox:
 		reset_button.visible = field.value != default_value
+	
+	elif field is CheckButton:
+		reset_button.visible = field.button_pressed != default_value
+
+
+## Get the previous saved setting value
+func _get_saved_setting(setting_name: String) -> Variant:
+	var setting_value = SproutyDialogsSettingsManager.get_setting(setting_name)
+	if setting_value is int:
+		if ResourceUID.has_id(setting_value):
+			return ResourceUID.get_id_path(setting_value)
+		else:
+			return ""
+	else:
+		return setting_value
 
 
 ## Handle when the continue input action is changed
@@ -283,3 +365,39 @@ func _on_dialog_box_scene_button_pressed() -> void:
 func _on_portrait_scene_button_pressed() -> void:
 	SproutyDialogsFileUtils.open_scene_in_editor(
 			_default_potrait_scene_field.get_value(), get_tree())
+
+
+## Handle when the use custom nodes toggle is changed
+func _on_use_custom_nodes_toggled(toggled_on: bool) -> void:
+	SproutyDialogsSettingsManager.set_setting("use_custom_event_nodes", toggled_on)
+	_show_reset_button(_use_custom_nodes_toggle, "use_custom_event_nodes")
+
+	_on_custom_nodes_folder_path_changed(_custom_nodes_folder_field.get_value())
+	_on_custom_interpreter_path_changed(_custom_interpreter_field.get_value())
+
+
+## Handle when the custom nodes folder path is changed
+func _on_custom_nodes_folder_path_changed(new_path: String) -> void:
+	_show_reset_button(_custom_nodes_folder_field, "custom_event_nodes_folder")
+	# Check if the path is empty or doesn't exist
+	if new_path.is_empty() or not DirAccess.dir_exists_absolute(new_path):
+		_custom_nodes_folder_warning.visible = _use_custom_nodes_toggle.button_pressed
+		return
+	_custom_nodes_folder_warning.hide()
+	SproutyDialogsSettingsManager.set_setting("custom_event_nodes_folder", new_path)
+
+
+## Handle when the custom nodes interpreter path is changed
+func _on_custom_interpreter_path_changed(new_path: String) -> void:
+	_show_reset_button(_custom_interpreter_field, "custom_event_interpreter")
+	# Check if the path is valid
+	if SproutyDialogsFileUtils.check_valid_extension(new_path, ["*.gd"]):
+		if not load(new_path).new() is SproutyDialogsEventInterpreter:
+			_custom_interpreter_warning.visible = _use_custom_nodes_toggle.button_pressed
+			return
+	else:
+		_custom_interpreter_warning.visible = _use_custom_nodes_toggle.button_pressed
+		return
+	_custom_interpreter_warning.hide()
+	SproutyDialogsSettingsManager.set_setting("custom_event_interpreter",
+			ResourceSaver.get_resource_id_for_path(new_path, true))
