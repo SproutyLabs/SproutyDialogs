@@ -55,11 +55,10 @@ func _ready():
 	_set_variable_type(_type_index) # Default type (String)
 
 
-#region === Overridden Methods =================================================
+#region === Node Data ==========================================================
 
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
@@ -69,8 +68,7 @@ func get_data() -> Dictionary:
 		"var_metadata": _type_dropdown.get_item_metadata(_type_dropdown.selected),
 		"operator": _operator_dropdown.get_item_id(_operator_dropdown.selected),
 		"new_value": _var_value,
-		"to_node": [connections[0]["to_node"].to_snake_case()]
-				if connections.size() > 0 else ["END"],
+		"to_node": get_output_connections(),
 		"offset": position_offset,
 		"size": size
 	}

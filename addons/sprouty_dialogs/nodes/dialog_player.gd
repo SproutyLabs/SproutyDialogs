@@ -513,15 +513,22 @@ func is_running() -> bool:
 func _process_node(node_name: String) -> void:
 	if not _is_running: return
 	# Check if the node is the end node
-	if node_name == 'END':
+	if node_name == "END":
 		stop()
 		return
 	_current_node = node_name
 	# Get the node type to process
 	var node_type = node_name.split("_node_")[0] + "_node"
-	_dialog_interpreter.node_processors[node_type].call(
-		_dialog_data.graph_data[_start_id][node_name]
-		)
+	if _dialog_interpreter.node_processors.has(node_type):
+		_dialog_interpreter.node_processors[node_type].call(
+			_dialog_data.graph_data[_start_id][node_name]
+			)
+	else:
+		printerr("[Sprouty Dialogs] Cannot process '" + node_name + "'. "
+		+"Go to Settings > General, check that the custom nodes are enabled, "
+		+"that the 'custom event interpreter' is setted and that it has the process "
+		+"method to run '" + node_type + "'.")
+		_process_node(_dialog_data.graph_data[_start_id][node_name]["to_node"][0])
 
 
 ## Play dialog when the dialogue node is processed

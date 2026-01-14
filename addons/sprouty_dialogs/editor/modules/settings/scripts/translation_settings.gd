@@ -81,30 +81,19 @@ func _ready() -> void:
 
 ## Update settings when the panel is selected
 func update_settings() -> void:
-	# If the CSV character names warning is visible, reset the path
-	if _char_csv_warning.visible:
-		var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
-		if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
-			printerr("[Sprouty Dialogs] Character names CSV file not found." \
-					+" Check that the character names CSV is set in Settings > Translation" \
-					+" plugin tab, and that the CSV file exists.")
-			char_names_csv_field.set_value("") # No CSV set
-		else:
-			char_names_csv_field.set_value(ResourceUID.get_id_path(char_names_csv))
-			_char_csv_warning.visible = false
-	_show_reset_button(char_names_csv_field, "character_names_csv")
+	if _char_csv_warning.visible: # Reset path
+		char_names_csv_field.set_value(_get_saved_setting("character_names_csv"))
+		_show_reset_button(char_names_csv_field, "character_names_csv")
+		_char_csv_warning.hide()
 	
-	 # If the CSV folder warning is visible, reset the path
-	if _csv_folder_warning.visible:
-		csv_folder_field.set_value(
-			SproutyDialogsSettingsManager.get_setting("csv_translations_folder")
-		)
-		_csv_folder_warning.visible = false
+	if _csv_folder_warning.visible: # Reset path
+		csv_folder_field.set_value(_get_saved_setting("csv_translations_folder"))
+		_show_reset_button(csv_folder_field, "csv_translations_folder")
+		_csv_folder_warning.hide()
 		_collect_translations_button.disabled = not (
 			_enable_translations_toggle.is_pressed()
 			and _use_csv_files_toggle.is_pressed()
 		)
-	_show_reset_button(csv_folder_field, "csv_translations_folder")
 
 
 ## Load settings and set the values in the UI

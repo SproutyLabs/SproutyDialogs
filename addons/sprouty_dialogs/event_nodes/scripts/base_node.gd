@@ -62,6 +62,22 @@ func get_start_id() -> String:
 	else: return start_node.get_start_id()
 
 
+## Returns an array with the node's output connections
+func get_output_connections() -> Array:
+	var connections: Array = get_parent().get_node_connections(name)
+	var output_connections: Array = []
+
+	# Add a item for each active slot
+	for index in get_child_count():
+		if is_slot_enabled_right(index):
+			output_connections.append("END")
+	
+	for connection in connections: # Set the connected nodes
+		output_connections.set(connection["from_port"], connection["to_node"].to_snake_case())
+	
+	return output_connections
+
+
 ## Set the node titlebar with the node type icon and remove button.
 func _set_node_titlebar():
 	var node_titlebar = get_titlebar_hbox()

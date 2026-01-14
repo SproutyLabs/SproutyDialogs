@@ -2,9 +2,13 @@
 
 [ext_resource type="Script" uid="uid://clcj3f1236il2" path="res://addons/sprouty_dialogs/editor/modules/graph_editor/alerts/scripts/graph_alert.gd" id="1_sagui"]
 [ext_resource type="StyleBox" uid="uid://x10wnbp7ptxl" path="res://addons/sprouty_dialogs/editor/theme/warning_alert.tres" id="2_passx"]
-[ext_resource type="Texture2D" uid="uid://c7sqrakvoyb8l" path="res://addons/sprouty_dialogs/editor/icons/warning.svg" id="3_ag0wu"]
+
+[sub_resource type="DPITexture" id="DPITexture_euhf0"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
 
 [node name="WarningAlert" type="MarginContainer"]
+visible = false
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -17,7 +21,6 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/margin_left = 25
 script = ExtResource("1_sagui")
-alert_type = "WARNING"
 
 [node name="Panel" type="Panel" parent="."]
 custom_minimum_size = Vector2(300, 60)
@@ -35,7 +38,7 @@ grow_vertical = 2
 [node name="Icon" type="TextureRect" parent="Panel/Container"]
 layout_mode = 2
 size_flags_horizontal = 0
-texture = ExtResource("3_ag0wu")
+texture = SubResource("DPITexture_euhf0")
 expand_mode = 3
 stretch_mode = 3
 

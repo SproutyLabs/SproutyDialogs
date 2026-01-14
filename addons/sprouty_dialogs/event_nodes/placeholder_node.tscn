@@ -1,14 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://dtnbjw184vc5q"]
+[gd_scene load_steps=7 format=3 uid="uid://dtnbjw184vc5q"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_w0ana"]
 [ext_resource type="Script" uid="uid://dy76f7qiisd4n" path="res://addons/sprouty_dialogs/event_nodes/scripts/placeholder_node.gd" id="2_8baaf"]
+[ext_resource type="Texture2D" uid="uid://c7sqrakvoyb8l" path="res://addons/sprouty_dialogs/editor/icons/warning.svg" id="3_w0ana"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="4_8oqya"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w0ana"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
 content_margin_bottom = 4.0
-bg_color = Color(0.10747974, 0.10747973, 0.107479684, 1)
+bg_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -20,7 +22,7 @@ content_margin_left = 18.0
 content_margin_top = 12.0
 content_margin_right = 18.0
 content_margin_bottom = 12.0
-bg_color = Color(0.10747974, 0.10747973, 0.107479684, 1)
+bg_color = Color(0, 0, 0, 1)
 border_color = Color(0.325, 0.325, 0.325, 0.6)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
@@ -30,12 +32,11 @@ corner_detail = 5
 
 [node name="PlaceholderNode" type="GraphNode"]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 201.0
-offset_bottom = 78.0
+offset_right = 207.0
+offset_bottom = 84.0
 theme = ExtResource("1_w0ana")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_w0ana")
 theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_8oqya")
-resizable = true
 title = "Placeholder Node"
 slot/0/left_enabled = true
 slot/0/left_type = 0
@@ -47,8 +48,13 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("2_8baaf")
+node_icon = ExtResource("3_w0ana")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="RichTextLabel" parent="."]
 layout_mode = 2
-text = "This is a placeholder"
+theme_override_styles/normal = ExtResource("4_8oqya")
+bbcode_enabled = true
+text = "[color=tomato][center]Node not found.
+( x . x )"
+fit_content = true
 horizontal_alignment = 1

@@ -31,18 +31,16 @@ func _ready():
 ## You need to set the required data to process your node!
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = get_parent().get_node_connections(name)
-	
+
 	dict[name.to_snake_case()] = {
 		# Required node data
 		"node_type": node_type,
 		"node_index": node_index,
 		"offset": position_offset,
 		"size": size,
-
-		# Get the next node connected, if doesn't have one, mark as 'END'
-		"to_node": [connections[0]["to_node"].to_snake_case()]
-				if connections.size() > 0 else ["END"],
+		
+		# Get the node output connections
+		"to_node": get_output_connections(),
 
 		# Custom node data (You need to set this by yourself!)
 		"print_text": _print_text,
@@ -63,6 +61,7 @@ func set_data(dict: Dictionary) -> void:
 
 	# Set print text in the input field
 	_text_input.text = dict["print_text"]
+	_print_text = dict["print_text"]
 
 #endregion
 

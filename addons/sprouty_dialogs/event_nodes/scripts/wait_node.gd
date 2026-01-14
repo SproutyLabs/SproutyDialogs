@@ -27,14 +27,12 @@ func _ready():
 
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
 		"wait_time": _wait_time,
-		"to_node": [connections[0]["to_node"].to_snake_case()]
-				if connections.size() > 0 else ["END"],
+		"to_node": get_output_connections(),
 		"offset": position_offset,
 		"size": size
 	}

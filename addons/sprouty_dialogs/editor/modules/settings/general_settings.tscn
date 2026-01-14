@@ -259,7 +259,7 @@ text = "Custom Event Nodes"
 
 [node name="UseCustomNodes" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Line breaks will be considered paragraphs. Each paragraph is displayed as a new dialog (or block of text in the dialog box). Otherwise, the text is displayed all at once."
+tooltip_text = "Enable/disable the use of custom event nodes."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes"]
 layout_mode = 2
@@ -286,9 +286,7 @@ fit_content = true
 
 [node name="CustomNodesFolder" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Path to the directory of the CSV translation files.
-This directory must contain all the CSV files used for the dialogs. 
-(It is necessary to collect all translations in godot)."
+tooltip_text = "Path to the directory where you have your custom event nodes."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder"]
 layout_mode = 2
@@ -296,6 +294,7 @@ size_flags_horizontal = 3
 text = "Custom event nodes folder"
 
 [node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder"]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_lylrf")
 flat = true
@@ -309,6 +308,7 @@ _placeholder_text = "Select a folder..."
 
 [node name="CustomInterpreterWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 bbcode_enabled = true
 text = "[color=tomato]Please select a valid script (.gd) that extends the SproutyDialogsEventInterpreter class."
@@ -316,7 +316,9 @@ fit_content = true
 
 [node name="CustomInterpreter" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV translations folder."
+tooltip_text = "Path to the custom event interpreter script file (.gd) 
+that extends from the SproutyDialogsEventInterpreter class.
+Where you define the process methods to run your custom event nodes."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter"]
 layout_mode = 2

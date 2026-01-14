@@ -29,7 +29,7 @@ func _ready():
 	set_slot(0, true, 0, Color.WHITE, true, 0, Color.WHITE)
 
 
-#region === Overridden Methods =================================================
+#region === Node Data ==========================================================
 
 func get_data() -> Dictionary:
 	var dict := {}
@@ -39,7 +39,7 @@ func get_data() -> Dictionary:
 		"node_type": node_type,
 		"node_index": node_index,
 		"options_keys": [],
-		"to_node": [],
+		"to_node": get_output_connections(),
 		"offset": position_offset,
 		"size": size
 	}
@@ -48,10 +48,6 @@ func get_data() -> Dictionary:
 	for child in get_children():
 		if child is EditorSproutyDialogsOptionContainer:
 			data["options_keys"].insert(child.option_index, child.get_dialog_key())
-			data["to_node"].append("END") # Connections default to END
-	
-	for connection in connections: # Set the connections to each option
-		data["to_node"].set(connection["from_port"], connection["to_node"].to_snake_case())
 	
 	return dict
 

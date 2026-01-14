@@ -77,11 +77,10 @@ func _ready():
 	_set_translation_text_boxes()
 
 
-#region === Overridden Methods =================================================
+#region === Node Data ==========================================================
 
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
@@ -90,8 +89,7 @@ func get_data() -> Dictionary:
 		"character": get_character_name(),
 		"portrait": get_portrait(),
 		"char_expand": _character_expand_button.button_pressed,
-		"to_node": [connections[0]["to_node"].to_snake_case()]
-				if connections.size() > 0 else ["END"],
+		"to_node": get_output_connections(),
 		"offset": position_offset,
 		"size": size
 	}

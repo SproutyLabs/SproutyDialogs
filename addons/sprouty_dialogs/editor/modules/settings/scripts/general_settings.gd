@@ -88,7 +88,15 @@ func _ready():
 
 ## Update settings when the panel is selected
 func update_settings() -> void:
-	_load_settings()
+	if _custom_nodes_folder_warning.visible: # Reset path
+		_custom_nodes_folder_field.set_value(_get_saved_setting("custom_event_nodes_folder"))
+		_show_reset_button(_custom_nodes_folder_field, "custom_event_nodes_folder")
+		_custom_nodes_folder_warning.hide()
+
+	if _custom_interpreter_warning.visible: # Reset path
+		_custom_interpreter_field.set_value(_get_saved_setting("custom_event_interpreter"))
+		_show_reset_button(_custom_interpreter_field, "custom_event_interpreter")
+		_custom_interpreter_warning.hide()
 
 
 ## Load settings and set the values in the UI
@@ -391,7 +399,8 @@ func _on_custom_nodes_folder_path_changed(new_path: String) -> void:
 func _on_custom_interpreter_path_changed(new_path: String) -> void:
 	_show_reset_button(_custom_interpreter_field, "custom_event_interpreter")
 	# Check if the path is valid
-	if SproutyDialogsFileUtils.check_valid_extension(new_path, ["*.gd"]):
+	if SproutyDialogsFileUtils.check_valid_extension(new_path, ["*.gd"]) \
+			and ResourceLoader.exists(new_path):
 		if not load(new_path).new() is SproutyDialogsEventInterpreter:
 			_custom_interpreter_warning.visible = _use_custom_nodes_toggle.button_pressed
 			return

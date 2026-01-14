@@ -57,11 +57,10 @@ func _set_type_dropdown(dropdown_field: Node, field_index: int) -> void:
 	_set_value_field(0, field_index) # Default type (Variable)
 
 
-#region === Overridden Methods =================================================
+#region === Node Data ==========================================================
 
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = get_parent().get_node_connections(name)
 	
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
@@ -77,13 +76,10 @@ func get_data() -> Dictionary:
 			"value": _var_values[1]
 		},
 		"operator": operator_dropdown.get_item_id(operator_dropdown.selected),
-		"to_node": ["END", "END"], # Default to END in case no connections
+		"to_node": get_output_connections(),
 		"offset": position_offset,
 		"size": size
 	}
-	for connection in connections:
-		dict[name.to_snake_case()]["to_node"].set(
-			connection["from_port"], connection["to_node"].to_snake_case())
 	return dict
 
 

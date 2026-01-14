@@ -155,16 +155,17 @@ func _get_next_available_index(node_type: String) -> int:
 
 # Create a new node of a given type
 func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_count: bool = true) -> GraphNode:
-	var new_node: SproutyDialogsBaseNode = null
+	var new_node: SproutyDialogsBaseNode
 	if not _nodes_references.has(node_type):
-		printerr("[Sprouty Dialogs] Cannot load '" + node_type + "' node."
+		printerr("[Sprouty Dialogs] Cannot load '" + node_type + "' node. "
 			+"Go to Settings > General, check that the custom nodes are enabled "
-			+"and that the '" + node_type + "' scene exist in the custom event nodes folder.")
+			+"and that the '" + node_type + "' scene exist in the 'custom event nodes' folder.")
 		new_node = _nodes_references["placeholder_node"].instantiate()
 	else:
 		new_node = _nodes_references[node_type].instantiate()
+	
+	new_node.title = node_type.capitalize() + " #" + str(node_index)
 	new_node.name = node_type + "_" + str(node_index)
-	new_node.title += " #" + str(node_index)
 	new_node.position_offset = node_offset
 	new_node.node_index = node_index
 	new_node.node_type = node_type
