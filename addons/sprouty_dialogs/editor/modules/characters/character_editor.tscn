@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b3dunt76vknsq"]
+[gd_scene load_steps=13 format=3 uid="uid://b3dunt76vknsq"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_mqdqa"]
 [ext_resource type="Script" uid="uid://dwueatpn41rq8" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/character_editor.gd" id="2_8cc8c"]
@@ -11,6 +11,10 @@
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="9_a1fcc"]
 
 [sub_resource type="DPITexture" id="DPITexture_v013n"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
+[sub_resource type="DPITexture" id="DPITexture_scula"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -206,19 +210,168 @@ size_flags_vertical = 3
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderMedium"
-text = "Portraits"
+text = "Portraits Settings"
 
-[node name="TopBar" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+[node name="DefaultPortrait" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
 layout_mode = 2
 
-[node name="PortraitSearchBar" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/Portraits/TopBar"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/DefaultPortrait"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Default portrait"
+
+[node name="DefaultPortraitDropdown" type="OptionButton" parent="CharacterSettings/ScrollContainer/Container/Portraits/DefaultPortrait"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ExpandTransformSettingsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Portraits Transform Settings"
+icon = ExtResource("3_3q8bw")
+flat = true
+alignment = 0
+clip_text = true
+icon_alignment = 2
+
+[node name="TransformSettings" type="PanelContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/panel = ExtResource("5_k1upw")
+
+[node name="Container" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="-" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+layout_mode = 2
+
+[node name="PortraitScale" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "Scale"
+
+[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+layout_mode = 2
+tooltip_text = "X coordinate where the image region begins."
+mouse_filter = 1
+text = "X"
+
+[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+layout_mode = 2
+max_value = 9999.0
+step = 0.01
+value = 1.0
+allow_greater = true
+
+[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+layout_mode = 2
+tooltip_text = "Y coordinate where the image region begins."
+mouse_filter = 1
+text = "Y"
+
+[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+layout_mode = 2
+max_value = 9999.0
+step = 0.01
+value = 1.0
+allow_greater = true
+
+[node name="LockRatioButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+icon = SubResource("DPITexture_scula")
+flat = true
+
+[node name="--" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+layout_mode = 2
+
+[node name="PortraitOffset" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OffsetLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "Offset"
+
+[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+layout_mode = 2
+tooltip_text = "X coordinate where the image region begins."
+mouse_filter = 1
+text = "X"
+
+[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+suffix = "px"
+
+[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+layout_mode = 2
+tooltip_text = "Y coordinate where the image region begins."
+mouse_filter = 1
+text = "Y"
+
+[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+layout_mode = 2
+min_value = -9999.0
+max_value = 9999.0
+step = 0.001
+suffix = "px"
+
+[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+layout_mode = 2
+
+[node name="PortraitRotation" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RotationLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitRotation"]
+layout_mode = 2
+tooltip_text = "Y coordinate where the image region begins."
+mouse_filter = 1
+text = "Rotation"
+
+[node name="RotationField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitRotation"]
+layout_mode = 2
+min_value = -360.0
+max_value = 360.0
+suffix = "°"
+
+[node name="MirrorCheckBox" type="CheckBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitRotation"]
+layout_mode = 2
+text = "Mirror"
+
+[node name="-------" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+layout_mode = 2
+
+[node name="PortraitsLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"HeaderMedium"
+text = "Portraits"
+
+[node name="SearchBar" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+layout_mode = 2
+
+[node name="PortraitSearchBar" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/Portraits/SearchBar"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search portraits..."
 right_icon = SubResource("DPITexture_v013n")
 
-[node name="AddPortraitButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/TopBar"]
+[node name="AddPortraitButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/SearchBar"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -226,7 +379,7 @@ tooltip_text = "Add a new portrait"
 icon = SubResource("DPITexture_v013n")
 icon_alignment = 2
 
-[node name="AddGroupButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/TopBar"]
+[node name="AddGroupButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/SearchBar"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -235,6 +388,7 @@ icon = SubResource("DPITexture_v013n")
 icon_alignment = 2
 
 [node name="PortraitsPanel" type="PanelContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxEmpty_f8fk6")

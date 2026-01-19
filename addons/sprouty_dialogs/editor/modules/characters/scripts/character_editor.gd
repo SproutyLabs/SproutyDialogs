@@ -33,6 +33,9 @@ signal modified(modified: bool)
 ## New dialog box scene dialog
 @onready var _new_dialog_box_dialog: FileDialog = $NewDialogBoxDialog
 
+## Default portrait dropdown
+@onready var _default_portrait_dropdown: OptionButton = %DefaultPortraitDropdown
+
 ## Portrait tree
 @onready var _portrait_tree: Tree = %PortraitTree
 ## Portrait tree search bar
@@ -101,6 +104,8 @@ func _ready() -> void:
 	%PortraitOnDialogBoxToggle.toggled.connect(_on_portrait_dialog_box_toggled)
 
 	# Connect portrait signals
+	_portrait_tree.portrait_list_changed.connect(_update_default_portrait_dropdown)
+
 	_portrait_tree.show_portrait_editor_panel.connect(_show_portrait_editor_panel)
 	_portrait_tree.portrait_item_selected.connect(_on_portrait_selected)
 	_portrait_tree.modified.connect(_on_modified)
@@ -174,6 +179,7 @@ func get_character_data() -> SproutyDialogsCharacterData:
 		if _check_valid_dialog_box_scene(_dialog_box_scene_field.get_value()) else ""
 	
 	data.portrait_on_dialog_box = _portrait_on_dialog_box
+	data.default_portrait = _get_default_portrait_selected()
 	data.portraits = _portrait_tree.get_portraits_data()
 	data.typing_sounds = {} # Typing sounds are not implemented yet
 	return data
@@ -220,6 +226,8 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 
 	# Portraits
 	_portrait_tree.load_portraits_data(data.portraits, _portrait_editor_scene)
+	_update_default_portrait_dropdown(data.default_portrait)
+
 	_modified_counter = 0
 
 #endregion
@@ -339,7 +347,7 @@ func _on_default_display_focus_exited() -> void:
 
 #endregion
 
-#region === Dialog Text box ====================================================
+#region === Dialog Box =========================================================
 
 ## Check if a dialog box scene path is valid
 func _check_valid_dialog_box_scene(path: String, print_error: bool = true) -> bool:
@@ -432,6 +440,35 @@ func _on_portrait_dialog_box_toggled(toggled_on: bool) -> void:
 
 #endregion
 
+#region === Portrait Settings ==================================================
+
+## Update the default portrait dropdown options
+func _update_default_portrait_dropdown(selected_portrait: String = "") -> void:
+	var portraits = _portrait_tree.get_portrait_list()
+	if portraits.size() == 0: # No portrait to select
+		_default_portrait_dropdown.add_item("(no one)")
+		return
+	# Keep current selected item
+	if selected_portrait == "":
+		selected_portrait = _default_portrait_dropdown.get_item_text(
+				_default_portrait_dropdown.selected)
+	_default_portrait_dropdown.clear()
+
+	for portrait in portraits:
+		_default_portrait_dropdown.add_item(portrait)
+		if portrait == selected_portrait: # Select the current item
+			_default_portrait_dropdown.select(
+					_default_portrait_dropdown.item_count - 1)
+
+
+## Returns the default portrait selected
+func _get_default_portrait_selected() -> String:
+	var option = _default_portrait_dropdown.get_item_text(
+			_default_portrait_dropdown.selected)
+	return option if option != "(no one)" else ""
+
+#endregion
+
 #region === Portrait Tree ======================================================
 
 ## Show or hide the portrait settings panel
@@ -467,6 +504,8 @@ func _on_add_portrait_button_pressed() -> void:
 	_portrait_tree.call_deferred("edit_selected")
 	var temp = _current_portrait
 	_current_portrait = item
+
+	_update_default_portrait_dropdown()
 	_on_modified(true)
 	
 	# --- UndoRedo -----------------------------------------------------
@@ -480,6 +519,9 @@ func _on_add_portrait_button_pressed() -> void:
 	undo_redo.add_undo_property(self, "_current_portrait", temp)
 	undo_redo.add_undo_method(self, "_select_item_on_tree", temp)
 
+	undo_redo.add_do_method(self, "_update_default_portrait_dropdown")
+	undo_redo.add_undo_method(self, "_update_default_portrait_dropdown")
+	
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)

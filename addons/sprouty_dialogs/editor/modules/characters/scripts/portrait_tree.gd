@@ -15,6 +15,9 @@ signal portrait_item_selected(item: TreeItem)
 ## Emitted to show/hide the portrait editor panel
 signal show_portrait_editor_panel(show: bool)
 
+## Emitted when the portrait list is changed
+signal portrait_list_changed
+
 ## Portrait tree popup menu
 @onready var _popup_menu: PopupMenu = $PortraitPopupMenu
 ## Confirmation dialog for removing a portrait group
@@ -80,6 +83,17 @@ func load_portraits_data(
 
 #endregion
 
+## Returns a list of all the portrait paths
+func get_portrait_list(from: TreeItem = get_root()) -> Array:
+	var portraits = []
+	for item in from.get_children():
+		if not item.get_metadata(0).has("group"):
+			# If it's a portrait, add its path
+			portraits.append(get_item_path(item))
+		else: # If it's a group, recursively get portraits from the group
+			portraits.append_array(get_portrait_list(item))
+	return portraits
+
 
 ## Adds a new portrait item to the tree
 func new_portrait_item(name: String, data: SproutyDialogsPortraitData, parent_item: TreeItem,
@@ -120,6 +134,8 @@ func duplicate_portrait_item(item: TreeItem) -> TreeItem:
 		)
 	new_item.set_editable(0, true)
 	new_item.select(0)
+
+	portrait_list_changed.emit()
 	modified.emit(true)
 
 	# --- UndoRedo -----------------------------------------------------
@@ -130,6 +146,8 @@ func duplicate_portrait_item(item: TreeItem) -> TreeItem:
 	undo_redo.add_undo_method(parent, "remove_child", new_item)
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "portrait_list_changed")
+	undo_redo.add_undo_method(self, "emit_signal", "portrait_list_changed")
 	undo_redo.commit_action(false)
 	# ------------------------------------------------------------------
 	return new_item
@@ -143,6 +161,8 @@ func remove_portrait_item(item: TreeItem) -> void:
 		next_item.select(0)
 	var parent := item.get_parent()
 	parent.remove_child(item)
+
+	portrait_list_changed.emit()
 	modified.emit(true)
 
 	# If the tree is empty, hide the portrait editor panel
@@ -156,6 +176,8 @@ func remove_portrait_item(item: TreeItem) -> void:
 	undo_redo.add_undo_method(parent, "add_child", item)
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "portrait_list_changed")
+	undo_redo.add_undo_method(self, "emit_signal", "portrait_list_changed")
 	undo_redo.commit_action(false)
 	# ------------------------------------------------------------------
 
@@ -300,6 +322,8 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	ensure_valid_item_name(item)
 	if temp_name != item.get_text(0):
 		item.set_meta("name", item.get_text(0))
+
+	portrait_list_changed.emit()
 	modified.emit(true)
 
 	# --- UndoRedo ---------------------------------------------------------
@@ -323,6 +347,9 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+
+	undo_redo.add_do_method(self, "emit_signal", "portrait_list_changed")
+	undo_redo.add_undo_method(self, "emit_signal", "portrait_list_changed")
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -365,6 +392,7 @@ func _on_item_edited() -> void:
 		item.set_meta("new_item", false)
 		return # If it's a new item, do not register the action
 	
+	portrait_list_changed.emit()
 	modified.emit(true)
 
 	# --- UndoRedo -----------------------------------------------------
@@ -376,6 +404,9 @@ func _on_item_edited() -> void:
 
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+
+	undo_redo.add_do_method(self, "emit_signal", "portrait_list_changed")
+	undo_redo.add_undo_method(self, "emit_signal", "portrait_list_changed")
 	undo_redo.commit_action(false)
 	# ------------------------------------------------------------------
 

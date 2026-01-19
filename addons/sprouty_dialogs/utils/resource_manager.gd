@@ -217,6 +217,7 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 			_dialog_boxes_count[dialog_box_path] += 1
 
 		if portraits.has(char): # Load the portraits for the character if any
+			portraits[char].append(_characters_data[char].default_portrait)
 			_load_portraits(char, portraits[char])
 
 

@@ -286,7 +286,7 @@ fit_content = true
 
 [node name="CustomNodesFolder" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
 layout_mode = 2
-tooltip_text = "Path to the directory where you have your custom event nodes."
+tooltip_text = "Path to the directory where you have your custom event nodes (.tscn files)."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder"]
 layout_mode = 2

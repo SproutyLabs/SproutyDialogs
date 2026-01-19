@@ -40,6 +40,9 @@ extends Resource
 ## node of the [class DialogBox]. For this you need to set the [param display portrait]
 ## node that will hold the portrait as a parent of the portrait scene.
 @export var portrait_on_dialog_box: bool = false
+## Default character's portrait
+## Portrait that will be used by default when no portrait is especified for a character.
+@export var default_portrait: String = ""
 ## Character's portraits.
 ## This is a dictionary where each key is a portrait name or a group of portraits
 ## and its value is a dictionary containing the portrait data or more portraits.
