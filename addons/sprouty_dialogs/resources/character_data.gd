@@ -43,6 +43,20 @@ extends Resource
 ## Default character's portrait
 ## Portrait that will be used by default when no portrait is especified for a character.
 @export var default_portrait: String = ""
+## Transform settings for all character portraits.
+## This is a dictionary containing the following keys:
+##  - "scale": the scale of the portrait.
+##  - "scale_lock_ratio": whether to lock the aspect ratio of the scale.
+##  - "offset": the offset of the portrait.
+##  - "rotation": the rotation of the portrait in degrees.
+##  - "mirror": whether to mirror the portrait.
+@export var main_transform_settings: Dictionary = {
+	"scale": Vector2.ONE,
+	"scale_lock_ratio": true,
+	"offset": Vector2.ZERO,
+	"rotation": 0.0,
+	"mirror": false
+}
 ## Character's portraits.
 ## This is a dictionary where each key is a portrait name or a group of portraits
 ## and its value is a dictionary containing the portrait data or more portraits.

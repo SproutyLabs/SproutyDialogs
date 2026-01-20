@@ -357,9 +357,23 @@ func _set_portrait_properties(character_name: String,
 		portrait_scene.set(prop, value)
 	
 	# Set transform settings
-	portrait_scene.scale = portrait_data.transform_settings.scale
-	portrait_scene.position = portrait_data.transform_settings.offset
-	portrait_scene.rotation_degrees = portrait_data.transform_settings.rotation
+	var main_transform = _characters_data[character_name].main_transform_settings
+	var transform_settings = portrait_data.transform_settings
+
+	# Add the parent transform
+	if not transform_settings.ignore_main_transform:
+		transform_settings.scale += main_transform.scale
+		transform_settings.offset += main_transform.offset
+		transform_settings.rotation += main_transform.rotation
+		transform_settings.mirror = not main_transform.mirror \
+				if transform_settings.mirror else main_transform.mirror
+	
+	# Set transform settings in portrait scene
+	portrait_scene.scale = transform_settings.scale
+	portrait_scene.position = transform_settings.offset
+	portrait_scene.rotation_degrees = transform_settings.rotation
+	if transform_settings.mirror:
+		portrait_scene.scale.x *= -1
 
 
 # Create a new parent for the portrait if it doesn't exist

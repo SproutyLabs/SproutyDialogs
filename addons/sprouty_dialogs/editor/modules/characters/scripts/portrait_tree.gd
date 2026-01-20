@@ -71,7 +71,6 @@ func load_portraits_data(
 		if data[item] is SproutyDialogsPortraitData:
 			# If the item is a portrait, create it and load its data
 			var editor = portrait_editor_scene.instantiate()
-			editor.modified.connect(modified.emit)
 			add_child(editor)
 			new_portrait_item(item, data[item], parent_item, editor, false)
 			editor.load_portrait_data(item, data[item])
@@ -99,6 +98,7 @@ func get_portrait_list(from: TreeItem = get_root()) -> Array:
 func new_portrait_item(name: String, data: SproutyDialogsPortraitData, parent_item: TreeItem,
 		portrait_editor: EditorSproutyDialogsPortraitEditor, new_item: bool = true) -> TreeItem:
 	var item: TreeItem = create_item(parent_item)
+	portrait_editor.modified.connect(modified.emit)
 	portrait_editor.undo_redo = undo_redo
 	item.set_icon(0, _portrait_icon)
 	item.set_text(0, name)
@@ -236,8 +236,16 @@ func filter_branch(parent: TreeItem, filter: String) -> bool:
 	return match_found
 
 
-#region === Drag and Drop ======================================================
+## Update the preview of all portraits
+func update_portraits_transform(parent_transform: Dictionary, from: TreeItem = get_root()) -> void:
+	for item in from.get_children():
+		if not item.get_metadata(0).has("group"):
+			item.get_meta("portrait_editor").update_preview_transform(parent_transform)
+		else: # If it's a group, recursively update the portraits
+			update_portraits_transform(parent_transform, item)
 
+
+#region === Drag and Drop ======================================================
 ## Get the drag data when dragging an item, returns the item being dragged
 func _get_drag_data(at_position: Vector2) -> Variant:
 	var drag_item := get_item_at_position(at_position)
@@ -401,6 +409,10 @@ func _on_item_edited() -> void:
 	undo_redo.add_do_method(item, "set_meta", "name", item.get_text(0))
 	undo_redo.add_undo_method(item, "set_text", 0, temp_name)
 	undo_redo.add_undo_method(item, "set_meta", "name", temp_name)
+
+	if not item.get_metadata(0).has("group"): # Update the portrait name
+		undo_redo.add_do_method(item.get_meta("portrait_editor"), "set_portrait_name", item.get_text(0))
+		undo_redo.add_undo_method(item.get_meta("portrait_editor"), "set_portrait_name", temp_name)
 
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)

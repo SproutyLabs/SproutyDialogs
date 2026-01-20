@@ -29,25 +29,24 @@ signal modified(modified: bool)
 
 ## Exported properties section
 @onready var _portrait_export_properties: Container = %PortraitProperties
-## Image settings section
-@onready var _transform_settings_section: Container = %TransformSettings
 ## Portrait scale section
-@onready var _portrait_scale_section: Container = %PortraitScale
-## Portrait rotation and mirror section
-@onready var _portrait_rotation_section: Container = %PortraitRotation
-## Portrait offset section
-@onready var _portrait_offset_section: Container = %PortraitOffset
+@onready var _portrait_transform_settings: PanelContainer = %TransformSettings
 
-## Path of the current portrait scene
-var _portrait_scene_path: String = ""
-## Current transform settings
-var _transform_settings: Dictionary = {
+## Collapse/Expand icon resources
+var _collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
+var _collapse_down_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg")
+
+## Parent transform settings
+var _parent_transform: Dictionary = {
 	"scale": Vector2.ONE,
 	"scale_lock_ratio": true,
 	"offset": Vector2.ZERO,
 	"rotation": 0.0,
 	"mirror": false
 }
+
+## Path of the current portrait scene
+var _portrait_scene_path: String = ""
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
 
@@ -57,20 +56,24 @@ func _ready():
 	_new_portrait_scene_button.button_down.connect(_on_new_portrait_scene_button_pressed)
 	_new_portrait_scene_dialog.file_selected.connect(_new_portrait_scene)
 	_portrait_scene_field.path_changed.connect(_on_portrait_scene_path_changed)
+	
 	_portrait_export_properties.property_changed.connect(_on_export_property_changed)
 	_portrait_export_properties.modified.connect(modified.emit)
+
+	_portrait_transform_settings.modified.connect(modified.emit)
+	_portrait_transform_settings.transform_settings_changed.connect(update_preview_transform)
 
 	%ReloadSceneButton.icon = get_theme_icon("Reload", "EditorIcons")
 	%PreviewPivot.texture = get_theme_icon("EditorPivot", "EditorIcons")
 	_new_portrait_scene_button.icon = get_theme_icon("Add", "EditorIcons")
 	_to_portrait_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
-	_portrait_scale_section.get_node("LockRatioButton").icon = get_theme_icon("Instance", "EditorIcons")
 
 	_new_portrait_scene_button.visible = true
 	_to_portrait_scene_button.visible = false
 	
 	await get_tree().process_frame # Wait a frame to ensure the UndoRedo is ready
 	_portrait_export_properties.undo_redo = undo_redo
+	_portrait_transform_settings.undo_redo = undo_redo
 
 
 ## Returns the portrait data from the editor
@@ -85,19 +88,7 @@ func get_portrait_data() -> SproutyDialogsPortraitData:
 		if _check_valid_portrait_scene(_portrait_scene_field.get_value()) else ""
 	
 	data.export_overrides = _portrait_export_properties.get_export_overrides()
-	data.transform_settings = {
-		"scale": Vector2(
-			_portrait_scale_section.get_node("XField").value,
-			_portrait_scale_section.get_node("YField").value
-		),
-		"scale_lock_ratio": _portrait_scale_section.get_node("LockRatioButton").button_pressed,
-		"offset": Vector2(
-			_portrait_offset_section.get_node("XField").value,
-			_portrait_offset_section.get_node("YField").value
-		),
-		"rotation": _portrait_rotation_section.get_node("RotationField").value,
-		"mirror": _portrait_rotation_section.get_node("MirrorCheckBox").button_pressed
-	}
+	data.transform_settings = _portrait_transform_settings.get_transform_settings()
 	data.typing_sound = {} # Typing sound is not implemented yet
 	return data
 
@@ -134,21 +125,9 @@ func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 		_to_portrait_scene_button.visible = false
 		_new_portrait_scene_button.visible = true
 
-	# Load image settings
-	_portrait_scale_section.get_node("LockRatioButton").set_pressed_no_signal(
-			data.transform_settings.scale_lock_ratio)
-	_portrait_scale_section.get_node("XField").set_value_no_signal(data.transform_settings.scale.x)
-	_portrait_scale_section.get_node("YField").set_value_no_signal(data.transform_settings.scale.y)
-
-	_portrait_offset_section.get_node("XField").set_value_no_signal(data.transform_settings.offset.x)
-	_portrait_offset_section.get_node("YField").set_value_no_signal(data.transform_settings.offset.y)
-
-	_portrait_rotation_section.get_node("RotationField").set_value_no_signal(data.transform_settings.rotation)
-	_portrait_rotation_section.get_node("MirrorCheckBox").set_pressed_no_signal(data.transform_settings.mirror)
-	
-	_transform_settings = data.transform_settings
-	
-	_update_preview_transform() # Update the preview image with the loaded settings
+	# Load transform settings
+	_portrait_transform_settings.set_transform_settings(data.transform_settings)
+	update_preview_transform() # Update the preview image with the loaded settings
 
 
 ## Set the portrait name in the editor
@@ -158,18 +137,25 @@ func set_portrait_name(name: String) -> void:
 #region === Portrait Preview ===================================================
 
 ## Update the preview scene with transform settings
-func _update_preview_transform() -> void:
-	_preview_container.scale = Vector2(
-		_portrait_scale_section.get_node("XField").value,
-		_portrait_scale_section.get_node("YField").value
-		)
-	_preview_container.position = Vector2(
-		_portrait_offset_section.get_node("XField").value,
-		_portrait_offset_section.get_node("YField").value
-		)
-	_preview_container.rotation_degrees = _portrait_rotation_section.get_node("RotationField").value
+func update_preview_transform(parent_transform: Dictionary = {}) -> void:
+	var settings = _portrait_transform_settings.get_transform_settings()
+
+	if parent_transform != {}:
+		_parent_transform = parent_transform
 	
-	if _portrait_rotation_section.get_node("MirrorCheckBox").button_pressed:
+	# Add the parent transform
+	if not settings.ignore_main_transform:
+		settings.scale += _parent_transform.scale
+		settings.offset += _parent_transform.offset
+		settings.rotation += _parent_transform.rotation
+		settings.mirror = not _parent_transform.mirror \
+				if settings.mirror else _parent_transform.mirror
+	
+	_preview_container.scale = settings.scale
+	_preview_container.position = settings.offset
+	_preview_container.rotation_degrees = settings.rotation
+	
+	if settings.mirror:
 		_preview_container.scale.x *= -1
 
 
@@ -197,7 +183,7 @@ func _on_reload_scene_button_pressed() -> void:
 	else:
 		printerr("[Sprouty Dialogs] No scene file selected.")
 		return
-	_update_preview_transform()
+	update_preview_transform()
 
 #endregion
 
@@ -290,252 +276,10 @@ func _on_to_portrait_scene_button_pressed() -> void:
 
 #region === Transform Settings =================================================
 
-## Set a transform setting in the dictionary
-func _set_setting_on_dict(key: String, value: Variant) -> void:
-	_transform_settings[key] = value
-
-
-## Show or hide the image settings section
+## Show or hide the transform settings section
 func _on_expand_transform_settings_toggled(toggled_on: bool) -> void:
-	_transform_settings_section.visible = toggled_on
-
-
-## Update the portrait scale lock ratio
-func _on_scale_lock_ratio_toggled(toggled_on: bool) -> void:
-	var temp = _transform_settings.scale_lock_ratio
-	_transform_settings.scale_lock_ratio = toggled_on
-	var lock_ratio_button = _portrait_scale_section.get_node("LockRatioButton")
-
-	var scale_temp_x = _transform_settings.scale.x
-	var scale_x_field = _portrait_scale_section.get_node("XField")
-	var scale_y_field = _portrait_scale_section.get_node("YField")
-
-	# Update the lock ratio button icon
-	lock_ratio_button.icon = get_theme_icon("Instance", "EditorIcons") \
-			if toggled_on else get_theme_icon("Unlinked", "EditorIcons")
-	
-	# If the ratio is locked, set Y scale to X scale
-	if toggled_on and scale_x_field.value != scale_y_field.value:
-		scale_y_field.set_value_no_signal(scale_x_field.value)
-		_transform_settings.scale.y = scale_x_field.value
-		_preview_container.scale.y = scale_x_field.value
-	
-	modified.emit(true)
-	
-	# --- UndoRedo --------------------------------------------------------
-	undo_redo.create_action("Toggle Scale Lock Ratio")
-	undo_redo.add_do_method(lock_ratio_button, "set_pressed_no_signal", toggled_on)
-	undo_redo.add_undo_method(lock_ratio_button, "set_pressed_no_signal", temp)
-	undo_redo.add_do_method(self, "_set_setting_on_dict", "scale_lock_ratio", toggled_on)
-	undo_redo.add_undo_method(self, "_set_setting_on_dict", "scale_lock_ratio", temp)
-	
-	# Update the lock ratio button icon
-	undo_redo.add_do_property(lock_ratio_button, "icon",
-			get_theme_icon("Instance", "EditorIcons")
-			if toggled_on else get_theme_icon("Unlinked", "EditorIcons"))
-	undo_redo.add_undo_property(lock_ratio_button, "icon",
-			get_theme_icon("Instance", "EditorIcons")
-			if temp else get_theme_icon("Unlinked", "EditorIcons"))
-
-	# If the ratio is locked, set Y scale to X scale
-	if toggled_on and scale_x_field.value != scale_y_field.value:
-		undo_redo.add_do_method(scale_y_field, "set_value_no_signal", scale_x_field.value)
-		undo_redo.add_undo_method(scale_y_field, "set_value_no_signal", _transform_settings.scale.y)
-		undo_redo.add_do_method(self, "_set_setting_on_dict", "scale",
-				Vector2(scale_x_field.value, scale_x_field.value))
-		undo_redo.add_undo_method(self, "_set_setting_on_dict", "scale", _transform_settings.scale)
-
-		undo_redo.add_do_method(self, "_update_preview_transform")
-		undo_redo.add_undo_method(self, "_update_preview_transform")
-	
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
-	undo_redo.commit_action(false)
-	# ---------------------------------------------------------------------
-
-
-## Update the portrait scale X value
-func _on_scale_x_value_changed(value: float) -> void:
-	var temp = _transform_settings.scale
-	_transform_settings.scale.x = value
-	var scale_x_field = _portrait_scale_section.get_node("XField")
-	var scale_y_field = _portrait_scale_section.get_node("YField")
-	
-	# Update the Y scale if the ratio is locked
-	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
-		scale_y_field.set_value_no_signal(value)
-		_transform_settings.scale.y = value
-		_preview_container.scale.y = value
-	
-	_preview_container.scale.x = value
-	modified.emit(true)
-
-	# --- UndoRedo --------------------------------------------------------
-	undo_redo.create_action("Change Portrait Scale X")
-	undo_redo.add_do_method(scale_x_field, "set_value_no_signal", value)
-	undo_redo.add_undo_method(scale_x_field, "set_value_no_signal", temp.x)
-
-	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
-		# Also change Y scale if ratio is locked
-		undo_redo.add_do_method(scale_y_field, "set_value_no_signal", value)
-		undo_redo.add_undo_method(scale_y_field, "set_value_no_signal", temp.y)
-		undo_redo.add_do_method(self, "_set_setting_on_dict", "scale", Vector2(value, value))
-	else: # Only change X scale
-		undo_redo.add_do_method(self, "_set_setting_on_dict", "scale", Vector2(value, temp.y))
-	undo_redo.add_undo_method(self, "_set_setting_on_dict", "scale", temp)
-
-	undo_redo.add_do_method(self, "_update_preview_transform")
-	undo_redo.add_undo_method(self, "_update_preview_transform")
-
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
-	undo_redo.commit_action(false)
-	# ---------------------------------------------------------------------
-
-
-## Update the portrait scale Y value
-func _on_scale_y_value_changed(value: float) -> void:
-	var temp = _transform_settings.scale
-	_transform_settings.scale.y = value
-	var scale_x_field = _portrait_scale_section.get_node("XField")
-	var scale_y_field = _portrait_scale_section.get_node("YField")
-
-	# Update the X scale if the ratio is locked
-	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
-		_portrait_scale_section.get_node("XField").value = value
-		_transform_settings.scale.x = value
-		_preview_container.scale.x = value
-	
-	_preview_container.scale.y = value
-	modified.emit(true)
-
-	# --- UndoRedo --------------------------------------------------------
-	undo_redo.create_action("Change Portrait Scale Y")
-	undo_redo.add_do_method(scale_y_field, "set_value_no_signal", value)
-	undo_redo.add_undo_method(scale_y_field, "set_value_no_signal", temp.y)
-
-	if _portrait_scale_section.get_node("LockRatioButton").button_pressed:
-		# Also change X scale if ratio is locked
-		undo_redo.add_do_method(scale_x_field, "set_value_no_signal", value)
-		undo_redo.add_undo_method(scale_x_field, "set_value_no_signal", temp.x)
-		undo_redo.add_do_method(self, "_set_setting_on_dict", "scale", Vector2(value, value))
-	else: # Only change Y scale
-		undo_redo.add_do_method(self, "_set_setting_on_dict", "scale", Vector2(temp.x, value))
-	undo_redo.add_undo_method(self, "_set_setting_on_dict", "scale", temp)
-
-	undo_redo.add_do_method(self, "_update_preview_transform")
-	undo_redo.add_undo_method(self, "_update_preview_transform")
-
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
-	undo_redo.commit_action(false)
-	# ---------------------------------------------------------------------
-
-
-## Update the portrait offset X position
-func _on_offset_x_value_changed(value: float) -> void:
-	var temp = _transform_settings.offset.x
-	_transform_settings.offset.x = value
-	var offset_x_field = _portrait_offset_section.get_node("XField")
-
-	_preview_container.position.x = value
-	modified.emit(true)
-
-	# --- UndoRedo --------------------------------------------------------
-	undo_redo.create_action("Change Portrait Offset X")
-	undo_redo.add_do_method(offset_x_field, "set_value_no_signal", value)
-	undo_redo.add_undo_method(offset_x_field, "set_value_no_signal", temp)
-
-	undo_redo.add_do_method(self, "_set_setting_on_dict", "offset",
-			Vector2(value, _transform_settings.offset.y))
-	undo_redo.add_undo_method(self, "_set_setting_on_dict", "offset",
-			Vector2(temp, _transform_settings.offset.y))
-
-	undo_redo.add_do_method(self, "_update_preview_transform")
-	undo_redo.add_undo_method(self, "_update_preview_transform")
-
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
-	undo_redo.commit_action(false)
-	# ---------------------------------------------------------------------
-
-
-## Update the portrait offset Y position
-func _on_offset_y_value_changed(value: float) -> void:
-	var temp = _transform_settings.offset.y
-	_transform_settings.offset.y = value
-	var offset_y_field = _portrait_offset_section.get_node("YField")
-
-	_preview_container.position.y = value
-	modified.emit(true)
-
-	# --- UndoRedo --------------------------------------------------------
-	undo_redo.create_action("Change Portrait Offset Y")
-	undo_redo.add_do_method(offset_y_field, "set_value_no_signal", value)
-	undo_redo.add_undo_method(offset_y_field, "set_value_no_signal", temp)
-
-	undo_redo.add_do_method(self, "_set_setting_on_dict", "offset",
-			Vector2(_transform_settings.offset.x, value))
-	undo_redo.add_undo_method(self, "_set_setting_on_dict", "offset",
-			Vector2(_transform_settings.offset.x, temp))
-	
-	undo_redo.add_do_method(self, "_update_preview_transform")
-	undo_redo.add_undo_method(self, "_update_preview_transform")
-
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
-	undo_redo.commit_action(false)
-	# ---------------------------------------------------------------------
-
-
-## Update the portrait rotation
-func _on_rotation_value_changed(value: float) -> void:
-	var temp = _transform_settings.rotation
-	_transform_settings.rotation = value
-	var rotation_field = _portrait_rotation_section.get_node("RotationField")
-
-	_preview_container.rotation_degrees = value
-	modified.emit(true)
-
-	# --- UndoRedo --------------------------------------------------------
-	undo_redo.create_action("Change Portrait Rotation")
-	undo_redo.add_do_method(rotation_field, "set_value_no_signal", value)
-	undo_redo.add_undo_method(rotation_field, "set_value_no_signal", temp)
-	undo_redo.add_do_method(self, "_set_setting_on_dict", "rotation", value)
-	undo_redo.add_undo_method(self, "_set_setting_on_dict", "rotation", temp)
-
-	undo_redo.add_do_method(self, "_update_preview_transform")
-	undo_redo.add_undo_method(self, "_update_preview_transform")
-
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
-	undo_redo.commit_action(false)
-	# ---------------------------------------------------------------------
-
-
-## Update the portrait mirroring
-func _on_mirror_check_box_toggled(toggled_on: bool) -> void:
-	var temp = _transform_settings.mirror
-	_transform_settings.mirror = toggled_on
-	var mirror_check_box = _portrait_rotation_section.get_node("MirrorCheckBox")
-
-	_preview_container.scale.x *= -1
-	modified.emit(true)
-	
-	# --- UndoRedo --------------------------------------------------------
-	undo_redo.create_action("Toggle Mirror Portrait")
-	undo_redo.add_do_method(mirror_check_box, "set_pressed_no_signal", toggled_on)
-	undo_redo.add_undo_method(mirror_check_box, "set_pressed_no_signal", temp)
-	undo_redo.add_do_method(self, "_set_setting_on_dict", "mirror", toggled_on)
-	undo_redo.add_undo_method(self, "_set_setting_on_dict", "mirror", temp)
-
-	undo_redo.add_do_method(self, "_update_preview_transform")
-	undo_redo.add_undo_method(self, "_update_preview_transform")
-
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
-	undo_redo.commit_action(false)
-	# ---------------------------------------------------------------------
+	_portrait_transform_settings.visible = toggled_on
+	%ExpandTransformSettingsButton.icon = _collapse_up_icon if toggled_on else _collapse_down_icon
 
 #endregion
 

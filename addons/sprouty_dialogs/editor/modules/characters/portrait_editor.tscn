@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://881twee1nau2"]
+[gd_scene load_steps=9 format=3 uid="uid://881twee1nau2"]
 
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="1_4ou2u"]
 [ext_resource type="Script" uid="uid://d3wmid3gkbpfc" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/portrait_editor.gd" id="1_7iqxq"]
@@ -6,8 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="3_6ncm1"]
 [ext_resource type="Script" uid="uid://r4em5768hrs2" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/portrait_export_properties.gd" id="4_ljfx6"]
 [ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/sprouty_dialogs/editor/theme/expander_subpanel_highlight.tres" id="5_mmsn6"]
+[ext_resource type="Script" uid="uid://c2edhclmccghs" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/portrait_transform_settings.gd" id="7_nwebi"]
 
-[sub_resource type="DPITexture" id="DPITexture_7k83i"]
+[sub_resource type="DPITexture" id="DPITexture_nwebi"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -55,7 +56,7 @@ text = "Portrait Preview"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Reload scene"
-icon = SubResource("DPITexture_7k83i")
+icon = SubResource("DPITexture_nwebi")
 
 [node name="PreviewPanel" type="Panel" parent="Container/PortraitPreview"]
 clip_contents = true
@@ -100,7 +101,7 @@ offset_right = 8.0
 offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("DPITexture_7k83i")
+texture = SubResource("DPITexture_nwebi")
 stretch_mode = 3
 
 [node name="PortraitSettings" type="ScrollContainer" parent="Container"]
@@ -131,14 +132,14 @@ text = "Scene"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create a new portrait scene."
-icon = SubResource("DPITexture_7k83i")
+icon = SubResource("DPITexture_nwebi")
 
 [node name="ToPortraitSceneButton" type="Button" parent="Container/PortraitSettings/Container/PortraitScene"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 tooltip_text = "Open the portrait scene."
-icon = SubResource("DPITexture_7k83i")
+icon = SubResource("DPITexture_nwebi")
 
 [node name="PortraitSceneField" parent="Container/PortraitSettings/Container/PortraitScene" instance=ExtResource("1_4ou2u")]
 unique_name_in_owner = true
@@ -171,6 +172,7 @@ columns = 2
 layout_mode = 2
 
 [node name="ExpandTransformSettingsButton" type="Button" parent="Container/PortraitSettings/Container"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -183,9 +185,9 @@ icon_alignment = 2
 
 [node name="TransformSettings" type="PanelContainer" parent="Container/PortraitSettings/Container"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 theme_override_styles/panel = ExtResource("5_mmsn6")
+script = ExtResource("7_nwebi")
 
 [node name="Container" type="VBoxContainer" parent="Container/PortraitSettings/Container/TransformSettings"]
 layout_mode = 2
@@ -194,9 +196,20 @@ size_flags_horizontal = 3
 [node name="-" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 layout_mode = 2
 
+[node name="IgnoreMainTransformToggle" type="CheckButton" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Ignore transform settings for all portraits
+and apply only the transform settings of this portrait."
+text = "Ignore Main Transform"
+
+[node name="--" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
+layout_mode = 2
+
 [node name="PortraitScale" type="HBoxContainer" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Portrait scale."
 
 [node name="Label" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale"]
 custom_minimum_size = Vector2(50, 0)
@@ -233,15 +246,16 @@ allow_greater = true
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
-icon = SubResource("DPITexture_7k83i")
+icon = SubResource("DPITexture_nwebi")
 flat = true
 
-[node name="--" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
+[node name="---" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 layout_mode = 2
 
 [node name="PortraitOffset" type="HBoxContainer" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Portrait position offset."
 
 [node name="OffsetLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset"]
 custom_minimum_size = Vector2(50, 0)
@@ -274,7 +288,7 @@ max_value = 9999.0
 step = 0.001
 suffix = "px"
 
-[node name="---" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
+[node name="----" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
 layout_mode = 2
 
 [node name="PortraitRotation" type="HBoxContainer" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
@@ -289,12 +303,14 @@ text = "Rotation"
 
 [node name="RotationField" type="SpinBox" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
+tooltip_text = "Portrait rotation in degrees."
 min_value = -360.0
 max_value = 360.0
 suffix = "°"
 
 [node name="MirrorCheckBox" type="CheckBox" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
+tooltip_text = "Flip the portrait horizontally."
 text = "Mirror"
 
 [node name="NewPortraitSceneDialog" type="FileDialog" parent="."]
@@ -308,10 +324,10 @@ filters = PackedStringArray("*.tscn")
 
 [connection signal="pressed" from="Container/PortraitPreview/PreviewTopBar/ReloadSceneButton" to="." method="_on_reload_scene_button_pressed"]
 [connection signal="toggled" from="Container/PortraitSettings/Container/ExpandTransformSettingsButton" to="." method="_on_expand_transform_settings_toggled"]
-[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale/XField" to="." method="_on_scale_x_value_changed"]
-[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale/YField" to="." method="_on_scale_y_value_changed"]
-[connection signal="toggled" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale/LockRatioButton" to="." method="_on_scale_lock_ratio_toggled"]
-[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset/XField" to="." method="_on_offset_x_value_changed"]
-[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset/YField" to="." method="_on_offset_y_value_changed"]
-[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation/RotationField" to="." method="_on_rotation_value_changed"]
-[connection signal="toggled" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation/MirrorCheckBox" to="." method="_on_mirror_check_box_toggled"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale/XField" to="Container/PortraitSettings/Container/TransformSettings" method="_on_scale_x_value_changed"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale/YField" to="Container/PortraitSettings/Container/TransformSettings" method="_on_scale_y_value_changed"]
+[connection signal="toggled" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale/LockRatioButton" to="Container/PortraitSettings/Container/TransformSettings" method="_on_scale_lock_ratio_toggled"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset/XField" to="Container/PortraitSettings/Container/TransformSettings" method="_on_offset_x_value_changed"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset/YField" to="Container/PortraitSettings/Container/TransformSettings" method="_on_offset_y_value_changed"]
+[connection signal="value_changed" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation/RotationField" to="Container/PortraitSettings/Container/TransformSettings" method="_on_rotation_value_changed"]
+[connection signal="toggled" from="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation/MirrorCheckBox" to="Container/PortraitSettings/Container/TransformSettings" method="_on_mirror_check_box_toggled"]

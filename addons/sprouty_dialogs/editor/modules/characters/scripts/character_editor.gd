@@ -35,6 +35,8 @@ signal modified(modified: bool)
 
 ## Default portrait dropdown
 @onready var _default_portrait_dropdown: OptionButton = %DefaultPortraitDropdown
+## Portrait scale section
+@onready var _portraits_transform_settings: PanelContainer = %TransformSettings
 
 ## Portrait tree
 @onready var _portrait_tree: Tree = %PortraitTree
@@ -44,6 +46,10 @@ signal modified(modified: bool)
 @onready var _portrait_empty_panel: Panel = $PortraitSettings/NoPortraitPanel
 ## Portrait settings container
 @onready var _portrait_editor_container: Container = $PortraitSettings/Container
+
+## Collapse/Expand icon resources
+var collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
+var collapse_down_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg")
 
 ## Portrait settings panel scene
 var _portrait_editor_scene := preload("res://addons/sprouty_dialogs/editor/modules/characters/portrait_editor.tscn")
@@ -81,6 +87,9 @@ var _dialog_box_path: String = ""
 ## Modified counter to track changes
 var _modified_counter: int = 0
 
+## Previous selected default portrait index (for UndoRedo)
+var _previous_portrait_index: int = 0
+
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
 
@@ -104,7 +113,12 @@ func _ready() -> void:
 	%PortraitOnDialogBoxToggle.toggled.connect(_on_portrait_dialog_box_toggled)
 
 	# Connect portrait signals
+	_default_portrait_dropdown.item_selected.connect(_on_default_portrait_selected)
 	_portrait_tree.portrait_list_changed.connect(_update_default_portrait_dropdown)
+
+	_portraits_transform_settings.modified.connect(modified.emit)
+	_portraits_transform_settings.transform_settings_changed.connect(_update_portraits_transform)
+	_portraits_transform_settings.undo_redo = undo_redo
 
 	_portrait_tree.show_portrait_editor_panel.connect(_show_portrait_editor_panel)
 	_portrait_tree.portrait_item_selected.connect(_on_portrait_selected)
@@ -134,7 +148,6 @@ func _on_modified(mark_as_modified: bool) -> void:
 		_modified_counter += 1
 	elif _modified_counter > 0:
 		_modified_counter -= 1
-	print("_modified_counter: ", _modified_counter)
 	modified.emit(_modified_counter > 0)
 
 
@@ -180,6 +193,7 @@ func get_character_data() -> SproutyDialogsCharacterData:
 	
 	data.portrait_on_dialog_box = _portrait_on_dialog_box
 	data.default_portrait = _get_default_portrait_selected()
+	data.main_transform_settings = _portraits_transform_settings.get_transform_settings()
 	data.portraits = _portrait_tree.get_portraits_data()
 	data.typing_sounds = {} # Typing sounds are not implemented yet
 	return data
@@ -225,6 +239,7 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	%PortraitOnDialogBoxToggle.button_pressed = _portrait_on_dialog_box
 
 	# Portraits
+	_portraits_transform_settings.set_transform_settings(data.main_transform_settings)
 	_portrait_tree.load_portraits_data(data.portraits, _portrait_editor_scene)
 	_update_default_portrait_dropdown(data.default_portrait)
 
@@ -466,6 +481,33 @@ func _get_default_portrait_selected() -> String:
 	var option = _default_portrait_dropdown.get_item_text(
 			_default_portrait_dropdown.selected)
 	return option if option != "(no one)" else ""
+
+
+## Handle when a portrait is selected
+func _on_default_portrait_selected(index: int) -> void:
+	# --- UndoRedo ----------------------------------------------------------
+	undo_redo.create_action("Select Default Portrait")
+	undo_redo.add_do_property(_default_portrait_dropdown, "selected", index)
+	undo_redo.add_undo_property(_default_portrait_dropdown, "selected", _previous_portrait_index)
+	undo_redo.add_do_property(self, "_previous_portrait_index", index)
+	undo_redo.add_undo_property(self, "_previous_portrait_index", _previous_portrait_index)
+
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action()
+	# -----------------------------------------------------------------------
+
+
+## Show or hide the transform settings section
+func _on_expand_transform_settings_toggled(toggled_on: bool) -> void:
+	_portraits_transform_settings.visible = toggled_on
+	%ExpandTransformSettingsButton.icon = collapse_up_icon if toggled_on else collapse_down_icon
+
+
+## Update the preview of all portraits
+func _update_portraits_transform() -> void:
+	_portrait_tree.update_portraits_transform(
+			_portraits_transform_settings.get_transform_settings())
 
 #endregion
 
