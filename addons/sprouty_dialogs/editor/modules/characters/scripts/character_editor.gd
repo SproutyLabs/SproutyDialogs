@@ -175,6 +175,24 @@ func _on_description_focus_exited() -> void:
 		_on_modified(true)
 
 
+## Expand/hide the dialog box settings
+func _on_expand_dialog_box_button_toggled(toggled_on: bool) -> void:
+	%DialogBoxSettings.visible = toggled_on
+	%ExpandDialogBoxButton.icon = collapse_up_icon if toggled_on else collapse_down_icon
+
+
+## Expand/hide the portrait settings
+func _on_expand_portraits_settings_button_toggled(toggled_on: bool) -> void:
+	%PortraitSettings.visible = toggled_on
+	%ExpandPortraitsSettingsButton.icon = collapse_up_icon if toggled_on else collapse_down_icon
+
+
+## Expand/hide the portraits list
+func _on_expand_portraits_button_toggled(toggled_on: bool) -> void:
+	%Portraits.visible = toggled_on
+	%ExpandPortraitsButton.icon = collapse_up_icon if toggled_on else collapse_down_icon
+
+
 #region === Character Data =====================================================
 
 ## Returns the character data from the editor

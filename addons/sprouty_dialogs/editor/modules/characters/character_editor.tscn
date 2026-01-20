@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://b3dunt76vknsq"]
+[gd_scene load_steps=14 format=3 uid="uid://b3dunt76vknsq"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_mqdqa"]
 [ext_resource type="Script" uid="uid://dwueatpn41rq8" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/character_editor.gd" id="2_8cc8c"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="3_3q8bw"]
 [ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/sprouty_dialogs/editor/theme/expander_subpanel_highlight.tres" id="5_k1upw"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="5_x3nyu"]
+[ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg" id="6_8fsju"]
 [ext_resource type="PackedScene" uid="uid://881twee1nau2" path="res://addons/sprouty_dialogs/editor/modules/characters/portrait_editor.tscn" id="7_4rves"]
 [ext_resource type="Script" uid="uid://d3oeow8nbwcfm" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/portrait_tree.gd" id="7_7kmf4"]
 [ext_resource type="Script" uid="uid://c2edhclmccghs" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/portrait_transform_settings.gd" id="7_scula"]
@@ -137,36 +138,60 @@ placeholder_text = "Character description (optional)..."
 [node name="----" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container"]
+[node name="ExpandDialogBoxButton" type="Button" parent="CharacterSettings/ScrollContainer/Container"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("6_8fsju")
+flat = true
+
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/ExpandDialogBoxButton"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 50.0
+offset_top = -25.0
+offset_right = 272.0
+offset_bottom = 25.0
+grow_vertical = 2
+size_flags_horizontal = 3
 theme_type_variation = &"HeaderMedium"
 text = "Dialog Box Settings"
+vertical_alignment = 1
 
-[node name="DialogBox" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
+[node name="DialogBoxSettings" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DialogBox" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings"]
 layout_mode = 2
 tooltip_text = "Scene with the dialog box where the text will be displayed.
 The root of the scene must be a node inherited from the DialogBox class."
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/DialogBox"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Dialog Box"
 
-[node name="NewDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBox"]
+[node name="NewDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create a new dialog box scene."
 icon = SubResource("DPITexture_nwebi")
 
-[node name="ToDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBox"]
+[node name="ToDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 tooltip_text = "Open the dialog box scene."
 icon = SubResource("DPITexture_nwebi")
 
-[node name="DialogBoxSceneField" parent="CharacterSettings/ScrollContainer/Container/DialogBox" instance=ExtResource("5_x3nyu")]
+[node name="DialogBoxSceneField" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox" instance=ExtResource("5_x3nyu")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -175,7 +200,7 @@ _placeholder_text = "Select a scene..."
 _recent_file_type = "dialog_box_files"
 file_filters = PackedStringArray("*.tscn")
 
-[node name="PortraitOnDialogBoxToggle" type="CheckButton" parent="CharacterSettings/ScrollContainer/Container"]
+[node name="PortraitOnDialogBoxToggle" type="CheckButton" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Select this option to display the portrait inside the dialog box. 
@@ -186,31 +211,50 @@ text = "Portrait on dialog box"
 [node name="-----" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="Portraits" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
+[node name="ExpandPortraitsSettingsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("6_8fsju")
+flat = true
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
-layout_mode = 2
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/ExpandPortraitsSettingsButton"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 50.0
+offset_top = -17.0
+offset_right = 250.0
+offset_bottom = 17.0
+grow_vertical = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderMedium"
 text = "Portraits Settings"
+vertical_alignment = 1
 
-[node name="DefaultPortrait" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+[node name="PortraitSettings" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="DefaultPortrait" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings"]
 layout_mode = 2
 tooltip_text = "Default portrait to be used for the character when no portrait is selected."
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/DefaultPortrait"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/DefaultPortrait"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Default portrait"
 
-[node name="DefaultPortraitDropdown" type="OptionButton" parent="CharacterSettings/ScrollContainer/Container/Portraits/DefaultPortrait"]
+[node name="DefaultPortraitDropdown" type="OptionButton" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/DefaultPortrait"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ExpandTransformSettingsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+[node name="ExpandTransformSettingsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -224,135 +268,159 @@ alignment = 0
 clip_text = true
 icon_alignment = 2
 
-[node name="TransformSettings" type="PanelContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+[node name="TransformSettings" type="PanelContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 theme_override_styles/panel = ExtResource("5_k1upw")
 script = ExtResource("7_scula")
 
-[node name="Container" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings"]
+[node name="Container" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="-" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+[node name="-" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 layout_mode = 2
 
-[node name="PortraitScale" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+[node name="PortraitScale" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Portraits scale."
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "Scale"
 
-[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 tooltip_text = "X coordinate where the image region begins."
 mouse_filter = 1
 text = "X"
 
-[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 max_value = 9999.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 tooltip_text = "Y coordinate where the image region begins."
 mouse_filter = 1
 text = "Y"
 
-[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 max_value = 9999.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="LockRatioButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale"]
+[node name="LockRatioButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
 icon = SubResource("DPITexture_nwebi")
 flat = true
 
-[node name="--" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+[node name="--" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 layout_mode = 2
 
-[node name="PortraitOffset" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+[node name="PortraitOffset" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Portraits position offset."
 
-[node name="OffsetLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+[node name="OffsetLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "Offset"
 
-[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 tooltip_text = "X coordinate where the image region begins."
 mouse_filter = 1
 text = "X"
 
-[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 min_value = -9999.0
 max_value = 9999.0
 step = 0.001
 suffix = "px"
 
-[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 tooltip_text = "Y coordinate where the image region begins."
 mouse_filter = 1
 text = "Y"
 
-[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset"]
+[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 min_value = -9999.0
 max_value = 9999.0
 step = 0.001
 suffix = "px"
 
-[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 layout_mode = 2
 
-[node name="PortraitRotation" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container"]
+[node name="PortraitRotation" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="RotationLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitRotation"]
+[node name="RotationLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 tooltip_text = "Y coordinate where the image region begins."
 mouse_filter = 1
 text = "Rotation"
 
-[node name="RotationField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitRotation"]
+[node name="RotationField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 tooltip_text = "Portraits rotation in degrees."
 min_value = -360.0
 max_value = 360.0
 suffix = "°"
 
-[node name="MirrorCheckBox" type="CheckBox" parent="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitRotation"]
+[node name="MirrorCheckBox" type="CheckBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 tooltip_text = "Flip the portraits horizontally."
 text = "Mirror"
 
-[node name="-------" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+[node name="-------" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="PortraitsLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
+[node name="ExpandPortraitsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
+size_flags_horizontal = 3
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("6_8fsju")
+flat = true
+
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/ExpandPortraitsButton"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 50.0
+offset_top = -17.0
+offset_right = 250.0
+offset_bottom = 17.0
+grow_vertical = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderMedium"
 text = "Portraits"
+vertical_alignment = 1
+
+[node name="Portraits" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
 
 [node name="SearchBar" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
 layout_mode = 2
@@ -456,11 +524,14 @@ ok_button_text = "Create file"
 filters = PackedStringArray("*.tscn")
 
 [connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Header/ExpandButton" to="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer" method="_on_expand_button_toggled"]
-[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/Portraits/ExpandTransformSettingsButton" to="." method="_on_expand_transform_settings_toggled"]
-[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale/XField" to="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings" method="_on_scale_x_value_changed"]
-[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale/YField" to="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings" method="_on_scale_y_value_changed"]
-[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitScale/LockRatioButton" to="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings" method="_on_scale_lock_ratio_toggled"]
-[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset/XField" to="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings" method="_on_offset_x_value_changed"]
-[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitOffset/YField" to="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings" method="_on_offset_y_value_changed"]
-[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitRotation/RotationField" to="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings" method="_on_rotation_value_changed"]
-[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings/Container/PortraitRotation/MirrorCheckBox" to="CharacterSettings/ScrollContainer/Container/Portraits/TransformSettings" method="_on_mirror_check_box_toggled"]
+[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/ExpandDialogBoxButton" to="." method="_on_expand_dialog_box_button_toggled"]
+[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/ExpandPortraitsSettingsButton" to="." method="_on_expand_portraits_settings_button_toggled"]
+[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/PortraitSettings/ExpandTransformSettingsButton" to="." method="_on_expand_transform_settings_toggled"]
+[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale/XField" to="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings" method="_on_scale_x_value_changed"]
+[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale/YField" to="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings" method="_on_scale_y_value_changed"]
+[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale/LockRatioButton" to="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings" method="_on_scale_lock_ratio_toggled"]
+[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset/XField" to="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings" method="_on_offset_x_value_changed"]
+[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset/YField" to="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings" method="_on_offset_y_value_changed"]
+[connection signal="value_changed" from="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation/RotationField" to="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings" method="_on_rotation_value_changed"]
+[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation/MirrorCheckBox" to="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings" method="_on_mirror_check_box_toggled"]
+[connection signal="toggled" from="CharacterSettings/ScrollContainer/Container/ExpandPortraitsButton" to="." method="_on_expand_portraits_button_toggled"]
