@@ -37,7 +37,7 @@ extends Resource
 @export var export_overrides: Dictionary = {}
 ## Transform settings for the portrait.
 ## This is a dictionary containing the following keys:
-## - "ignore_main_transform": whether to ignore main transform
+## - "ignore_main_transform": whether to ignore the main transform settings from the character.
 ##  - "scale": the scale of the portrait.
 ##  - "scale_lock_ratio": whether to lock the aspect ratio of the scale.
 ##  - "offset": the offset of the portrait.

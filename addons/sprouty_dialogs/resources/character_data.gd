@@ -40,11 +40,11 @@ extends Resource
 ## node of the [class DialogBox]. For this you need to set the [param display portrait]
 ## node that will hold the portrait as a parent of the portrait scene.
 @export var portrait_on_dialog_box: bool = false
-## Default character's portrait
-## Portrait that will be used by default when no portrait is especified for a character.
+## Name of the default portrait to use for this character. 
+## If set, this portrait will be used when no specific portrait is specified in the dialogue.
 @export var default_portrait: String = ""
 ## Transform settings for all character portraits.
-## This is a dictionary containing the following keys:
+## This is a dictionary with the following keys:
 ##  - "scale": the scale of the portrait.
 ##  - "scale_lock_ratio": whether to lock the aspect ratio of the scale.
 ##  - "offset": the offset of the portrait.

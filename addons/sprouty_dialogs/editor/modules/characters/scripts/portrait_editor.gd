@@ -136,7 +136,7 @@ func set_portrait_name(name: String) -> void:
 
 #region === Portrait Preview ===================================================
 
-## Update the preview scene with transform settings
+## Update the preview scene with the transformation settings
 func update_preview_transform(parent_transform: Dictionary = {}) -> void:
 	var settings = _portrait_transform_settings.get_transform_settings()
 
@@ -150,7 +150,7 @@ func update_preview_transform(parent_transform: Dictionary = {}) -> void:
 		settings.rotation += _parent_transform.rotation
 		settings.mirror = not _parent_transform.mirror \
 				if settings.mirror else _parent_transform.mirror
-	
+
 	_preview_container.scale = settings.scale
 	_preview_container.position = settings.offset
 	_preview_container.rotation_degrees = settings.rotation

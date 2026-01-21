@@ -259,6 +259,7 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	# Portraits
 	_portraits_transform_settings.set_transform_settings(data.main_transform_settings)
 	_portrait_tree.load_portraits_data(data.portraits, _portrait_editor_scene)
+	_portrait_tree.update_portraits_transform(data.main_transform_settings)
 	_update_default_portrait_dropdown(data.default_portrait)
 
 	_modified_counter = 0
@@ -478,14 +479,16 @@ func _on_portrait_dialog_box_toggled(toggled_on: bool) -> void:
 ## Update the default portrait dropdown options
 func _update_default_portrait_dropdown(selected_portrait: String = "") -> void:
 	var portraits = _portrait_tree.get_portrait_list()
+	_default_portrait_dropdown.clear()
+
 	if portraits.size() == 0: # No portrait to select
 		_default_portrait_dropdown.add_item("(no one)")
 		return
+
 	# Keep current selected item
-	if selected_portrait == "":
+	if selected_portrait == "" and _default_portrait_dropdown.selected != -1:
 		selected_portrait = _default_portrait_dropdown.get_item_text(
 				_default_portrait_dropdown.selected)
-	_default_portrait_dropdown.clear()
 
 	for portrait in portraits:
 		_default_portrait_dropdown.add_item(portrait)

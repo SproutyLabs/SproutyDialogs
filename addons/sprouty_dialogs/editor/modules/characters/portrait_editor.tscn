@@ -8,7 +8,7 @@
 [ext_resource type="StyleBox" uid="uid://cwh6vwdo54x1s" path="res://addons/sprouty_dialogs/editor/theme/expander_subpanel_highlight.tres" id="5_mmsn6"]
 [ext_resource type="Script" uid="uid://c2edhclmccghs" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/portrait_transform_settings.gd" id="7_nwebi"]
 
-[sub_resource type="DPITexture" id="DPITexture_nwebi"]
+[sub_resource type="DPITexture" id="DPITexture_8fsju"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -56,7 +56,7 @@ text = "Portrait Preview"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Reload scene"
-icon = SubResource("DPITexture_nwebi")
+icon = SubResource("DPITexture_8fsju")
 
 [node name="PreviewPanel" type="Panel" parent="Container/PortraitPreview"]
 clip_contents = true
@@ -101,7 +101,7 @@ offset_right = 8.0
 offset_bottom = 8.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = SubResource("DPITexture_nwebi")
+texture = SubResource("DPITexture_8fsju")
 stretch_mode = 3
 
 [node name="PortraitSettings" type="ScrollContainer" parent="Container"]
@@ -132,14 +132,14 @@ text = "Scene"
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create a new portrait scene."
-icon = SubResource("DPITexture_nwebi")
+icon = SubResource("DPITexture_8fsju")
 
 [node name="ToPortraitSceneButton" type="Button" parent="Container/PortraitSettings/Container/PortraitScene"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 tooltip_text = "Open the portrait scene."
-icon = SubResource("DPITexture_nwebi")
+icon = SubResource("DPITexture_8fsju")
 
 [node name="PortraitSceneField" parent="Container/PortraitSettings/Container/PortraitScene" instance=ExtResource("1_4ou2u")]
 unique_name_in_owner = true
@@ -185,6 +185,7 @@ icon_alignment = 2
 
 [node name="TransformSettings" type="PanelContainer" parent="Container/PortraitSettings/Container"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 theme_override_styles/panel = ExtResource("5_mmsn6")
 script = ExtResource("7_nwebi")
@@ -218,7 +219,6 @@ text = "Scale"
 
 [node name="XLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
-tooltip_text = "X coordinate where the image region begins."
 mouse_filter = 1
 text = "X"
 
@@ -231,7 +231,6 @@ allow_greater = true
 
 [node name="YLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
-tooltip_text = "Y coordinate where the image region begins."
 mouse_filter = 1
 text = "Y"
 
@@ -246,7 +245,7 @@ allow_greater = true
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
-icon = SubResource("DPITexture_nwebi")
+icon = SubResource("DPITexture_8fsju")
 flat = true
 
 [node name="---" type="HSeparator" parent="Container/PortraitSettings/Container/TransformSettings/Container"]
@@ -264,7 +263,6 @@ text = "Offset"
 
 [node name="XLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
-tooltip_text = "X coordinate where the image region begins."
 mouse_filter = 1
 text = "X"
 
@@ -277,7 +275,6 @@ suffix = "px"
 
 [node name="YLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
-tooltip_text = "Y coordinate where the image region begins."
 mouse_filter = 1
 text = "Y"
 
@@ -297,7 +294,7 @@ layout_mode = 2
 
 [node name="RotationLabel" type="Label" parent="Container/PortraitSettings/Container/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
-tooltip_text = "Y coordinate where the image region begins."
+tooltip_text = "Portrait rotation in degrees."
 mouse_filter = 1
 text = "Rotation"
 

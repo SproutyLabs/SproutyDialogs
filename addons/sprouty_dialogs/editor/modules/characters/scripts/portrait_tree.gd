@@ -396,11 +396,12 @@ func _on_item_edited() -> void:
 	if not item.get_metadata(0).has("group"): # Update the portrait name
 		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
 	
+	portrait_list_changed.emit()
+	
 	if item.get_meta("new_item"):
 		item.set_meta("new_item", false)
 		return # If it's a new item, do not register the action
-	
-	portrait_list_changed.emit()
+
 	modified.emit(true)
 
 	# --- UndoRedo -----------------------------------------------------
