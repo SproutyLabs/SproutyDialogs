@@ -479,22 +479,24 @@ func _on_portrait_dialog_box_toggled(toggled_on: bool) -> void:
 ## Update the default portrait dropdown options
 func _update_default_portrait_dropdown(selected_portrait: String = "") -> void:
 	var portraits = _portrait_tree.get_portrait_list()
+
+	# Keep current selected item
+	if selected_portrait == "" and _default_portrait_dropdown.selected != -1:
+		selected_portrait = _default_portrait_dropdown.get_item_text(
+				_default_portrait_dropdown.selected)
+	
 	_default_portrait_dropdown.clear()
 
 	if portraits.size() == 0: # No portrait to select
 		_default_portrait_dropdown.add_item("(no one)")
 		return
 
-	# Keep current selected item
-	if selected_portrait == "" and _default_portrait_dropdown.selected != -1:
-		selected_portrait = _default_portrait_dropdown.get_item_text(
-				_default_portrait_dropdown.selected)
-
+	var index = 0
 	for portrait in portraits:
-		_default_portrait_dropdown.add_item(portrait)
+		_default_portrait_dropdown.add_item(portrait, index)
 		if portrait == selected_portrait: # Select the current item
-			_default_portrait_dropdown.select(
-					_default_portrait_dropdown.item_count - 1)
+			_default_portrait_dropdown.select(index)
+		index += 1
 
 
 ## Returns the default portrait selected

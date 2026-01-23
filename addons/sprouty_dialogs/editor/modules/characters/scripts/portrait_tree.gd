@@ -53,9 +53,15 @@ func get_portraits_data(from: TreeItem = get_root()) -> Dictionary:
 	var data := {}
 	for item in from.get_children():
 		if item.get_metadata(0).has("group"):
-			data[item.get_text(0)] = get_portraits_data(item)
+			data[item.get_text(0)] = {
+				"index": item.get_index(),
+				"data": get_portraits_data(item)
+			}
 		else:
-			data[item.get_text(0)] = item.get_meta("portrait_editor").get_portrait_data()
+			data[item.get_text(0)] = {
+				"index": item.get_index(),
+				"data": item.get_meta("portrait_editor").get_portrait_data()
+			}
 	return data
 
 
@@ -67,18 +73,23 @@ func load_portraits_data(
 	if not data:
 		return # If the data is empty, do nothing
 	
-	for item in data.keys():
-		if data[item] is SproutyDialogsPortraitData:
+	# Sort keys by their index value
+	var sorted_keys := data.keys()
+	sorted_keys.sort_custom(func(a, b):
+		return data[a]["index"] < data[b]["index"]
+	)
+	for item in sorted_keys:
+		if data[item].data is SproutyDialogsPortraitData:
 			# If the item is a portrait, create it and load its data
 			var editor = portrait_editor_scene.instantiate()
 			add_child(editor)
-			new_portrait_item(item, data[item], parent_item, editor, false)
-			editor.load_portrait_data(item, data[item])
+			var portrait = new_portrait_item(item, data[item].data, parent_item, editor, false)
+			editor.load_portrait_data(item, data[item].data)
 			remove_child(editor)
 		else:
 			# If the item is a group, create it and load its children
 			var group_item: TreeItem = new_portrait_group(item, parent_item, false)
-			load_portraits_data(data[item], portrait_editor_scene, group_item)
+			load_portraits_data(data[item].data, portrait_editor_scene, group_item)
 
 #endregion
 
@@ -397,7 +408,7 @@ func _on_item_edited() -> void:
 		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
 	
 	portrait_list_changed.emit()
-	
+
 	if item.get_meta("new_item"):
 		item.set_meta("new_item", false)
 		return # If it's a new item, do not register the action
