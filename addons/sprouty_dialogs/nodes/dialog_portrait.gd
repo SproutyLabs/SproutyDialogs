@@ -22,7 +22,7 @@ extends Node
 
 ## Override this method to update the portrait when character enters the scene.
 ## This is called when the character is added to the scene.
-@abstract func on_portrait_entry() -> void
+@abstract func on_portrait_enter() -> void
 
 
 ## Override this method to update the portrait when character exits the scene.

@@ -37,7 +37,7 @@ var _collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/inter
 var _collapse_down_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg")
 
 ## Parent transform settings
-var _parent_transform: Dictionary = {
+var _main_transform: Dictionary = {
 	"scale": Vector2.ONE,
 	"scale_lock_ratio": true,
 	"offset": Vector2.ZERO,
@@ -137,19 +137,19 @@ func set_portrait_name(name: String) -> void:
 #region === Portrait Preview ===================================================
 
 ## Update the preview scene with the transformation settings
-func update_preview_transform(parent_transform: Dictionary = {}) -> void:
+func update_preview_transform(main_transform: Dictionary = {}) -> void:
 	var settings = _portrait_transform_settings.get_transform_settings()
 
-	if parent_transform != {}:
-		_parent_transform = parent_transform
+	if main_transform != {}:
+		_main_transform = main_transform
 	
 	# Add the parent transform
 	if not settings.ignore_main_transform:
-		settings.scale += _parent_transform.scale
-		settings.offset += _parent_transform.offset
-		settings.rotation += _parent_transform.rotation
-		settings.mirror = not _parent_transform.mirror \
-				if settings.mirror else _parent_transform.mirror
+		settings.scale += _main_transform.scale
+		settings.offset += _main_transform.offset
+		settings.rotation += _main_transform.rotation
+		settings.mirror = not _main_transform.mirror \
+				if settings.mirror else _main_transform.mirror
 
 	_preview_container.scale = settings.scale
 	_preview_container.position = settings.offset
@@ -174,6 +174,7 @@ func _switch_scene_preview(new_scene: String) -> void:
 	_portrait_export_properties.load_exported_properties(scene)
 	if _preview_container.get_child(0).has_method("set_portrait"):
 			_preview_container.get_child(0).set_portrait() # Update the portrait preview
+	update_preview_transform(_main_transform)
 
 
 ## Reload the current scene in the preview
@@ -183,7 +184,7 @@ func _on_reload_scene_button_pressed() -> void:
 	else:
 		printerr("[Sprouty Dialogs] No scene file selected.")
 		return
-	update_preview_transform()
+	update_preview_transform(_main_transform)
 
 #endregion
 

@@ -81,6 +81,8 @@ var _sentences: Array[String] = []
 
 ## Index of the current sentence being displayed.
 var _current_sentence: int = 0
+## Current sentence lenght
+var _sentence_lenght: int = 0
 
 ## Flag to check if the dialog box is displaying a portrait.
 var _is_displaying_portrait: bool = false
@@ -435,6 +437,11 @@ func _add_tags_to_sentence(sentence: String, tags: Array) -> String:
 ## Display a new sentence
 func _display_new_sentence(sentence: String) -> void:
 	dialog_display.text = sentence
+	var regex = RegEx.new()
+	regex.compile("\\[.*?\\]")
+	var clean_sentence = regex.sub(sentence, "", true)
+	_sentence_lenght = clean_sentence.length()
+
 	if typing_speed <= 0.0: # If typing speed is 0, show the full text
 		dialog_display.visible_characters = dialog_display.text.length()
 		_on_display_completed()
@@ -448,7 +455,7 @@ func _display_new_sentence(sentence: String) -> void:
 
 ## Timer to type the dialog characters
 func _on_type_timer_timeout() -> void:
-	if dialog_display.visible_characters < dialog_display.text.length():
+	if dialog_display.visible_characters < _sentence_lenght:
 		dialog_display.visible_characters += 1
 	else:
 		_type_timer.stop()

@@ -636,7 +636,7 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 			portrait.show()
 	
 	if is_joining and _current_portrait: # Entry action if the character is joining the dialog
-		await _current_portrait.on_portrait_entry()
+		await _current_portrait.on_portrait_enter()
 
 
 ## Handle when the dialog display starts for a character.

@@ -569,6 +569,7 @@ func _on_add_portrait_button_pressed() -> void:
 	_current_portrait = item
 
 	_update_default_portrait_dropdown()
+	_update_portraits_transform()
 	_on_modified(true)
 	
 	# --- UndoRedo -----------------------------------------------------

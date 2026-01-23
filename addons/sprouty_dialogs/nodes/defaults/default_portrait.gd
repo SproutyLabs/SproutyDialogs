@@ -22,7 +22,7 @@ extends DialogPortrait
 # -----------------------------------------------------------------------------
 
 ## Portrait image file path
-@export_file("*.png", "*.jpg") var portrait_image: String
+@export_file("*.png", "*.jpg", "*.svg") var portrait_image: String
 
 @export_group("Private")
 ## Animation time for default portrait animations
@@ -39,11 +39,11 @@ func set_portrait() -> void:
 	# You can add your own logic here to handle the portrait.
 	# -------------------------------------------------------------------
 	# In this base case, a portrait image is loaded and set it to the sprite
-	if portrait_image != "" and FileAccess.file_exists(portrait_image):
+	if portrait_image != "" and ResourceLoader.exists(portrait_image):
 		$Sprite2D.texture = load(portrait_image)
 
 
-func on_portrait_entry() -> void:
+func on_portrait_enter() -> void:
 	# --------------------------------------------------------------------------
 	# This method is called when the character joins the scene.
 	# You can add your own logic here to handle when the character enters.
@@ -77,7 +77,7 @@ func on_portrait_stop_talking() -> void:
 	# This method is called when the character stops talking (typing ends).
 	# You can add your own logic here to handle when the character stops talking
 	# --------------------------------------------------------------------------
-	_tween.kill() # Stop the talking animation
+	_tween.stop() # Stop the talking animation
 	highlight_portrait() # Reset the state when the character stops talking
 
 
