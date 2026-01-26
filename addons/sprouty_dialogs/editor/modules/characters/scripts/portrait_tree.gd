@@ -17,6 +17,8 @@ signal show_portrait_editor_panel(show: bool)
 
 ## Emitted when the portrait list is changed
 signal portrait_list_changed
+## Emitted when the path of a portrait is changed
+signal portrait_path_changed(new_path: String, prev_path: String)
 
 ## Portrait tree popup menu
 @onready var _popup_menu: PopupMenu = $PortraitPopupMenu
@@ -25,6 +27,12 @@ signal portrait_list_changed
 
 ## Icon of the character portrait
 var _portrait_icon: Texture2D = preload("res://addons/sprouty_dialogs/editor/icons/character.svg")
+
+## Data of the item being renamed
+var renaming_item: Dictionary = {
+	"item": null,
+	"prev_path": ""
+}
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
@@ -195,6 +203,9 @@ func remove_portrait_item(item: TreeItem) -> void:
 
 ## Renames the portrait item
 func rename_portrait_item(item: TreeItem) -> void:
+	renaming_item.item = item
+	renaming_item.prev_path = get_item_path(item)
+
 	item.set_editable(0, true)
 	call_deferred("edit_selected")
 
@@ -298,6 +309,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	var drop_section := get_drop_section_at_position(at_position)
 	var parent := item.get_parent()
 	var index := item.get_index()
+	var prev_path = get_item_path(item)
 
 	undo_redo.create_action("Move Portrait")
 
@@ -338,11 +350,13 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 
 	# Ensure the item has a unique name after moving
 	var temp_name := item.get_meta("name")
+	
 	ensure_valid_item_name(item)
 	if temp_name != item.get_text(0):
 		item.set_meta("name", item.get_text(0))
-
-	portrait_list_changed.emit()
+	
+	var new_path = get_item_path(item)
+	portrait_path_changed.emit(new_path, prev_path)
 	modified.emit(true)
 
 	# --- UndoRedo ---------------------------------------------------------
@@ -367,8 +381,8 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 
-	undo_redo.add_do_method(self, "emit_signal", "portrait_list_changed")
-	undo_redo.add_undo_method(self, "emit_signal", "portrait_list_changed")
+	undo_redo.add_do_method(self, "emit_signal", "portrait_path_changed", new_path, prev_path)
+	undo_redo.add_undo_method(self, "emit_signal", "portrait_path_changed", prev_path, new_path)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -397,7 +411,12 @@ func _on_item_activated() -> void:
 ## Called when the user edits (rename) a portrait item
 func _on_item_edited() -> void:
 	var item := get_selected()
+	var prev_path = ""
+	if item == renaming_item.item:
+		prev_path = renaming_item.prev_path
+	
 	ensure_valid_item_name(item)
+
 	if item.get_meta("name") == item.get_text(0):
 		return # If the name didn't change, do nothing
 	
@@ -407,7 +426,8 @@ func _on_item_edited() -> void:
 	if not item.get_metadata(0).has("group"): # Update the portrait name
 		item.get_meta("portrait_editor").set_portrait_name(item.get_text(0))
 	
-	portrait_list_changed.emit()
+	var new_path = get_item_path(item)
+	portrait_path_changed.emit(new_path, prev_path)
 
 	if item.get_meta("new_item"):
 		item.set_meta("new_item", false)
@@ -429,8 +449,8 @@ func _on_item_edited() -> void:
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 
-	undo_redo.add_do_method(self, "emit_signal", "portrait_list_changed")
-	undo_redo.add_undo_method(self, "emit_signal", "portrait_list_changed")
+	undo_redo.add_do_method(self, "emit_signal", "portrait_path_changed", new_path, prev_path)
+	undo_redo.add_undo_method(self, "emit_signal", "portrait_path_changed", prev_path, new_path)
 	undo_redo.commit_action(false)
 	# ------------------------------------------------------------------
 

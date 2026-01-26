@@ -115,6 +115,7 @@ func _ready() -> void:
 	# Connect portrait signals
 	_default_portrait_dropdown.item_selected.connect(_on_default_portrait_selected)
 	_portrait_tree.portrait_list_changed.connect(_update_default_portrait_dropdown)
+	_portrait_tree.portrait_path_changed.connect(_on_portrait_path_changed)
 
 	_portraits_transform_settings.modified.connect(modified.emit)
 	_portraits_transform_settings.transform_settings_changed.connect(_update_portraits_transform)
@@ -476,27 +477,36 @@ func _on_portrait_dialog_box_toggled(toggled_on: bool) -> void:
 
 #region === Portrait Settings ==================================================
 
+## Handle the default dropdown update when a portrait is moved 
+func _on_portrait_path_changed(new_path: String, prev_path: String) -> void:
+	var selected = _default_portrait_dropdown.get_item_text(
+			_default_portrait_dropdown.selected)
+	
+	if selected == prev_path: # Update the selected default portrait name
+		_update_default_portrait_dropdown(new_path)
+	else: # Otherwise, update the dropdown keeping the current selected
+		_update_default_portrait_dropdown()
+
+
 ## Update the default portrait dropdown options
 func _update_default_portrait_dropdown(selected_portrait: String = "") -> void:
 	var portraits = _portrait_tree.get_portrait_list()
-
+	
 	# Keep current selected item
 	if selected_portrait == "" and _default_portrait_dropdown.selected != -1:
 		selected_portrait = _default_portrait_dropdown.get_item_text(
 				_default_portrait_dropdown.selected)
 	
 	_default_portrait_dropdown.clear()
+	_default_portrait_dropdown.add_item("(no one)")
+	
+	if portraits.size() == 0:
+		return # No portrait to select
 
-	if portraits.size() == 0: # No portrait to select
-		_default_portrait_dropdown.add_item("(no one)")
-		return
-
-	var index = 0
 	for portrait in portraits:
-		_default_portrait_dropdown.add_item(portrait, index)
+		_default_portrait_dropdown.add_item(portrait)
 		if portrait == selected_portrait: # Select the current item
-			_default_portrait_dropdown.select(index)
-		index += 1
+			_default_portrait_dropdown.select(_default_portrait_dropdown.item_count - 1)
 
 
 ## Returns the default portrait selected
