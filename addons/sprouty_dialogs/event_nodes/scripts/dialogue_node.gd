@@ -225,11 +225,11 @@ func _get_portrait_list(portrait_dict: Dictionary) -> Array:
 	var portrait_list = []
 
 	for portrait in portrait_dict.keys():
-		if portrait_dict[portrait] is SproutyDialogsPortraitData:
+		if portrait_dict[portrait].data is SproutyDialogsPortraitData:
 			portrait_list.append(portrait)
 		else:
 			portrait_list.append_array(
-					_get_portrait_list(portrait_dict[portrait]).map(
+					_get_portrait_list(portrait_dict[portrait].data).map(
 						func(p): return portrait + "/" + p
 					)
 				)

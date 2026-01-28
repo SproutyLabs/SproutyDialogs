@@ -63,10 +63,19 @@ extends Resource
 ## The dictionary structure is as follows:
 ## [codeblock]
 ## {
-##   "portrait_name_1": SproutyDialogsPortraitData (SubResource)
+##   "portrait_name_1": {
+##  	"index" : 0,
+##  	"data": SproutyDialogsPortraitData (SubResource)
+##   },
 ##   "portrait_group": {
-##  	 "portrait_name_2": SproutyDialogsPortraitData (SubResource)
-##  	 "portrait_name_3": SproutyDialogsPortraitData (SubResource)
+##  	"index" : 1,
+##      "data": {
+##  		 "portrait_name_2": {
+##  			"index" : 0,
+##  			"data": SproutyDialogsPortraitData (SubResource)
+##  		 },
+##		    ...
+##      },
 ##  	 ...
 ##   },
 ##   ...
