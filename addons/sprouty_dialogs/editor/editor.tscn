@@ -1,19 +1,28 @@
-[gd_scene load_steps=12 format=3 uid="uid://chmw64xy0cmck"]
+[gd_scene format=3 uid="uid://chmw64xy0cmck"]
 
 [ext_resource type="Script" uid="uid://cqis4e6pcwteo" path="res://addons/sprouty_dialogs/editor/scripts/editor.gd" id="1_gu2d1"]
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_h283m"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_h283m"]
 [ext_resource type="PackedScene" uid="uid://dpscdg0f7o6ft" path="res://addons/sprouty_dialogs/editor/modules/file_manager/file_manager.tscn" id="1_qbi36"]
 [ext_resource type="PackedScene" uid="uid://d0gf52rcd1hn" path="res://addons/sprouty_dialogs/editor/modules/characters/character_panel.tscn" id="3_7mghu"]
+[ext_resource type="Texture2D" uid="uid://j23crfderjkx" path="res://addons/sprouty_dialogs/editor/icons/character.svg" id="4_k3384"]
 [ext_resource type="PackedScene" uid="uid://bo8iha2w2kgt5" path="res://addons/sprouty_dialogs/editor/modules/graph_editor/dialogue_panel.tscn" id="4_yuhh0"]
+[ext_resource type="Texture2D" uid="uid://by1ux7iacms26" path="res://addons/sprouty_dialogs/editor/icons/variable.svg" id="5_i2ym8"]
 [ext_resource type="PackedScene" uid="uid://dpmnyxltkkjsq" path="res://addons/sprouty_dialogs/editor/modules/variables/variable_panel.tscn" id="6_4jako"]
+[ext_resource type="Texture2D" uid="uid://t7ujqvnbwl36" path="res://addons/sprouty_dialogs/editor/icons/settings.svg" id="6_7tb28"]
 [ext_resource type="PackedScene" uid="uid://pdcicn3rbwbs" path="res://addons/sprouty_dialogs/editor/modules/settings/settings_panel.tscn" id="7_xlq8u"]
 [ext_resource type="PackedScene" uid="uid://b3ttyn7bfc2v0" path="res://addons/sprouty_dialogs/editor/about_panel.tscn" id="8_d78hy"]
 [ext_resource type="Script" uid="uid://dnfcwr3jd1n3b" path="res://addons/sprouty_dialogs/editor/scripts/update_manager.gd" id="8_j2ohl"]
 [ext_resource type="PackedScene" uid="uid://bsuv8fchs6lyc" path="res://addons/sprouty_dialogs/editor/update_panel.tscn" id="10_hbm63"]
+[ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/editor/icons/text_editor/text.svg" id="11_60lun"]
+[ext_resource type="Texture2D" uid="uid://djj6crqjqkqpu" path="res://addons/sprouty_dialogs/editor/icons/translation.svg" id="12_hb7th"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_22uar"]
 
-[node name="Editor" type="Control"]
+[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
+[node name="Editor" type="Control" unique_id=1374589329]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,7 +33,7 @@ size_flags_vertical = 3
 theme = ExtResource("1_h283m")
 script = ExtResource("1_gu2d1")
 
-[node name="MainContainer" type="HSplitContainer" parent="."]
+[node name="MainContainer" type="HSplitContainer" parent="." unique_id=560432757]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,65 +42,72 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 3
 
-[node name="SideBar" parent="MainContainer" instance=ExtResource("1_qbi36")]
+[node name="SideBar" parent="MainContainer" unique_id=421326720 instance=ExtResource("1_qbi36")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TabContainer" type="TabContainer" parent="MainContainer"]
+[node name="TabContainer" type="TabContainer" parent="MainContainer" unique_id=1371197772]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme_override_styles/tabbar_background = SubResource("StyleBoxEmpty_22uar")
 current_tab = 0
+tab_0/icon = SubResource("DPITexture_5rvxf")
+tab_1/icon = ExtResource("4_k3384")
+tab_2/icon = ExtResource("5_i2ym8")
+tab_3/icon = ExtResource("6_7tb28")
 
-[node name="Dialogues" type="TabBar" parent="MainContainer/TabContainer"]
+[node name="Dialogues" type="TabBar" parent="MainContainer/TabContainer" unique_id=599580129]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="DialoguePanel" parent="MainContainer/TabContainer/Dialogues" instance=ExtResource("4_yuhh0")]
+[node name="DialoguePanel" parent="MainContainer/TabContainer/Dialogues" unique_id=457732510 instance=ExtResource("4_yuhh0")]
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Characters" type="TabBar" parent="MainContainer/TabContainer"]
+[node name="Characters" type="TabBar" parent="MainContainer/TabContainer" unique_id=1340566768]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="CharacterPanel" parent="MainContainer/TabContainer/Characters" instance=ExtResource("3_7mghu")]
+[node name="CharacterPanel" parent="MainContainer/TabContainer/Characters" unique_id=295528909 instance=ExtResource("3_7mghu")]
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Variables" type="TabBar" parent="MainContainer/TabContainer"]
+[node name="Variables" type="TabBar" parent="MainContainer/TabContainer" unique_id=461431614]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="VariablePanel" parent="MainContainer/TabContainer/Variables" instance=ExtResource("6_4jako")]
+[node name="VariablePanel" parent="MainContainer/TabContainer/Variables" unique_id=4784611 instance=ExtResource("6_4jako")]
 unique_name_in_owner = true
 layout_mode = 1
 
-[node name="Settings" type="TabBar" parent="MainContainer/TabContainer"]
+[node name="Settings" type="TabBar" parent="MainContainer/TabContainer" unique_id=1209196176]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 3
 
-[node name="SettingsPanel" parent="MainContainer/TabContainer/Settings" instance=ExtResource("7_xlq8u")]
+[node name="SettingsPanel" parent="MainContainer/TabContainer/Settings" unique_id=407550304 instance=ExtResource("7_xlq8u")]
 unique_name_in_owner = true
 layout_mode = 1
+tab_0/icon = ExtResource("6_7tb28")
+tab_1/icon = ExtResource("11_60lun")
+tab_2/icon = ExtResource("12_hb7th")
 
-[node name="UpdateManager" type="Node" parent="."]
+[node name="UpdateManager" type="Node" parent="." unique_id=124328528]
 script = ExtResource("8_j2ohl")
 
-[node name="UpdateCheckRequest" type="HTTPRequest" parent="UpdateManager"]
+[node name="UpdateCheckRequest" type="HTTPRequest" parent="UpdateManager" unique_id=1081926002]
 timeout = 5.0
 
-[node name="DownloadUpdateRequest" type="HTTPRequest" parent="UpdateManager"]
+[node name="DownloadUpdateRequest" type="HTTPRequest" parent="UpdateManager" unique_id=1651865082]
 
-[node name="AboutPanel" parent="." instance=ExtResource("8_d78hy")]
+[node name="AboutPanel" parent="." unique_id=154620586 instance=ExtResource("8_d78hy")]
 visible = false
 
-[node name="UpdatePanel" parent="AboutPanel" instance=ExtResource("10_hbm63")]
+[node name="UpdatePanel" parent="AboutPanel" unique_id=1420226214 instance=ExtResource("10_hbm63")]
 visible = false
 
 [connection signal="tab_selected" from="MainContainer/TabContainer" to="." method="_on_tab_selected"]

@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://csswxs6vp2557"]
+[gd_scene format=3 uid="uid://csswxs6vp2557"]
 
 [ext_resource type="Script" uid="uid://cqjqe1p3pc3kw" path="res://addons/sprouty_dialogs/editor/components/scripts/translation_box.gd" id="1_4gyl1"]
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="2_1awyv"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="2_1awyv"]
 
-[node name="TranslationLine" type="HBoxContainer"]
+[node name="TranslationLine" type="HBoxContainer" unique_id=698124774]
 custom_minimum_size = Vector2(150, 0)
 offset_right = 163.0
 offset_bottom = 58.0
@@ -11,25 +11,25 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 script = ExtResource("1_4gyl1")
 
-[node name="Header" type="HBoxContainer" parent="."]
+[node name="Header" type="HBoxContainer" parent="." unique_id=1477324665]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LanguageLabel" type="Label" parent="Header"]
+[node name="LanguageLabel" type="Label" parent="Header" unique_id=1722116346]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Español"
 clip_text = true
-text_overrun_behavior = 3
+text_overrun_behavior = 5
 
-[node name="CodeLabel" type="Label" parent="Header"]
+[node name="CodeLabel" type="Label" parent="Header" unique_id=884770844]
 layout_mode = 2
-size_flags_horizontal = 2
+size_flags_horizontal = 8
 theme = ExtResource("2_1awyv")
 theme_type_variation = &"LocaleLabel"
 text = "(Es)"
 
-[node name="TextBox" type="LineEdit" parent="."]
+[node name="TextBox" type="LineEdit" parent="." unique_id=635481274]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4

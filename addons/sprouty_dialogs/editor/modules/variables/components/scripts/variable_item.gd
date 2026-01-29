@@ -181,6 +181,7 @@ func _set_types_dropdown() -> void:
 	_type_dropdown.select(_type_dropdown.get_item_index(TYPE_STRING))
 	_type_dropdown.item_selected.connect(_on_type_changed)
 	_type_dropdown.fit_to_longest_item = true
+	_type_dropdown.flat = true
 	$Container/TypeField.add_child(_type_dropdown)
 
 

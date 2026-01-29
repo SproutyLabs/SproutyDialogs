@@ -1,0 +1,24 @@
+[gd_resource type="Theme" format=3 uid="uid://q74awv67f4ih"]
+
+[ext_resource type="StyleBox" uid="uid://b271vxtvm2bt7" path="res://addons/sprouty_dialogs/editor/theme/node_panel.tres" id="1_xmt66"]
+[ext_resource type="StyleBox" uid="uid://cw5fvbadmyuc2" path="res://addons/sprouty_dialogs/editor/theme/node_panel_selected.tres" id="2_3u307"]
+[ext_resource type="StyleBox" uid="uid://ct8elkgorfiv8" path="res://addons/sprouty_dialogs/editor/theme/node_titlebar.tres" id="3_lebdm"]
+[ext_resource type="StyleBox" uid="uid://cl36o1w7undbp" path="res://addons/sprouty_dialogs/editor/theme/node_selected_titlebar.tres" id="4_c0q8w"]
+[ext_resource type="StyleBox" uid="uid://dcw87gos6fdq2" path="res://addons/sprouty_dialogs/editor/theme/h_separator.tres" id="5_3u307"]
+[ext_resource type="StyleBox" uid="uid://b6wqi1f10yowf" path="res://addons/sprouty_dialogs/editor/theme/v_separator.tres" id="5_4sp5n"]
+
+[resource]
+GraphNode/constants/separation = 5
+GraphNode/styles/panel = ExtResource("1_xmt66")
+GraphNode/styles/panel_selected = ExtResource("2_3u307")
+GraphNode/styles/titlebar = ExtResource("3_lebdm")
+GraphNode/styles/titlebar_selected = ExtResource("4_c0q8w")
+HSeparator/styles/separator = ExtResource("5_3u307")
+LocaleLabel/base_type = &"Label"
+LocaleLabel/colors/font_color = Color(0.648078, 0.648078, 0.648078, 1)
+MarginContainer/constants/margin_bottom = 10
+MarginContainer/constants/margin_left = 10
+MarginContainer/constants/margin_right = 10
+MarginContainer/constants/margin_top = 10
+VSeparator/constants/separation = 0
+VSeparator/styles/separator = ExtResource("5_4sp5n")

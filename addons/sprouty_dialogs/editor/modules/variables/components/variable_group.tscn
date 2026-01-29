@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cqlyj2jyexmds"]
+[gd_scene format=3 uid="uid://cqlyj2jyexmds"]
 
 [ext_resource type="Script" uid="uid://d1bsumhmk1ygf" path="res://addons/sprouty_dialogs/editor/modules/variables/components/scripts/variable_group.gd" id="1_gui6w"]
 [ext_resource type="StyleBox" uid="uid://diu04q0efmvpq" path="res://addons/sprouty_dialogs/editor/theme/variable_group_panel.tres" id="1_hq6qs"]
@@ -14,47 +14,47 @@ border_color = Color(0, 0, 0, 1)
 corner_radius_top_left = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="DPITexture" id="DPITexture_li462"]
+[sub_resource type="DPITexture" id="DPITexture_uexgy"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="VariableGroup" type="PanelContainer"]
+[node name="VariableGroup" type="PanelContainer" unique_id=91552022]
 size_flags_horizontal = 3
 mouse_filter = 1
 theme_override_styles/panel = ExtResource("1_hq6qs")
 script = ExtResource("1_gui6w")
 
-[node name="Container" type="VBoxContainer" parent="."]
+[node name="Container" type="VBoxContainer" parent="." unique_id=869242312]
 layout_mode = 2
 
-[node name="Header" type="VBoxContainer" parent="Container"]
+[node name="Header" type="VBoxContainer" parent="Container" unique_id=1674060802]
 layout_mode = 2
 
-[node name="--" type="HSeparator" parent="Container/Header"]
+[node name="--" type="HSeparator" parent="Container/Header" unique_id=1772925083]
 layout_mode = 2
 
-[node name="Bar" type="PanelContainer" parent="Container/Header"]
+[node name="Bar" type="PanelContainer" parent="Container/Header" unique_id=2068949071]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_a1d1l")
 
-[node name="DropHighlight" type="ColorRect" parent="Container/Header/Bar"]
+[node name="DropHighlight" type="ColorRect" parent="Container/Header/Bar" unique_id=411793024]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 color = Color(0.588235, 0.588235, 0.588235, 0.588235)
 
-[node name="Container" type="HBoxContainer" parent="Container/Header/Bar"]
+[node name="Container" type="HBoxContainer" parent="Container/Header/Bar" unique_id=2136902081]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="DragButton" type="Button" parent="Container/Header/Bar/Container"]
+[node name="DragButton" type="Button" parent="Container/Header/Bar/Container" unique_id=200349903]
 unique_name_in_owner = true
 layout_mode = 2
 disabled = true
 icon = ExtResource("4_a547j")
 flat = true
 
-[node name="ExpandableButton" type="Button" parent="Container/Header/Bar/Container"]
+[node name="ExpandableButton" type="Button" parent="Container/Header/Bar/Container" unique_id=1475728607]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Expand Group"
@@ -63,13 +63,14 @@ button_pressed = true
 icon = ExtResource("5_a547j")
 flat = true
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Container/Header/Bar/Container"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Container/Header/Bar/Container" unique_id=892747098]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
+flat = true
 edit_alpha = false
 
-[node name="NameInput" type="LineEdit" parent="Container/Header/Bar/Container"]
+[node name="NameInput" type="LineEdit" parent="Container/Header/Bar/Container" unique_id=54432968]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -77,7 +78,7 @@ theme_override_styles/normal = ExtResource("2_mjwdj")
 text = "New Group"
 placeholder_text = "Group name..."
 
-[node name="ModifiedIndicator" type="Label" parent="Container/Header/Bar/Container"]
+[node name="ModifiedIndicator" type="Label" parent="Container/Header/Bar/Container" unique_id=2040741978]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -87,33 +88,33 @@ text = "(*)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RemoveButton" type="Button" parent="Container/Header/Bar/Container"]
+[node name="RemoveButton" type="Button" parent="Container/Header/Bar/Container" unique_id=1993024827]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Remove Group"
-icon = SubResource("DPITexture_li462")
+icon = SubResource("DPITexture_uexgy")
 flat = true
 
-[node name="---" type="HSeparator" parent="Container/Header"]
+[node name="---" type="HSeparator" parent="Container/Header" unique_id=1034002351]
 layout_mode = 2
 
-[node name="SubPanel" type="PanelContainer" parent="Container"]
+[node name="SubPanel" type="PanelContainer" parent="Container" unique_id=1645090527]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_a1d1l")
 
-[node name="ItemsContainer" type="VBoxContainer" parent="Container/SubPanel"]
+[node name="ItemsContainer" type="VBoxContainer" parent="Container/SubPanel" unique_id=770183639]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="EmptyLabel" type="Label" parent="Container/SubPanel/ItemsContainer"]
+[node name="EmptyLabel" type="Label" parent="Container/SubPanel/ItemsContainer" unique_id=1690020289]
 unique_name_in_owner = true
 layout_mode = 2
 text = "(No items in the group)"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="DropHighlightLine" type="ColorRect" parent="Container/SubPanel/ItemsContainer/EmptyLabel"]
+[node name="DropHighlightLine" type="ColorRect" parent="Container/SubPanel/ItemsContainer/EmptyLabel" unique_id=2080795141]
 visible = false
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 1
@@ -125,5 +126,5 @@ grow_horizontal = 2
 grow_vertical = 0
 color = Color(0, 0, 0, 1)
 
-[node name="LastSeparator" type="HSeparator" parent="Container"]
+[node name="LastSeparator" type="HSeparator" parent="Container" unique_id=1920579598]
 layout_mode = 2

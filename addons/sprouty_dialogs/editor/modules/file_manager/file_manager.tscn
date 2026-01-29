@@ -1,20 +1,36 @@
-[gd_scene load_steps=11 format=3 uid="uid://dpscdg0f7o6ft"]
+[gd_scene format=3 uid="uid://dpscdg0f7o6ft"]
 
 [ext_resource type="Script" uid="uid://cv23xnc0v5l0t" path="res://addons/sprouty_dialogs/editor/modules/file_manager/scripts/file_manager.gd" id="1_3v21c"]
 [ext_resource type="Script" uid="uid://xuu4omf67pq3" path="res://addons/sprouty_dialogs/editor/scripts/side_bar_controller.gd" id="1_avlcx"]
 [ext_resource type="Texture2D" uid="uid://dv53yhmd7k3d5" path="res://addons/sprouty_dialogs/editor/icons/add-dialog.svg" id="2_fjick"]
 [ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/sprouty_dialogs/editor/icons/add-char.svg" id="3_ljhu2"]
+[ext_resource type="StyleBox" uid="uid://b6wqi1f10yowf" path="res://addons/sprouty_dialogs/editor/theme/v_separator.tres" id="4_5rvxf"]
 [ext_resource type="Script" uid="uid://dlco4x1xmoek0" path="res://addons/sprouty_dialogs/editor/modules/file_manager/scripts/file_list_manager.gd" id="4_r5dun"]
+[ext_resource type="StyleBox" uid="uid://bhwywsg8px0ak" path="res://addons/sprouty_dialogs/editor/theme/panel_style.tres" id="7_rjq41"]
 [ext_resource type="Texture2D" uid="uid://cka2spagpv2d7" path="res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg" id="7_uexgy"]
 [ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-left.svg" id="8_72tq1"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="8_wehoa"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-right.svg" id="9_xltsg"]
 
-[sub_resource type="DPITexture" id="DPITexture_uexgy"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uexgy"]
+
+[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="SideBar" type="VSplitContainer"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lvb0l"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 5
+
+[node name="SideBar" type="VSplitContainer" unique_id=142971910]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -23,127 +39,132 @@ grow_vertical = 2
 collapsed = true
 script = ExtResource("1_avlcx")
 
-[node name="ContentContainer" type="MarginContainer" parent="."]
+[node name="ContentContainer" type="MarginContainer" parent="." unique_id=1671207340]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="Container" type="VBoxContainer" parent="ContentContainer"]
+[node name="Container" type="VBoxContainer" parent="ContentContainer" unique_id=652378974]
 layout_mode = 2
 
-[node name="FileManager" type="VBoxContainer" parent="ContentContainer/Container"]
+[node name="FileManager" type="VBoxContainer" parent="ContentContainer/Container" unique_id=668574025]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("1_3v21c")
 
-[node name="FileOptions" type="HBoxContainer" parent="ContentContainer/Container/FileManager"]
-custom_minimum_size = Vector2(150, 0)
+[node name="FileOptions" type="HBoxContainer" parent="ContentContainer/Container/FileManager" unique_id=1849295784]
 layout_mode = 2
-size_flags_horizontal = 6
+alignment = 1
 
-[node name="NewDialogButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
+[node name="NewDialogButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1834082478]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "New dialogue"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
 icon = ExtResource("2_fjick")
 flat = true
 
-[node name="VSeparator" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions"]
+[node name="VSeparator" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=719134287]
 layout_mode = 2
 
-[node name="NewCharButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
+[node name="NewCharButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=621719315]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "New Character"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
 icon = ExtResource("3_ljhu2")
 flat = true
 
-[node name="VSeparator2" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions"]
+[node name="VSeparator2" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1509515013]
 layout_mode = 2
 
-[node name="OpenFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
+[node name="OpenFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=456714443]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Open a file"
-icon = SubResource("DPITexture_uexgy")
+theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
+icon = SubResource("DPITexture_5rvxf")
 flat = true
 
-[node name="VSeparator3" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions"]
+[node name="VSeparator3" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1882684084]
 layout_mode = 2
 
-[node name="SaveFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions"]
+[node name="SaveFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=142401738]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Save current file"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
 disabled = true
-icon = SubResource("DPITexture_uexgy")
+icon = SubResource("DPITexture_5rvxf")
 flat = true
 
-[node name="FileList" type="VBoxContainer" parent="ContentContainer/Container/FileManager"]
+[node name="FileList" type="VBoxContainer" parent="ContentContainer/Container/FileManager" unique_id=200220843]
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("4_r5dun")
 
-[node name="FileSearch" type="LineEdit" parent="ContentContainer/Container/FileManager/FileList"]
+[node name="FileSearch" type="LineEdit" parent="ContentContainer/Container/FileManager/FileList" unique_id=989532915]
 layout_mode = 2
 placeholder_text = "Search files..."
-right_icon = SubResource("DPITexture_uexgy")
 caret_blink = true
 caret_blink_interval = 0.5
+right_icon = SubResource("DPITexture_5rvxf")
 
-[node name="FileItemList" type="ItemList" parent="ContentContainer/Container/FileManager/FileList"]
+[node name="FileItemList" type="ItemList" parent="ContentContainer/Container/FileManager/FileList" unique_id=55579572]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_lvb0l")
 same_column_width = true
 
-[node name="FilteredList" type="ItemList" parent="ContentContainer/Container/FileManager/FileList"]
+[node name="FilteredList" type="ItemList" parent="ContentContainer/Container/FileManager/FileList" unique_id=1141877050]
 visible = false
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_styles/panel = ExtResource("7_rjq41")
 same_column_width = true
 
-[node name="CSVFileField" type="VBoxContainer" parent="ContentContainer/Container/FileManager"]
+[node name="CSVFileField" type="VBoxContainer" parent="ContentContainer/Container/FileManager" unique_id=2071240888]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Label" parent="ContentContainer/Container/FileManager/CSVFileField"]
+[node name="Label" type="Label" parent="ContentContainer/Container/FileManager/CSVFileField" unique_id=1145070147]
 layout_mode = 2
 text = "CSV Translation File"
 
-[node name="FileField" parent="ContentContainer/Container/FileManager/CSVFileField" instance=ExtResource("8_wehoa")]
+[node name="FileField" parent="ContentContainer/Container/FileManager/CSVFileField" unique_id=177139207 instance=ExtResource("8_wehoa")]
 layout_mode = 2
 _open_directory = false
 _recent_file_type = "csv_dialog_files"
 file_filters = PackedStringArray("*.csv")
 
-[node name="PopupDialogs" type="Node" parent="ContentContainer/Container/FileManager"]
+[node name="PopupDialogs" type="Node" parent="ContentContainer/Container/FileManager" unique_id=1018112845]
 
-[node name="FileMenu" type="PopupMenu" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+[node name="FileMenu" type="PopupMenu" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1188413652]
 unique_name_in_owner = true
 size = Vector2i(108, 120)
 item_count = 5
 item_0/text = "Save"
-item_0/icon = SubResource("DPITexture_uexgy")
+item_0/icon = SubResource("DPITexture_5rvxf")
 item_0/id = 0
 item_1/text = "Save As..."
-item_1/icon = SubResource("DPITexture_uexgy")
+item_1/icon = SubResource("DPITexture_5rvxf")
 item_1/id = 1
 item_2/id = 4
 item_2/separator = true
 item_3/text = "Close"
-item_3/icon = SubResource("DPITexture_uexgy")
+item_3/icon = SubResource("DPITexture_5rvxf")
 item_3/id = 2
 item_4/text = "Close All"
-item_4/icon = SubResource("DPITexture_uexgy")
+item_4/icon = SubResource("DPITexture_5rvxf")
 item_4/id = 3
 
-[node name="ConfirmCloseFiles" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+[node name="ConfirmCloseFiles" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1858451831]
 unique_name_in_owner = true
 title = "Please Confirm..."
 initial_position = 4
@@ -151,14 +172,14 @@ size = Vector2i(336, 106)
 dialog_text = "The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?"
 
-[node name="NewDialog" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+[node name="NewDialog" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=790664647]
 title = "New Dialogue"
 initial_position = 4
 size = Vector2i(600, 400)
 ok_button_text = "Create File"
 filters = PackedStringArray("*.tres")
 
-[node name="NewChar" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+[node name="NewChar" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1900781541]
 auto_translate_mode = 1
 title = "New Character"
 initial_position = 4
@@ -166,7 +187,7 @@ size = Vector2i(600, 400)
 ok_button_text = "Create File"
 filters = PackedStringArray("*.tres")
 
-[node name="OpenFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+[node name="OpenFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1262344259]
 auto_translate_mode = 1
 title = "Open a File"
 initial_position = 4
@@ -175,16 +196,16 @@ ok_button_text = "Open"
 file_mode = 0
 filters = PackedStringArray("*.tres")
 
-[node name="SaveFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+[node name="SaveFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=296390590]
 auto_translate_mode = 1
 initial_position = 4
 size = Vector2i(600, 400)
 filters = PackedStringArray("*.tres")
 
-[node name="BottomContainer" type="HBoxContainer" parent="ContentContainer/Container"]
+[node name="BottomContainer" type="HBoxContainer" parent="ContentContainer/Container" unique_id=369707668]
 layout_mode = 2
 
-[node name="VersionButton" type="Button" parent="ContentContainer/Container/BottomContainer"]
+[node name="VersionButton" type="Button" parent="ContentContainer/Container/BottomContainer" unique_id=1173093104]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -193,25 +214,26 @@ icon = ExtResource("7_uexgy")
 flat = true
 alignment = 0
 
-[node name="CloseButton" type="Button" parent="ContentContainer/Container/BottomContainer"]
+[node name="CloseButton" type="Button" parent="ContentContainer/Container/BottomContainer" unique_id=1267987198]
 layout_mode = 2
 icon = ExtResource("8_72tq1")
 flat = true
 
-[node name="ExpandBar" type="HBoxContainer" parent="."]
+[node name="ExpandBar" type="HBoxContainer" parent="." unique_id=1047421134]
 visible = false
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="ExpandButton" type="Button" parent="ExpandBar"]
+[node name="ExpandButton" type="Button" parent="ExpandBar" unique_id=994333336]
 layout_mode = 2
 size_flags_horizontal = 0
 icon = ExtResource("9_xltsg")
 flat = true
 vertical_icon_alignment = 2
 
-[node name="VSeparator" type="VSeparator" parent="ExpandBar"]
+[node name="VSeparator" type="VSeparator" parent="ExpandBar" unique_id=1669312907]
 layout_mode = 2
+theme_override_styles/separator = ExtResource("4_5rvxf")
 
 [connection signal="focus_exited" from="ContentContainer/Container/FileManager/FileList/FileSearch" to="." method="_on_file_search_focus_exited"]
 [connection signal="pressed" from="ContentContainer/Container/BottomContainer/CloseButton" to="." method="_on_close_button_pressed"]

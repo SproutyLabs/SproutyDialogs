@@ -1,46 +1,44 @@
-[gd_scene load_steps=6 format=3 uid="uid://b2yssuibgdpbd"]
+[gd_scene format=3 uid="uid://b2yssuibgdpbd"]
 
 [ext_resource type="Script" uid="uid://bi31btvl5vh6n" path="res://addons/sprouty_dialogs/editor/components/scripts/option_container.gd" id="1_csyed"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/sprouty_dialogs/editor/components/translations_container.tscn" id="2_6k3ms"]
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="2_ynjo5"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="2_ynjo5"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/sprouty_dialogs/editor/components/expandable_text_box.tscn" id="3_5qfnu"]
 
-[sub_resource type="DPITexture" id="DPITexture_63p5b"]
+[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="OptionContainer" type="VBoxContainer"]
+[node name="OptionContainer" type="VBoxContainer" unique_id=1301522108]
 script = ExtResource("1_csyed")
 
-[node name="OptionHeader" type="HBoxContainer" parent="."]
+[node name="OptionHeader" type="HBoxContainer" parent="." unique_id=483712228]
 layout_mode = 2
 
-[node name="OptionLabel" type="Label" parent="OptionHeader"]
+[node name="OptionLabel" type="Label" parent="OptionHeader" unique_id=338061852]
 layout_mode = 2
 text = "Option #1"
 
-[node name="DefaultLocaleLabel" type="Label" parent="OptionHeader"]
+[node name="DefaultLocaleLabel" type="Label" parent="OptionHeader" unique_id=639184681]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_ynjo5")
 theme_type_variation = &"LocaleLabel"
-text = "()"
+text = "(en)"
 
-[node name="RemoveButton" type="Button" parent="OptionHeader"]
+[node name="RemoveButton" type="Button" parent="OptionHeader" unique_id=871961428]
 visible = false
 layout_mode = 2
-icon = SubResource("DPITexture_63p5b")
+icon = SubResource("DPITexture_5rvxf")
 flat = true
 
-[node name="ExpandableTextBox" parent="." instance=ExtResource("3_5qfnu")]
+[node name="ExpandableTextBox" parent="." unique_id=1460155772 instance=ExtResource("3_5qfnu")]
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="TranslationsContainer" parent="." instance=ExtResource("2_6k3ms")]
-visible = false
+[node name="TranslationsContainer" parent="." unique_id=53738011 instance=ExtResource("2_6k3ms")]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="."]
+[node name="HSeparator" type="HSeparator" parent="." unique_id=1858026252]
 layout_mode = 2

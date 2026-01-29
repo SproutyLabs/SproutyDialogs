@@ -1,6 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://n6xtq0g0yp1m"]
+[gd_scene format=3 uid="uid://n6xtq0g0yp1m"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_05qy5"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_05qy5"]
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/dialogue.svg" id="4_hljjc"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="4_ujava"]
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg" id="4_urrmu"]
@@ -30,11 +30,11 @@ border_width_right = 2
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="DPITexture" id="DPITexture_nvbp3"]
+[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="DialogueNode" type="GraphNode"]
+[node name="DialogueNode" type="GraphNode" unique_id=780717415]
 custom_minimum_size = Vector2(250, 0)
 offset_right = 250.0
 offset_bottom = 439.0
@@ -93,18 +93,18 @@ script = ExtResource("5_v7cqa")
 node_color = Color(0.827451, 0.27451, 0.262745, 1)
 node_icon = ExtResource("4_hljjc")
 
-[node name="CharacterContainer" type="VBoxContainer" parent="."]
+[node name="CharacterContainer" type="VBoxContainer" parent="." unique_id=1375918612]
 layout_mode = 2
 
-[node name="Header" type="HBoxContainer" parent="CharacterContainer"]
+[node name="Header" type="HBoxContainer" parent="CharacterContainer" unique_id=1684847338]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CharacterContainer/Header"]
+[node name="Label" type="Label" parent="CharacterContainer/Header" unique_id=336360256]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Character"
 
-[node name="CharacterExpandButton" type="Button" parent="CharacterContainer/Header"]
+[node name="CharacterExpandButton" type="Button" parent="CharacterContainer/Header" unique_id=950778460]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
@@ -112,16 +112,16 @@ button_pressed = true
 icon = ExtResource("4_urrmu")
 flat = true
 
-[node name="Content" type="VBoxContainer" parent="CharacterContainer"]
+[node name="Content" type="VBoxContainer" parent="CharacterContainer" unique_id=174557450]
 layout_mode = 2
 
-[node name="CharacterFileField" parent="CharacterContainer/Content" instance=ExtResource("4_ujava")]
+[node name="CharacterFileField" parent="CharacterContainer/Content" unique_id=1087946515 instance=ExtResource("4_ujava")]
 unique_name_in_owner = true
 layout_mode = 2
 _open_directory = false
 file_filters = PackedStringArray("*.tres", "*.res")
 
-[node name="CharacterNameButton" type="Button" parent="CharacterContainer/Content/CharacterFileField/HBox" index="0"]
+[node name="CharacterNameButton" type="Button" parent="CharacterContainer/Content/CharacterFileField/HBox" index="0" unique_id=1499318461]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -134,23 +134,23 @@ icon = ExtResource("5_hoe8b")
 visible = false
 
 [node name="OpenButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="2"]
-icon = SubResource("DPITexture_nvbp3")
+icon = SubResource("DPITexture_5rvxf")
 
 [node name="ClearButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="3"]
 size_flags_horizontal = 8
-icon = SubResource("DPITexture_nvbp3")
+icon = SubResource("DPITexture_5rvxf")
 
 [node name="OpenDialog" parent="CharacterContainer/Content/CharacterFileField" index="1"]
 ok_button_text = "Open File"
 
-[node name="PortraitContainer" type="VBoxContainer" parent="CharacterContainer/Content"]
+[node name="PortraitContainer" type="VBoxContainer" parent="CharacterContainer/Content" unique_id=1544201117]
 layout_mode = 2
 
-[node name="PortraitLabel" type="Label" parent="CharacterContainer/Content/PortraitContainer"]
+[node name="PortraitLabel" type="Label" parent="CharacterContainer/Content/PortraitContainer" unique_id=869545119]
 layout_mode = 2
 text = "Portrait"
 
-[node name="PortraitSelect" type="OptionButton" parent="CharacterContainer/Content/PortraitContainer"]
+[node name="PortraitSelect" type="OptionButton" parent="CharacterContainer/Content/PortraitContainer" unique_id=480226487]
 unique_name_in_owner = true
 layout_mode = 2
 selected = 0
@@ -159,21 +159,21 @@ item_count = 1
 popup/item_0/text = "(No one)"
 popup/item_0/id = 0
 
-[node name="Separator" type="HSeparator" parent="."]
+[node name="Separator" type="HSeparator" parent="." unique_id=596704100]
 layout_mode = 2
 
-[node name="DialogContainer" type="VBoxContainer" parent="."]
+[node name="DialogContainer" type="VBoxContainer" parent="." unique_id=1980537437]
 layout_mode = 2
 
-[node name="DialogHeader" type="HBoxContainer" parent="DialogContainer"]
+[node name="DialogHeader" type="HBoxContainer" parent="DialogContainer" unique_id=608982801]
 layout_mode = 2
 
-[node name="DialogLabel" type="Label" parent="DialogContainer/DialogHeader"]
+[node name="DialogLabel" type="Label" parent="DialogContainer/DialogHeader" unique_id=1485664226]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Dialogue"
 
-[node name="DefaultLocaleLabel" type="Label" parent="DialogContainer/DialogHeader"]
+[node name="DefaultLocaleLabel" type="Label" parent="DialogContainer/DialogHeader" unique_id=1048555993]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
@@ -182,24 +182,24 @@ theme_type_variation = &"LocaleLabel"
 text = "(en)"
 horizontal_alignment = 2
 
-[node name="DefaultTextBox" parent="DialogContainer" instance=ExtResource("6_2llfw")]
+[node name="DefaultTextBox" parent="DialogContainer" unique_id=1603816638 instance=ExtResource("6_2llfw")]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
-[node name="Translations" parent="DialogContainer" instance=ExtResource("5_kt63k")]
+[node name="Translations" parent="DialogContainer" unique_id=539293577 instance=ExtResource("5_kt63k")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="DialogContainer"]
+[node name="HSeparator" type="HSeparator" parent="DialogContainer" unique_id=542190965]
 layout_mode = 2
 
-[node name="Next" type="Label" parent="."]
+[node name="Next" type="Label" parent="." unique_id=1065474543]
 layout_mode = 2
 text = "Next"
 horizontal_alignment = 2
 
-[node name="MarginBottom" type="MarginContainer" parent="."]
+[node name="MarginBottom" type="MarginContainer" parent="." unique_id=873039769]
 layout_mode = 2
 theme_override_constants/margin_top = 0
 

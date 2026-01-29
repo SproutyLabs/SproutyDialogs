@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://dyqd2p3t57lwa"]
+[gd_scene format=3 uid="uid://dyqd2p3t57lwa"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_n0obq"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_n0obq"]
 [ext_resource type="Script" uid="uid://ck1rjlfxm126n" path="res://addons/sprouty_dialogs/event_nodes/custom_event_nodes/scripts/custom_node.gd" id="2_0v1xp"]
 [ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/editor/icons/text_editor/text.svg" id="3_ym2dh"]
 

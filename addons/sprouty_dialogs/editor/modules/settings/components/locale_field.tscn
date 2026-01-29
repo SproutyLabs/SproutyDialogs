@@ -1,33 +1,38 @@
-[gd_scene load_steps=4 format=3 uid="uid://ngq3wbnr5uin"]
+[gd_scene format=3 uid="uid://ngq3wbnr5uin"]
 
-[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/main_theme.tres" id="1_coxnc"]
+[ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_coxnc"]
 [ext_resource type="Script" uid="uid://dgcneu5dp5vnr" path="res://addons/sprouty_dialogs/editor/modules/settings/components/scripts/locale_field.gd" id="2_edy3j"]
-[ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/editor/icons/text_editor/image.svg" id="3_24b7j"]
 
-[node name="LocaleField" type="MarginContainer"]
+[sub_resource type="DPITexture" id="DPITexture_uexgy"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
+[node name="LocaleField" type="MarginContainer" unique_id=396273003]
 size_flags_horizontal = 3
 theme = ExtResource("1_coxnc")
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_bottom = 5
 script = ExtResource("2_edy3j")
 
-[node name="Container" type="HBoxContainer" parent="."]
+[node name="Container" type="HBoxContainer" parent="." unique_id=1086936709]
 layout_mode = 2
 theme_override_constants/separation = 7
 
-[node name="CodeInput" type="LineEdit" parent="Container"]
+[node name="CodeInput" type="LineEdit" parent="Container" unique_id=1912415019]
 custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 placeholder_text = "Locale code..."
 
-[node name="LanguageDropdown" type="OptionButton" parent="Container"]
+[node name="LanguageDropdown" type="OptionButton" parent="Container" unique_id=588635863]
 layout_mode = 2
 size_flags_horizontal = 3
+flat = true
 selected = 0
 fit_to_longest_item = false
 item_count = 616
 popup/item_0/text = "(no one)"
+popup/item_0/id = 0
 popup/item_1/text = "Afar (aa)"
 popup/item_1/id = 1
 popup/item_2/text = "Abkhazian (ab)"
@@ -238,23 +243,23 @@ popup/item_104/text = "Chickasaw (cic)"
 popup/item_104/id = 104
 popup/item_105/text = "Central Kurdish (ckb)"
 popup/item_105/id = 105
-popup/item_106/text = "Kashubian (csb)"
+popup/item_106/text = "Mandarin Chinese (cmn)"
 popup/item_106/id = 106
-popup/item_107/text = "Mandarin Chinese (cmn)"
+popup/item_107/text = "Corsican (co)"
 popup/item_107/id = 107
-popup/item_108/text = "Corsican (co)"
+popup/item_108/text = "Coptic (cop)"
 popup/item_108/id = 108
-popup/item_109/text = "Coptic (cop)"
+popup/item_109/text = "Capiznon (cps)"
 popup/item_109/id = 109
-popup/item_110/text = "Capiznon (cps)"
+popup/item_110/text = "Cree (cr)"
 popup/item_110/id = 110
-popup/item_111/text = "Cree (cr)"
+popup/item_111/text = "Crimean Tatar (crh)"
 popup/item_111/id = 111
-popup/item_112/text = "Crimean Tatar (crh)"
+popup/item_112/text = "Seselwa Creole French (crs)"
 popup/item_112/id = 112
-popup/item_113/text = "Seselwa Creole French (crs)"
+popup/item_113/text = "Czech (cs)"
 popup/item_113/id = 113
-popup/item_114/text = "Czech (cs)"
+popup/item_114/text = "Kashubian (csb)"
 popup/item_114/id = 114
 popup/item_115/text = "Church Slavic (cu)"
 popup/item_115/id = 115
@@ -622,11 +627,11 @@ popup/item_296/text = "Cornish (kw)"
 popup/item_296/id = 296
 popup/item_297/text = "Kirghiz (ky)"
 popup/item_297/id = 297
-popup/item_298/text = "Langi (lag)"
+popup/item_298/text = "Latin (la)"
 popup/item_298/id = 298
-popup/item_299/text = "Latin (la)"
+popup/item_299/text = "Ladino (lad)"
 popup/item_299/id = 299
-popup/item_300/text = "Ladino (lad)"
+popup/item_300/text = "Langi (lag)"
 popup/item_300/id = 300
 popup/item_301/text = "Lahnda (lah)"
 popup/item_301/id = 301
@@ -1259,13 +1264,15 @@ popup/item_614/id = 614
 popup/item_615/text = "Zaza (zza)"
 popup/item_615/id = 615
 
-[node name="CountryDropdown" type="OptionButton" parent="Container"]
+[node name="CountryDropdown" type="OptionButton" parent="Container" unique_id=1057033761]
 layout_mode = 2
 size_flags_horizontal = 3
+flat = true
 selected = 0
 fit_to_longest_item = false
 item_count = 262
 popup/item_0/text = "(no one)"
+popup/item_0/id = 0
 popup/item_1/text = "Ascension Island (AC)"
 popup/item_1/id = 1
 popup/item_2/text = "Andorra (AD)"
@@ -1789,12 +1796,12 @@ popup/item_260/id = 260
 popup/item_261/text = "Zimbabwe (ZW)"
 popup/item_261/id = 261
 
-[node name="RemoveButton" type="Button" parent="Container"]
+[node name="RemoveButton" type="Button" parent="Container" unique_id=264420450]
 layout_mode = 2
-icon = ExtResource("3_24b7j")
+icon = SubResource("DPITexture_uexgy")
 flat = true
 
-[node name="PopupSelector" type="PopupMenu" parent="."]
+[node name="PopupSelector" type="PopupMenu" parent="." unique_id=1466380997]
 transient_to_focused = true
 max_size = Vector2i(200, 200)
 

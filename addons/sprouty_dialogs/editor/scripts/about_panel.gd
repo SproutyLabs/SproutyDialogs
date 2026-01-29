@@ -82,7 +82,7 @@ func _on_github_button_pressed() -> void:
 
 ## Handle Donate button pressed
 func _on_donate_button_pressed() -> void:
-	_open_url("")
+	_open_url("https://ko-fi.com/kazymila")
 
 
 ## Handle check for updates button pressed
