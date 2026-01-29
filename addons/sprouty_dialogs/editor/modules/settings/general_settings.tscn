@@ -1,19 +1,25 @@
-[gd_scene load_steps=10 format=3 uid="uid://bbabgt3yvpmw5"]
+[gd_scene format=3 uid="uid://bbabgt3yvpmw5"]
 
 [ext_resource type="Script" uid="uid://d0js6iit3n6uq" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/general_settings.gd" id="1_il2y2"]
 [ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="2_0s7dw"]
 [ext_resource type="Texture2D" uid="uid://c30bvh5pxcwpi" path="res://addons/sprouty_dialogs/editor/icons/cursor-arrow.svg" id="2_kixug"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="3_hokrq"]
-[ext_resource type="Texture2D" uid="uid://cf5ef41yo6jl6" path="res://addons/dialogue_nodes/icons/Reload.svg" id="3_lylrf"]
+[ext_resource type="Texture2D" uid="uid://chd4ylouli7dj" path="res://addons/sprouty_dialogs/editor/icons/Reload.svg" id="3_og6kh"]
 [ext_resource type="Texture2D" uid="uid://t7ujqvnbwl36" path="res://addons/sprouty_dialogs/editor/icons/settings.svg" id="4_kixug"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/editor/icons/text_editor/image.svg" id="5_kixug"]
 [ext_resource type="Texture2D" uid="uid://3ygkqeueqkrd" path="res://addons/sprouty_dialogs/editor/icons/text_editor/magic-wand.svg" id="8_euhf0"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0n6vl"]
+load_path = "res://.godot/imported/Reload.svg-1d5ff8ddb6eb04117bb9a29b4622fe29.editor.ctex"
 
 [sub_resource type="DPITexture" id="DPITexture_euhf0"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="GeneralSettings" type="HSplitContainer"]
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jvnsa"]
+load_path = "res://.godot/imported/Reload.svg-1d5ff8ddb6eb04117bb9a29b4622fe29.editor.ctex"
+
+[node name="GeneralSettings" type="HSplitContainer" unique_id=161499622]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -21,72 +27,72 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_il2y2")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1402111256]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer" unique_id=458985237]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer" unique_id=80386570]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="InputTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="InputTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1002229809]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/InputTitle"]
+[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/InputTitle" unique_id=1807802027]
 layout_mode = 2
 icon = ExtResource("2_kixug")
 flat = true
 
-[node name="InputLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/InputTitle"]
+[node name="InputLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/InputTitle" unique_id=97072175]
 layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Input"
 
-[node name="ContinueInputAction" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="ContinueInputAction" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=167837567]
 layout_mode = 2
 tooltip_text = "The input action that allows the dialog to continue."
 
-[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction"]
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction" unique_id=680543870]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Continue input action"
 
-[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction"]
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction" unique_id=76641043]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_lylrf")
+icon = ExtResource("3_og6kh")
 flat = true
 
-[node name="ContinueInputActionField" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction" instance=ExtResource("2_0s7dw")]
+[node name="ContinueInputActionField" parent="MarginContainer/ScrollContainer/VBoxContainer/ContinueInputAction" unique_id=972622730 instance=ExtResource("2_0s7dw")]
 unique_name_in_owner = true
 layout_mode = 2
 text = "dialogs_continue_action"
 placeholder_text = "Input action..."
 _placeholder_text = "Input action name..."
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=366730916]
 layout_mode = 2
 
-[node name="DefaultsTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="DefaultsTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=31994665]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultsTitle"]
+[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultsTitle" unique_id=1566878299]
 layout_mode = 2
 icon = ExtResource("4_kixug")
 flat = true
 
-[node name="DefaultsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultsTitle"]
+[node name="DefaultsLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultsTitle" unique_id=1597963108]
 layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Defaults"
 
-[node name="DefaultDialogBoxWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="DefaultDialogBoxWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1431731673]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -94,36 +100,36 @@ bbcode_enabled = true
 text = "[color=tomato]Please select a valid scene file for the default dialog box."
 fit_content = true
 
-[node name="DefaultDialogBox" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="DefaultDialogBox" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1365688434]
 layout_mode = 2
 tooltip_text = "Default dialog box that will be displayed when no character is selected.
 It will also be used as a template when creating a new dialog box for a character.
 The root of the scene must be a node inherited from the DialogBox class."
 
-[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=1266357145]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Default dialog box"
 
-[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=300849194]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_lylrf")
+icon = SubResource("CompressedTexture2D_0n6vl")
 flat = true
 
-[node name="NewDialogBoxButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
+[node name="NewDialogBoxButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=1664787710]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 icon = SubResource("DPITexture_euhf0")
 
-[node name="ToDialogBoxSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox"]
+[node name="ToDialogBoxSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=1787468392]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Open the dialog box scene."
 icon = SubResource("DPITexture_euhf0")
 
-[node name="DefaultDialogBoxField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" instance=ExtResource("3_hokrq")]
+[node name="DefaultDialogBoxField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=1895062874 instance=ExtResource("3_hokrq")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -131,7 +137,7 @@ _open_directory = false
 _placeholder_text = "Select a dialog box scene..."
 file_filters = PackedStringArray("*.tscn")
 
-[node name="DefaultPortraitWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="DefaultPortraitWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1343983695]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -139,35 +145,35 @@ bbcode_enabled = true
 text = "[color=tomato]Please select a valid scene file for the default portrait scene."
 fit_content = true
 
-[node name="DefaultPortraitScene" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="DefaultPortraitScene" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=559072571]
 layout_mode = 2
 tooltip_text = "Default portrait scene that will be used as a template when creating a new portrait for a character.
 The root of the scene must be a node inherited from the DialogPortrait class."
 
-[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1581300342]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Default portrait scene"
 
-[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1248565026]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_lylrf")
+icon = SubResource("CompressedTexture2D_jvnsa")
 flat = true
 
-[node name="NewPortraitSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
+[node name="NewPortraitSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1000870692]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 icon = SubResource("DPITexture_euhf0")
 
-[node name="ToPortraitSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene"]
+[node name="ToPortraitSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1826129689]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Open the dialog box scene."
 icon = SubResource("DPITexture_euhf0")
 
-[node name="DefaultPortraitSceneField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" instance=ExtResource("3_hokrq")]
+[node name="DefaultPortraitSceneField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1050102050 instance=ExtResource("3_hokrq")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -175,40 +181,40 @@ _open_directory = false
 _placeholder_text = "Select a portrait scene..."
 file_filters = PackedStringArray("*.tscn")
 
-[node name="HSeparator2" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1021078704]
 layout_mode = 2
 
-[node name="CanvasTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="CanvasTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=695121349]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CanvasTitle"]
+[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CanvasTitle" unique_id=549009888]
 layout_mode = 2
 icon = ExtResource("5_kixug")
 flat = true
 
-[node name="CanvasLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CanvasTitle"]
+[node name="CanvasLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CanvasTitle" unique_id=1833710466]
 layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Canvas Layers"
 
-[node name="DialogBoxCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="DialogBoxCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1074671582]
 layout_mode = 2
 tooltip_text = "Layer index for the draw order of the canvas layer where dialog boxes will be displayed by default, 
 if the dialog box parent is not overriden."
 
-[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer" unique_id=677763954]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Dialog box canvas layer"
 
-[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer" unique_id=1222435598]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_lylrf")
+icon = ExtResource("3_og6kh")
 flat = true
 
-[node name="DialogBoxCanvasLayerField" type="SpinBox" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer"]
+[node name="DialogBoxCanvasLayerField" type="SpinBox" parent="MarginContainer/ScrollContainer/VBoxContainer/DialogBoxCanvasLayer" unique_id=1194994325]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -216,23 +222,23 @@ value = 2.0
 allow_greater = true
 allow_lesser = true
 
-[node name="PortraitsCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="PortraitsCanvasLayer" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=511152720]
 layout_mode = 2
 tooltip_text = "Layer index for the draw order of the canvas layer where portraits will be displayed by default, 
 if the portrait parent is not overriden."
 
-[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer" unique_id=392589812]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Portrait canvas layer"
 
-[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer" unique_id=1645526182]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_lylrf")
+icon = ExtResource("3_og6kh")
 flat = true
 
-[node name="PortraitCanvasLayerField" type="SpinBox" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer"]
+[node name="PortraitCanvasLayerField" type="SpinBox" parent="MarginContainer/ScrollContainer/VBoxContainer/PortraitsCanvasLayer" unique_id=989931712]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -240,43 +246,43 @@ value = 1.0
 allow_greater = true
 allow_lesser = true
 
-[node name="HSeparator3" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=715179970]
 layout_mode = 2
 
-[node name="CustomTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="CustomTitle" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=764356813]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomTitle"]
+[node name="TitleIcon" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomTitle" unique_id=1078217903]
 layout_mode = 2
 icon = ExtResource("8_euhf0")
 flat = true
 
-[node name="CustomLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomTitle"]
+[node name="CustomLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomTitle" unique_id=415009564]
 layout_mode = 2
 theme_type_variation = &"HeaderSmall"
 text = "Custom Event Nodes"
 
-[node name="UseCustomNodes" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="UseCustomNodes" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=37730109]
 layout_mode = 2
 tooltip_text = "Enable/disable the use of custom event nodes."
 
-[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes"]
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes" unique_id=529821886]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Use custom event nodes"
 
-[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes"]
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes" unique_id=1328093936]
 layout_mode = 2
-icon = ExtResource("3_lylrf")
+icon = ExtResource("3_og6kh")
 flat = true
 
-[node name="UseCustomNodesToggle" type="CheckButton" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes"]
+[node name="UseCustomNodesToggle" type="CheckButton" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes" unique_id=601995962]
 unique_name_in_owner = true
 layout_mode = 2
 button_pressed = true
 
-[node name="CustomNodesFolderWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="CustomNodesFolderWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1626517227]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -284,29 +290,29 @@ bbcode_enabled = true
 text = "[color=tomato]Please select a valid directory for the custom event nodes."
 fit_content = true
 
-[node name="CustomNodesFolder" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="CustomNodesFolder" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=458482807]
 layout_mode = 2
 tooltip_text = "Path to the directory where you have your custom event nodes (.tscn files)."
 
-[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder"]
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder" unique_id=1389548959]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Custom event nodes folder"
 
-[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder"]
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder" unique_id=1502222122]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_lylrf")
+icon = ExtResource("3_og6kh")
 flat = true
 
-[node name="CustomNodesFolderField" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder" instance=ExtResource("3_hokrq")]
+[node name="CustomNodesFolderField" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomNodesFolder" unique_id=89698161 instance=ExtResource("3_hokrq")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _open_directory = true
 _placeholder_text = "Select a folder..."
 
-[node name="CustomInterpreterWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="CustomInterpreterWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=626706775]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -314,24 +320,24 @@ bbcode_enabled = true
 text = "[color=tomato]Please select a valid script (.gd) that extends the SproutyDialogsEventInterpreter class."
 fit_content = true
 
-[node name="CustomInterpreter" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+[node name="CustomInterpreter" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1900373654]
 layout_mode = 2
 tooltip_text = "Path to the custom event interpreter script file (.gd) 
 that extends from the SproutyDialogsEventInterpreter class.
 Where you define the process methods to run your custom event nodes."
 
-[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter"]
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter" unique_id=1839631042]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Custom event interpreter"
 
-[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter"]
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter" unique_id=802914547]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_lylrf")
+icon = ExtResource("3_og6kh")
 flat = true
 
-[node name="CustomInterpreterField" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter" instance=ExtResource("3_hokrq")]
+[node name="CustomInterpreterField" parent="MarginContainer/ScrollContainer/VBoxContainer/CustomInterpreter" unique_id=672787027 instance=ExtResource("3_hokrq")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -339,12 +345,12 @@ _open_directory = false
 _placeholder_text = "Select a script file..."
 file_filters = PackedStringArray("*.gd")
 
-[node name="MarginContainer2" type="MarginContainer" parent="."]
+[node name="MarginContainer2" type="MarginContainer" parent="." unique_id=332289161]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NewDialogBoxDialog" type="FileDialog" parent="."]
+[node name="NewDialogBoxDialog" type="FileDialog" parent="." unique_id=1140125940]
 auto_translate_mode = 1
 oversampling_override = 1.0
 title = "New Dialog Box Scene"
@@ -353,7 +359,7 @@ size = Vector2i(600, 400)
 ok_button_text = "Create file"
 filters = PackedStringArray("*.tscn")
 
-[node name="NewPortraitSceneDialog" type="FileDialog" parent="."]
+[node name="NewPortraitSceneDialog" type="FileDialog" parent="." unique_id=2038238859]
 auto_translate_mode = 1
 oversampling_override = 1.0
 title = "New Portrait Scene"

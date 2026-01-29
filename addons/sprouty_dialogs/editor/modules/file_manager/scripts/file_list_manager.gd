@@ -241,8 +241,8 @@ func _filter_file_list(search_text: String) -> void:
 				_file_list.get_item_text(item),
 				_file_list.get_item_icon(item)
 			)
-	_file_list.visible = false
-	_filtered_list.visible = true
+	_file_list.hide()
+	_filtered_list.show()
 
 
 ## Update metadata for a file in the file list
@@ -337,11 +337,15 @@ func _on_confirm_closing_canceled() -> void:
 
 ## Filter the file list by the input search text
 func _on_file_search_text_changed(new_text: String) -> void:
-	_filter_file_list(new_text)
+	if new_text == "":
+		_file_list.show()
+		_filtered_list.hide()
+	else:
+		_filter_file_list(new_text)
 
 
 ## Disable the filtered list if it has no input filter and loses focus
 func _on_file_search_focus_exited() -> void:
 	if _file_search.text.is_empty():
-		_filtered_list.visible = false
-		_file_list.visible = true
+		_filtered_list.hide()
+		_file_list.show()

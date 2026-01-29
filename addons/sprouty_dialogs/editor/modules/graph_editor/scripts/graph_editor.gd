@@ -339,7 +339,7 @@ func _load_dialogue_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 
 	if not dialogs.has(node_data["dialog_key"]):
 		# Print error if no dialog is found for the dialogue node
-		printerr("[Sprouty Dialogs] No dialogue found for Dialogue Node #" + str(node_data["node_index"]) \
+		push_warning("[Sprouty Dialogs] No dialogue found for Dialogue Node #" + str(node_data["node_index"]) \
 			+" in the CSV file: " + ResourceUID.get_id_path(data.csv_file_uid) \
 			+". Check that the key '" + node_data["dialog_key"] \
 			+"' exists in the CSV translation file and that it is the correct CSV file." \
@@ -374,7 +374,7 @@ func _load_options_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 	for option_key in node_data["options_keys"]:
 		if not dialogs.has(option_key):
 			# Print error if no dialog is found for the option
-			printerr("[Sprouty Dialogs] No dialogue found for Option #" \
+			push_warning("[Sprouty Dialogs] No dialogue found for Option #" \
 				+ str(int(option_key.split("_")[-1]) + 1) + " of Option Node #" \
 				+ str(node_data["node_index"]) + " in the CSV file:\n" \
 				+ ResourceUID.get_id_path(data.csv_file_uid) \

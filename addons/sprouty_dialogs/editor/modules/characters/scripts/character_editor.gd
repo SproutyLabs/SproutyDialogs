@@ -233,7 +233,7 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	else: # Load from provided name CSV data
 		if SproutyDialogsSettingsManager.get_setting("fallback_to_resource"):
 			for locale in name_data.keys():
-				if name_data[locale] == "":
+				if name_data[locale] == "" and data.display_name.has(locale):
 					name_data[locale] = data.display_name[locale]
 		_load_name_translations(name_data)
 	_update_translations_state()

@@ -229,7 +229,7 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 			_portraits_count[character_name] = {}
 	
 	for portrait_name in portrait_names:
-		if not _portraits[character_name].has(portrait_name):
+		if portrait_name != "" and not _portraits[character_name].has(portrait_name):
 			# Get the portrait data from the character resource
 			var portrait_data = _characters_data[character_name].get_portrait_from_path_name(portrait_name)
 			if not portrait_data:
@@ -302,6 +302,7 @@ func instantiate_portrait(character_name: String, portrait_name: String,
 		return null
 	
 	if not _portraits[character_name][portrait_name]:
+		print(portrait_name)
 		printerr("[Sprouty Dialogs] Cannot instantiate '" + portrait_name + "' portrait" \
 				+" from character '" + character_name + "'. No scene is set for '" + portrait_name \
 				+"' portrait. Check that the file '" + _characters_data[character_name] \

@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dn1gpd7ov6qk5" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/options.svg" id="3_d57bv"]
 [ext_resource type="Script" uid="uid://b6n3h02mm8bgh" path="res://addons/sprouty_dialogs/event_nodes/scripts/options_node.gd" id="5_jgvn8"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5pi1r"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qm86d"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -13,7 +13,7 @@ bg_color = Color(0.13186, 0.623383, 0.509555, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p6a38"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6yiaj"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -25,19 +25,19 @@ border_width_right = 2
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="DPITexture" id="DPITexture_63p5b"]
+[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="OptionsNode" type="GraphNode"]
+[node name="OptionsNode" type="GraphNode" unique_id=2009562014]
 custom_minimum_size = Vector2(250, 0)
 offset_right = 250.0
-offset_bottom = 237.0
+offset_bottom = 272.0
 size_flags_vertical = 3
 theme = ExtResource("1_4odiy")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_5pi1r")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_p6a38")
-position_offset = Vector2(0, 0.17000002)
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_qm86d")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_6yiaj")
+position_offset = Vector2(0, 0.20000003)
 resizable = true
 title = "Options Node"
 slot/0/left_enabled = true
@@ -62,9 +62,9 @@ script = ExtResource("5_jgvn8")
 node_color = Color(0.13186, 0.623383, 0.509555, 1)
 node_icon = ExtResource("3_d57bv")
 
-[node name="AddOptionButton" type="Button" parent="."]
+[node name="AddOptionButton" type="Button" parent="." unique_id=1720163507]
 layout_mode = 2
 text = "Add Option"
-icon = SubResource("DPITexture_63p5b")
+icon = SubResource("DPITexture_5rvxf")
 
 [connection signal="pressed" from="AddOptionButton" to="." method="_on_add_option_button_pressed"]

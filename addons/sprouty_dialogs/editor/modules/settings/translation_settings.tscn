@@ -1,14 +1,14 @@
-[gd_scene load_steps=8 format=3 uid="uid://bk5rchg4mt0js"]
+[gd_scene format=3 uid="uid://bk5rchg4mt0js"]
 
 [ext_resource type="Script" uid="uid://r7iw7h16gilr" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/translation_settings.gd" id="1_dnk3v"]
 [ext_resource type="Texture2D" uid="uid://djj6crqjqkqpu" path="res://addons/sprouty_dialogs/editor/icons/translation.svg" id="2_2wqnh"]
 [ext_resource type="Texture2D" uid="uid://bvlhrp4lgb3vy" path="res://addons/sprouty_dialogs/editor/icons/csv_table.svg" id="2_qeqd1"]
 [ext_resource type="PackedScene" uid="uid://secb1eoygm27" path="res://addons/sprouty_dialogs/editor/modules/settings/components/locales_selector.tscn" id="2_qh116"]
 [ext_resource type="Texture2D" uid="uid://j23crfderjkx" path="res://addons/sprouty_dialogs/editor/icons/character.svg" id="3_rjao7"]
-[ext_resource type="Texture2D" uid="uid://cf5ef41yo6jl6" path="res://addons/dialogue_nodes/icons/Reload.svg" id="4_aahm7"]
 [ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="4_erkog"]
+[ext_resource type="Texture2D" uid="uid://chd4ylouli7dj" path="res://addons/sprouty_dialogs/editor/icons/Reload.svg" id="4_oycx5"]
 
-[node name="TranslationSettings" type="HSplitContainer"]
+[node name="TranslationSettings" type="HSplitContainer" unique_id=2089321872]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -16,29 +16,29 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_dnk3v")
 
-[node name="TranslationSettings" type="MarginContainer" parent="."]
+[node name="TranslationSettings" type="MarginContainer" parent="." unique_id=1684401246]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="TranslationSettings"]
+[node name="ScrollContainer" type="ScrollContainer" parent="TranslationSettings" unique_id=336463874]
 layout_mode = 2
 
-[node name="Container" type="VBoxContainer" parent="TranslationSettings/ScrollContainer"]
+[node name="Container" type="VBoxContainer" parent="TranslationSettings/ScrollContainer" unique_id=1509875966]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="EnableTranslationsToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="EnableTranslationsToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container" unique_id=2053467118]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable/disable translations for dialogues."
 text = "Enable translations"
 icon = ExtResource("2_2wqnh")
 
-[node name="--" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="--" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container" unique_id=1799021139]
 layout_mode = 2
 
-[node name="UseCSVFilesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="UseCSVFilesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container" unique_id=47308093]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for translations.
@@ -48,7 +48,7 @@ button_pressed = true
 text = "Use CSV files"
 icon = ExtResource("2_qeqd1")
 
-[node name="CSVFolderWarning" type="RichTextLabel" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="CSVFolderWarning" type="RichTextLabel" parent="TranslationSettings/ScrollContainer/Container" unique_id=2034903041]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -56,55 +56,55 @@ bbcode_enabled = true
 text = "[color=tomato]Please select a valid directory for the CSV files."
 fit_content = true
 
-[node name="CSVFolder" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="CSVFolder" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container" unique_id=1942030017]
 layout_mode = 2
 tooltip_text = "Path to the directory of the CSV translation files.
 This directory must contain all the CSV files used for the dialogs. 
 (It is necessary to collect all translations in godot)."
 
-[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/CSVFolder"]
+[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/CSVFolder" unique_id=1539500141]
 layout_mode = 2
 text = "CSV translations folder"
 
-[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/CSVFolder"]
+[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/CSVFolder" unique_id=404039890]
 visible = false
 layout_mode = 2
-icon = ExtResource("4_aahm7")
+icon = ExtResource("4_oycx5")
 flat = true
 
-[node name="CSVFolderField" parent="TranslationSettings/ScrollContainer/Container/CSVFolder" instance=ExtResource("4_erkog")]
+[node name="CSVFolderField" parent="TranslationSettings/ScrollContainer/Container/CSVFolder" unique_id=375856388 instance=ExtResource("4_erkog")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _open_directory = true
 _placeholder_text = "Select a folder..."
 
-[node name="FallbackToResource" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="FallbackToResource" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container" unique_id=1508897637]
 layout_mode = 2
 tooltip_text = "When a dialog key is not found in the CSV file, the dialog will be loaded from the dialogue data file.
 (This only applies when opening a dialog file in the editor, not when running the dialog)."
 
-[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
+[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource" unique_id=1692898826]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Fallback to resource"
 
-[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
+[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource" unique_id=480183199]
 visible = false
 layout_mode = 2
-icon = ExtResource("4_aahm7")
+icon = ExtResource("4_oycx5")
 flat = true
 
-[node name="FallbackToResourceToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource"]
+[node name="FallbackToResourceToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container/FallbackToResource" unique_id=1161668010]
 unique_name_in_owner = true
 layout_mode = 2
 disabled = true
 button_pressed = true
 
-[node name="---" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="---" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container" unique_id=696394000]
 layout_mode = 2
 
-[node name="TranslateNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="TranslateNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container" unique_id=995680207]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Enable translation for the character names."
@@ -113,28 +113,28 @@ button_pressed = true
 text = "Translate character names"
 icon = ExtResource("3_rjao7")
 
-[node name="UseCSVForNames" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="UseCSVForNames" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container" unique_id=1678445670]
 layout_mode = 2
 tooltip_text = "Enable the use of CSV files for character name translations.
 Otherwise, translations will be saved in the character data file."
 
-[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames"]
+[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames" unique_id=199177292]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Use CSV for character names"
 
-[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames"]
+[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames" unique_id=1595419808]
 layout_mode = 2
-icon = ExtResource("4_aahm7")
+icon = ExtResource("4_oycx5")
 flat = true
 
-[node name="UseCSVForNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames"]
+[node name="UseCSVForNamesToggle" type="CheckButton" parent="TranslationSettings/ScrollContainer/Container/UseCSVForNames" unique_id=1828538726]
 unique_name_in_owner = true
 layout_mode = 2
 disabled = true
 button_pressed = true
 
-[node name="CharCSVWarning" type="RichTextLabel" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="CharCSVWarning" type="RichTextLabel" parent="TranslationSettings/ScrollContainer/Container" unique_id=511423636]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -142,21 +142,21 @@ bbcode_enabled = true
 text = "[color=tomato]Please select a valid CSV file for character name translation [i](It must be inside the CSV file directory)."
 fit_content = true
 
-[node name="CharCSVFile" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="CharCSVFile" type="HBoxContainer" parent="TranslationSettings/ScrollContainer/Container" unique_id=1692921184]
 layout_mode = 2
 tooltip_text = "Path to the CSV file with the character name translations. It must be inside the CSV translations folder."
 
-[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile"]
+[node name="Label" type="Label" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile" unique_id=191082168]
 layout_mode = 2
 text = "Character names CSV"
 
-[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile"]
+[node name="ResetButton" type="Button" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile" unique_id=835378112]
 visible = false
 layout_mode = 2
-icon = ExtResource("4_aahm7")
+icon = ExtResource("4_oycx5")
 flat = true
 
-[node name="CharNamesCSVField" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile" instance=ExtResource("4_erkog")]
+[node name="CharNamesCSVField" parent="TranslationSettings/ScrollContainer/Container/CharCSVFile" unique_id=1798419569 instance=ExtResource("4_erkog")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -164,10 +164,10 @@ _open_directory = false
 _placeholder_text = "Select a CSV file..."
 file_filters = PackedStringArray("*.csv")
 
-[node name="----" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="----" type="HSeparator" parent="TranslationSettings/ScrollContainer/Container" unique_id=651813598]
 layout_mode = 2
 
-[node name="CollectTranslationsButton" type="Button" parent="TranslationSettings/ScrollContainer/Container"]
+[node name="CollectTranslationsButton" type="Button" parent="TranslationSettings/ScrollContainer/Container" unique_id=285597089]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
@@ -177,39 +177,39 @@ disabled = true
 text = "Collect Translations"
 icon = ExtResource("2_2wqnh")
 
-[node name="LocalesSettings" type="MarginContainer" parent="."]
+[node name="LocalesSettings" type="MarginContainer" parent="." unique_id=754813648]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="LocalesSettings"]
+[node name="ScrollContainer" type="ScrollContainer" parent="LocalesSettings" unique_id=1681386949]
 layout_mode = 2
 
-[node name="Container" type="VBoxContainer" parent="LocalesSettings/ScrollContainer"]
+[node name="Container" type="VBoxContainer" parent="LocalesSettings/ScrollContainer" unique_id=58038528]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Title" type="Label" parent="LocalesSettings/ScrollContainer/Container"]
+[node name="Title" type="Label" parent="LocalesSettings/ScrollContainer/Container" unique_id=1470081710]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Locales Settings"
 
-[node name="DefaultLocale" type="HBoxContainer" parent="LocalesSettings/ScrollContainer/Container"]
+[node name="DefaultLocale" type="HBoxContainer" parent="LocalesSettings/ScrollContainer/Container" unique_id=2129163098]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The locale in which the dialogues are going to be written by default in the plugin."
 
-[node name="Label" type="Label" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale"]
+[node name="Label" type="Label" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale" unique_id=2063035089]
 layout_mode = 2
 text = "Default Locale"
 
-[node name="ResetButton" type="Button" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale"]
+[node name="ResetButton" type="Button" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale" unique_id=414430771]
 visible = false
 layout_mode = 2
-icon = ExtResource("4_aahm7")
+icon = ExtResource("4_oycx5")
 flat = true
 
-[node name="OptionButton" type="OptionButton" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale"]
+[node name="OptionButton" type="OptionButton" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale" unique_id=920138625]
 layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
@@ -221,25 +221,25 @@ popup/item_1/id = 1
 popup/item_2/text = "ja"
 popup/item_2/id = 2
 
-[node name="TestingLocale" type="HBoxContainer" parent="LocalesSettings/ScrollContainer/Container"]
+[node name="TestingLocale" type="HBoxContainer" parent="LocalesSettings/ScrollContainer/Container" unique_id=2110535344]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The locale that will be used to test the dialogue when the game is run.
 If no one is selected, the automatically detected system language will be used."
 
-[node name="Label" type="Label" parent="LocalesSettings/ScrollContainer/Container/TestingLocale"]
+[node name="Label" type="Label" parent="LocalesSettings/ScrollContainer/Container/TestingLocale" unique_id=955229508]
 layout_mode = 2
 text = "Testing Locale"
 
-[node name="ResetButton" type="Button" parent="LocalesSettings/ScrollContainer/Container/TestingLocale"]
+[node name="ResetButton" type="Button" parent="LocalesSettings/ScrollContainer/Container/TestingLocale" unique_id=1679620417]
 layout_mode = 2
-icon = ExtResource("4_aahm7")
+icon = ExtResource("4_oycx5")
 flat = true
 
-[node name="OptionButton" type="OptionButton" parent="LocalesSettings/ScrollContainer/Container/TestingLocale"]
+[node name="OptionButton" type="OptionButton" parent="LocalesSettings/ScrollContainer/Container/TestingLocale" unique_id=1663728241]
 layout_mode = 2
 size_flags_horizontal = 3
-selected = 3
+selected = 1
 item_count = 4
 popup/item_0/text = "(no one)"
 popup/item_0/id = 0
@@ -250,11 +250,11 @@ popup/item_2/id = 2
 popup/item_3/text = "ja"
 popup/item_3/id = 3
 
-[node name="HSeparator" type="HSeparator" parent="LocalesSettings/ScrollContainer/Container"]
+[node name="HSeparator" type="HSeparator" parent="LocalesSettings/ScrollContainer/Container" unique_id=1554559330]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="LocalesSelector" parent="LocalesSettings/ScrollContainer/Container" instance=ExtResource("2_qh116")]
+[node name="LocalesSelector" parent="LocalesSettings/ScrollContainer/Container" unique_id=1923912467 instance=ExtResource("2_qh116")]
 unique_name_in_owner = true
 layout_mode = 2
 

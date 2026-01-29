@@ -145,12 +145,16 @@ func new_portrait_group(name: String, parent_item: TreeItem = get_root(), new_it
 
 ## Duplicates a portrait item and adds it to the tree
 func duplicate_portrait_item(item: TreeItem) -> TreeItem:
+	var new_editor = item.get_meta("portrait_editor").duplicate()
+	var new_name = item.get_text(0) + " (copy)"
 	var new_item: TreeItem = new_portrait_item(
-		item.get_text(0) + " (copy)",
+		new_name,
 		item.get_metadata(0)["portrait"],
 		item.get_parent(),
-		item.get_meta("portrait_editor").duplicate()
+		new_editor
 		)
+	new_editor.ready.connect(
+		new_editor.load_portrait_data.bind(new_name, item.get_metadata(0)["portrait"]))
 	new_item.set_editable(0, true)
 	new_item.select(0)
 

@@ -106,12 +106,12 @@ extends Resource
 ## Returns the portrait data for a given portrait path name.
 ## The path name can be a portrait name or a path (e.g., "group/portrait").
 ## If the portrait is a group, it will recursively search for the portrait data.
-func get_portrait_from_path_name(path_name: String, group: Dictionary = portraits) -> Variant:
-	if group.has(path_name) and group[path_name] is SproutyDialogsPortraitData:
-		return group[path_name]
+func get_portrait_from_path_name(path_name: String, group: Dictionary = {"data": portraits}) -> Variant:
+	if group.data.has(path_name) and group.data[path_name].data is SproutyDialogsPortraitData:
+		return group.data[path_name].data
 	
 	if path_name.contains("/"):
 		var parts = path_name.split("/")
-		if group.has(parts[0]):
-			return get_portrait_from_path_name("/".join(parts.slice(1, parts.size())), group[parts[0]])
+		if group.data.has(parts[0]):
+			return get_portrait_from_path_name("/".join(parts.slice(1, parts.size())), group.data[parts[0]])
 	return null

@@ -25,7 +25,10 @@ var _options_keys: Array = []
 func _ready():
 	super ()
 	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
-	_first_option = _add_new_option() # Add the first option
+	if not get_child(0) is EditorSproutyDialogsOptionContainer:
+		_first_option = _add_new_option() # Add the first option
+	else:
+		_first_option = get_child(0)
 	set_slot(0, true, 0, Color.WHITE, true, 0, Color.WHITE)
 
 

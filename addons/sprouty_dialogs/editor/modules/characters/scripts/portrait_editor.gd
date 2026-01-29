@@ -279,7 +279,8 @@ func _on_to_portrait_scene_button_pressed() -> void:
 
 ## Show or hide the transform settings section
 func _on_expand_transform_settings_toggled(toggled_on: bool) -> void:
-	_portrait_transform_settings.visible = toggled_on
+	if _portrait_transform_settings:
+		_portrait_transform_settings.visible = toggled_on
 	%ExpandTransformSettingsButton.icon = _collapse_up_icon if toggled_on else _collapse_down_icon
 
 #endregion

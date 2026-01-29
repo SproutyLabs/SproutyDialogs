@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://b3ttyn7bfc2v0"]
 
 [ext_resource type="Script" uid="uid://84gckqfa1ts8" path="res://addons/sprouty_dialogs/editor/scripts/about_panel.gd" id="1_mxuji"]
-[ext_resource type="Texture2D" uid="uid://0qa2nyminglc" path="res://icon.svg" id="2_e464s"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="2_mxuji"]
+[ext_resource type="Texture2D" uid="uid://cka2spagpv2d7" path="res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg" id="3_dhkc0"]
 [ext_resource type="Texture2D" uid="uid://dmacl3fimk34t" path="res://addons/sprouty_dialogs/editor/icons/text_editor/text-align-justify.svg" id="3_e464s"]
 [ext_resource type="Texture2D" uid="uid://d1ktado0bvpv7" path="res://addons/sprouty_dialogs/editor/icons/github.svg" id="4_dhkc0"]
 [ext_resource type="Texture2D" uid="uid://cl8faicjvrgi2" path="res://addons/sprouty_dialogs/editor/icons/heart.svg" id="5_4kbvv"]
 
-[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
+[sub_resource type="DPITexture" id="DPITexture_4kbvv"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -16,9 +16,11 @@ disable_3d = true
 oversampling_override = 1.0
 title = "Sprouty Dialogs"
 initial_position = 4
-size = Vector2i(296, 550)
+size = Vector2i(500, 500)
+visible = true
 borderless = false
-max_size = Vector2i(16384, 550)
+min_size = Vector2i(500, 500)
+max_size = Vector2i(16384, 500)
 keep_title_visible = true
 script = ExtResource("1_mxuji")
 
@@ -35,9 +37,9 @@ grow_vertical = 2
 size_flags_vertical = 0
 
 [node name="Logo" type="TextureRect" parent="Container" unique_id=785300700]
-custom_minimum_size = Vector2(0, 100)
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
-texture = ExtResource("2_e464s")
+texture = ExtResource("3_dhkc0")
 expand_mode = 3
 stretch_mode = 5
 
@@ -57,7 +59,7 @@ fit_content = true
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Check for updates"
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_4kbvv")
 
 [node name="UpdateButton" type="Button" parent="Container" unique_id=196116546]
 visible = false

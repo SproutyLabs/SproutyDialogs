@@ -167,12 +167,16 @@ func _filter_items(variables_array: Array, search_text: String) -> Array:
 			if search_text in var_data.name.to_lower() \
 					or search_text in str(var_data.value).to_lower():
 				filtered_items.append(item)
+				item.show()
 		# Check if find a match in the group name or any of its items
 		elif item is EditorSproutyDialogsVariableGroup:
-			if search_text in item.get_group_name().to_lower():
+			if search_text in item.get_item_name().to_lower():
 				filtered_items.append(item)
+				item.show()
 			else:
 				var group_items = _filter_items(item.get_items(), search_text)
+				if group_items.size() > 0:
+					item.show()
 				filtered_items.append_array(group_items)
 	return filtered_items
 
@@ -181,29 +185,21 @@ func _filter_items(variables_array: Array, search_text: String) -> Array:
 func _on_search_bar_text_changed(new_text: String) -> void:
 	var search_text = new_text.strip_edges().to_lower()
 	if search_text == "":
-		for child in _variable_container.get_children():
-			if child is EditorSproutyDialogsVariableItem:
-				child.show()
-			elif child is EditorSproutyDialogsVariableGroup:
-				child.show_items()
-				child.show()
+		_change_items_visibility(true, _variable_container.get_children())
 	else:
-		var filtered_items = _filter_items(_variable_container.get_children(), search_text)
-		for child in _variable_container.get_children():
-			if child in filtered_items:
-				child.show()
-			else:
-				child.hide()
-				if child is EditorSproutyDialogsVariableGroup:
-					var count = 0
-					for item in child.get_items():
-						if item in filtered_items:
-							item.show()
-							count += 1
-						else:
-							item.hide()
-					if count > 0: # Show the group if it has any visible items
-						child.show()
+		_change_items_visibility(false, _variable_container.get_children())
+		_filter_items(_variable_container.get_children(), search_text)
+
+
+## Change the items visibility
+func _change_items_visibility(visible: bool, items: Array) -> void:
+	for child in items:
+		if child is EditorSproutyDialogsVariableItem:
+			child.visible = visible
+		elif child is EditorSproutyDialogsVariableGroup:
+			child.visible = visible
+			_change_items_visibility(visible, child.get_items())
+
 #endregion
 
 ## Ensure unique item's name

@@ -200,23 +200,28 @@ func _set_reset_button(field: Control, setting_name: String) -> void:
 	elif field is EditorSproutyDialogsFileField:
 		# Use the previous saved settings instead of default
 		reset_button.pressed.connect(func():
-			field.set_value(_get_saved_setting(setting_name))
 			reset_button.hide()
 			# Hide fields warnings and handle scene buttons
 			if setting_name.contains("dialog_box"):
+				SproutyDialogsSettingsManager.reset_setting(setting_name)
+				field.set_value(ResourceUID.get_id_path(default_value))
 				_default_dialog_box_warning.hide()
 				_new_dialog_box_button.hide()
 				_to_dialog_box_scene_button.show()
 			
 			if setting_name.contains("portrait_scene"):
+				SproutyDialogsSettingsManager.reset_setting(setting_name)
+				field.set_value(ResourceUID.get_id_path(default_value))
 				_default_portrait_warning.hide()
 				_new_portrait_scene_button.hide()
 				_to_portrait_scene_button.show()
 			
 			if setting_name == "custom_event_nodes_folder":
+				field.set_value(_get_saved_setting(setting_name))
 				_custom_nodes_folder_warning.hide()
 			
 			if setting_name == "custom_event_interpreter":
+				field.set_value(_get_saved_setting(setting_name))
 				_custom_interpreter_warning.hide()
 		)
 		reset_button.visible = field.get_value() != _get_saved_setting(setting_name)

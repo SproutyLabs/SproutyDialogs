@@ -1,10 +1,11 @@
 @tool
 extends EditorPlugin
 
-const EDITOR_MAIN = preload("res://addons/sprouty_dialogs/editor/editor.tscn")
 const AUTOLOAD_NAME := "SproutyDialogs"
 const PLUGIN_ICON_PATH := "res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg"
 const PLUGIN_MANAGER_PATH := "res://addons/sprouty_dialogs/sprouty_dialogs_manager.gd"
+
+const EDITOR_MAIN = preload("res://addons/sprouty_dialogs/editor/editor.tscn")
 
 var editor: Control
 

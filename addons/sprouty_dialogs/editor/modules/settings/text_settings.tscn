@@ -1,12 +1,12 @@
-[gd_scene load_steps=6 format=3 uid="uid://ryk2rxuf4sbx"]
+[gd_scene format=3 uid="uid://ryk2rxuf4sbx"]
 
 [ext_resource type="Script" uid="uid://dmsryopl4atwi" path="res://addons/sprouty_dialogs/editor/modules/settings/scripts/text_settings.gd" id="1_22qb6"]
 [ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/editor/icons/text_editor/text.svg" id="2_fgisi"]
+[ext_resource type="Texture2D" uid="uid://chd4ylouli7dj" path="res://addons/sprouty_dialogs/editor/icons/Reload.svg" id="3_dhe4y"]
 [ext_resource type="Texture2D" uid="uid://b7nifwp3mwmc3" path="res://addons/sprouty_dialogs/editor/icons/nodes/dialog_box.svg" id="3_kpwi1"]
-[ext_resource type="Texture2D" uid="uid://cf5ef41yo6jl6" path="res://addons/dialogue_nodes/icons/Reload.svg" id="3_nqvb2"]
 [ext_resource type="Texture2D" uid="uid://co8x6yovoum6i" path="res://addons/sprouty_dialogs/editor/icons/fast-forward.svg" id="4_kpwi1"]
 
-[node name="TextSettings" type="HSplitContainer"]
+[node name="TextSettings" type="HSplitContainer" unique_id=2123766608]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,50 +14,50 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_22qb6")
 
-[node name="TextSettings" type="MarginContainer" parent="."]
+[node name="TextSettings" type="MarginContainer" parent="." unique_id=1101479222]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="TextSettings"]
+[node name="ScrollContainer" type="ScrollContainer" parent="TextSettings" unique_id=243013064]
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="TextSettings/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TextSettings/ScrollContainer" unique_id=2078409740]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="TextTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="TextTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=1624916297]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/TextTitle"]
+[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/TextTitle" unique_id=1822888267]
 layout_mode = 2
 icon = ExtResource("2_fgisi")
 flat = true
 
-[node name="TitleLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/TextTitle"]
+[node name="TitleLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/TextTitle" unique_id=197075257]
 layout_mode = 2
 size_flags_vertical = 1
 theme_type_variation = &"HeaderSmall"
 text = "Text Behavior"
 
-[node name="TypingSpeed" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="TypingSpeed" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=983980430]
 layout_mode = 2
 tooltip_text = "Time in seconds that the text takes to reveal each character. 
 The higher the number, the longer it will take to reveal the next character."
 
-[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed"]
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed" unique_id=1869124377]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Default typing speed"
 
-[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed"]
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed" unique_id=556986781]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_nqvb2")
+icon = ExtResource("3_dhe4y")
 flat = true
 
-[node name="TypingSpeedField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed"]
+[node name="TypingSpeedField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/TypingSpeed" unique_id=974235430]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -66,161 +66,161 @@ value = 0.05
 allow_greater = true
 suffix = "s"
 
-[node name="OpenURL" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="OpenURL" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=684947756]
 layout_mode = 2
 tooltip_text = "If enabled, opens a hyperlink in the browser when a URL tag is clicked during a dialog.
 By default the URL tags are handled by 'meta_clicked' signal on RichTextLabels.
 You can do the same with the 'meta_clicked' signal in a DialogBox to more advanced use cases."
 
-[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL"]
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL" unique_id=1862634032]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Open URL on meta tag click"
 
-[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL"]
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL" unique_id=211413655]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_nqvb2")
+icon = ExtResource("3_dhe4y")
 flat = true
 
-[node name="OpenUrlOnMetaToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL"]
+[node name="OpenUrlOnMetaToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/OpenURL" unique_id=917012072]
 unique_name_in_owner = true
 layout_mode = 2
 button_pressed = true
 
-[node name="---" type="HSeparator" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="---" type="HSeparator" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=610538501]
 layout_mode = 2
 
-[node name="DisplayTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="DisplayTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=1201546105]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/DisplayTitle"]
+[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/DisplayTitle" unique_id=1601102495]
 layout_mode = 2
 icon = ExtResource("3_kpwi1")
 flat = true
 
-[node name="DisplayLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/DisplayTitle"]
+[node name="DisplayLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/DisplayTitle" unique_id=1331386988]
 layout_mode = 2
 size_flags_vertical = 1
 theme_type_variation = &"HeaderSmall"
 text = "Dialogue Display"
 
-[node name="NewLine" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="NewLine" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=1026898230]
 layout_mode = 2
 tooltip_text = "Line breaks will be considered paragraphs. Each paragraph is displayed as a new dialog (or block of text in the dialog box). Otherwise, the text is displayed all at once."
 
-[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine"]
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine" unique_id=1533355483]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "New line as new dialog"
 
-[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine"]
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine" unique_id=1269093731]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_nqvb2")
+icon = ExtResource("3_dhe4y")
 flat = true
 
-[node name="NewLineToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine"]
+[node name="NewLineToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/NewLine" unique_id=490971744]
 unique_name_in_owner = true
 layout_mode = 2
 button_pressed = true
 
-[node name="SplitDialog" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="SplitDialog" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=1369141967]
 layout_mode = 2
 tooltip_text = "The text is divided into paragraphs according to a character limit. Otherwise, it is displayed all at once."
 
-[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog"]
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog" unique_id=376313213]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Split dialog by max characters "
 
-[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog"]
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog" unique_id=426419628]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_nqvb2")
+icon = ExtResource("3_dhe4y")
 flat = true
 
-[node name="SplitDialogToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog"]
+[node name="SplitDialogToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/SplitDialog" unique_id=1258235965]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="MaxCharacters" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="MaxCharacters" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=592351084]
 layout_mode = 2
 tooltip_text = "Maximum character limit. Only used if the dialogue is split by a character limit."
 
-[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters"]
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters" unique_id=893540409]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Max characters"
 
-[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters"]
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters" unique_id=5189735]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_nqvb2")
+icon = ExtResource("3_dhe4y")
 flat = true
 
-[node name="MaxCharacterField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters"]
+[node name="MaxCharacterField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/MaxCharacters" unique_id=215798571]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 allow_greater = true
 
-[node name="----" type="HSeparator" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="----" type="HSeparator" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=1154452402]
 layout_mode = 2
 
-[node name="SkipTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="SkipTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=365101193]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SkipTitle"]
+[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SkipTitle" unique_id=321884504]
 layout_mode = 2
 icon = ExtResource("4_kpwi1")
 flat = true
 
-[node name="SkipLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SkipTitle"]
+[node name="SkipLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SkipTitle" unique_id=698641339]
 layout_mode = 2
 size_flags_vertical = 1
 theme_type_variation = &"HeaderSmall"
 text = "Skip Text Reveal"
 
-[node name="AllowSkipReveal" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="AllowSkipReveal" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=969230450]
 layout_mode = 2
 tooltip_text = "Allows to skip text reveal and display everything at once."
 
-[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal"]
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal" unique_id=2051496941]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Allow skip text reveal"
 
-[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal"]
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal" unique_id=474127669]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_nqvb2")
+icon = ExtResource("3_dhe4y")
 flat = true
 
-[node name="AllowSkipRevealToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal"]
+[node name="AllowSkipRevealToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/AllowSkipReveal" unique_id=728485840]
 unique_name_in_owner = true
 layout_mode = 2
 button_pressed = true
 
-[node name="CanSkipDelay" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="CanSkipDelay" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=820138957]
 layout_mode = 2
 tooltip_text = "Time in seconds during which the text cannot be skipped again. 
 This is necessary to prevent the entire text from being skipped."
 
-[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay"]
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay" unique_id=463359763]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Can skip delay"
 
-[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay"]
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay" unique_id=1022650189]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_nqvb2")
+icon = ExtResource("3_dhe4y")
 flat = true
 
-[node name="CanSkipDelayField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay"]
+[node name="CanSkipDelayField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/CanSkipDelay" unique_id=1978883612]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -229,22 +229,22 @@ value = 0.1
 allow_greater = true
 suffix = "s"
 
-[node name="SkipContinueDelay" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer"]
+[node name="SkipContinueDelay" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=567292011]
 layout_mode = 2
 tooltip_text = "Time in seconds during which you must wait for the dialogue to continue after skipping the text reveal."
 
-[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay"]
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay" unique_id=1938931758]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Skip continue delay"
 
-[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay"]
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay" unique_id=1880186397]
 visible = false
 layout_mode = 2
-icon = ExtResource("3_nqvb2")
+icon = ExtResource("3_dhe4y")
 flat = true
 
-[node name="SkipContinueDelayField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay"]
+[node name="SkipContinueDelayField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay" unique_id=842088987]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -253,14 +253,14 @@ value = 0.1
 allow_greater = true
 suffix = "s"
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=885844031]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=66680954]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer" unique_id=159784522]
 layout_mode = 2
 text = "text"

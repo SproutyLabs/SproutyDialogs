@@ -15,15 +15,20 @@ extends Node
 ## The dictionary structure is as follows:
 ## {
 ##     "variable_name_1": {
+##		   "index": 0,
 ##         "type": 0, # TYPE_NIL
 ##         "value": null
+##         "metadata": {}
 ##     },
 ##     "group": {
+##         "index": 1,
 ##         "color": Color(1, 1, 1),
 ##         "variables": {
 ##             "variable_name_2": {
+##                 "index": 0,
 ##                 "type": 0, # TYPE_NIL
 ##                 "value": null
+##                 "metadata": {}
 ##             },
 ##             ...
 ##         }
@@ -33,8 +38,9 @@ extends Node
 var _variables: Dictionary = {}
 
 
-func _init() -> void:
+func _ready() -> void:
 	# Load variables from project settings
+	await get_tree().process_frame
 	_variables = SproutyDialogsSettingsManager.get_setting("variables").duplicate(true)
 
 
