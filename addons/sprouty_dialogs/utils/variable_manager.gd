@@ -38,10 +38,9 @@ extends Node
 var _variables: Dictionary = {}
 
 
-func _ready() -> void:
-	# Load variables from project settings
-	await get_tree().process_frame
-	_variables = SproutyDialogsSettingsManager.get_setting("variables").duplicate(true)
+func _enter_tree() -> void:
+	if not Engine.is_editor_hint():
+		get_variables_data() # Load variables in game
 
 
 ## Returns all the variables data as a dictionary.
@@ -58,7 +57,10 @@ func get_variables_data() -> Dictionary:
 func get_variable_data(name: String) -> Dictionary:
 	if _variables.has(name): # If the variable is a directly in the dictionary
 		var variable = _variables[name]
+		if variable.has("variables"):
+			return {} # Is a group, not variable
 		return {
+			"index": variable.index,
 			"name": name,
 			"type": variable.type,
 			"value": variable.value,
@@ -73,6 +75,7 @@ func get_variable_data(name: String) -> Dictionary:
 					current_group = current_group[part].variables
 				else: # Variable found
 					return {
+						"index": current_group[part].index,
 						"name": part,
 						"type": current_group[part].type,
 						"value": current_group[part].value,
@@ -87,6 +90,7 @@ func get_variable_data(name: String) -> Dictionary:
 				func(p): return p["name"] == variable_name
 			)
 			return {
+			"index": 0,
 			"name": variable_name,
 			"type": prop["type"],
 			"value": prop["value"],
@@ -228,6 +232,9 @@ func parse_variables(text: String, ignore_error: bool = false) -> String:
 	if not "{" in text:
 		return text # No variables to parse
 	
+	if Engine.is_editor_hint(): # Get variables from project settings
+		_variables = SproutyDialogsSettingsManager.get_setting("variables")
+	
 	# Find all variables in the format {variable_name}
 	var regex := RegEx.new()
 	regex.compile("{([^{}]*)}")
@@ -290,6 +297,7 @@ func _get_parsed_variable(var_name: String, ignore_error: bool = false,
 						+ var_name + "} as expression. ")
 			return null
 		variable = {
+			"index": 0,
 			"name": var_name,
 			"type": typeof(result),
 			"value": result,
@@ -314,7 +322,7 @@ func _execute_expression(command: String, ignore_error: bool = false) -> Variant
 		if not ignore_error:
 			printerr("[Sprouty Dialogs] Error parsing expression: " + expression.get_error_text())
 		return null
-	var result = expression.execute(autoloads.values(), self, not ignore_error)
+	var result = expression.execute(autoloads.values(), self , not ignore_error)
 	if expression.has_execute_failed():
 		if not ignore_error:
 			printerr("[Sprouty Dialogs] Error executing expression: " + expression.get_error_text())

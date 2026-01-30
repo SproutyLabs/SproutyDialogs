@@ -109,8 +109,9 @@ func new_dialog_file(path: String) -> void:
 			csv_path = SproutyDialogsCSVFileManager.new_csv_template_file(path.get_file())
 			if csv_path.is_empty(): return
 			# Refresh the filesystem to ensure the CSV file is imported
-			EditorInterface.get_resource_filesystem().scan()
-			await EditorInterface.get_resource_filesystem().resources_reimported
+			var editor_interface = Engine.get_singleton("EditorInterface")
+			editor_interface.get_resource_filesystem().scan()
+			await editor_interface.get_resource_filesystem().resources_reimported
 		
 		_csv_file_field.set_value(csv_path)
 		_csv_file_field.get_parent().show()

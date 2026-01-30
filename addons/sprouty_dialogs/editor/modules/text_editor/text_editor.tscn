@@ -40,6 +40,7 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
 
 [node name="TextEditor" type="Panel" unique_id=1468458913]
+visible = false
 clip_contents = true
 custom_minimum_size = Vector2(500, 0)
 anchors_preset = 15
@@ -536,8 +537,8 @@ layout_mode = 2
 [node name="VariableNameInput" parent="Container/OptionMenus/VariableBar" unique_id=922541544 instance=ExtResource("24_v57nx")]
 unique_name_in_owner = true
 layout_mode = 2
-placeholder_text = "Write a variable name..."
-_placeholder_text = "Write a variable name..."
+placeholder_text = "Enter a variable name..."
+_placeholder_text = "Enter a variable name..."
 
 [node name="ImageBar" type="VBoxContainer" parent="Container/OptionMenus" unique_id=488545802 node_paths=PackedStringArray("text_editor")]
 visible = false
@@ -768,7 +769,7 @@ layout_mode = 2
 [node name="Label" type="Button" parent="Container/OptionMenus/UrlBar" unique_id=92027921]
 layout_mode = 2
 tooltip_text = "Add a hyperlink. By default, meta tags do nothing when clicked. Must be handled with the \"meta_clicked\" signal in the DialogBox to have an effect"
-text = "Add link to URL"
+text = "Insert Link"
 icon = ExtResource("12_cel0j")
 flat = true
 
@@ -778,7 +779,7 @@ layout_mode = 2
 [node name="UrlInput" type="LineEdit" parent="Container/OptionMenus/UrlBar" unique_id=1632212802]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Write a URL..."
+placeholder_text = "Enter a URL..."
 
 [node name="EffectsBar" type="VBoxContainer" parent="Container/OptionMenus" unique_id=1462460469 node_paths=PackedStringArray("text_editor")]
 visible = false

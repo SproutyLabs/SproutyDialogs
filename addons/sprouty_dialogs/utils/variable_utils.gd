@@ -64,7 +64,7 @@ static func get_types_dropdown(label: bool = true, excluded: Array[String] = [])
 	dropdown.tooltip_text = "Select variable type"
 	dropdown.mouse_filter = Control.MOUSE_FILTER_PASS
 	
-	var root = EditorInterface.get_base_control()
+	var root = Engine.get_singleton("EditorInterface").get_base_control()
 	var types_dict = {
 		"Variable": {
 			"icon": load(VAR_ICON_PATH),
@@ -315,7 +315,7 @@ static func new_field_by_type(
 				field.add_child(line_edit)
 				var button = Button.new()
 				button.name = "ExpandButton"
-				button.icon = EditorInterface.get_base_control().\
+				button.icon = Engine.get_singleton("EditorInterface").get_base_control().\
 						get_theme_icon("DistractionFree", "EditorIcons")
 				field.add_child(button)
 				if init_value != null:

@@ -7,11 +7,11 @@
 [ext_resource type="StyleBox" uid="uid://bhwywsg8px0ak" path="res://addons/sprouty_dialogs/editor/theme/panel_style.tres" id="4_q2qto"]
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="5_qbyon"]
 
-[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
+[sub_resource type="DPITexture" id="DPITexture_q2qto"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="VariablePanel" type="VSplitContainer" unique_id=191792071]
+[node name="VariablePanel" type="VSplitContainer" unique_id=83253358]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,59 +20,59 @@ grow_vertical = 2
 theme = ExtResource("1_li462")
 script = ExtResource("2_li462")
 
-[node name="VariableEditor" type="MarginContainer" parent="." unique_id=1836211017]
+[node name="VariableEditor" type="MarginContainer" parent="." unique_id=1089537597]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("3_0du7a")
 
-[node name="Container" type="VBoxContainer" parent="VariableEditor" unique_id=338421604]
+[node name="Container" type="VBoxContainer" parent="VariableEditor" unique_id=875077708]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="VariableEditor/Container" unique_id=2069808514]
+[node name="Label" type="Label" parent="VariableEditor/Container" unique_id=2110187150]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
-text = "Variables Manager"
+text = "Variables"
 
-[node name="TopBar" type="HBoxContainer" parent="VariableEditor/Container" unique_id=537836645]
+[node name="TopBar" type="HBoxContainer" parent="VariableEditor/Container" unique_id=1675305803]
 layout_mode = 2
 
-[node name="SearchBar" type="LineEdit" parent="VariableEditor/Container/TopBar" unique_id=265638465]
+[node name="SearchBar" type="LineEdit" parent="VariableEditor/Container/TopBar" unique_id=1592641315]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search variables..."
-right_icon = SubResource("DPITexture_5rvxf")
+right_icon = SubResource("DPITexture_q2qto")
 
-[node name="AddVarButton" type="Button" parent="VariableEditor/Container/TopBar" unique_id=1178670829]
+[node name="AddVarButton" type="Button" parent="VariableEditor/Container/TopBar" unique_id=357818583]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 tooltip_text = "Add a new variable"
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_q2qto")
 icon_alignment = 2
 
-[node name="AddGroupButton" type="Button" parent="VariableEditor/Container/TopBar" unique_id=21776686]
+[node name="AddGroupButton" type="Button" parent="VariableEditor/Container/TopBar" unique_id=1558210976]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 tooltip_text = "Add a new group"
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_q2qto")
 icon_alignment = 2
 
-[node name="SaveButton" type="Button" parent="VariableEditor/Container/TopBar" unique_id=956756009]
+[node name="SaveButton" type="Button" parent="VariableEditor/Container/TopBar" unique_id=1858109038]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 tooltip_text = "Save variables"
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_q2qto")
 
-[node name="VariablePanel" type="Panel" parent="VariableEditor/Container" unique_id=1466970256]
+[node name="VariablePanel" type="Panel" parent="VariableEditor/Container" unique_id=1087623103]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("4_q2qto")
 
-[node name="Container" type="VBoxContainer" parent="VariableEditor/Container/VariablePanel" unique_id=564172523]
+[node name="Container" type="VBoxContainer" parent="VariableEditor/Container/VariablePanel" unique_id=1673983491]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -80,44 +80,45 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Header" type="HBoxContainer" parent="VariableEditor/Container/VariablePanel/Container" unique_id=1011117406]
+[node name="Header" type="HBoxContainer" parent="VariableEditor/Container/VariablePanel/Container" unique_id=1235828899]
 layout_mode = 2
 
-[node name="NameLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/Header" unique_id=1929646105]
+[node name="NameLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/Header" unique_id=1218101872]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Name"
 horizontal_alignment = 1
 
-[node name="TypeLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/Header" unique_id=1691248999]
+[node name="TypeLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/Header" unique_id=1629652760]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Type"
 horizontal_alignment = 1
 
-[node name="ValueLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/Header" unique_id=2139913702]
+[node name="ValueLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/Header" unique_id=1534337794]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 text = "Initial Value"
 horizontal_alignment = 1
 
-[node name="---" type="HSeparator" parent="VariableEditor/Container/VariablePanel/Container" unique_id=196590564]
+[node name="---" type="HSeparator" parent="VariableEditor/Container/VariablePanel/Container" unique_id=1664607507]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_constants/separation = 0
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VariableEditor/Container/VariablePanel/Container" unique_id=1617461728]
+[node name="ScrollContainer" type="ScrollContainer" parent="VariableEditor/Container/VariablePanel/Container" unique_id=1748328814]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="VariableContainer" type="VBoxContainer" parent="VariableEditor/Container/VariablePanel/Container/ScrollContainer" unique_id=276136379]
+[node name="VariableContainer" type="VBoxContainer" parent="VariableEditor/Container/VariablePanel/Container/ScrollContainer" unique_id=583083817]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="EmptyLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/ScrollContainer/VariableContainer" unique_id=1468139952]
+[node name="EmptyLabel" type="Label" parent="VariableEditor/Container/VariablePanel/Container/ScrollContainer/VariableContainer" unique_id=13799763]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -125,7 +126,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 6
 text = "Add some variables!"
 
-[node name="RemoveGroupDialog" type="ConfirmationDialog" parent="VariableEditor" unique_id=716460793]
+[node name="RemoveGroupDialog" type="ConfirmationDialog" parent="VariableEditor" unique_id=1759209292]
 auto_translate_mode = 1
 initial_position = 4
 size = Vector2i(367, 106)
@@ -133,11 +134,10 @@ ok_button_text = "Confirm"
 dialog_text = "Are you sure you want to remove this group? 
 All variables and groups inside will be removed."
 
-[node name="TextEditor" parent="." unique_id=220103323 instance=ExtResource("4_l4246")]
-visible = false
+[node name="TextEditor" parent="." unique_id=981435482 instance=ExtResource("4_l4246")]
 layout_mode = 2
 
-[node name="CloseButton" parent="TextEditor/Container/Toolbar" parent_id_path=PackedInt32Array(220103323, 1049199348) index="0" unique_id=1342722888]
+[node name="CloseButton" parent="TextEditor/Container/Toolbar" parent_id_path=PackedInt32Array(981435482, 1049199348) index="0" unique_id=1342722888]
 icon = ExtResource("5_qbyon")
 
 [editable path="TextEditor"]

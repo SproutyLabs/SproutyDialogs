@@ -134,7 +134,7 @@ func _on_install_button_pressed() -> void:
 
 ## Handle Restart button pressed
 func _on_restart_button_pressed() -> void:
-	EditorInterface.restart_editor(true)
+	Engine.get_singleton("EditorInterface").restart_editor(true)
 
 
 ## Handle URLs clicked in release info

@@ -62,6 +62,7 @@ func _ready():
 			["Nil", "Variable", "Dictionary", "Array"] # Excluded from options
 		))
 	_variable_type_dropdown = %VariableTypeField.get_child(0)
+	_variable_type_dropdown.flat = true
 	_variable_type_dropdown.item_selected.connect(_on_variable_type_selected)
 	_variable_name_input.option_selected.connect(_on_variable_name_submitted)
 

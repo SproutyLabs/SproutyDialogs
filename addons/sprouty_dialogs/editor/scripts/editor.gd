@@ -143,7 +143,7 @@ func play_dialog_scene(start_id: String, dialog_path: String = "") -> void:
 			return
 	SproutyDialogsSettingsManager.set_setting("play_dialog_path", dialog_path)
 	SproutyDialogsSettingsManager.set_setting("play_start_id", start_id)
-	EditorInterface.play_custom_scene(TEST_SCENE_PATH)
+	Engine.get_singleton("EditorInterface").play_custom_scene(TEST_SCENE_PATH)
 
 
 ## Set the tab menu icons

@@ -261,8 +261,8 @@ func _on_add_var_button_pressed() -> void:
 	undo_redo.add_do_reference(new_item)
 	undo_redo.add_do_method(_variable_container, "add_child", new_item)
 	undo_redo.add_undo_method(_variable_container, "remove_child", new_item)
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 	
@@ -279,8 +279,8 @@ func _on_add_group_button_pressed() -> void:
 	undo_redo.add_do_reference(new_item)
 	undo_redo.add_do_method(_variable_container, "add_child", new_item)
 	undo_redo.add_undo_method(_variable_container, "remove_child", new_item)
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -318,8 +318,8 @@ func _on_remove_variable(item: EditorSproutyDialogsVariableItem) -> void:
 		undo_redo.add_undo_method(parent, "add_child", item)
 		undo_redo.add_undo_reference(item)
 
-		undo_redo.add_do_method(self, "_on_modified", true)
-		undo_redo.add_undo_method(self, "_on_modified", false)
+		undo_redo.add_do_method(self , "_on_modified", true)
+		undo_redo.add_undo_method(self , "_on_modified", false)
 		undo_redo.commit_action(false)
 		# ------------------------------------------------------------------
 
@@ -347,8 +347,8 @@ func _on_confirm_remove_group() -> void:
 		undo_redo.add_undo_reference(temp)
 		undo_redo.add_do_method(parent, "remove_child", temp)
 		undo_redo.add_undo_method(parent, "add_child", temp)
-		undo_redo.add_do_method(self, "_on_modified", true)
-		undo_redo.add_undo_method(self, "_on_modified", false)
+		undo_redo.add_do_method(self , "_on_modified", true)
+		undo_redo.add_undo_method(self , "_on_modified", false)
 		undo_redo.commit_action(false)
 		# ------------------------------------------------------------------
 

@@ -81,9 +81,10 @@ static func ensure_unique_name(name: String, existing_names: Array,
 static func open_scene_in_editor(scene_path: String, scene_tree: SceneTree) -> void:
 	if check_valid_extension(scene_path, ["*.tscn", "*.scn"]):
 		if ResourceLoader.exists(scene_path):
-			EditorInterface.open_scene_from_path(scene_path)
+			var editor_interface = Engine.get_singleton("EditorInterface")
+			editor_interface.open_scene_from_path(scene_path)
 			await scene_tree.process_frame
-			EditorInterface.set_main_screen_editor("2D")
+			editor_interface.set_main_screen_editor("2D")
 	else:
 		printerr("[Sprouty Dialogs] Invalid scene file path.")
 
