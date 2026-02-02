@@ -244,6 +244,10 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 					ResourceUID.get_id_path(data.csv_file_uid)
 				)
 				SproutyDialogsTranslationManager.collect_translations()
+				# Refresh the filesystem to ensure the translations are imported
+				var editor_interface = Engine.get_singleton("EditorInterface")
+				editor_interface.get_resource_filesystem().scan()
+				await editor_interface.get_resource_filesystem().resources_reimported
 
 	elif data is SproutyDialogsCharacterData:
 		data = file_metadata["cache_node"].get_character_data()

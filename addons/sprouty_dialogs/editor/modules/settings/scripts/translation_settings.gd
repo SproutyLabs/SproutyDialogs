@@ -395,6 +395,12 @@ func _on_char_names_csv_path_changed(path: String) -> void:
 	_char_csv_warning.visible = false
 	SproutyDialogsSettingsManager.set_setting("character_names_csv",
 			ResourceSaver.get_resource_id_for_path(path, true))
+	
+	SproutyDialogsTranslationManager.collect_translations()
+	# Refresh the filesystem to ensure the translations are imported
+	var editor_interface = Engine.get_singleton("EditorInterface")
+	editor_interface.get_resource_filesystem().scan()
+	await editor_interface.get_resource_filesystem().resources_reimported
 
 
 ## Create a new CSV template file for character names

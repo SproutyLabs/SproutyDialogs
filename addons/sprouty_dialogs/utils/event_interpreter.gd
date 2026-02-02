@@ -57,7 +57,7 @@ func _process_dialogue(node_data: Dictionary) -> void:
 
 	# Get the translated dialog and parse variables
 	var dialog = SproutyDialogsTranslationManager.get_translated_dialog(
-		node_data["dialog_key"], get_parent().get_dialog_data())
+			node_data["dialog_key"], get_parent().get_dialog_data())
 	dialog = _sprouty_dialogs.Variables.parse_variables(dialog)
 
 	# Get the translated character name
@@ -67,7 +67,7 @@ func _process_dialogue(node_data: Dictionary) -> void:
 
 	if character_data:
 		display_name = SproutyDialogsTranslationManager.get_translated_character_name(
-				node_data["character"].to_upper() + "_CHAR", character_data)
+				node_data["character"], character_data)
 		display_name = _sprouty_dialogs.Variables.parse_variables(display_name)
 
 		if portrait.is_empty(): # Use default portrait
