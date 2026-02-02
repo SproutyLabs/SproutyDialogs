@@ -21,6 +21,8 @@ enum DownloadUpdateResult {SUCCESS, FAILURE}
 
 ## GitHub releases API URL
 const RELEASES_URL := "https://api.github.com/repos/SproutyLabs/SproutyDialogs/releases"
+## Plugin folder name
+const PLUGIN_FOLDER := "sprouty_dialogs"
 ## Temporary zip file path
 const TEMP_ZIP_PATH := "user://temp.zip"
 
@@ -45,7 +47,7 @@ func get_current_version() -> String:
 	if _current_version != "":
 		return _current_version
 	var plugin_cfg := ConfigFile.new()
-	plugin_cfg.load("res://addons/sprouty_dialogs/plugin.cfg")
+	plugin_cfg.load("res://addons/" + PLUGIN_FOLDER + "/plugin.cfg")
 	return plugin_cfg.get_value("plugin", "version", "unknown")
 
 
@@ -120,7 +122,7 @@ func _on_download_request_completed(result: int, response_code: int,
 	zip_file.close()
 
 	# Remove the old plugin files
-	OS.move_to_trash(ProjectSettings.globalize_path("res://addons/sprouty_dialogs"))
+	OS.move_to_trash(ProjectSettings.globalize_path("res://addons/" + PLUGIN_FOLDER))
 
 	# Extract the zip contents to the addons directory
 	var zip_reader: ZIPReader = ZIPReader.new()
@@ -129,7 +131,7 @@ func _on_download_request_completed(result: int, response_code: int,
 
 	var base_path: String = files[0].path_join('addons/')
 	for path in files:
-		if not "sprouty_dialogs/" in path:
+		if not PLUGIN_FOLDER in path:
 			continue
 
 		var new_file_path: String = path.replace(base_path, "")

@@ -54,12 +54,12 @@ func download_completed(result: int) -> void:
 	$LoadingPanel.hide()
 	match result:
 		0: # Success
-			$InstallCompletePanel/Container/Label.text = "The update was installed successfully!" \
-					+"\n\nPlease restart the editor to apply the update."
+			$InstallCompletePanel/Container/RichTextLabel.text = "[center][color=greenyellow]Update installed succesfully![/color]" \
+					+"\n\nPlease restart the editor\nto apply the update."
 			_restart_button.show()
 			_back_button.hide()
 		1: # Failure
-			$InstallCompletePanel/Container/Label.text = "The update could not be installed." \
+			$InstallCompletePanel/Container/RichTextLabel.text = "[center][color=tomato]The update could not be installed.[/color]" \
 					+"\n\nPlease try again later."
 			_restart_button.hide()
 			_back_button.show()

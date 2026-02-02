@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cka2spagpv2d7" path="res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg" id="4_ldrs7"]
 [ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-left.svg" id="5_ae78n"]
 
-[sub_resource type="DPITexture" id="DPITexture_uexgy"]
+[sub_resource type="DPITexture" id="DPITexture_jwyc3"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -16,7 +16,6 @@ oversampling_override = 1.0
 title = "Install New Version"
 initial_position = 4
 size = Vector2i(608, 608)
-visible = true
 unresizable = false
 borderless = false
 max_size = Vector2i(16384, 800)
@@ -71,7 +70,7 @@ text = "[detail]"
 layout_mode = 2
 size_flags_horizontal = 4
 tooltip_text = "Warning!
-This will delete the addons/sprouty-dialogs folder and install the new version.
+This will delete the 'res://addons/sprouty_dialogs' folder and install the new version.
 Any custom changes in that folder will be lost!"
 text = "Install"
 icon = ExtResource("3_e6pg5")
@@ -124,28 +123,33 @@ grow_vertical = 2
 
 [node name="Container" type="VBoxContainer" parent="InstallCompletePanel" unique_id=1367132021]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_constants/separation = 20
 
 [node name="Icon" type="TextureRect" parent="InstallCompletePanel/Container" unique_id=2071318123]
+custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("4_ldrs7")
+expand_mode = 3
 stretch_mode = 5
 
-[node name="Label" type="Label" parent="InstallCompletePanel/Container" unique_id=1361023523]
+[node name="RichTextLabel" type="RichTextLabel" parent="InstallCompletePanel/Container" unique_id=1081060816]
 layout_mode = 2
-text = "Update installed succesfully!
+theme_override_styles/normal = ExtResource("2_e6pg5")
+bbcode_enabled = true
+text = "[center][color=greenyellow]Update installed succesfully![/color]
 
-Please restart the editor"
-horizontal_alignment = 1
+Please restart the editor
+to apply the update."
+fit_content = true
 
 [node name="RestartButton" type="Button" parent="InstallCompletePanel/Container" unique_id=102213051]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Restart Now"
-icon = SubResource("DPITexture_uexgy")
+icon = SubResource("DPITexture_jwyc3")
 
 [node name="BackButton" type="Button" parent="InstallCompletePanel/Container" unique_id=358820631]
 layout_mode = 2
