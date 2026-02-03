@@ -1,7 +1,7 @@
 <div align="center">
 <img alt="Logo" src="https://github.com/SproutyLabs/SproutyDialogs/blob/main/icon.svg" />
 <h1 align="center"> Sprouty Dialogs </h1>
-<p>A graph-based visual dialogue system plugin for Godot 4.5+ to create dialogues in your games incredibly easy!</p>
+<p>A graph-based visual dialogue system plugin for Godot to create dialogues in your games incredibly easy!</p>
 </div>
 
 <div align="center">
@@ -13,8 +13,8 @@
 </div>
 
 <div align="center">
- <img width="400" alt="Dialogue Example" src="https://github.com/user-attachments/assets/88991abb-3e8b-463f-8e06-6833b26c5a48" />
- <img width="400" alt="Sprouty Animation" src="https://github.com/user-attachments/assets/47fbb3f5-5fca-40ac-ad73-3c610eb5fa05" />
+ <img width="500" alt="Dialogue Example" src="https://github.com/user-attachments/assets/88991abb-3e8b-463f-8e06-6833b26c5a48" />
+ <img width="500" alt="Sprouty Animation" src="https://github.com/user-attachments/assets/47fbb3f5-5fca-40ac-ad73-3c610eb5fa05" />
 </div>
 <img width="1433" height="734" alt="plugin_example" src="https://github.com/user-attachments/assets/9860c2fa-dc0f-4c46-bd7f-a918feb58400" />
 
@@ -30,7 +30,7 @@
 
 ## About
 
-The goal of this plugin is to provide an **easy-to-use, customizable and extensible** way to create dialogues without having to build your own system, because depending on the game, can be a huge and complex task. There are many amazing dialogue system plugins out there, but I felt that none of them offered all the features I wanted, so I make my own.
+The goal of this plugin is to provide an **easy-to-use, customizable and extensible** way to create dialogues without having to build your own system, because depending on the game, can be a huge and complex task.
 
 I started making this dialogue system for my game [One Cake Day](https://kazymila.itch.io/one-cake-day), and future projects, but then it became an entire editor (...and a year of work!), so I decided to make it a full plugin! I hope it helps you build your narrative more easily and improve your workflow!
 
