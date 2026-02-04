@@ -10,7 +10,7 @@ assignees: ''
 ## Problem description
 A clear and concise description of what the bug is.
 
-## How to Reproduce?
+## How to reproduce?
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
@@ -19,9 +19,6 @@ Steps to reproduce the behavior:
 
 ## Expected behavior
 A clear and concise description of what you expected to happen.
-
-## Screenshots
-If applicable, add screenshots to help explain your problem.
 
 ## System context
 Please complete the following information:
@@ -34,7 +31,7 @@ Add any other context about the problem here.
 
 ## Have you tried to fix the problem or some workaround?
 
-Describe how you have attempted to resolve the issue or if you have tried any alternative solutions, if applicable.
+Describe how you have attempted to resolve the issue or if you have tried any alternative solutions.
 
 ## Possible fixes
 
