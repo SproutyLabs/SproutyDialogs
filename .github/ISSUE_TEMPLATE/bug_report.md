@@ -29,10 +29,8 @@ Please complete the following information:
 ## Additional context
 Add any other context about the problem here.
 
-## Have you tried to fix the problem or some workaround?
-
+## Have you tried to fix the problem?
 Describe how you have attempted to resolve the issue or if you have tried any alternative solutions.
 
 ## Possible fixes
-
 Any ideas for fix the problem, such as a code reference (link to a file, line of code) that may be causing the problem.
