@@ -4,6 +4,7 @@
 <p>A graph-based visual dialogue system plugin for Godot to create dialogues in your games incredibly easy!</p>
 </div>
 
+<!-- Badges -->
 <div align="center">
  <a href="https://godotengine.org/download/" target="_blank" style="text-decoration:none"><img alt="Godot Badge" src="https://img.shields.io/badge/Godot-4.5%2B-blue?logo=godotengine&logoColor=white"></a>
  <a href="https://SproutyLabs.github.io/SproutyDialogsDocs"  target="_blank" style="text-decoration:none"><img alt="Documentation Badge" src="https://img.shields.io/badge/Documentation-Online-green?&color=%2392db39"></a>
@@ -12,11 +13,12 @@
 <h3></h3>
 </div>
 
+<!-- Screenshots -->
 <div align="center">
- <img width="500" alt="Dialogue Example" src="https://github.com/user-attachments/assets/88991abb-3e8b-463f-8e06-6833b26c5a48" />
- <img width="500" alt="Sprouty Animation" src="https://github.com/user-attachments/assets/47fbb3f5-5fca-40ac-ad73-3c610eb5fa05" />
+ <img width="49%" alt="Dialogue Example" src="https://github.com/user-attachments/assets/88991abb-3e8b-463f-8e06-6833b26c5a48" />
+ <img width="49%" alt="Sprouty Animation" src="https://github.com/user-attachments/assets/47fbb3f5-5fca-40ac-ad73-3c610eb5fa05" />
 </div>
-<img width="1433" height="734" alt="plugin_example" src="https://github.com/user-attachments/assets/9860c2fa-dc0f-4c46-bd7f-a918feb58400" />
+<img alt="plugin_example" src="https://github.com/user-attachments/assets/9860c2fa-dc0f-4c46-bd7f-a918feb58400" />
 
 ## Contents
 
@@ -25,6 +27,7 @@
 - [Features](features)
 - [Documentation](#documentation)
 - [Roadmap](#roadmap)
+- [Contribute](#contribute)
 - [Credits](#credits)
 - [License](#license)
 
@@ -80,7 +83,18 @@ These are some features that I want to implement in the future:
 
 And I will probably add more as I needed for my game ;)
 
-Wharever, you can also contribute and add your own features, so please feel free to do so!
+## Contribute
+
+You can also contribute to the project and add your own features, so please feel free to do so!
+
+You can report any bug, issues and request features in the [Github issues page](https://github.com/SproutyLabs/SproutyDialogs/issues/):
+- If you find any bugs or issues, report them as an issue [here](https://github.com/SproutyLabs/SproutyDialogs/issues/new?template=bug_report.md).
+- You can request any feature idea opening a new issue [here](https://github.com/SproutyLabs/SproutyDialogs/issues/new?template=feature_request.md).
+
+Please, check that the same or a similar issue isn't already exist before creating your own.
+
+> [!NOTE]
+> The plugin is writen and tested using GDscript and has no been tested for C#.
 
 ## Credits
 
