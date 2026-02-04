@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://b3dunt76vknsq"]
+[gd_scene load_steps=14 format=3 uid="uid://b3dunt76vknsq"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_mqdqa"]
 [ext_resource type="Script" uid="uid://dwueatpn41rq8" path="res://addons/sprouty_dialogs/editor/modules/characters/scripts/character_editor.gd" id="2_8cc8c"]
@@ -13,11 +13,11 @@
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="9_a1fcc"]
 [ext_resource type="StyleBox" uid="uid://bhwywsg8px0ak" path="res://addons/sprouty_dialogs/editor/theme/panel_style.tres" id="9_al6eg"]
 
-[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
+[sub_resource type="DPITexture" id="DPITexture_mxuji"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="CharacterEditor" type="HSplitContainer" unique_id=1347165417]
+[node name="CharacterEditor" type="HSplitContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -28,19 +28,19 @@ size_flags_vertical = 3
 theme = ExtResource("1_mqdqa")
 script = ExtResource("2_8cc8c")
 
-[node name="CharacterSettings" type="MarginContainer" parent="." unique_id=764855182]
+[node name="CharacterSettings" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CharacterSettings" unique_id=1141790130]
+[node name="ScrollContainer" type="ScrollContainer" parent="CharacterSettings"]
 layout_mode = 2
 
-[node name="Container" type="VBoxContainer" parent="CharacterSettings/ScrollContainer" unique_id=1052452942]
+[node name="Container" type="VBoxContainer" parent="CharacterSettings/ScrollContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="KeyNameLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container" unique_id=103179786]
+[node name="KeyNameLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "The character key name to reference it is the filename."
@@ -48,19 +48,19 @@ mouse_filter = 1
 theme_type_variation = &"HeaderMedium"
 text = "Name"
 
-[node name="--" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container" unique_id=928673286]
+[node name="--" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="DisplayName" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container" unique_id=199187815]
+[node name="DisplayName" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "The name that will be displayed for this character."
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/DisplayName" unique_id=1561292714]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/DisplayName"]
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Display Name"
 
-[node name="NameDefaultLocaleLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/DisplayName" unique_id=660134065]
+[node name="NameDefaultLocaleLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/DisplayName"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -69,13 +69,13 @@ theme = ExtResource("1_mqdqa")
 theme_type_variation = &"LocaleLabel"
 text = "(es)"
 
-[node name="NameDefaultLocaleField" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/DisplayName" unique_id=1127374958]
+[node name="NameDefaultLocaleField" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/DisplayName"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Insert character name..."
 
-[node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container" unique_id=1624679306]
+[node name="NameTranslationsContainer" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -83,10 +83,10 @@ tooltip_text = "Translations of the name to display."
 script = ExtResource("2_tpd02")
 _use_text_boxes = false
 
-[node name="Header" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer" unique_id=1251095857]
+[node name="Header" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
 layout_mode = 2
 
-[node name="ExpandButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Header" unique_id=1494440059]
+[node name="ExpandButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Header"]
 layout_mode = 2
 toggle_mode = true
 text = "Translations"
@@ -95,17 +95,17 @@ flat = true
 alignment = 2
 icon_alignment = 2
 
-[node name="Separator" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Header" unique_id=505959996]
+[node name="Separator" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Header"]
 visible = false
 layout_mode = 2
 
-[node name="Panel" type="ScrollContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer" unique_id=946250453]
+[node name="Panel" type="ScrollContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer"]
 visible = false
 custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("5_k1upw")
 
-[node name="TextBoxes" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Panel" unique_id=1231869869]
+[node name="TextBoxes" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Panel"]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(100, 120)
@@ -113,33 +113,32 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container" unique_id=2064535504]
+[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="Description" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container" unique_id=213599454]
+[node name="Description" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 tooltip_text = "It does nothing. It is for your reference only."
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/Description" unique_id=1527197928]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/Description"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 text = "Description"
 
-[node name="DescriptionField" type="TextEdit" parent="CharacterSettings/ScrollContainer/Container/Description" unique_id=1803858718]
+[node name="DescriptionField" type="TextEdit" parent="CharacterSettings/ScrollContainer/Container/Description"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Character description (optional)..."
 
-[node name="----" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container" unique_id=1889474906]
+[node name="----" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="ExpandDialogBoxButton" type="Button" parent="CharacterSettings/ScrollContainer/Container" unique_id=1936895409]
+[node name="ExpandDialogBoxButton" type="Button" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -147,7 +146,7 @@ button_pressed = true
 icon = ExtResource("6_8fsju")
 flat = true
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/ExpandDialogBoxButton" unique_id=896561528]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/ExpandDialogBoxButton"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -162,35 +161,35 @@ theme_type_variation = &"HeaderMedium"
 text = "Dialog Box Settings"
 vertical_alignment = 1
 
-[node name="DialogBoxSettings" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container" unique_id=488836268]
+[node name="DialogBoxSettings" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="DialogBox" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings" unique_id=1557050232]
+[node name="DialogBox" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings"]
 layout_mode = 2
 tooltip_text = "Scene with the dialog box where the text will be displayed.
 The root of the scene must be a node inherited from the DialogBox class."
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox" unique_id=1773468083]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 0
 text = "Dialog Box"
 
-[node name="NewDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox" unique_id=1959325043]
+[node name="NewDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Create a new dialog box scene."
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_mxuji")
 
-[node name="ToDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox" unique_id=1173755088]
+[node name="ToDialogBoxSceneButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 tooltip_text = "Open the dialog box scene."
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_mxuji")
 
-[node name="DialogBoxSceneField" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox" unique_id=1256420958 instance=ExtResource("5_x3nyu")]
+[node name="DialogBoxSceneField" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings/DialogBox" instance=ExtResource("5_x3nyu")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -199,7 +198,7 @@ _placeholder_text = "Select a scene..."
 _recent_file_type = "dialog_box_files"
 file_filters = PackedStringArray("*.tscn")
 
-[node name="PortraitOnDialogBoxToggle" type="CheckButton" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings" unique_id=2112425294]
+[node name="PortraitOnDialogBoxToggle" type="CheckButton" parent="CharacterSettings/ScrollContainer/Container/DialogBoxSettings"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Select this option to display the portrait inside the dialog box. 
@@ -207,12 +206,11 @@ You need to assign a node in 'Dialog Box Components > Portrait Display'
 property from the DialogBox to use it as a parent to display the portrait."
 text = "Portrait on dialog box"
 
-[node name="-----" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container" unique_id=1501679862]
+[node name="-----" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="ExpandPortraitsSettingsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container" unique_id=1850468726]
+[node name="ExpandPortraitsSettingsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -220,7 +218,7 @@ button_pressed = true
 icon = ExtResource("6_8fsju")
 flat = true
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/ExpandPortraitsSettingsButton" unique_id=1710169842]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/ExpandPortraitsSettingsButton"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -235,25 +233,25 @@ theme_type_variation = &"HeaderMedium"
 text = "Portraits Settings"
 vertical_alignment = 1
 
-[node name="PortraitSettings" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container" unique_id=1758160204]
+[node name="PortraitSettings" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="DefaultPortrait" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings" unique_id=1773818669]
+[node name="DefaultPortrait" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings"]
 layout_mode = 2
 tooltip_text = "Default portrait to be used for the character when no portrait is selected."
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/DefaultPortrait" unique_id=1773376729]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/DefaultPortrait"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Default portrait"
 
-[node name="DefaultPortraitDropdown" type="OptionButton" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/DefaultPortrait" unique_id=2027701668]
+[node name="DefaultPortraitDropdown" type="OptionButton" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/DefaultPortrait"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="ExpandTransformSettingsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings" unique_id=2054304570]
+[node name="ExpandTransformSettingsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -267,129 +265,128 @@ alignment = 0
 clip_text = true
 icon_alignment = 2
 
-[node name="TransformSettings" type="PanelContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings" unique_id=1678170464]
+[node name="TransformSettings" type="PanelContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 theme_override_styles/panel = ExtResource("5_k1upw")
 script = ExtResource("7_scula")
 
-[node name="Container" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings" unique_id=1940399891]
+[node name="Container" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="-" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container" unique_id=577537746]
+[node name="-" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 layout_mode = 2
 
-[node name="PortraitScale" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container" unique_id=1482040714]
+[node name="PortraitScale" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Portraits scale."
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale" unique_id=1158482356]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "Scale"
 
-[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale" unique_id=1780982851]
+[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 mouse_filter = 1
 text = "X"
 
-[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale" unique_id=211440582]
+[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 max_value = 9999.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale" unique_id=1390010750]
+[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 mouse_filter = 1
 text = "Y"
 
-[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale" unique_id=586625195]
+[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 max_value = 9999.0
 step = 0.01
 value = 1.0
 allow_greater = true
 
-[node name="LockRatioButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale" unique_id=797635774]
+[node name="LockRatioButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitScale"]
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_mxuji")
 flat = true
 
-[node name="--" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container" unique_id=1530309475]
+[node name="--" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 layout_mode = 2
 
-[node name="PortraitOffset" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container" unique_id=321602704]
+[node name="PortraitOffset" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Portraits position offset."
 
-[node name="OffsetLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset" unique_id=1673177443]
+[node name="OffsetLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "Offset"
 
-[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset" unique_id=209367259]
+[node name="XLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 mouse_filter = 1
 text = "X"
 
-[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset" unique_id=473472736]
+[node name="XField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 min_value = -9999.0
 max_value = 9999.0
 step = 0.001
 suffix = "px"
 
-[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset" unique_id=1505403417]
+[node name="YLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 mouse_filter = 1
 text = "Y"
 
-[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset" unique_id=803569530]
+[node name="YField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitOffset"]
 layout_mode = 2
 min_value = -9999.0
 max_value = 9999.0
 step = 0.001
 suffix = "px"
 
-[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container" unique_id=1126452650]
+[node name="---" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 layout_mode = 2
 
-[node name="PortraitRotation" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container" unique_id=1947051816]
+[node name="PortraitRotation" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="RotationLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation" unique_id=1346051020]
+[node name="RotationLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 tooltip_text = "Portraits rotation in degrees."
 mouse_filter = 1
 text = "Rotation"
 
-[node name="RotationField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation" unique_id=331193919]
+[node name="RotationField" type="SpinBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 tooltip_text = "Portraits rotation in degrees."
 min_value = -360.0
 max_value = 360.0
 suffix = "°"
 
-[node name="MirrorCheckBox" type="CheckBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation" unique_id=1139801592]
+[node name="MirrorCheckBox" type="CheckBox" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/TransformSettings/Container/PortraitRotation"]
 layout_mode = 2
 tooltip_text = "Flip the portraits horizontally."
 text = "Mirror"
 
-[node name="-------" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container" unique_id=1617383605]
+[node name="-------" type="HSeparator" parent="CharacterSettings/ScrollContainer/Container"]
 layout_mode = 2
 
-[node name="ExpandPortraitsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container" unique_id=1825522921]
+[node name="ExpandPortraitsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 size_flags_horizontal = 3
 toggle_mode = true
@@ -397,7 +394,7 @@ button_pressed = true
 icon = ExtResource("6_8fsju")
 flat = true
 
-[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/ExpandPortraitsButton" unique_id=338983724]
+[node name="Label" type="Label" parent="CharacterSettings/ScrollContainer/Container/ExpandPortraitsButton"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -412,44 +409,44 @@ theme_type_variation = &"HeaderMedium"
 text = "Portraits"
 vertical_alignment = 1
 
-[node name="Portraits" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container" unique_id=478607817]
+[node name="Portraits" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SearchBar" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits" unique_id=1947014354]
+[node name="SearchBar" type="HBoxContainer" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
 layout_mode = 2
 
-[node name="PortraitSearchBar" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/Portraits/SearchBar" unique_id=1338897186]
+[node name="PortraitSearchBar" type="LineEdit" parent="CharacterSettings/ScrollContainer/Container/Portraits/SearchBar"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Search portraits..."
-right_icon = SubResource("DPITexture_5rvxf")
+right_icon = SubResource("DPITexture_mxuji")
 
-[node name="AddPortraitButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/SearchBar" unique_id=186792849]
+[node name="AddPortraitButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/SearchBar"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 tooltip_text = "Add a new portrait"
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_mxuji")
 icon_alignment = 2
 
-[node name="AddGroupButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/SearchBar" unique_id=1923580752]
+[node name="AddGroupButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/Portraits/SearchBar"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 tooltip_text = "Add a new portrait group"
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_mxuji")
 icon_alignment = 2
 
-[node name="PortraitsPanel" type="Panel" parent="CharacterSettings/ScrollContainer/Container/Portraits" unique_id=860112921]
+[node name="PortraitsPanel" type="Panel" parent="CharacterSettings/ScrollContainer/Container/Portraits"]
 custom_minimum_size = Vector2(0, 200)
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = ExtResource("9_al6eg")
 
-[node name="PortraitTree" type="Tree" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel" unique_id=869806243]
+[node name="PortraitTree" type="Tree" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel"]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -462,36 +459,36 @@ allow_rmb_select = true
 hide_root = true
 script = ExtResource("7_7kmf4")
 
-[node name="PortraitPopupMenu" type="PopupMenu" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree" unique_id=317394580]
+[node name="PortraitPopupMenu" type="PopupMenu" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree"]
 oversampling_override = 1.0
 size = Vector2i(110, 100)
 item_count = 3
 item_0/text = "Rename"
-item_0/icon = SubResource("DPITexture_5rvxf")
+item_0/icon = SubResource("DPITexture_mxuji")
 item_0/id = 0
 item_1/text = "Duplicate"
-item_1/icon = SubResource("DPITexture_5rvxf")
+item_1/icon = SubResource("DPITexture_mxuji")
 item_1/id = 1
 item_2/text = "Remove"
-item_2/icon = SubResource("DPITexture_5rvxf")
+item_2/icon = SubResource("DPITexture_mxuji")
 item_2/id = 2
 
-[node name="RemoveGroupDialog" type="ConfirmationDialog" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree" unique_id=1432760138]
+[node name="RemoveGroupDialog" type="ConfirmationDialog" parent="CharacterSettings/ScrollContainer/Container/Portraits/PortraitsPanel/PortraitTree"]
 initial_position = 4
 size = Vector2i(367, 106)
 ok_button_text = "Confirm"
 dialog_text = "Are you sure you want to remove this group? 
 All portraits inside will be removed."
 
-[node name="PortraitSettings" type="MarginContainer" parent="." unique_id=571376391]
+[node name="PortraitSettings" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="NoPortraitPanel" type="Panel" parent="PortraitSettings" unique_id=1318169901]
+[node name="NoPortraitPanel" type="Panel" parent="PortraitSettings"]
 layout_mode = 2
 theme_override_styles/panel = ExtResource("9_a1fcc")
 
-[node name="Label" type="Label" parent="PortraitSettings/NoPortraitPanel" unique_id=167275235]
+[node name="Label" type="Label" parent="PortraitSettings/NoPortraitPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -506,15 +503,15 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "No portrait selected."
 
-[node name="Container" type="ScrollContainer" parent="PortraitSettings" unique_id=419110232]
+[node name="Container" type="ScrollContainer" parent="PortraitSettings"]
 visible = false
 layout_mode = 2
 theme_override_styles/panel = ExtResource("9_a1fcc")
 
-[node name="PortraitEditor" parent="PortraitSettings/Container" unique_id=1217512795 instance=ExtResource("7_4rves")]
+[node name="PortraitEditor" parent="PortraitSettings/Container" instance=ExtResource("7_4rves")]
 layout_mode = 2
 
-[node name="NewDialogBoxDialog" type="FileDialog" parent="." unique_id=274027827]
+[node name="NewDialogBoxDialog" type="FileDialog" parent="."]
 auto_translate_mode = 1
 oversampling_override = 1.0
 title = "New Dialog Box Scene"

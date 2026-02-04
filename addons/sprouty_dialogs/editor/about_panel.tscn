@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://b3ttyn7bfc2v0"]
+[gd_scene load_steps=8 format=3 uid="uid://b3ttyn7bfc2v0"]
 
 [ext_resource type="Script" uid="uid://84gckqfa1ts8" path="res://addons/sprouty_dialogs/editor/scripts/about_panel.gd" id="1_mxuji"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="2_mxuji"]
@@ -7,96 +7,94 @@
 [ext_resource type="Texture2D" uid="uid://d1ktado0bvpv7" path="res://addons/sprouty_dialogs/editor/icons/github.svg" id="4_dhkc0"]
 [ext_resource type="Texture2D" uid="uid://cl8faicjvrgi2" path="res://addons/sprouty_dialogs/editor/icons/heart.svg" id="5_4kbvv"]
 
-[sub_resource type="DPITexture" id="DPITexture_jwyc3"]
+[sub_resource type="DPITexture" id="DPITexture_mxuji"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="AboutPanel" type="PopupPanel" unique_id=935945189]
+[node name="AboutPanel" type="PopupPanel"]
 disable_3d = true
 oversampling_override = 1.0
 title = "Sprouty Dialogs"
 initial_position = 4
-size = Vector2i(500, 500)
+size = Vector2i(296, 269)
 visible = true
 borderless = false
-min_size = Vector2i(500, 500)
-max_size = Vector2i(16384, 500)
+max_size = Vector2i(16384, 420)
 keep_title_visible = true
 script = ExtResource("1_mxuji")
 
-[node name="Container" type="VBoxContainer" parent="." unique_id=1454326357]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 4.0
-offset_top = 4.0
-offset_right = -4.0
-offset_bottom = -4.0
+[node name="Container" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -144.0
+offset_top = -130.5
+offset_right = 144.0
+offset_bottom = 130.5
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_vertical = 0
 
-[node name="Logo" type="TextureRect" parent="Container" unique_id=785300700]
-custom_minimum_size = Vector2(50, 50)
+[node name="Logo" type="TextureRect" parent="Container"]
 layout_mode = 2
 texture = ExtResource("3_dhkc0")
-expand_mode = 3
 stretch_mode = 5
 
-[node name="VersionLabel" type="Label" parent="Container" unique_id=864041284]
+[node name="VersionLabel" type="Label" parent="Container"]
 layout_mode = 2
 text = "Version 1.0.0"
 horizontal_alignment = 1
 
-[node name="VersionStatusLabel" type="RichTextLabel" parent="Container" unique_id=1410522476]
+[node name="VersionStatusLabel" type="RichTextLabel" parent="Container"]
 layout_mode = 2
 theme_override_styles/normal = ExtResource("2_mxuji")
 bbcode_enabled = true
 text = "[center][color=greenyellow]The plugin is up to date[/color]"
 fit_content = true
 
-[node name="CheckUpdatesButton" type="Button" parent="Container" unique_id=1885335667]
+[node name="CheckUpdatesButton" type="Button" parent="Container"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Check for updates"
-icon = SubResource("DPITexture_jwyc3")
+icon = SubResource("DPITexture_mxuji")
 
-[node name="UpdateButton" type="Button" parent="Container" unique_id=196116546]
+[node name="UpdateButton" type="Button" parent="Container"]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Update to last version"
 
-[node name="HSeparator" type="HSeparator" parent="Container" unique_id=449237880]
+[node name="HSeparator" type="HSeparator" parent="Container"]
 layout_mode = 2
 
-[node name="Links" type="HBoxContainer" parent="Container" unique_id=2071162416]
+[node name="Links" type="HBoxContainer" parent="Container"]
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="DocsButton" type="Button" parent="Container/Links" unique_id=378989225]
+[node name="DocsButton" type="Button" parent="Container/Links"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Docs"
 icon = ExtResource("3_e464s")
 
-[node name="GithubButton" type="Button" parent="Container/Links" unique_id=1743905237]
+[node name="GithubButton" type="Button" parent="Container/Links"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Github"
 icon = ExtResource("4_dhkc0")
 
-[node name="DonateButton" type="Button" parent="Container/Links" unique_id=1119061314]
+[node name="DonateButton" type="Button" parent="Container/Links"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Donate"
 icon = ExtResource("5_4kbvv")
 
-[node name="Credits" type="MarginContainer" parent="Container" unique_id=183091156]
+[node name="Credits" type="MarginContainer" parent="Container"]
 layout_mode = 2
 theme_override_constants/margin_top = 20
 
-[node name="CreditsLabel" type="RichTextLabel" parent="Container/Credits" unique_id=730742686]
+[node name="CreditsLabel" type="RichTextLabel" parent="Container/Credits"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = ExtResource("2_mxuji")

@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bsuv8fchs6lyc"]
+[gd_scene load_steps=8 format=3 uid="uid://bsuv8fchs6lyc"]
 
 [ext_resource type="Script" uid="uid://cxxoamql014l1" path="res://addons/sprouty_dialogs/editor/scripts/update_panel.gd" id="1_amqc6"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="2_e6pg5"]
@@ -7,22 +7,23 @@
 [ext_resource type="Texture2D" uid="uid://cka2spagpv2d7" path="res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg" id="4_ldrs7"]
 [ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-left.svg" id="5_ae78n"]
 
-[sub_resource type="DPITexture" id="DPITexture_jwyc3"]
+[sub_resource type="DPITexture" id="DPITexture_mxuji"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="UpdatePanel" type="PopupPanel" unique_id=138425695]
+[node name="UpdatePanel" type="PopupPanel"]
 oversampling_override = 1.0
 title = "Install New Version"
 initial_position = 4
 size = Vector2i(608, 608)
+visible = true
 unresizable = false
 borderless = false
 max_size = Vector2i(16384, 800)
 keep_title_visible = true
 script = ExtResource("1_amqc6")
 
-[node name="NewVersionContainer" type="VBoxContainer" parent="." unique_id=1708705375]
+[node name="NewVersionContainer" type="VBoxContainer" parent="."]
 custom_minimum_size = Vector2(600, 600)
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,13 +36,13 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 0
 
-[node name="Header" type="PanelContainer" parent="NewVersionContainer" unique_id=1487486830]
+[node name="Header" type="PanelContainer" parent="NewVersionContainer"]
 layout_mode = 2
 
-[node name="Container" type="VBoxContainer" parent="NewVersionContainer/Header" unique_id=1713021012]
+[node name="Container" type="VBoxContainer" parent="NewVersionContainer/Header"]
 layout_mode = 2
 
-[node name="VersionLabel" type="RichTextLabel" parent="NewVersionContainer/Header/Container" unique_id=1573044161]
+[node name="VersionLabel" type="RichTextLabel" parent="NewVersionContainer/Header/Container"]
 layout_mode = 2
 theme_override_styles/normal = ExtResource("2_e6pg5")
 bbcode_enabled = true
@@ -49,7 +50,7 @@ text = "[color=orange][b][i][font s=36]New version 0.0.0 available!
 "
 fit_content = true
 
-[node name="PublishedInfoLabel" type="RichTextLabel" parent="NewVersionContainer/Header/Container" unique_id=237856989]
+[node name="PublishedInfoLabel" type="RichTextLabel" parent="NewVersionContainer/Header/Container"]
 layout_mode = 2
 theme_override_styles/normal = ExtResource("2_e6pg5")
 bbcode_enabled = true
@@ -57,16 +58,16 @@ text = "[color=gray][i]Published at [date] by [author]
 "
 fit_content = true
 
-[node name="HSeparator" type="HSeparator" parent="NewVersionContainer/Header/Container" unique_id=770741000]
+[node name="HSeparator" type="HSeparator" parent="NewVersionContainer/Header/Container"]
 layout_mode = 2
 
-[node name="ReleaseInfoLabel" type="RichTextLabel" parent="NewVersionContainer" unique_id=123757927]
+[node name="ReleaseInfoLabel" type="RichTextLabel" parent="NewVersionContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
 text = "[detail]"
 
-[node name="InstallButton" type="Button" parent="NewVersionContainer" unique_id=572340396]
+[node name="InstallButton" type="Button" parent="NewVersionContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 tooltip_text = "Warning!
@@ -75,7 +76,7 @@ Any custom changes in that folder will be lost!"
 text = "Install"
 icon = ExtResource("3_e6pg5")
 
-[node name="LoadingPanel" type="PanelContainer" parent="." unique_id=617024865]
+[node name="LoadingPanel" type="PanelContainer" parent="."]
 visible = false
 anchors_preset = 15
 anchor_right = 1.0
@@ -87,30 +88,29 @@ offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Container" type="VBoxContainer" parent="LoadingPanel" unique_id=872681327]
+[node name="Container" type="VBoxContainer" parent="LoadingPanel"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Label" type="Label" parent="LoadingPanel/Container" unique_id=1075761063]
+[node name="Label" type="Label" parent="LoadingPanel/Container"]
 layout_mode = 2
 text = "Updating the plugin... 
 This can take a moment."
 horizontal_alignment = 1
 
-[node name="LoadingIcon" type="Control" parent="LoadingPanel/Container" unique_id=1798101593]
+[node name="LoadingIcon" type="Control" parent="LoadingPanel/Container"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="Animation" type="AnimatedSprite2D" parent="LoadingPanel/Container/LoadingIcon" unique_id=133613266]
+[node name="Animation" type="AnimatedSprite2D" parent="LoadingPanel/Container/LoadingIcon"]
 position = Vector2(50, 50)
 sprite_frames = ExtResource("4_jwyc3")
 autoplay = "default"
 
-[node name="InstallCompletePanel" type="PanelContainer" parent="." unique_id=1663957726]
-visible = false
+[node name="InstallCompletePanel" type="PanelContainer" parent="."]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -121,21 +121,19 @@ offset_bottom = -4.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Container" type="VBoxContainer" parent="InstallCompletePanel" unique_id=1367132021]
+[node name="Container" type="VBoxContainer" parent="InstallCompletePanel"]
 layout_mode = 2
 size_flags_vertical = 4
 theme_override_constants/separation = 20
 
-[node name="Icon" type="TextureRect" parent="InstallCompletePanel/Container" unique_id=2071318123]
-custom_minimum_size = Vector2(50, 50)
+[node name="Icon" type="TextureRect" parent="InstallCompletePanel/Container"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("4_ldrs7")
-expand_mode = 3
 stretch_mode = 5
 
-[node name="RichTextLabel" type="RichTextLabel" parent="InstallCompletePanel/Container" unique_id=1081060816]
+[node name="RichTextLabel" type="RichTextLabel" parent="InstallCompletePanel/Container"]
 layout_mode = 2
 theme_override_styles/normal = ExtResource("2_e6pg5")
 bbcode_enabled = true
@@ -145,13 +143,13 @@ Please restart the editor
 to apply the update."
 fit_content = true
 
-[node name="RestartButton" type="Button" parent="InstallCompletePanel/Container" unique_id=102213051]
+[node name="RestartButton" type="Button" parent="InstallCompletePanel/Container"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Restart Now"
-icon = SubResource("DPITexture_jwyc3")
+icon = SubResource("DPITexture_mxuji")
 
-[node name="BackButton" type="Button" parent="InstallCompletePanel/Container" unique_id=358820631]
+[node name="BackButton" type="Button" parent="InstallCompletePanel/Container"]
 layout_mode = 2
 size_flags_horizontal = 4
 text = "Go Back"
