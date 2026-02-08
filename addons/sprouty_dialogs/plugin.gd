@@ -58,9 +58,9 @@ func _get_plugin_icon():
 
 func _handles(object: Object) -> bool:
 	if object is SproutyDialogsDialogueData or object is SproutyDialogsCharacterData:
-	if is_instance_valid(editor.file_manager):
-		editor.file_manager.load_file(object.resource_path)
-		return true
+		if is_instance_valid(editor.file_manager):
+			editor.file_manager.load_file(object.resource_path)
+			return true
 	return false
 
 
