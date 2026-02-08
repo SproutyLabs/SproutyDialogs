@@ -75,12 +75,13 @@ Also, you have a [class reference](https://SproutyLabs.github.io/SproutyDialogsD
 
 These are some features that I want to implement in the future:
 
+- [ ] Grouping nodes support
 - [ ] Typing sounds support
 - [ ] Adding more event nodes:
   - [ ] Randomize node
   - [ ] Play sound node
   - [ ] Switch case node
-- [ ] Text effect tags to handle dialogues, such as change the typing speed
+- [ ] Text effect tags (e.g. to change the typing speed in between dialogues)
 
 And I will probably add more as I need for my game ;)
 
@@ -93,7 +94,9 @@ You can report any bugs or issues and request features in the [Github issues pag
 - If you find any bugs or issues, report them as an issue [here](https://github.com/SproutyLabs/SproutyDialogs/issues/new?template=bug_report.md).
 - You can request any feature idea by opening a new issue [here](https://github.com/SproutyLabs/SproutyDialogs/issues/new?template=feature_request.md).
 
-Please check that the same or a similar issue doesn't already exist before creating your own.
+*Please check that the same or a similar issue doesn't already exist before creating your own.*
+
+Also, you can ask anything in [Github discussions](https://github.com/SproutyLabs/SproutyDialogs/discussions)!
 
 > [!NOTE]
 > The plugin is written and tested using GDScript and has not been tested for C#.
