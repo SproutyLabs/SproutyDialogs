@@ -56,6 +56,14 @@ func _get_plugin_icon():
 	return preload(PLUGIN_ICON_PATH)
 
 
+func _handles(object: Object) -> bool:
+	if object is SproutyDialogsDialogueData or object is SproutyDialogsCharacterData:
+		if is_instance_valid(editor.file_manager):
+			editor.file_manager.load_file(object.resource_path)
+			return true
+	return false
+
+
 ## Adds the default dialogs input actions to the project settings if it doesn't exist.
 func add_dialogs_input_actions() -> void:
 	if not ProjectSettings.has_setting("input/dialogs_continue_action"):
