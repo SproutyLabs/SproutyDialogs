@@ -115,6 +115,17 @@ func on_translation_enabled_changed(enabled: bool):
 	translation_enabled_changed.emit(enabled)
 
 
+## Returns all the start ids in the graph
+func get_start_ids() -> Array:
+	var ids: Array = []
+	for child in get_children():
+		if child is SproutyDialogsBaseNode and child.node_type == "start_node":
+			var start_id = child.get_start_id()
+			if start_id != "" and not ids.has(start_id):
+				ids.append(start_id)
+	return ids
+
+
 ## Increment the modified counter and emit the modified signal
 func _on_modified(mark_as_modified: bool) -> void:
 	if mark_as_modified:

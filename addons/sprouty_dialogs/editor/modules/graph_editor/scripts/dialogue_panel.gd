@@ -46,11 +46,13 @@ var undo_redo: EditorUndoRedoManager
 func _ready() -> void:
 	_new_dialog_button.pressed.connect(new_dialog_file_pressed.emit)
 	_open_dialog_button.pressed.connect(open_dialog_file_pressed.emit)
-	
+
+	_graph_toolbar.request_start_ids.connect(_on_request_start_ids)
+	_graph_toolbar.play_dialog_request.connect(play_dialog_request.emit)
+	_text_editor.text_editor_closed.connect(_graph_toolbar.switch_node_options_view.bind(true))
+
 	_new_dialog_button.icon = get_theme_icon("Add", "EditorIcons")
 	_open_dialog_button.icon = get_theme_icon("Folder", "EditorIcons")
-
-	_text_editor.text_editor_closed.connect(_graph_toolbar.switch_node_options_view.bind(true))
 
 	if _graph_panel.get_child_count() > 1: # Destroy the placeholder graph
 		_graph_panel.get_child(1).queue_free()
@@ -71,7 +73,7 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 		_graph_panel.remove_child(_graph_panel.get_child(1))
 	
 	# Connect signals to the new graph
-	if not new_graph.is_connected("open_text_editor", _text_editor.show_text_editor):
+	if not new_graph.is_connected("open_text_editor", _show_text_editor):
 		new_graph.open_text_editor.connect(_show_text_editor)
 		new_graph.update_text_editor.connect(_text_editor.update_text_editor)
 		new_graph.open_character_file_request.connect(open_character_file_request.emit)
@@ -83,7 +85,7 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 	new_graph.undo_redo = undo_redo
 	_graph_panel.add_child(new_graph)
 	show_graph_editor()
-
+	
 	_graph_toolbar.set_add_node_menu(new_graph.get_node("AddNodeMenu"))
 
 
@@ -119,3 +121,9 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 func _show_text_editor(text_editor: Variant) -> void:
 	_graph_toolbar.switch_node_options_view(false)
 	_text_editor.show_text_editor(text_editor)
+
+
+## Handle the request for the start ids from the toolbar
+func _on_request_start_ids() -> void:
+	var start_ids = get_current_graph().get_start_ids()
+	_graph_toolbar.set_start_ids_menu(start_ids)

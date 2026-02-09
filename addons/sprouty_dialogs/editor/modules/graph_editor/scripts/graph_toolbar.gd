@@ -9,13 +9,17 @@ extends PanelContainer
 
 ## Emitted when is requesting to play a dialog from a start node
 signal play_dialog_request(start_id: String)
+## Emitted to request for the start ids in the graph
+signal request_start_ids()
 
 ## Add node pop-up menu
 @onready var _add_node_menu: PopupMenu
 
 
 func _ready() -> void:
-	%AddNodeButton.pressed.connect(_show_popup_menu)
+	%AddNodeButton.pressed.connect(_show_add_node_menu)
+	%RunButton.about_to_popup.connect(request_start_ids.emit)
+	%RunButton.get_popup().index_pressed.connect(_play_selected_dialog)
 
 	# Set buttons icons
 	%AddNodeButton.icon = get_theme_icon("Add", "EditorIcons")
@@ -24,11 +28,20 @@ func _ready() -> void:
 	%CopyButton.icon = get_theme_icon("ActionCopy", "EditorIcons")
 	%CutButton.icon = get_theme_icon("ActionCut", "EditorIcons")
 	%PasteButton.icon = get_theme_icon("ActionPaste", "EditorIcons")
+	%RunButton.icon = get_theme_icon("PlayScene", "EditorIcons")
 
 
 ## Set nodes list on add node menu
 func set_add_node_menu(menu: PopupMenu) -> void:
 	_add_node_menu = menu
+
+
+## Set the run menu with the start ids from the graph
+func set_start_ids_menu(start_ids: Array) -> void:
+	var popup = %RunButton.get_popup()
+	popup.clear()
+	for id in start_ids:
+		popup.add_icon_item(get_theme_icon("Play", "EditorIcons"), id)
 
 
 ## Switch between show the nodes options on buttons or menu
@@ -38,7 +51,7 @@ func switch_node_options_view(buttons_visible: bool) -> void:
 
 
 ## Show a pop-up menu at a given position
-func _show_popup_menu() -> void:
+func _show_add_node_menu() -> void:
 	var pop_pos = %AddNodeButton.global_position
 	_add_node_menu.popup(Rect2(
 			pop_pos.x, pop_pos.y + %AddNodeButton.size.y * 2,
@@ -46,3 +59,9 @@ func _show_popup_menu() -> void:
 		)
 	)
 	_add_node_menu.reset_size()
+
+
+## Play the dialog with the selected the start id
+func _play_selected_dialog(index: int) -> void:
+	var start_id = %RunButton.get_popup().get_item_text(index)
+	play_dialog_request.emit(start_id)
