@@ -4,14 +4,18 @@
 [ext_resource type="Script" uid="uid://ydw8d8wnxyoq" path="res://addons/sprouty_dialogs/editor/modules/graph_editor/scripts/dialogue_panel.gd" id="2_ve4xc"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="3_vlcqi"]
 [ext_resource type="PackedScene" uid="uid://deethj56qlsml" path="res://addons/sprouty_dialogs/editor/modules/text_editor/text_editor.tscn" id="4_41lhd"]
+[ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/play.svg" id="4_ve4xc"]
+[ext_resource type="Script" uid="uid://csiy5lx5an28e" path="res://addons/sprouty_dialogs/editor/modules/graph_editor/scripts/graph_toolbar.gd" id="4_vlcqi"]
+[ext_resource type="Texture2D" uid="uid://dcywrsdekixjs" path="res://addons/dialogue_nodes/icons/Stop.svg" id="5_41lhd"]
+[ext_resource type="Texture2D" uid="uid://c1uvx53ymh81e" path="res://addons/sprouty_dialogs/editor/icons/text_editor/list-bullets.svg" id="6_04ple"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_gxvii"]
 
-[sub_resource type="DPITexture" id="DPITexture_ru1qf"]
+[sub_resource type="DPITexture" id="DPITexture_5b8ac"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="DialoguePanel" type="HSplitContainer"]
+[node name="DialoguePanel" type="HSplitContainer" unique_id=1026509617]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,12 +24,13 @@ grow_vertical = 2
 theme = ExtResource("1_5b8ac")
 script = ExtResource("2_ve4xc")
 
-[node name="StartPanel" type="Panel" parent="."]
+[node name="StartPanel" type="Panel" parent="." unique_id=1732166473]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("3_vlcqi")
 
-[node name="Container" type="VBoxContainer" parent="StartPanel"]
+[node name="Container" type="VBoxContainer" parent="StartPanel" unique_id=236008620]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -40,7 +45,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 15
 
-[node name="Label" type="RichTextLabel" parent="StartPanel/Container"]
+[node name="Label" type="RichTextLabel" parent="StartPanel/Container" unique_id=770485424]
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxEmpty_gxvii")
 bbcode_enabled = true
@@ -52,26 +57,108 @@ fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
-[node name="ButtonsContainer" type="HBoxContainer" parent="StartPanel/Container"]
+[node name="ButtonsContainer" type="HBoxContainer" parent="StartPanel/Container" unique_id=62074437]
 layout_mode = 2
 alignment = 1
 
-[node name="NewDialogButton" type="Button" parent="StartPanel/Container/ButtonsContainer"]
+[node name="NewDialogButton" type="Button" parent="StartPanel/Container/ButtonsContainer" unique_id=1624506157]
 unique_name_in_owner = true
 layout_mode = 2
 text = "New Dialogue"
-icon = SubResource("DPITexture_ru1qf")
+icon = SubResource("DPITexture_5b8ac")
 
-[node name="OpenDialogButton" type="Button" parent="StartPanel/Container/ButtonsContainer"]
+[node name="OpenDialogButton" type="Button" parent="StartPanel/Container/ButtonsContainer" unique_id=326834923]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Open Dialogue"
-icon = SubResource("DPITexture_ru1qf")
+icon = SubResource("DPITexture_5b8ac")
 
-[node name="GraphEditor" type="Panel" parent="."]
-visible = false
+[node name="GraphEditor" type="VBoxContainer" parent="." unique_id=87053306]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TextEditor" parent="." instance=ExtResource("4_41lhd")]
+[node name="Toolbar" type="PanelContainer" parent="GraphEditor" unique_id=146611725]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("3_vlcqi")
+script = ExtResource("4_vlcqi")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GraphEditor/Toolbar" unique_id=959683639]
+layout_mode = 2
+
+[node name="LeftContainer" type="HBoxContainer" parent="GraphEditor/Toolbar/HBoxContainer" unique_id=1124198999]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AddNodeButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer" unique_id=482356984]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("5_41lhd")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer" unique_id=426605957]
+layout_mode = 2
+
+[node name="NodeOptionsMenu" type="MenuButton" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer" unique_id=1742604957]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+icon = ExtResource("6_04ple")
+
+[node name="NodeOptions" type="HBoxContainer" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer" unique_id=1664937204]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RemoveButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=1383310354]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+icon = ExtResource("5_41lhd")
+flat = true
+
+[node name="DuplicateButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=408482956]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+icon = ExtResource("5_41lhd")
+flat = true
+
+[node name="CopyButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=264982993]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+icon = ExtResource("5_41lhd")
+flat = true
+
+[node name="CutButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=379922644]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+icon = ExtResource("5_41lhd")
+flat = true
+
+[node name="PasteButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=520355019]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+icon = ExtResource("5_41lhd")
+flat = true
+
+[node name="RightContainer" type="HBoxContainer" parent="GraphEditor/Toolbar/HBoxContainer" unique_id=381543233]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 2
+
+[node name="RunButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/RightContainer" unique_id=1624159879]
+layout_mode = 2
+text = "Run"
+icon = ExtResource("4_ve4xc")
+
+[node name="StartIDDropdown" type="OptionButton" parent="GraphEditor/Toolbar/HBoxContainer/RightContainer" unique_id=770366267]
+layout_mode = 2
+size_flags_horizontal = 8
+item_count = 1
+popup/item_0/text = "(no one)"
+popup/item_0/id = 0
+
+[node name="TextEditor" parent="." unique_id=1424209666 instance=ExtResource("4_41lhd")]
 layout_mode = 2

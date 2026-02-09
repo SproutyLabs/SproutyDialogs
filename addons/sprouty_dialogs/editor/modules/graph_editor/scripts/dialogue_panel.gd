@@ -28,7 +28,9 @@ signal locales_changed
 ## Start panel reference
 @onready var _start_panel: Panel = $StartPanel
 ## Graph editor container reference
-@onready var _graph_panel: Panel = $GraphEditor
+@onready var _graph_panel: Control = $GraphEditor
+## Graph editor toolbar reference
+@onready var _graph_toolbar: Control = $GraphEditor/Toolbar
 ## Text editor reference
 @onready var _text_editor: EditorSproutyDialogsTextEditor = $TextEditor
 
@@ -47,27 +49,30 @@ func _ready() -> void:
 	
 	_new_dialog_button.icon = get_theme_icon("Add", "EditorIcons")
 	_open_dialog_button.icon = get_theme_icon("Folder", "EditorIcons")
-	if _graph_panel.get_child_count() > 0: # Destroy the placeholder graph
-		_graph_panel.get_child(0).queue_free()
+
+	_text_editor.text_editor_closed.connect(_graph_toolbar.switch_node_options_view.bind(true))
+
+	if _graph_panel.get_child_count() > 1: # Destroy the placeholder graph
+		_graph_panel.get_child(1).queue_free()
 	show_start_panel()
 
 
 ## Returns the current graph on editor
 func get_current_graph() -> EditorSproutyDialogsGraphEditor:
-	if _graph_panel.get_child_count() > 0:
-		return _graph_panel.get_child(0)
+	if _graph_panel.get_child_count() > 1:
+		return _graph_panel.get_child(1)
 	else: return null
 
 
 ## Switch the current graph on editor
 func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 	# Remove old graph and switch to the new one
-	if _graph_panel.get_child_count() > 0:
-		_graph_panel.remove_child(_graph_panel.get_child(0))
+	if _graph_panel.get_child_count() > 1:
+		_graph_panel.remove_child(_graph_panel.get_child(1))
 	
 	# Connect signals to the new graph
 	if not new_graph.is_connected("open_text_editor", _text_editor.show_text_editor):
-		new_graph.open_text_editor.connect(_text_editor.show_text_editor)
+		new_graph.open_text_editor.connect(_show_text_editor)
 		new_graph.update_text_editor.connect(_text_editor.update_text_editor)
 		new_graph.open_character_file_request.connect(open_character_file_request.emit)
 		new_graph.play_dialog_request.connect(play_dialog_request.emit)
@@ -78,6 +83,8 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 	new_graph.undo_redo = undo_redo
 	_graph_panel.add_child(new_graph)
 	show_graph_editor()
+
+	_graph_toolbar.set_add_node_menu(new_graph.get_node("AddNodeMenu"))
 
 
 ## Show the start panel instead of graph editor
@@ -93,3 +100,22 @@ func show_graph_editor() -> void:
 	_graph_panel.visible = true
 	_start_panel.visible = false
 	graph_editor_visible.emit(true)
+
+
+## Update the character editor to reflect the new locales
+func on_locales_changed() -> void:
+	var current_editor = get_current_graph()
+	if current_editor: current_editor.on_locales_changed()
+
+
+## Update the character names translation setting
+func on_translation_enabled_changed(enabled: bool) -> void:
+	var current_editor = get_current_graph()
+	if current_editor:
+		current_editor.on_translation_enabled_changed(enabled)
+
+
+## Show the text editor
+func _show_text_editor(text_editor: Variant) -> void:
+	_graph_toolbar.switch_node_options_view(false)
+	_text_editor.show_text_editor(text_editor)

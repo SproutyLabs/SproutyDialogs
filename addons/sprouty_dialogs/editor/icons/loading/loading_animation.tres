@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=52 format=3 uid="uid://p48b045n163u"]
+[gd_resource type="SpriteFrames" format=3 uid="uid://p48b045n163u"]
 
 [ext_resource type="Texture2D" uid="uid://dc21vxqylhvmp" path="res://addons/sprouty_dialogs/editor/icons/loading/loading_animation.png" id="1_omjbp"]
 
