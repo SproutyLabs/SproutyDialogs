@@ -81,7 +81,7 @@ func get_portraits_on_dialog(start_id: String) -> Dictionary:
 	var portraits: Dictionary = {}
 	for node in graph_data[start_id].values():
 		if node["node_type"] == "dialogue_node":
-			if node["character"] == "" or node["portrait"] == "":
+			if node["character"] == "":
 				continue # Skip if no character or portrait is set
 			if not portraits.has(node["character"]):
 				portraits[node["character"]] = [node["portrait"]]
