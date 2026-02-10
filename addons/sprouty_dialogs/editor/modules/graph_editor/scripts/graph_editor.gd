@@ -29,6 +29,12 @@ signal locales_changed
 ## Emitted when the translation enabled state is changed
 signal translation_enabled_changed(enabled: bool)
 
+## Emitted when there are nodes selected
+signal nodes_selected(has_selection: bool)
+
+## Emitted when the toolbar is expanded
+signal toolbar_expanded
+
 ## Path to the nodes folder.
 const NODES_PATH = "res://addons/sprouty_dialogs/event_nodes/"
 
@@ -43,7 +49,11 @@ const NODES_PATH = "res://addons/sprouty_dialogs/event_nodes/"
 var _nodes_references: Dictionary
 
 ## Selected nodes
-var _selected_nodes: Array[GraphNode] = []
+var _selected_nodes: Array[GraphNode] = []:
+	set(value):
+		_selected_nodes = value
+		nodes_selected.emit(not _selected_nodes.is_empty())
+
 ## Nodes copied to clipboard
 var _nodes_copy: Array[GraphNode] = []
 ## Copied nodes references
@@ -897,7 +907,7 @@ func _on_connection_to_empty(from_node: String, from_port: int, release_position
 
 #endregion
 
-#region === Popup Menus ========================================================
+#region === Popup Menus & UI ===================================================
 
 ## Set nodes list on popup node menu
 func _set_add_node_menu() -> void:
@@ -988,5 +998,15 @@ func _on_right_click(pos: Vector2) -> void:
 		_show_popup_menu(_node_actions_menu, pos)
 	else: # Show add node menu if no nodes are selected
 		_show_popup_menu(_add_node_menu, pos)
+
+
+## Show expand toolbar button
+func show_expand_toolbar_button(show: bool) -> void:
+	$ExpandToolbarButton.visible = show
+
+
+## Handle when the expand toolbar button is pressed
+func _on_expand_toolbar_button_pressed() -> void:
+	toolbar_expanded.emit()
 
 #endregion

@@ -49,7 +49,8 @@ func _ready() -> void:
 
 	_graph_toolbar.request_start_ids.connect(_on_request_start_ids)
 	_graph_toolbar.play_dialog_request.connect(play_dialog_request.emit)
-	_text_editor.text_editor_closed.connect(_graph_toolbar.switch_node_options_view.bind(true))
+	_graph_toolbar.toolbar_collapsed.connect(_on_toolbar_collapsed)
+	_text_editor.text_editor_closed.connect(_on_text_editor_closed)
 
 	_new_dialog_button.icon = get_theme_icon("Add", "EditorIcons")
 	_open_dialog_button.icon = get_theme_icon("Folder", "EditorIcons")
@@ -78,6 +79,8 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 		new_graph.update_text_editor.connect(_text_editor.update_text_editor)
 		new_graph.open_character_file_request.connect(open_character_file_request.emit)
 		new_graph.play_dialog_request.connect(play_dialog_request.emit)
+		new_graph.toolbar_expanded.connect(_on_toolbar_expanded)
+		new_graph.nodes_selected.connect(_graph_toolbar.update_node_options)
 		
 		translation_enabled_changed.connect(new_graph.on_translation_enabled_changed)
 		locales_changed.connect(new_graph.on_locales_changed)
@@ -119,11 +122,31 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 
 ## Show the text editor
 func _show_text_editor(text_editor: Variant) -> void:
+	if not _graph_toolbar.visible:
+		get_current_graph().show_expand_toolbar_button(false)
 	_graph_toolbar.switch_node_options_view(false)
 	_text_editor.show_text_editor(text_editor)
+
+
+## Handle when the text editor is closed
+func _on_text_editor_closed() -> void:
+	if not _graph_toolbar.visible:
+		get_current_graph().show_expand_toolbar_button(true)
+	_graph_toolbar.switch_node_options_view(true)
 
 
 ## Handle the request for the start ids from the toolbar
 func _on_request_start_ids() -> void:
 	var start_ids = get_current_graph().get_start_ids()
 	_graph_toolbar.set_start_ids_menu(start_ids)
+
+
+## Handle when the toolbar is collapsed
+func _on_toolbar_collapsed() -> void:
+	get_current_graph().show_expand_toolbar_button(true)
+
+
+## Handle when the toolbar is expanded
+func _on_toolbar_expanded() -> void:
+	get_current_graph().show_expand_toolbar_button(false)
+	_graph_toolbar.show()

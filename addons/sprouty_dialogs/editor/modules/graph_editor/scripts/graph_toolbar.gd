@@ -10,13 +10,17 @@ extends PanelContainer
 ## Emitted when is requesting to play a dialog from a start node
 signal play_dialog_request(start_id: String)
 ## Emitted to request for the start ids in the graph
-signal request_start_ids()
+signal request_start_ids
+
+## Emitted when the toolbar is collapsed
+signal toolbar_collapsed
 
 ## Add node pop-up menu
 @onready var _add_node_menu: PopupMenu
 
 
 func _ready() -> void:
+	%CollapseButton.pressed.connect(_on_collapse_button_pressed)
 	%AddNodeButton.pressed.connect(_show_add_node_menu)
 	%RunButton.about_to_popup.connect(request_start_ids.emit)
 	%RunButton.get_popup().index_pressed.connect(_play_selected_dialog)
@@ -40,7 +44,18 @@ func set_add_node_menu(menu: PopupMenu) -> void:
 func set_start_ids_menu(start_ids: Array) -> void:
 	var popup = %RunButton.get_popup()
 	popup.clear()
-	for id in start_ids:
+
+	# If there is no dialog trees, return
+	if start_ids.size() == 0:
+		print("[Sprouty Dialogs] No dialog IDs to play.")
+		return
+
+	# If there is only one dialog, play it
+	if start_ids.size() == 1:
+		play_dialog_request.emit(start_ids[0])
+		return
+
+	for id in start_ids: # Populate the start ids list
 		popup.add_icon_item(get_theme_icon("Play", "EditorIcons"), id)
 
 
@@ -48,6 +63,16 @@ func set_start_ids_menu(start_ids: Array) -> void:
 func switch_node_options_view(buttons_visible: bool) -> void:
 	%NodeOptions.visible = buttons_visible
 	%NodeOptionsMenu.visible = not buttons_visible
+	%CollapseSeparator.visible = buttons_visible
+	%CollapseButton.visible = buttons_visible
+
+
+## Update node options availability
+func update_node_options(has_selection: bool) -> void:
+	%RemoveButton.disabled = not has_selection
+	%DuplicateButton.disabled = not has_selection
+	%CopyButton.disabled = not has_selection
+	%CutButton.disabled = not has_selection
 
 
 ## Show a pop-up menu at a given position
@@ -65,3 +90,9 @@ func _show_add_node_menu() -> void:
 func _play_selected_dialog(index: int) -> void:
 	var start_id = %RunButton.get_popup().get_item_text(index)
 	play_dialog_request.emit(start_id)
+
+
+## Collapse the toolbar on button pressed
+func _on_collapse_button_pressed() -> void:
+	toolbar_collapsed.emit()
+	hide()
