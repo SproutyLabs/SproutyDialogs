@@ -184,6 +184,10 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 
 ## Load data from a dialog or character resource file
 func load_file(path: String) -> void:
+	if _file_list.is_file_loaded(path):
+		print("[Sprouty Dialogs] File '" + path.get_file() + "' is already loaded.")
+		return
+	
 	if FileAccess.file_exists(path):
 		var resource = load(path)
 		SproutyDialogsFileUtils.set_recent_file_path("graph_dialogs_files", path)
