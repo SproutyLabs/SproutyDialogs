@@ -437,19 +437,19 @@ func _add_new_node(node_type: String) -> void:
 
 	# Use UndoRedo to add the new node
 	undo_redo.create_action("Add " + node_type.capitalize())
-	undo_redo.add_do_method(self, "add_child", new_node)
+	undo_redo.add_do_method(self , "add_child", new_node)
 	undo_redo.add_do_reference(new_node)
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 
 	# Connect to a previous node if requested
 	if _request_port > -1 and new_node.is_slot_enabled_left(0):
 		if prev_connection.size() > 0:
 			# Disconnect previous connection first
-			undo_redo.add_do_method(self, "disconnect_node", _request_node, _request_port,
+			undo_redo.add_do_method(self , "disconnect_node", _request_node, _request_port,
 					prev_connection[0]["to_node"], prev_connection[0]["to_port"]
 				)
-			undo_redo.add_undo_method(self, "connect_node", _request_node, _request_port,
+			undo_redo.add_undo_method(self , "connect_node", _request_node, _request_port,
 					prev_connection[0]["to_node"], prev_connection[0]["to_port"]
 				)
 			# Update the start node of the disconnected node to null
@@ -458,11 +458,11 @@ func _add_new_node(node_type: String) -> void:
 					get_node(NodePath(_request_node)).start_node
 				)
 		# Connect the new node to the requested node
-		undo_redo.add_do_method(self, "connect_node", _request_node, _request_port, new_node.name, 0)
-		undo_redo.add_undo_method(self, "disconnect_node", _request_node, _request_port, new_node.name, 0)
+		undo_redo.add_do_method(self , "connect_node", _request_node, _request_port, new_node.name, 0)
+		undo_redo.add_undo_method(self , "disconnect_node", _request_node, _request_port, new_node.name, 0)
 	
-	undo_redo.add_undo_method(self, "remove_child", new_node)
-	undo_redo.add_undo_method(self, "_deselect_all_nodes")
+	undo_redo.add_undo_method(self , "remove_child", new_node)
+	undo_redo.add_undo_method(self , "_deselect_all_nodes")
 	undo_redo.commit_action(false)
 	
 	# -----------------------------------------------------------------
@@ -485,24 +485,24 @@ func delete_node(node: GraphNode, from_request: bool = false) -> void:
 		undo_redo.create_action("Delete " + node.node_type.capitalize())
 
 	for connection in node_connections: # Disconnect all connections
-		undo_redo.add_do_method(self, "disconnect_node", connection["from_node"],
+		undo_redo.add_do_method(self , "disconnect_node", connection["from_node"],
 			connection["from_port"], connection["to_node"], connection["to_port"])
-		undo_redo.add_undo_method(self, "connect_node", connection["from_node"],
+		undo_redo.add_undo_method(self , "connect_node", connection["from_node"],
 			connection["from_port"], connection["to_node"], connection["to_port"])
 	
-	undo_redo.add_do_method(self, "_disconnect_node_signals", node)
-	undo_redo.add_undo_method(self, "_connect_node_signals", node)
+	undo_redo.add_do_method(self , "_disconnect_node_signals", node)
+	undo_redo.add_undo_method(self , "_connect_node_signals", node)
 
-	undo_redo.add_do_method(self, "_on_node_deselected", node)
-	undo_redo.add_undo_method(self, "_on_node_selected", node)
+	undo_redo.add_do_method(self , "_on_node_deselected", node)
+	undo_redo.add_undo_method(self , "_on_node_selected", node)
 
-	undo_redo.add_do_method(self, "remove_child", node)
-	undo_redo.add_undo_method(self, "add_child", node)
+	undo_redo.add_do_method(self , "remove_child", node)
+	undo_redo.add_undo_method(self , "add_child", node)
 	undo_redo.add_undo_reference(node)
 	
 	if not from_request:
-		undo_redo.add_do_method(self, "_on_modified", true)
-		undo_redo.add_undo_method(self, "_on_modified", false)
+		undo_redo.add_do_method(self , "_on_modified", true)
+		undo_redo.add_undo_method(self , "_on_modified", false)
 		undo_redo.commit_action(false)
 	
 	# ------------------------------------------------------------------
@@ -517,8 +517,8 @@ func _on_delete_nodes_request(nodes: Array) -> void:
 			if child.name == node_name: delete_node(child, true)
 	
 	# --- UndoRedo ------------------------------------------------------
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# -------------------------------------------------------------------
 
@@ -569,10 +569,10 @@ func _on_duplicate_nodes() -> void:
 		node.selected = false
 
 		# --- UndoRedo -------------------------------------------------
-		undo_redo.add_do_method(self, "add_child", new_node)
+		undo_redo.add_do_method(self , "add_child", new_node)
 		undo_redo.add_do_reference(new_node)
-		undo_redo.add_undo_method(self, "remove_child", new_node)
-		undo_redo.add_undo_method(self, "_deselect_all_nodes")
+		undo_redo.add_undo_method(self , "remove_child", new_node)
+		undo_redo.add_undo_method(self , "_deselect_all_nodes")
 		# ---------------------------------------------------------------
 	
 	_reconnect_nodes_copy()
@@ -581,8 +581,8 @@ func _on_duplicate_nodes() -> void:
 	_on_modified(true)
 
 	# --- UndoRedo ------------------------------------------------------
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# -------------------------------------------------------------------
 
@@ -621,8 +621,8 @@ func _on_cut_nodes() -> void:
 		remove_child(node)
 
 		# --- UndoRedo -------------------------------------------------
-		undo_redo.add_do_method(self, "remove_child", node)
-		undo_redo.add_undo_method(self, "add_child", node)
+		undo_redo.add_do_method(self , "remove_child", node)
+		undo_redo.add_undo_method(self , "add_child", node)
 		undo_redo.add_undo_reference(node)
 		# ---------------------------------------------------------------
 	
@@ -630,8 +630,8 @@ func _on_cut_nodes() -> void:
 	_on_modified(true)
 
 	# --- UndoRedo ------------------------------------------------------
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# -------------------------------------------------------------------
 
@@ -666,10 +666,10 @@ func _on_paste_nodes() -> void:
 		node.selected = true
 
 		# --- UndoRedo -------------------------------------------------
-		undo_redo.add_do_method(self, "add_child", node)
+		undo_redo.add_do_method(self , "add_child", node)
 		undo_redo.add_do_reference(node)
-		undo_redo.add_undo_method(self, "remove_child", node)
-		undo_redo.add_undo_method(self, "_deselect_all_nodes")
+		undo_redo.add_undo_method(self , "remove_child", node)
+		undo_redo.add_undo_method(self , "_deselect_all_nodes")
 		# ---------------------------------------------------------------
 	
 	_reconnect_nodes_copy()
@@ -680,8 +680,8 @@ func _on_paste_nodes() -> void:
 	_on_modified(true)
 
 	# --- UndoRedo ------------------------------------------------------
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# -------------------------------------------------------------------
 
@@ -713,12 +713,12 @@ func _on_node_dragged(from: Vector2, to: Vector2, node: GraphElement) -> void:
 	undo_redo.create_action("Drag " + node.node_type.capitalize()
 			+": " + str(from) + " -> " + str(to))
 	undo_redo.add_do_property(node, "position_offset", to)
-	undo_redo.add_do_property(self, "_cursor_pos", to)
-	undo_redo.add_undo_property(self, "_cursor_pos", _cursor_pos)
+	undo_redo.add_do_property(self , "_cursor_pos", to)
+	undo_redo.add_undo_property(self , "_cursor_pos", _cursor_pos)
 	undo_redo.add_undo_property(node, "position_offset", from)
 
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ------------------------------------------------------------------
 
@@ -791,6 +791,7 @@ func disconnect_node_on_port(node: String, port: int, as_action: bool = false) -
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
 		get_node(NodePath(connection["to_node"])).start_node = null
+		_update_connections_start_node(get_node(NodePath(connection["to_node"])))
 
 	if not as_action:
 		return # Skip UndoRedo if not requested
@@ -802,17 +803,19 @@ func disconnect_node_on_port(node: String, port: int, as_action: bool = false) -
 
 	for connection in port_connections:
 		# Disconnect the connection
-		undo_redo.add_do_method(self, "disconnect_node", connection["from_node"],
+		undo_redo.add_do_method(self , "disconnect_node", connection["from_node"],
 			connection["from_port"], connection["to_node"], connection["to_port"])
-		undo_redo.add_undo_method(self, "connect_node", connection["from_node"],
+		undo_redo.add_undo_method(self , "connect_node", connection["from_node"],
 			connection["from_port"], connection["to_node"], connection["to_port"])
 		# Update the start node of the disconnected node to null
 		undo_redo.add_do_property(get_node(NodePath(connection["to_node"])), "start_node", null)
 		undo_redo.add_undo_property(get_node(NodePath(connection["to_node"])), "start_node",
 			get_node(NodePath(connection["from_node"])).start_node)
+		undo_redo.add_do_method(self , "_update_connections_start_node", get_node(NodePath(connection["to_node"])))
+		undo_redo.add_undo_method(self , "_update_connections_start_node", get_node(NodePath(connection["to_node"])))
 	
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# --------------------------------------------------------------------------
 
@@ -829,6 +832,7 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 	# Handle nodes connection and assign the node to the connected dialog tree
 	connect_node(from_node, from_port, to_node, to_port)
 	get_node(NodePath(to_node)).start_node = get_node(NodePath(from_node)).start_node
+	_update_connections_start_node(get_node(NodePath(to_node)))
 	_on_modified(true)
 
 	# --- UndoRedo -------------------------------------------------------------
@@ -837,9 +841,9 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 	
 	if prev_connection.size() > 0:
 		# Disconnect previous connection first
-		undo_redo.add_do_method(self, "disconnect_node", from_node, from_port,
+		undo_redo.add_do_method(self , "disconnect_node", from_node, from_port,
 			prev_connection[0]["to_node"], prev_connection[0]["to_port"])
-		undo_redo.add_undo_method(self, "connect_node", from_node, from_port,
+		undo_redo.add_undo_method(self , "connect_node", from_node, from_port,
 			prev_connection[0]["to_node"], prev_connection[0]["to_port"])
 		# Update the start node of the disconnected node to null
 		undo_redo.add_do_property(get_node(NodePath(prev_connection[0]["to_node"])), "start_node", null)
@@ -847,16 +851,28 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 			get_node(NodePath(from_node)).start_node)
 	
 	# Connect new connection
-	undo_redo.add_do_method(self, "connect_node", from_node, from_port, to_node, to_port)
-	undo_redo.add_undo_method(self, "disconnect_node", from_node, from_port, to_node, to_port)
+	undo_redo.add_do_method(self , "connect_node", from_node, from_port, to_node, to_port)
+	undo_redo.add_undo_method(self , "disconnect_node", from_node, from_port, to_node, to_port)
 	undo_redo.add_do_property(get_node(NodePath(to_node)), "start_node",
 		get_node(NodePath(from_node)).start_node)
 	undo_redo.add_undo_property(get_node(NodePath(to_node)), "start_node", null)
+	undo_redo.add_do_method(self , "_update_connections_start_node", get_node(NodePath(to_node)))
+	undo_redo.add_undo_method(self , "_update_connections_start_node", get_node(NodePath(to_node)))
 
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# --------------------------------------------------------------------------
+
+
+## Update connected nodes with the new start node
+func _update_connections_start_node(node: SproutyDialogsBaseNode) -> void:
+	var connections = node.get_output_connections()
+	for node_name in connections:
+		var next_node = get_node_or_null(node_name)
+		if next_node != null:
+			next_node.start_node = node.start_node
+			_update_connections_start_node(next_node)
 
 
 ## If connection ends on empty space, show add node menu to add a new node
