@@ -11,14 +11,6 @@ extends Resource
 ## settings, overrides properties, and optionally a typing sound.
 # -----------------------------------------------------------------------------
 
-## Reference to the portrait scene used for this portrait.
-## This is the UID of the scene that will be used as the character's portrait.
-## The scene should contain a root node that extends [class DialogPortrait]
-## to can integrate with the dialog system.
-@export var portrait_scene_uid: int = -1
-## Path to the portrait scene used for this portrait.
-## This is for reference only, use [param portrait_scene_uid] to set the portrait scene
-@export var portrait_scene_path: String = ""
 ## Portrait exported overrides properties.
 ## This is a dictionary where each key is the property name to override
 ## and its value is a dictionary containing the value and type of the property.
@@ -58,3 +50,12 @@ extends Resource
 	"volume": 1.0,
 	"pitch": 1.0
 } # (Not used yet, typing sounds implementation is pending)!
+
+## Reference to the portrait scene used for this portrait.
+## This is the UID of the scene that will be used as the character's portrait.
+## The scene should contain a root node that extends [class DialogPortrait]
+## to can integrate with the dialog system.
+var portrait_scene_uid: int = -1
+## Path to the portrait scene used for this portrait.
+## This is for reference only, use [param portrait_scene_uid] to set the portrait scene
+var portrait_scene_path: String = ""
