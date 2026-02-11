@@ -20,6 +20,11 @@ signal open_character_file_request(path: String)
 ## Emitted when is requesting to play a dialog from a start node
 signal play_dialog_request(start_id: String)
 
+## Emitted when the translation settings changes
+signal translation_enabled_changed(enabled: bool)
+## Emitted when the locales change
+signal locales_changed
+
 ## Start panel reference
 @onready var _start_panel: Panel = $StartPanel
 ## Graph editor container reference
@@ -66,6 +71,9 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 		new_graph.update_text_editor.connect(_text_editor.update_text_editor)
 		new_graph.open_character_file_request.connect(open_character_file_request.emit)
 		new_graph.play_dialog_request.connect(play_dialog_request.emit)
+		
+		translation_enabled_changed.connect(new_graph.on_translation_enabled_changed)
+		locales_changed.connect(new_graph.on_locales_changed)
 	
 	new_graph.undo_redo = undo_redo
 	_graph_panel.add_child(new_graph)
@@ -85,16 +93,3 @@ func show_graph_editor() -> void:
 	_graph_panel.visible = true
 	_start_panel.visible = false
 	graph_editor_visible.emit(true)
-
-
-## Update the character editor to reflect the new locales
-func on_locales_changed() -> void:
-	var current_editor = get_current_graph()
-	if current_editor: current_editor.on_locales_changed()
-
-
-## Update the character names translation setting
-func on_translation_enabled_changed(enabled: bool) -> void:
-	var current_editor = get_current_graph()
-	if current_editor:
-		current_editor.on_translation_enabled_changed(enabled)

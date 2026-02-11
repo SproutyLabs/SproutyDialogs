@@ -18,6 +18,9 @@ signal translate_character_names_changed(enabled: bool)
 ## Emitted when the use CSV for names setting changes
 signal use_csv_for_names_changed(enabled: bool)
 
+## Emitted when the csv folder is changed
+signal csv_folder_changed
+
 ## Emitted when the locales change
 signal locales_changed
 ## Emitted when the default locale changes
@@ -115,8 +118,8 @@ func _load_settings() -> void:
 	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
 		if char_names_csv != -1:
 			printerr("[Sprouty Dialogs] Character names CSV file not found." \
-					+" Check that the character names CSV is set in Settings > Translation" \
-					+" plugin tab, and that the CSV file exists.")
+					+ " Check that the character names CSV is set in Settings > Translation" \
+					+ " plugin tab, and that the CSV file exists.")
 		char_names_csv_field.set_value("") # No CSV set
 	else:
 		char_names_csv_field.set_value(ResourceUID.get_id_path(char_names_csv))
@@ -336,6 +339,7 @@ func _on_csv_files_path_changed(path: String) -> void:
 	_collect_translations_button.disabled = not (_enable_translations_toggle.is_pressed()
 			and _use_csv_files_toggle.is_pressed())
 	SproutyDialogsSettingsManager.set_setting("csv_translations_folder", path)
+	csv_folder_changed.emit()
 
 
 ## Check if the CSV path is valid
