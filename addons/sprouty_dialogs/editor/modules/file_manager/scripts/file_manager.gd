@@ -267,12 +267,6 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 
 	print("[Sprouty Dialogs] File '" + file_metadata.file_name + "' saved.")
 
-	if data is SproutyDialogsDialogueData and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
-		# Refresh the filesystem to ensure the translations are imported
-		var editor_interface = Engine.get_singleton("EditorInterface")
-		editor_interface.get_resource_filesystem().scan()
-		await editor_interface.get_resource_filesystem().resources_reimported
-
 #endregion
 
 #region === File options buttons ===============================================

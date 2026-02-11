@@ -96,6 +96,10 @@ static func collect_translations() -> void:
 
 	print("[Sprouty Dialogs] Translation files collected.")
 
+	# Refresh the filesystem to ensure the translations are imported
+	var editor_interface = Engine.get_singleton("EditorInterface")
+	editor_interface.get_resource_filesystem().scan()
+
 
 ## Get the translation files from CSV folder and its subfolders
 static func _get_translation_files(path: String) -> Array:
