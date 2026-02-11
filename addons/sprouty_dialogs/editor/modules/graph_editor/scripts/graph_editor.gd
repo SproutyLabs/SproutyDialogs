@@ -266,9 +266,11 @@ func get_graph_data() -> Dictionary:
 			if child.node_type == "dialogue_node":
 				dict.dialogs[child.get_dialog_translation_key()] = child.get_dialogs_text()
 				var character = child.get_character_name()
+				if start_id == "":
+					start_id = "unplugged_nodes"
 				if not dict.characters.has(start_id):
 					dict.characters[start_id] = {}
-					
+				
 				# Add character to the reference dictionary
 				if character != "" and not dict.characters[start_id].has(character):
 						dict.characters[start_id][character] = \
@@ -357,7 +359,7 @@ func _load_dialogue_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 	
 	# Load character if exists
 	var character_name = node_data["character"]
-	if character_name != "":
+	if character_name != "" and data.characters.has(dialogue_id):
 		var character_uid = data.characters[dialogue_id][character_name]
 		if SproutyDialogsFileUtils.check_valid_uid_path(character_uid):
 			node.load_character(ResourceUID.get_id_path(character_uid))
