@@ -257,7 +257,7 @@ static func load_character_names_from_csv(key_name: String) -> Dictionary:
 	# Get the row with the key name
 	var row = data.filter(
 		func(item: Array) -> bool:
-			return item[0] == key_name
+			return item[0] == key_name.to_upper() + "_CHAR"
 	)
 	
 	if row.is_empty():

@@ -58,6 +58,9 @@ func get_text() -> String:
 
 ## Set the text to the text box
 func set_text(text: String) -> void:
+	if text == "EMPTY":
+		text = "" # Empty translations
+	
 	if _text_box is EditorSproutyDialogsExpandableTextBox:
 		_text_box.set_text(text)
 		_translation_text = text
@@ -88,13 +91,13 @@ func _on_expandable_box_text_changed(new_text: String = "") -> void:
 	
 		# --- UndoRedo ---------------------------------------------------------
 		undo_redo.create_action("Edit Translation Text (" + get_locale() + ")", 1)
-		undo_redo.add_do_property(self, "_translation_text", _translation_text)
+		undo_redo.add_do_property(self , "_translation_text", _translation_text)
 		undo_redo.add_do_method(_text_box, "set_text", _translation_text)
-		undo_redo.add_undo_property(self, "_translation_text", temp)
+		undo_redo.add_undo_property(self , "_translation_text", temp)
 		undo_redo.add_undo_method(_text_box, "set_text", temp)
 
-		undo_redo.add_do_method(self, "emit_signal", "modified", true)
-		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.add_do_method(self , "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 		undo_redo.commit_action(false)
 		# ----------------------------------------------------------------------
 
@@ -108,13 +111,13 @@ func _on_text_changed(new_text: String = "") -> void:
 	
 		# --- UndoRedo ---------------------------------------------------------
 		undo_redo.create_action("Edit Translation Text (" + get_locale() + ")", 1)
-		undo_redo.add_do_property(self, "_translation_text", _translation_text)
+		undo_redo.add_do_property(self , "_translation_text", _translation_text)
 		undo_redo.add_do_property(_text_box, "text", _translation_text)
-		undo_redo.add_undo_property(self, "_translation_text", temp)
+		undo_redo.add_undo_property(self , "_translation_text", temp)
 		undo_redo.add_undo_property(_text_box, "text", temp)
 
-		undo_redo.add_do_method(self, "emit_signal", "modified", true)
-		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.add_do_method(self , "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 		undo_redo.commit_action(false)
 		# ----------------------------------------------------------------------
 
