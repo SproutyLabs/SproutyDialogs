@@ -1,33 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://bkjr4qmh85j25"]
+[gd_scene format=3 uid="uid://bkjr4qmh85j25"]
 
 [ext_resource type="Script" uid="uid://clcj3f1236il2" path="res://addons/sprouty_dialogs/editor/modules/graph_editor/alerts/scripts/graph_alert.gd" id="1_sagui"]
 [ext_resource type="StyleBox" uid="uid://x10wnbp7ptxl" path="res://addons/sprouty_dialogs/editor/theme/warning_alert.tres" id="2_passx"]
 
-[sub_resource type="DPITexture" id="DPITexture_euhf0"]
+[sub_resource type="DPITexture" id="DPITexture_p8uad"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="WarningAlert" type="MarginContainer"]
-visible = false
+[node name="WarningAlert" type="MarginContainer" unique_id=1563481447]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1152.0
+offset_left = 1280.0
 offset_top = -648.0
-offset_right = 1152.0
+offset_right = 1280.0
 offset_bottom = -588.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_constants/margin_left = 25
 script = ExtResource("1_sagui")
 
-[node name="Panel" type="Panel" parent="."]
-custom_minimum_size = Vector2(300, 60)
+[node name="Panel" type="Panel" parent="." unique_id=1532543089]
+custom_minimum_size = Vector2(300, 70)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("2_passx")
 
-[node name="Container" type="HBoxContainer" parent="Panel"]
+[node name="Container" type="HBoxContainer" parent="Panel" unique_id=2141604126]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,21 +34,21 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Icon" type="TextureRect" parent="Panel/Container"]
+[node name="Icon" type="TextureRect" parent="Panel/Container" unique_id=56309739]
 layout_mode = 2
 size_flags_horizontal = 0
-texture = SubResource("DPITexture_euhf0")
+texture = SubResource("DPITexture_p8uad")
 expand_mode = 3
 stretch_mode = 3
 
-[node name="AlertType" type="Label" parent="Panel/Container"]
+[node name="AlertType" type="Label" parent="Panel/Container" unique_id=253546261]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_type_variation = &"HeaderSmall"
 text = "Warning"
 vertical_alignment = 1
 
-[node name="TextLabel" type="RichTextLabel" parent="Panel/Container"]
+[node name="TextLabel" type="RichTextLabel" parent="Panel/Container" unique_id=614224869]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -57,3 +56,7 @@ size_flags_vertical = 4
 bbcode_enabled = true
 text = "Some error text"
 fit_content = true
+
+[node name="Space" type="Control" parent="Panel/Container" unique_id=2089638161]
+custom_minimum_size = Vector2(5, 0)
+layout_mode = 2
