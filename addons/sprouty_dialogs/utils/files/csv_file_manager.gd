@@ -149,7 +149,7 @@ static func save_dialogs_on_csv(dialogs: Dictionary, path: String) -> void:
 		var row = [dialog_key]
 		for i in range(1, header.size()):
 			var locale = header[i]
-			if dialogs[dialog_key].has(locale):
+			if dialogs[dialog_key].has(locale) and dialogs[dialog_key][locale] != "":
 				row.append(dialogs[dialog_key][locale])
 			else:
 				row.append("EMPTY")
@@ -218,7 +218,7 @@ static func save_character_names_on_csv(key_name: String, name_data: Dictionary)
 	for i in range(header.size()):
 		if header[i] == "keys":
 			continue
-		if name_data.has(header[i]):
+		if name_data.has(header[i]) and name_data[header[i]] != "":
 			row.append(name_data[header[i]])
 		else:
 			row.append("EMPTY")
@@ -257,7 +257,7 @@ static func load_character_names_from_csv(key_name: String) -> Dictionary:
 	# Get the row with the key name
 	var row = data.filter(
 		func(item: Array) -> bool:
-			return item[0] == key_name
+			return item[0] == key_name.to_upper() + "_CHAR"
 	)
 	
 	if row.is_empty():

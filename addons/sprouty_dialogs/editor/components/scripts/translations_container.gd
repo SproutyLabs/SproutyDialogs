@@ -71,8 +71,8 @@ func set_translation_boxes(locales: Array) -> void:
 			box = _translation_box.instantiate()
 		else:
 			box = _translation_line.instantiate()
+		box.ready.connect(box.set_locale.bind(locale))
 		_text_boxes.add_child(box)
-		box.set_locale(locale)
 		box.undo_redo = undo_redo
 		box.open_text_editor.connect(open_text_editor.emit)
 		box.update_text_editor.connect(update_text_editor.emit)

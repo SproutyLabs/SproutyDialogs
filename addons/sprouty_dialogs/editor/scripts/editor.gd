@@ -91,19 +91,27 @@ func _ready():
 func _connect_settings_panel_signals() -> void:
 	# Graph editor signals
 	settings_panel.translation_settings.translation_enabled_changed.connect(
-			dialogue_panel.on_translation_enabled_changed)
+			dialogue_panel.translation_enabled_changed.emit)
 	settings_panel.translation_settings.locales_changed.connect(
-			dialogue_panel.on_locales_changed)
+			dialogue_panel.locales_changed.emit)
 	settings_panel.translation_settings.default_locale_changed.connect(
-			dialogue_panel.on_locales_changed)
+			dialogue_panel.locales_changed.emit)
 	
 	# Character panel signals
 	settings_panel.translation_settings.translate_character_names_changed.connect(
-			character_panel.on_translation_enabled_changed)
+			character_panel.translation_enabled_changed.emit)
 	settings_panel.translation_settings.locales_changed.connect(
-			character_panel.on_locales_changed)
+			character_panel.locales_changed.emit)
 	settings_panel.translation_settings.default_locale_changed.connect(
-			character_panel.on_locales_changed)
+			character_panel.locales_changed.emit)
+
+	## File manager signals
+	settings_panel.translation_settings.translation_enabled_changed.connect(
+			file_manager.on_translation_enabled_changed)
+	settings_panel.translation_settings.use_csv_files_changed.connect(
+			file_manager.on_translation_enabled_changed)
+	settings_panel.translation_settings.csv_folder_changed.connect(
+			file_manager.on_translation_enabled_changed)
 
 
 ## Connect update manager signals and setup version

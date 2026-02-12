@@ -12,6 +12,11 @@ signal new_character_file_pressed
 ## Emitted when the open character file button is pressed
 signal open_character_file_pressed
 
+## Emitted when the translation settings changes
+signal translation_enabled_changed(enabled: bool)
+## Emitted when the locales change
+signal locales_changed
+
 ## Start panel reference
 @onready var _start_panel: Control = $StartPanel
 ## Character editor container reference
@@ -48,6 +53,11 @@ func switch_current_character_editor(new_editor: EditorSproutyDialogsCharacterEd
 	if _editor_panel.get_child_count() > 0:
 		_editor_panel.remove_child(_editor_panel.get_child(0))
 	
+	# Connect signals to the new editor
+	if not is_connected("translation_enabled_changed", new_editor.on_translation_enabled_changed):
+		translation_enabled_changed.connect(new_editor.on_translation_enabled_changed)
+		locales_changed.connect(new_editor.on_locales_changed)
+	
 	new_editor.undo_redo = undo_redo
 	_editor_panel.add_child(new_editor)
 	show_character_editor()
@@ -63,16 +73,3 @@ func show_start_panel() -> void:
 func show_character_editor() -> void:
 	_editor_panel.visible = true
 	_start_panel.visible = false
-
-
-## Update the character editor to reflect the new locales
-func on_locales_changed() -> void:
-	var current_editor = get_current_character_editor()
-	if current_editor: current_editor.on_locales_changed()
-
-
-## Update the character names translation setting
-func on_translation_enabled_changed(enabled: bool) -> void:
-	var current_editor = get_current_character_editor()
-	if current_editor:
-		current_editor.on_translation_enabled_changed(enabled)

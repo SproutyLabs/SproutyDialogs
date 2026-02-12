@@ -131,16 +131,22 @@ func set_resource_metadata(index: int, property: String, value: Variant) -> void
 	_file_list.set_item_metadata(index, metadata)
 
 
+## Check if the file is already loaded
+func is_file_loaded(path: String) -> bool:
+	for index in range(_file_list.item_count):
+		if _file_list.get_item_metadata(index)["file_path"] == path:
+			return true
+	return false
+
+
 ## Create a new file item on the file list
 func new_file_item(path: String, data: Resource, cache_node: Node, csv_file: String = "") -> void:
 	var file_name := path.get_file()
 	var item_index: int = _file_list.item_count
 
 	# Check if the file is already loaded
-	for index in range(_file_list.item_count):
-		if _file_list.get_item_metadata(index)["file_path"] == path:
-			print("[Sprouty Dialogs] File '" + file_name + "' Already loaded.")
-			return
+	if is_file_loaded(path):
+		return
 
 	# Create new metadata for the file
 	var metadata := {
