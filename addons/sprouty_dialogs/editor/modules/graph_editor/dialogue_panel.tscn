@@ -88,16 +88,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="AddNodeButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer" unique_id=482356984]
-unique_name_in_owner = true
-layout_mode = 2
-icon = SubResource("DPITexture_41lhd")
-flat = true
-
-[node name="VSeparator" type="VSeparator" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer" unique_id=426605957]
-layout_mode = 2
-
-[node name="NodeOptionsMenu" type="MenuButton" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer" unique_id=1742604957]
+[node name="NodeOptionsMenu" type="MenuButton" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer" unique_id=772886655]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -107,9 +98,20 @@ icon = ExtResource("6_04ple")
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="AddNodeButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=482356984]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Add event node"
+icon = SubResource("DPITexture_41lhd")
+flat = true
+
+[node name="VSeparator" type="VSeparator" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=426605957]
+layout_mode = 2
+
 [node name="RemoveButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=1383310354]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Remove selected node(s)"
 disabled = true
 icon = SubResource("DPITexture_41lhd")
 flat = true
@@ -117,6 +119,7 @@ flat = true
 [node name="DuplicateButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=408482956]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Duplicate selected node(s)"
 disabled = true
 icon = SubResource("DPITexture_41lhd")
 flat = true
@@ -124,6 +127,7 @@ flat = true
 [node name="CopyButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=264982993]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Copy selected node(s)"
 disabled = true
 icon = SubResource("DPITexture_41lhd")
 flat = true
@@ -131,6 +135,7 @@ flat = true
 [node name="CutButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=379922644]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Cut selected node(s)"
 disabled = true
 icon = SubResource("DPITexture_41lhd")
 flat = true
@@ -138,6 +143,7 @@ flat = true
 [node name="PasteButton" type="Button" parent="GraphEditor/Toolbar/HBoxContainer/LeftContainer/NodeOptions" unique_id=520355019]
 unique_name_in_owner = true
 layout_mode = 2
+tooltip_text = "Paste node(s)"
 disabled = true
 icon = SubResource("DPITexture_41lhd")
 flat = true

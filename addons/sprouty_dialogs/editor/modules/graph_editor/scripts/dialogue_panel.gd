@@ -80,8 +80,10 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 		new_graph.open_character_file_request.connect(open_character_file_request.emit)
 		new_graph.play_dialog_request.connect(play_dialog_request.emit)
 		new_graph.toolbar_expanded.connect(_on_toolbar_expanded)
-		new_graph.nodes_selected.connect(_graph_toolbar.update_node_options)
-		
+		new_graph.nodes_selection_changed.connect(_graph_toolbar.update_node_options)
+		new_graph.paste_selection_changed.connect(_graph_toolbar.update_paste_button)
+
+		_graph_toolbar.node_option_pressed.connect(new_graph.on_node_option_selected)
 		translation_enabled_changed.connect(new_graph.on_translation_enabled_changed)
 		locales_changed.connect(new_graph.on_locales_changed)
 	
@@ -124,7 +126,6 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 func _show_text_editor(text_editor: Variant) -> void:
 	if not _graph_toolbar.visible:
 		get_current_graph().show_expand_toolbar_button(false)
-	_graph_toolbar.switch_node_options_view(false)
 	_text_editor.show_text_editor(text_editor)
 
 
@@ -132,7 +133,6 @@ func _show_text_editor(text_editor: Variant) -> void:
 func _on_text_editor_closed() -> void:
 	if not _graph_toolbar.visible:
 		get_current_graph().show_expand_toolbar_button(true)
-	_graph_toolbar.switch_node_options_view(true)
 
 
 ## Handle the request for the start ids from the toolbar
