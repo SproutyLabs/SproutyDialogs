@@ -11,6 +11,9 @@ extends Panel
 ## The text editor is shown when the user clicks on a text box expand button.
 # -----------------------------------------------------------------------------
 
+## Emitted when the text editor is closed
+signal text_editor_closed()
+
 ## Text boxes container from the text editor
 @onready var _text_boxes_container: VSplitContainer = %TextBoxes
 ## Input text box from the text editor
@@ -113,6 +116,7 @@ func change_option_bar(bar_index: int) -> void:
 
 ## Close the text editor
 func _on_close_button_pressed() -> void:
+	text_editor_closed.emit()
 	hide_text_editor()
 
 

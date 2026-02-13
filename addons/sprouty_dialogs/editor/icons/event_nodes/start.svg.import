@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c1uvx53ymh81e"
-path="res://.godot/imported/list-bullets.svg-601a4e29c1fd9f3b67a5917a0cdbe6a3.ctex"
+uid="uid://dgpnxk1kubotw"
+path="res://.godot/imported/start.svg-5b371b80376517519995d96ef273020c.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/sprouty_dialogs/editor/icons/text_editor/list-bullets.svg"
-dest_files=["res://.godot/imported/list-bullets.svg-601a4e29c1fd9f3b67a5917a0cdbe6a3.ctex"]
+source_file="res://addons/sprouty_dialogs/editor/icons/event_nodes/start.svg"
+dest_files=["res://.godot/imported/start.svg-5b371b80376517519995d96ef273020c.ctex"]
 
 [params]
 

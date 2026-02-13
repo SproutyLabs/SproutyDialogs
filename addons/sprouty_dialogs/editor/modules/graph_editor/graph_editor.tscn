@@ -1,29 +1,38 @@
-[gd_scene load_steps=13 format=3 uid="uid://cr20rw0unyne0"]
+[gd_scene format=3 uid="uid://cr20rw0unyne0"]
 
 [ext_resource type="Script" uid="uid://bfc8p7wros8wt" path="res://addons/sprouty_dialogs/editor/modules/graph_editor/scripts/graph_editor.gd" id="1_cndaf"]
-[ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/play.svg" id="2_g3u5t"]
 [ext_resource type="Texture2D" uid="uid://dutvcwiqufcor" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/comment.svg" id="3_3qp17"]
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/dialogue.svg" id="4_8d82p"]
 [ext_resource type="Texture2D" uid="uid://dn1gpd7ov6qk5" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/options.svg" id="5_rfgci"]
 [ext_resource type="Texture2D" uid="uid://ca0dqip1tu22y" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/condition.svg" id="6_2cqeq"]
 [ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/set-variable.svg" id="7_d84v1"]
+[ext_resource type="Texture2D" uid="uid://dgpnxk1kubotw" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/start.svg" id="8_f348n"]
 [ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/signal.svg" id="8_x24dq"]
 [ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/wait.svg" id="9_pqpbi"]
 [ext_resource type="Script" uid="uid://deaop0eyxlumt" path="res://addons/sprouty_dialogs/editor/modules/graph_editor/alerts/scripts/alert_controller.gd" id="10_difpe"]
+[ext_resource type="Texture2D" uid="uid://bwd3ahxy81rbk" path="res://addons/sprouty_dialogs/editor/icons/text_editor/text.svg" id="10_ogj5i"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="12_r807w"]
 
-[sub_resource type="Image" id="Image_m21am"]
-data = {
-"data": PackedByteArray(255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 92, 92, 127, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 231, 255, 90, 90, 54, 255, 94, 94, 57, 255, 93, 93, 233, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 42, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 93, 93, 41, 255, 90, 90, 0, 255, 94, 94, 0, 255, 91, 91, 42, 255, 93, 93, 233, 255, 92, 92, 232, 255, 92, 92, 0, 255, 92, 92, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 93, 93, 0, 255, 91, 91, 45, 255, 93, 93, 44, 255, 91, 91, 0, 255, 91, 91, 42, 255, 91, 91, 42, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 45, 255, 92, 92, 235, 255, 92, 92, 234, 255, 89, 89, 43, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 91, 91, 0, 255, 92, 92, 0, 255, 92, 92, 0, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 235, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 233, 255, 91, 91, 59, 255, 92, 92, 61, 255, 92, 92, 0, 255, 92, 92, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 255, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0, 255, 93, 93, 0),
-"format": "RGBA8",
-"height": 16,
-"mipmaps": false,
-"width": 16
-}
+[sub_resource type="DPITexture" id="DPITexture_41lhd"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
 
-[sub_resource type="ImageTexture" id="ImageTexture_a547j"]
-image = SubResource("Image_m21am")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f348n"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+border_width_left = 2
+border_width_bottom = 2
+border_color = Color(0.4140658, 0.4140658, 0.4140657, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 10
+corner_detail = 5
 
-[node name="Graph" type="GraphEdit"]
+[node name="Graph" type="GraphEdit" unique_id=970285456]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -33,10 +42,11 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_cndaf")
 
-[node name="AddNodeMenu" type="PopupMenu" parent="."]
+[node name="AddNodeMenu" type="PopupMenu" parent="." unique_id=1273790779]
 auto_translate_mode = 1
-size = Vector2i(190, 296)
-item_count = 8
+oversampling_override = 1.0
+size = Vector2i(194, 332)
+item_count = 9
 item_0/text = "Comment Node"
 item_0/icon = ExtResource("3_3qp17")
 item_0/id = 0
@@ -56,22 +66,26 @@ item_5/text = "Signal Node"
 item_5/icon = ExtResource("8_x24dq")
 item_5/id = 5
 item_6/text = "Start Node"
-item_6/icon = ExtResource("2_g3u5t")
+item_6/icon = ExtResource("8_f348n")
 item_6/id = 6
 item_7/text = "Wait Node"
 item_7/icon = ExtResource("9_pqpbi")
 item_7/id = 7
+item_8/text = "Custom Node"
+item_8/icon = ExtResource("10_ogj5i")
+item_8/id = 8
 
-[node name="NodeActionsMenu" type="PopupMenu" parent="."]
+[node name="NodeActionsMenu" type="PopupMenu" parent="." unique_id=621278936]
+oversampling_override = 1.0
 size = Vector2i(166, 39)
 item_count = 2
 item_0/text = "Add Node"
-item_0/icon = SubResource("ImageTexture_a547j")
+item_0/icon = SubResource("DPITexture_41lhd")
 item_0/id = 0
 item_1/id = -1
 item_1/separator = true
 
-[node name="Alerts" type="VBoxContainer" parent="."]
+[node name="Alerts" type="VBoxContainer" parent="." unique_id=25420103]
 z_index = 1
 custom_minimum_size = Vector2(0, 60)
 layout_mode = 1
@@ -84,3 +98,18 @@ offset_bottom = -68.0
 grow_horizontal = 2
 grow_vertical = 0
 script = ExtResource("10_difpe")
+
+[node name="ExpandToolbarButton" type="Button" parent="." unique_id=1062895446]
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -60.0
+offset_bottom = 40.0
+grow_horizontal = 0
+tooltip_text = "Expand toolbar"
+theme_override_styles/normal = SubResource("StyleBoxFlat_f348n")
+icon = ExtResource("12_r807w")
+
+[connection signal="pressed" from="ExpandToolbarButton" to="." method="_on_expand_toolbar_button_pressed"]

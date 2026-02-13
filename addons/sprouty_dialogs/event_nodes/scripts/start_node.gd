@@ -94,14 +94,14 @@ func _on_id_input_changed(new_text: String) -> void:
 
 		# --- UndoRedo --------------------------------------------------
 		undo_redo.create_action("Edit Start ID", 1)
-		undo_redo.add_do_property(self, "_start_id", new_text)
+		undo_redo.add_do_property(self , "_start_id", new_text)
 		undo_redo.add_do_property(_id_input_text, "text", new_text.to_upper())
-		undo_redo.add_undo_property(self, "_start_id", temp)
+		undo_redo.add_undo_property(self , "_start_id", temp)
 		undo_redo.add_undo_property(_id_input_text, "text", temp.to_upper())
-		undo_redo.add_undo_method(self, "_on_id_input_focus_exited")
+		undo_redo.add_undo_method(self , "_on_id_input_focus_exited")
 
-		undo_redo.add_do_method(self, "emit_signal", "modified", true)
-		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.add_do_method(self , "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 		undo_redo.commit_action(false)
 		# ---------------------------------------------------------------
 

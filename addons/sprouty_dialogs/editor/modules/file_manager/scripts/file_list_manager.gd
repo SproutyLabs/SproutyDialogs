@@ -287,8 +287,8 @@ func _on_file_selected(index: int) -> void:
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Select File: " + str(_file_list.get_item_text(index)))
-	undo_redo.add_do_method(self, "_switch_to_file", index)
-	undo_redo.add_undo_method(self, "_switch_to_file", temp)
+	undo_redo.add_do_method(self , "_switch_to_file", index)
+	undo_redo.add_undo_method(self , "_switch_to_file", temp)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 

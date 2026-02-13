@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://cu41jslmdjohb"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_jdnrk"]
+[ext_resource type="Texture2D" uid="uid://dgpnxk1kubotw" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/start.svg" id="3_kvkp0"]
 [ext_resource type="Script" uid="uid://kgje42uy42vb" path="res://addons/sprouty_dialogs/event_nodes/scripts/start_node.gd" id="5_3ppuo"]
 [ext_resource type="Texture2D" uid="uid://bdnfwcuasgtqk" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/play.svg" id="6_6olnj"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3wpa2"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iu7pm"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -13,7 +14,7 @@ bg_color = Color(0.803922, 0.498039, 0, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5e6e1"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvkp0"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -25,14 +26,14 @@ border_width_right = 2
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[node name="StartNode" type="GraphNode"]
+[node name="StartNode" type="GraphNode" unique_id=1344824188]
 custom_minimum_size = Vector2(180, 0)
 offset_right = 180.0
 offset_bottom = 97.0
 size_flags_vertical = 4
 theme = ExtResource("1_jdnrk")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_3wpa2")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_5e6e1")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_iu7pm")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_kvkp0")
 resizable = true
 title = "Start Node"
 slot/0/left_enabled = false
@@ -46,24 +47,24 @@ slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("5_3ppuo")
 node_color = Color(0.803922, 0.498039, 0, 1)
-node_icon = ExtResource("6_6olnj")
+node_icon = ExtResource("3_kvkp0")
 
-[node name="Container" type="HBoxContainer" parent="."]
+[node name="Container" type="HBoxContainer" parent="." unique_id=1273080897]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="PlayButton" type="Button" parent="Container"]
+[node name="PlayButton" type="Button" parent="Container" unique_id=385143917]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Play dialogue"
 icon = ExtResource("6_6olnj")
 flat = true
 
-[node name="IDLabel" type="Label" parent="Container"]
+[node name="IDLabel" type="Label" parent="Container" unique_id=648304062]
 layout_mode = 2
 text = "ID"
 
-[node name="IDInput" type="LineEdit" parent="Container"]
+[node name="IDInput" type="LineEdit" parent="Container" unique_id=1523987638]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
