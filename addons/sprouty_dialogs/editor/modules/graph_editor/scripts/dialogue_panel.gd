@@ -91,6 +91,7 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 	_graph_panel.add_child(new_graph)
 	show_graph_editor()
 	
+	new_graph.show_expand_toolbar_button(not _graph_toolbar.visible)
 	_graph_toolbar.set_add_node_menu(new_graph.get_node("AddNodeMenu"))
 
 

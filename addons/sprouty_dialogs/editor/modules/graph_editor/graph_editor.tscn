@@ -17,6 +17,21 @@
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f348n"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.1, 0.1, 0.1, 0.6)
+border_width_left = 2
+border_width_bottom = 2
+border_color = Color(0.4140658, 0.4140658, 0.4140657, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 10
+corner_detail = 5
+
 [node name="Graph" type="GraphEdit" unique_id=970285456]
 anchors_preset = 15
 anchor_right = 1.0
@@ -90,10 +105,11 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -40.0
+offset_left = -60.0
 offset_bottom = 40.0
 grow_horizontal = 0
 tooltip_text = "Expand toolbar"
+theme_override_styles/normal = SubResource("StyleBoxFlat_f348n")
 icon = ExtResource("12_r807w")
 
 [connection signal="pressed" from="ExpandToolbarButton" to="." method="_on_expand_toolbar_button_pressed"]
