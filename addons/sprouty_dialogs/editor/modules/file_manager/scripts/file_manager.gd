@@ -82,6 +82,13 @@ func _ready() -> void:
 	_csv_file_field.get_parent().hide() # Hide CSV file field by default
 	_save_file_button.disabled = true # Disable save button
 
+	# Add the resource picker to open and load resources
+	var editor_resource_picker := EditorSproutyDialogsResourcePicker.new()
+	%OpenFileContainer.add_child(editor_resource_picker)
+	editor_resource_picker.resource_picked.connect(
+		func(res: Resource) -> void: load_file(res.resource_path)
+		)
+
 	await get_tree().process_frame # Wait a frame to ensure undo_redo is ready
 	_file_list.undo_redo = undo_redo
 
