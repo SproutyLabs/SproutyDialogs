@@ -84,7 +84,7 @@ func _ready() -> void:
 
 	# Add the resource picker to open and load resources
 	var editor_resource_picker := EditorSproutyDialogsResourcePicker.new()
-	%OpenFileContainer.add_child(editor_resource_picker)
+	%OpenButtonContainer.add_child(editor_resource_picker)
 	editor_resource_picker.resource_picked.connect(
 		func(res: Resource) -> void: load_file(res.resource_path)
 		)
@@ -193,7 +193,7 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 ## Load data from a dialog or character resource file
 func load_file(path: String) -> void:
 	if _file_list.is_file_loaded(path):
-		print("[Sprouty Dialogs] File '" + path.get_file() + "' is already loaded.")
+		_file_list.switch_to_file_path(path)
 		return
 	
 	if FileAccess.file_exists(path):

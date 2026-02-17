@@ -5,7 +5,7 @@ extends EditorResourcePicker
 # -----------------------------------------------------------------------------
 # Sprouty Dialogs Resource Picker Component
 # -----------------------------------------------------------------------------
-## Component that allows to pick a dialogue or character resource.
+## Component that allows to pick a dialogue, character or scene resource.
 # -----------------------------------------------------------------------------
 
 ## Emitted when a resource is picked (changed)
@@ -13,10 +13,10 @@ extends EditorResourcePicker
 signal resource_picked(res: Resource)
 
 ## Resource types enum
-enum ResourceType {DIALOGUE, CHARACTER, BOTH}
+enum ResourceType {DIALOGUE, CHARACTER, DIALOG_CHAR, SCENE}
 
 ## Resource type to search for
-@export var resource_type: ResourceType = ResourceType.BOTH
+@export var resource_type: ResourceType = ResourceType.DIALOG_CHAR
 ## If true, show the icon button without the arrow button
 @export var only_icon: bool = false
 
@@ -34,8 +34,10 @@ func _ready() -> void:
 			base_type = "SproutyDialogsDialogueData"
 		ResourceType.CHARACTER:
 			base_type = "SproutyDialogsCharacterData"
-		_:
-			base_type = "SproutyDialogsDialogueData, SproutyDialogsCharacterData"
+		ResourceType.DIALOG_CHAR:
+			base_type = "SproutyDialogsDialogueData,SproutyDialogsCharacterData"
+		ResourceType.SCENE:
+			base_type = "PackedScene"
 
 
 func _set_create_options(menu_node: Object) -> void:

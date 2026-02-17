@@ -66,9 +66,6 @@ func _ready():
 
 	# Connect signals for character selection
 	_portrait_dropdown.item_selected.connect(_on_portrait_selected)
-	open_character_file_request.connect(
-		open_character_file_request.emit.bind(get_character_path())
-	)
 	_character_expand_button.toggled.connect(_on_expand_character_button_toggled)
 	_character_file_field.path_changed.connect(_on_character_changed)
 	_character_name_button.disabled = true
@@ -172,12 +169,12 @@ func _on_character_changed(path: String) -> void:
 
 	# --- UndoRedo ----------------------------------------------------------
 	undo_redo.create_action("Assign Character")
-	undo_redo.add_do_method(self, "load_character", path)
-	undo_redo.add_undo_method(self, "load_character", previous_character_path)
+	undo_redo.add_do_method(self , "load_character", path)
+	undo_redo.add_undo_method(self , "load_character", previous_character_path)
 	undo_redo.add_undo_property(_portrait_dropdown, "selected", previous_portrait)
 	
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.add_do_method(self , "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------
 
@@ -187,12 +184,12 @@ func _on_portrait_selected(index: int) -> void:
 	# --- UndoRedo ----------------------------------------------------------
 	undo_redo.create_action("Select Portrait")
 	undo_redo.add_do_property(_portrait_dropdown, "selected", index)
-	undo_redo.add_do_property(self, "_previous_portrait_index", index)
+	undo_redo.add_do_property(self , "_previous_portrait_index", index)
 	undo_redo.add_undo_property(_portrait_dropdown, "selected", _previous_portrait_index)
-	undo_redo.add_undo_property(self, "_previous_portrait_index", _previous_portrait_index)
+	undo_redo.add_undo_property(self , "_previous_portrait_index", _previous_portrait_index)
 
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.add_do_method(self , "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 	undo_redo.commit_action()
 	# -----------------------------------------------------------------------
 
@@ -346,13 +343,13 @@ func _on_default_text_changed(new_text: String = "") -> void:
 		# --- UndoRedo ----------------------------------------------------------
 		undo_redo.create_action("Edit Dialog Text"
 			+ (" (" + _default_locale + ")") if _default_locale != "" else "", 1)
-		undo_redo.add_do_property(self, "_default_text", _default_text)
+		undo_redo.add_do_property(self , "_default_text", _default_text)
 		undo_redo.add_do_method(_default_text_box, "set_text", _default_text)
-		undo_redo.add_undo_property(self, "_default_text", temp)
+		undo_redo.add_undo_property(self , "_default_text", temp)
 		undo_redo.add_undo_method(_default_text_box, "set_text", temp)
 
-		undo_redo.add_do_method(self, "emit_signal", "modified", true)
-		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.add_do_method(self , "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 		undo_redo.commit_action(false)
 		# -----------------------------------------------------------------------
 

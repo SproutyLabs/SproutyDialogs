@@ -81,7 +81,7 @@ icon = ExtResource("3_ljhu2")
 [node name="--" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1509515013]
 layout_mode = 2
 
-[node name="OpenFileContainer" type="PanelContainer" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=741952631]
+[node name="OpenButtonContainer" type="PanelContainer" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=741952631]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/panel = ExtResource("5_lvb0l")
@@ -145,7 +145,6 @@ text = "CSV Translation File"
 
 [node name="FileField" parent="ContentContainer/Container/FileManager/CSVFileField" unique_id=177139207 instance=ExtResource("8_wehoa")]
 layout_mode = 2
-_open_directory = false
 _recent_file_type = "csv_dialog_files"
 file_filters = PackedStringArray("*.csv")
 

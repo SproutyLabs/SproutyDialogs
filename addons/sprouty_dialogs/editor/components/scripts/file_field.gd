@@ -44,7 +44,7 @@ func _ready():
 	_open_button.button_down.connect(_on_open_pressed)
 	_clear_button.button_up.connect(clear_path)
 
-	_open_button.icon = get_theme_icon("Folder", "EditorIcons")
+	_open_button.icon = get_theme_icon("Load", "EditorIcons")
 	_clear_button.icon = get_theme_icon("Clear", "EditorIcons")
 	
 	_path_field.placeholder_text = _placeholder_text

@@ -70,7 +70,7 @@ func _ready():
 	dialogue_panel.graph_editor_visible.connect(side_bar.csv_path_field_visible)
 	dialogue_panel.new_dialog_file_pressed.connect(file_manager.on_new_dialog_pressed)
 	dialogue_panel.open_dialog_file_pressed.connect(file_manager.on_open_file_pressed)
-	dialogue_panel.open_character_file_request.connect(file_manager.load_file.unbind(1))
+	dialogue_panel.open_character_file_request.connect(file_manager.load_file)
 	dialogue_panel.play_dialog_request.connect(play_dialog_scene)
 
 	# Character panel signals

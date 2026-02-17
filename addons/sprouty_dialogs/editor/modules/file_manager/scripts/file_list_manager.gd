@@ -139,6 +139,13 @@ func is_file_loaded(path: String) -> bool:
 	return false
 
 
+## Switch to a file by its path
+func switch_to_file_path(path: String) -> void:
+	for index in range(_file_list.item_count):
+		if _file_list.get_item_metadata(index)["file_path"] == path:
+			_on_file_selected(index)
+
+
 ## Create a new file item on the file list
 func new_file_item(path: String, data: Resource, cache_node: Node, csv_file: String = "") -> void:
 	var file_name := path.get_file()
