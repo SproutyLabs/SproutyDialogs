@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://vfuxkihislug" path="res://addons/sprouty_dialogs/editor/icons/add-char.svg" id="3_ljhu2"]
 [ext_resource type="StyleBox" uid="uid://b6wqi1f10yowf" path="res://addons/sprouty_dialogs/editor/theme/v_separator.tres" id="4_5rvxf"]
 [ext_resource type="Script" uid="uid://dlco4x1xmoek0" path="res://addons/sprouty_dialogs/editor/modules/file_manager/scripts/file_list_manager.gd" id="4_r5dun"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="5_lvb0l"]
 [ext_resource type="StyleBox" uid="uid://bhwywsg8px0ak" path="res://addons/sprouty_dialogs/editor/theme/panel_style.tres" id="7_rjq41"]
 [ext_resource type="Texture2D" uid="uid://cka2spagpv2d7" path="res://addons/sprouty_dialogs/editor/icons/plugin_icon.svg" id="7_uexgy"]
 [ext_resource type="Texture2D" uid="uid://mebsjvglwvhd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-left.svg" id="8_72tq1"]
@@ -14,7 +15,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uexgy"]
 
-[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
+[sub_resource type="DPITexture" id="DPITexture_lvb0l"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -57,6 +58,7 @@ script = ExtResource("1_3v21c")
 
 [node name="FileOptions" type="HBoxContainer" parent="ContentContainer/Container/FileManager" unique_id=1849295784]
 layout_mode = 2
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="NewDialogButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1834082478]
@@ -65,9 +67,8 @@ layout_mode = 2
 tooltip_text = "New dialogue"
 theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
 icon = ExtResource("2_fjick")
-flat = true
 
-[node name="VSeparator" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=719134287]
+[node name="-" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=719134287]
 layout_mode = 2
 
 [node name="NewCharButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=621719315]
@@ -76,20 +77,16 @@ layout_mode = 2
 tooltip_text = "New Character"
 theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
 icon = ExtResource("3_ljhu2")
-flat = true
 
-[node name="VSeparator2" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1509515013]
+[node name="--" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1509515013]
 layout_mode = 2
 
-[node name="OpenFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=456714443]
+[node name="OpenButtonContainer" type="PanelContainer" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=741952631]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Open a file"
-theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
-icon = SubResource("DPITexture_5rvxf")
-flat = true
+theme_override_styles/panel = ExtResource("5_lvb0l")
 
-[node name="VSeparator3" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1882684084]
+[node name="---" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1882684084]
 layout_mode = 2
 
 [node name="SaveFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=142401738]
@@ -97,9 +94,9 @@ unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Save current file"
 theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_uexgy")
 disabled = true
-icon = SubResource("DPITexture_5rvxf")
-flat = true
+icon = SubResource("DPITexture_lvb0l")
 
 [node name="FileList" type="VBoxContainer" parent="ContentContainer/Container/FileManager" unique_id=200220843]
 layout_mode = 2
@@ -111,7 +108,7 @@ layout_mode = 2
 placeholder_text = "Search files..."
 caret_blink = true
 caret_blink_interval = 0.5
-right_icon = SubResource("DPITexture_5rvxf")
+right_icon = SubResource("DPITexture_lvb0l")
 
 [node name="FileItemList" type="ItemList" parent="ContentContainer/Container/FileManager/FileList" unique_id=55579572]
 custom_minimum_size = Vector2(0, 100)
@@ -139,7 +136,6 @@ text = "CSV Translation File"
 
 [node name="FileField" parent="ContentContainer/Container/FileManager/CSVFileField" unique_id=177139207 instance=ExtResource("8_wehoa")]
 layout_mode = 2
-_open_directory = false
 _recent_file_type = "csv_dialog_files"
 file_filters = PackedStringArray("*.csv")
 
@@ -150,18 +146,18 @@ unique_name_in_owner = true
 size = Vector2i(108, 120)
 item_count = 5
 item_0/text = "Save"
-item_0/icon = SubResource("DPITexture_5rvxf")
+item_0/icon = SubResource("DPITexture_lvb0l")
 item_0/id = 0
 item_1/text = "Save As..."
-item_1/icon = SubResource("DPITexture_5rvxf")
+item_1/icon = SubResource("DPITexture_lvb0l")
 item_1/id = 1
 item_2/id = 4
 item_2/separator = true
 item_3/text = "Close"
-item_3/icon = SubResource("DPITexture_5rvxf")
+item_3/icon = SubResource("DPITexture_lvb0l")
 item_3/id = 2
 item_4/text = "Close All"
-item_4/icon = SubResource("DPITexture_5rvxf")
+item_4/icon = SubResource("DPITexture_lvb0l")
 item_4/id = 3
 
 [node name="ConfirmCloseFiles" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1858451831]
@@ -175,7 +171,7 @@ Are you sure you want to close this file/s?"
 [node name="NewDialog" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=790664647]
 title = "New Dialogue"
 initial_position = 4
-size = Vector2i(600, 400)
+size = Vector2i(1500, 1000)
 ok_button_text = "Create File"
 filters = PackedStringArray("*.tres")
 
@@ -183,7 +179,7 @@ filters = PackedStringArray("*.tres")
 auto_translate_mode = 1
 title = "New Character"
 initial_position = 4
-size = Vector2i(600, 400)
+size = Vector2i(1500, 1000)
 ok_button_text = "Create File"
 filters = PackedStringArray("*.tres")
 
@@ -191,7 +187,7 @@ filters = PackedStringArray("*.tres")
 auto_translate_mode = 1
 title = "Open a File"
 initial_position = 4
-size = Vector2i(600, 400)
+size = Vector2i(1500, 1000)
 ok_button_text = "Open"
 file_mode = 0
 filters = PackedStringArray("*.tres")
@@ -199,7 +195,7 @@ filters = PackedStringArray("*.tres")
 [node name="SaveFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=296390590]
 auto_translate_mode = 1
 initial_position = 4
-size = Vector2i(600, 400)
+size = Vector2i(1500, 1000)
 filters = PackedStringArray("*.tres")
 
 [node name="BottomContainer" type="HBoxContainer" parent="ContentContainer/Container" unique_id=369707668]

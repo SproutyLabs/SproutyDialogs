@@ -2,12 +2,13 @@
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_2lkpj"]
 [ext_resource type="Script" uid="uid://be4vttmudn7ln" path="res://addons/sprouty_dialogs/editor/components/scripts/file_field.gd" id="2_5xq0f"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="3_rp4gk"]
 
-[sub_resource type="DPITexture" id="DPITexture_6bto2"]
+[sub_resource type="DPITexture" id="DPITexture_rp4gk"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="FileField" type="MarginContainer"]
+[node name="FileField" type="MarginContainer" unique_id=882926179]
 offset_right = 314.0
 offset_bottom = 40.0
 theme = ExtResource("1_2lkpj")
@@ -16,13 +17,13 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 0
 theme_override_constants/margin_bottom = 0
 script = ExtResource("2_5xq0f")
-_open_directory = null
 
-[node name="HBox" type="HBoxContainer" parent="."]
+[node name="HBox" type="HBoxContainer" parent="." unique_id=200515617]
 layout_mode = 2
+theme_override_constants/separation = 0
 alignment = 2
 
-[node name="PathField" type="LineEdit" parent="HBox"]
+[node name="PathField" type="LineEdit" parent="HBox" unique_id=493930255]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -30,23 +31,23 @@ size_flags_horizontal = 3
 mouse_filter = 1
 placeholder_text = "Select a file..."
 
-[node name="OpenButton" type="Button" parent="HBox"]
+[node name="OpenButton" type="Button" parent="HBox" unique_id=111839160]
 unique_name_in_owner = true
 layout_mode = 2
-icon = SubResource("DPITexture_6bto2")
-flat = true
+theme_override_styles/normal = ExtResource("3_rp4gk")
+icon = SubResource("DPITexture_rp4gk")
 
-[node name="ClearButton" type="Button" parent="HBox"]
+[node name="ClearButton" type="Button" parent="HBox" unique_id=1775640429]
 unique_name_in_owner = true
 layout_mode = 2
-icon = SubResource("DPITexture_6bto2")
-flat = true
+theme_override_styles/normal = ExtResource("3_rp4gk")
+icon = SubResource("DPITexture_rp4gk")
 
-[node name="OpenDialog" type="FileDialog" parent="."]
+[node name="OpenDialog" type="FileDialog" parent="." unique_id=1320462388]
 auto_translate_mode = 1
 title = "Open a File"
 initial_position = 4
-size = Vector2i(600, 400)
-ok_button_text = "Open"
+size = Vector2i(1500, 1000)
+ok_button_text = "Open File"
 dialog_hide_on_ok = true
 file_mode = 0

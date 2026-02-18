@@ -23,8 +23,6 @@ signal all_character_files_closed
 @onready var _new_dialog_button: Button = %NewDialogButton
 ## New character button
 @onready var _new_char_button: Button = %NewCharButton
-## Open file button
-@onready var _open_file_button: Button = %OpenFileButton
 ## Save file button
 @onready var _save_file_button: Button = %SaveFileButton
 
@@ -58,7 +56,6 @@ func _ready() -> void:
 	# Connect signals
 	_new_dialog_button.pressed.connect(on_new_dialog_pressed)
 	_new_char_button.pressed.connect(on_new_character_pressed)
-	_open_file_button.pressed.connect(on_open_file_pressed)
 	_save_file_button.pressed.connect(save_file)
 
 	open_file_dialog.file_selected.connect(load_file)
@@ -74,13 +71,19 @@ func _ready() -> void:
 	_csv_file_field.path_changed.connect(_on_csv_file_path_changed)
 
 	# Set icons for buttons
-	_open_file_button.icon = get_theme_icon("Folder", "EditorIcons")
 	_save_file_button.icon = get_theme_icon("Save", "EditorIcons")
 	_new_dialog_button.icon = _new_dialog_icon
 	_new_char_button.icon = _new_char_icon
 	
 	_csv_file_field.get_parent().hide() # Hide CSV file field by default
 	_save_file_button.disabled = true # Disable save button
+
+	# Add the resource picker to open and load resources
+	var editor_resource_picker := EditorSproutyDialogsResourcePicker.new()
+	%OpenButtonContainer.add_child(editor_resource_picker)
+	editor_resource_picker.resource_picked.connect(
+		func(res: Resource) -> void: load_file(res.resource_path)
+		)
 
 	await get_tree().process_frame # Wait a frame to ensure undo_redo is ready
 	_file_list.undo_redo = undo_redo
@@ -186,12 +189,12 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 ## Load data from a dialog or character resource file
 func load_file(path: String) -> void:
 	if _file_list.is_file_loaded(path):
-		print("[Sprouty Dialogs] File '" + path.get_file() + "' is already loaded.")
+		_file_list.switch_to_file_path(path)
 		return
 	
 	if FileAccess.file_exists(path):
 		var resource = load(path)
-		SproutyDialogsFileUtils.set_recent_file_path("graph_dialogs_files", path)
+		SproutyDialogsFileUtils.set_recent_file_path("sprouty_files", path)
 
 		if resource is SproutyDialogsDialogueData:
 			SproutyDialogsFileUtils.set_recent_file_path("dialogue_files", path)
@@ -275,7 +278,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 
 ## Open file dialog to select a file
 func on_open_file_pressed() -> void:
-	open_file_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("graph_dialogs_files"))
+	open_file_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("sprouty_files"))
 	open_file_dialog.popup_centered()
 
 

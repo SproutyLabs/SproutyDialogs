@@ -2,7 +2,6 @@
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_05qy5"]
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/dialogue.svg" id="4_hljjc"]
-[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="4_ujava"]
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg" id="4_urrmu"]
 [ext_resource type="Texture2D" uid="uid://j23crfderjkx" path="res://addons/sprouty_dialogs/editor/icons/character.svg" id="5_hoe8b"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/sprouty_dialogs/editor/components/translations_container.tscn" id="5_kt63k"]
@@ -29,10 +28,6 @@ border_width_top = 2
 border_width_right = 2
 corner_radius_top_left = 5
 corner_radius_top_right = 5
-
-[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
-_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
-"
 
 [node name="DialogueNode" type="GraphNode" unique_id=780717415]
 custom_minimum_size = Vector2(250, 0)
@@ -115,33 +110,16 @@ flat = true
 [node name="Content" type="VBoxContainer" parent="CharacterContainer" unique_id=174557450]
 layout_mode = 2
 
-[node name="CharacterFileField" parent="CharacterContainer/Content" unique_id=1087946515 instance=ExtResource("4_ujava")]
-unique_name_in_owner = true
+[node name="CharacterFieldContainer" type="HBoxContainer" parent="CharacterContainer/Content" unique_id=797762336]
 layout_mode = 2
-_open_directory = false
-file_filters = PackedStringArray("*.tres", "*.res")
 
-[node name="CharacterNameButton" type="Button" parent="CharacterContainer/Content/CharacterFileField/HBox" index="0" unique_id=1499318461]
+[node name="CharacterButton" type="Button" parent="CharacterContainer/Content/CharacterFieldContainer" unique_id=1724001864]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/h_separation = 10
 disabled = true
 text = "(No one)"
 icon = ExtResource("5_hoe8b")
-
-[node name="PathField" parent="CharacterContainer/Content/CharacterFileField/HBox" index="1"]
-visible = false
-
-[node name="OpenButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="2"]
-icon = SubResource("DPITexture_5rvxf")
-
-[node name="ClearButton" parent="CharacterContainer/Content/CharacterFileField/HBox" index="3"]
-size_flags_horizontal = 8
-icon = SubResource("DPITexture_5rvxf")
-
-[node name="OpenDialog" parent="CharacterContainer/Content/CharacterFileField" index="1"]
-ok_button_text = "Open File"
 
 [node name="PortraitContainer" type="VBoxContainer" parent="CharacterContainer/Content" unique_id=1544201117]
 layout_mode = 2
@@ -204,5 +182,3 @@ layout_mode = 2
 theme_override_constants/margin_top = 0
 
 [connection signal="resized" from="DialogContainer" to="." method="_on_resized"]
-
-[editable path="CharacterContainer/Content/CharacterFileField"]

@@ -12,7 +12,7 @@ extends RefCounted
 
 ## Last used paths for file dialogs
 static var _recent_file_paths: Dictionary = {
-	"graph_dialogs_files": "res://",
+	"sprouty_files": "res://",
 	"dialogue_files": "res://",
 	"character_files": "res://",
 	"csv_dialog_files": "res://",
@@ -99,8 +99,8 @@ static func create_new_scene_file(scene_path: String, scene_type: String) -> voi
 	# If no default portrait scene is set or the resource does not exist, use the built-in default
 	if not SproutyDialogsFileUtils.check_valid_uid_path(default_uid):
 		printerr("[Sprouty Dialogs] No default " + scene_type + " found." \
-				+" Check that the default portrait scene is set in Settings > General" \
-				+" plugin tab, and that the scene resource exists. Using built-in default instead.")
+				+ " Check that the default portrait scene is set in Settings > General" \
+				+ " plugin tab, and that the scene resource exists. Using built-in default instead.")
 		match scene_type: # Use and set the setting to the built-in default
 			"dialog_box":
 				default_path = SproutyDialogsSettingsManager.DEFAULT_DIALOG_BOX_PATH

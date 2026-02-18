@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://bjh56ylap5dsx"]
+
+[ext_resource type="Script" uid="uid://b30wyeky5t866" path="res://addons/sprouty_dialogs/editor/components/scripts/scene_field.gd" id="1_3ei5p"]
+
+[sub_resource type="DPITexture" id="DPITexture_al6eg"]
+_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
+"
+
+[node name="SceneField" type="HBoxContainer" unique_id=1138976857]
+size_flags_horizontal = 3
+script = ExtResource("1_3ei5p")
+
+[node name="NewSceneButton" type="Button" parent="." unique_id=1316786105]
+layout_mode = 2
+tooltip_text = "Create a new scene"
+icon = SubResource("DPITexture_al6eg")
+
+[node name="GoToSceneButton" type="Button" parent="." unique_id=1709604271]
+visible = false
+layout_mode = 2
+tooltip_text = "Open the scene to edit"
+icon = SubResource("DPITexture_al6eg")
+
+[node name="PathField" type="LineEdit" parent="." unique_id=1955673405]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Select a scene..."
+editable = false
+
+[node name="NewSceneDialog" type="FileDialog" parent="." unique_id=171961850]
+auto_translate_mode = 1
+oversampling_override = 1.0
+title = "New Dialog Box Scene"
+initial_position = 4
+size = Vector2i(1500, 1000)
+ok_button_text = "Create file"
+filters = PackedStringArray("*.tscn")

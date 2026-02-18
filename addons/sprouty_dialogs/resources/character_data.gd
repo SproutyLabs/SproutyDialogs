@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/sprouty_dialogs/editor/icons/character.svg")
 class_name SproutyDialogsCharacterData
 extends Resource
 

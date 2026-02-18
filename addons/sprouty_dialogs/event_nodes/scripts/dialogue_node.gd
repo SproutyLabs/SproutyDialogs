@@ -15,12 +15,10 @@ signal open_text_editor(text_box: TextEdit)
 ## Emitted when a text box field gains focus and should update the text editor
 signal update_text_editor(text_box: TextEdit)
 
-## Character data resource field
-@onready var _character_file_field: EditorSproutyDialogsFileField = %CharacterFileField
 ## Character expand/collapse button
 @onready var _character_expand_button: Button = %CharacterExpandButton
-## Character name label
-@onready var _character_name_button: Button = %CharacterNameButton
+## Character button
+@onready var _character_button: Button = %CharacterButton
 ## Portrait dropdown selector
 @onready var _portrait_dropdown: OptionButton = %PortraitSelect
 ## Text box for dialog in default locale
@@ -37,6 +35,8 @@ var _dialog_without_translation: bool = true
 
 ## Character data resource
 var _character_data: SproutyDialogsCharacterData
+## Character resource picker
+var _character_picker: EditorSproutyDialogsResourcePicker
 
 ## Current default dialog text (for UndoRedo)
 var _default_text: String = ""
@@ -66,15 +66,11 @@ func _ready():
 
 	# Connect signals for character selection
 	_portrait_dropdown.item_selected.connect(_on_portrait_selected)
-	open_character_file_request.connect(
-		open_character_file_request.emit.bind(get_character_path())
-	)
 	_character_expand_button.toggled.connect(_on_expand_character_button_toggled)
-	_character_file_field.path_changed.connect(_on_character_changed)
-	_character_name_button.disabled = true
-
+	
 	_translation_boxes.undo_redo = undo_redo
 	_set_translation_text_boxes()
+	_set_character_picker()
 
 
 #region === Node Data ==========================================================
@@ -111,7 +107,7 @@ func set_data(dict: Dictionary) -> void:
 
 ## Returns the character file path
 func get_character_path() -> String:
-	return _character_file_field.get_value()
+	return _character_data.resource_path if _character_data else ""
 
 
 ## Returns the selected character key name
@@ -144,11 +140,10 @@ func load_character(path: String) -> void:
 		return
 	
 	# Show the character's display name and set the portrait dropdown
-	_character_file_field.set_value(path)
-	_character_name_button.disabled = false
-	_character_name_button.text = character.key_name.capitalize()
-	if not _character_name_button.pressed.is_connected(open_character_file_request.emit.bind(path)):
-		_character_name_button.pressed.connect(open_character_file_request.emit.bind(path))
+	_character_button.disabled = false
+	_character_button.text = character.key_name.capitalize()
+	if not _character_button.pressed.is_connected(open_character_file_request.emit.bind(path)):
+		_character_button.pressed.connect(open_character_file_request.emit.bind(path))
 	_set_portrait_dropdown(character)
 	_character_data = character
 
@@ -163,21 +158,34 @@ func load_portrait(portrait: String) -> void:
 	_portrait_dropdown.select(portrait_index)
 
 
+## Set the character resource picker
+func _set_character_picker() -> void:
+	_character_picker = EditorSproutyDialogsResourcePicker.new()
+	_character_picker.resource_type = _character_picker.ResourceType.CHARACTER
+	_character_picker.add_clear_button = true
+	_character_button.get_parent().add_child(_character_picker)
+	_character_picker.resource_picked.connect(_on_character_changed)
+	_character_picker.clear_pressed.connect(_on_character_clear)
+	_character_button.disabled = true
+
+
 ## Handle the character file path changed signal
-func _on_character_changed(path: String) -> void:
+func _on_character_changed(res: Resource) -> void:
+	if not res:
+		return
 	var previous_character_path = get_character_path()
 	var previous_portrait = _portrait_dropdown.selected
-	load_character(path)
+	load_character(res.resource_path)
 	modified.emit(true)
 
 	# --- UndoRedo ----------------------------------------------------------
 	undo_redo.create_action("Assign Character")
-	undo_redo.add_do_method(self, "load_character", path)
-	undo_redo.add_undo_method(self, "load_character", previous_character_path)
+	undo_redo.add_do_method(self , "load_character", res.resource_path)
+	undo_redo.add_undo_method(self , "load_character", previous_character_path)
 	undo_redo.add_undo_property(_portrait_dropdown, "selected", previous_portrait)
 	
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.add_do_method(self , "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------
 
@@ -187,13 +195,32 @@ func _on_portrait_selected(index: int) -> void:
 	# --- UndoRedo ----------------------------------------------------------
 	undo_redo.create_action("Select Portrait")
 	undo_redo.add_do_property(_portrait_dropdown, "selected", index)
-	undo_redo.add_do_property(self, "_previous_portrait_index", index)
+	undo_redo.add_do_property(self , "_previous_portrait_index", index)
 	undo_redo.add_undo_property(_portrait_dropdown, "selected", _previous_portrait_index)
-	undo_redo.add_undo_property(self, "_previous_portrait_index", _previous_portrait_index)
+	undo_redo.add_undo_property(self , "_previous_portrait_index", _previous_portrait_index)
 
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.add_do_method(self , "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 	undo_redo.commit_action()
+	# -----------------------------------------------------------------------
+
+
+## Handle when a character is cleared
+func _on_character_clear() -> void:
+	var previous_character_path = get_character_path()
+	var previous_portrait = _portrait_dropdown.selected
+	_clear_character_field()
+	modified.emit(true)
+
+	# --- UndoRedo ----------------------------------------------------------
+	undo_redo.create_action("Clear Character")
+	undo_redo.add_do_method(self , "_clear_character_field")
+	undo_redo.add_undo_method(self , "load_character", previous_character_path)
+	undo_redo.add_undo_property(_portrait_dropdown, "selected", previous_portrait)
+	
+	undo_redo.add_do_method(self , "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------
 
 
@@ -201,8 +228,8 @@ func _on_portrait_selected(index: int) -> void:
 func _clear_character_field() -> void:
 	_portrait_dropdown.clear()
 	_portrait_dropdown.add_item("(No one)")
-	_character_name_button.text = "(No one)"
-	_character_name_button.disabled = true
+	_character_button.text = "(No one)"
+	_character_button.disabled = true
 	_character_data = null
 
 
@@ -346,13 +373,13 @@ func _on_default_text_changed(new_text: String = "") -> void:
 		# --- UndoRedo ----------------------------------------------------------
 		undo_redo.create_action("Edit Dialog Text"
 			+ (" (" + _default_locale + ")") if _default_locale != "" else "", 1)
-		undo_redo.add_do_property(self, "_default_text", _default_text)
+		undo_redo.add_do_property(self , "_default_text", _default_text)
 		undo_redo.add_do_method(_default_text_box, "set_text", _default_text)
-		undo_redo.add_undo_property(self, "_default_text", temp)
+		undo_redo.add_undo_property(self , "_default_text", temp)
 		undo_redo.add_undo_method(_default_text_box, "set_text", temp)
 
-		undo_redo.add_do_method(self, "emit_signal", "modified", true)
-		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.add_do_method(self , "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 		undo_redo.commit_action(false)
 		# -----------------------------------------------------------------------
 
