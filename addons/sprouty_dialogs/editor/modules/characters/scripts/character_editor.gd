@@ -25,14 +25,7 @@ signal modified(modified: bool)
 ## Description text input field
 @onready var _description_field: TextEdit = %DescriptionField
 ## Dialog box scene file field
-@onready var _dialog_box_scene_field: EditorSproutyDialogsFileField = %DialogBoxSceneField
-## Dialog box scene button
-@onready var _to_dialog_box_scene_button: Button = %ToDialogBoxSceneButton
-## Dialog box new scene button
-@onready var _new_dialog_box_scene_button: Button = %NewDialogBoxSceneButton
-## New dialog box scene dialog
-@onready var _new_dialog_box_dialog: FileDialog = $NewDialogBoxDialog
-
+@onready var _dialog_box_scene_field: EditorSproutyDialogsSceneField = %DialogBoxSceneField
 ## Default portrait dropdown
 @onready var _default_portrait_dropdown: OptionButton = %DefaultPortraitDropdown
 ## Portrait scale section
@@ -105,11 +98,9 @@ func _ready() -> void:
 	_description_field.text_changed.connect(_on_description_text_changed)
 	_description_field.mouse_exited.connect(_on_description_focus_exited)
 
-	# Connect dialog box signals
-	_dialog_box_scene_field.path_changed.connect(_on_dialog_box_scene_path_changed)
-	_to_dialog_box_scene_button.pressed.connect(_on_dialog_box_scene_button_pressed)
-	_new_dialog_box_scene_button.pressed.connect(_on_new_dialog_box_scene_pressed)
-	_new_dialog_box_dialog.file_selected.connect(_new_dialog_box)
+	# Set dialog box field and connect signals
+	_dialog_box_scene_field.set_scene_type(_dialog_box_scene_field.SceneType.DIALOG_BOX)
+	_dialog_box_scene_field.scene_path_changed.connect(_on_dialog_box_scene_path_changed)
 	%PortraitOnDialogBoxToggle.toggled.connect(_on_portrait_dialog_box_toggled)
 
 	# Connect portrait signals
@@ -131,8 +122,6 @@ func _ready() -> void:
 	%AddGroupButton.pressed.connect(_on_add_portrait_group_button_pressed)
 
 	# Set icons for buttons and fields
-	_to_dialog_box_scene_button.icon = get_theme_icon("PackedScene", "EditorIcons")
-	_new_dialog_box_scene_button.icon = get_theme_icon("Add", "EditorIcons")
 	_portrait_search_bar.right_icon = get_theme_icon("Search", "EditorIcons")
 	%AddPortraitButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddGroupButton.icon = get_theme_icon("Folder", "EditorIcons")
@@ -163,8 +152,8 @@ func _on_description_text_changed() -> void:
 		undo_redo.create_action("Change Character Description", 1)
 		undo_redo.add_do_property(_description_field, "text", _description_text)
 		undo_redo.add_undo_property(_description_field, "text", temp)
-		undo_redo.add_do_method(self, "_on_modified", true)
-		undo_redo.add_undo_method(self, "_on_modified", false)
+		undo_redo.add_do_method(self , "_on_modified", true)
+		undo_redo.add_undo_method(self , "_on_modified", false)
 		undo_redo.commit_action(false)
 		# ------------------------------------------------------------------
 
@@ -202,15 +191,11 @@ func get_character_data() -> SproutyDialogsCharacterData:
 	data.key_name = _key_name
 	data.display_name = _get_name_translations()
 	data.description = _description_field.text
-
-	data.dialog_box_uid = ResourceSaver.get_resource_id_for_path(
-				_dialog_box_scene_field.get_value(), true) \
-		if _check_valid_dialog_box_scene(_dialog_box_scene_field.get_value()) else -1
 	
-	data.dialog_box_path = _dialog_box_scene_field.get_value() \
-		if _check_valid_dialog_box_scene(_dialog_box_scene_field.get_value()) else ""
-	
+	data.dialog_box_uid = _dialog_box_scene_field.get_scene_uid()
+	data.dialog_box_path = _dialog_box_scene_field.get_scene_path()
 	data.portrait_on_dialog_box = _portrait_on_dialog_box
+
 	data.default_portrait = _get_default_portrait_selected()
 	data.main_transform_settings = _portraits_transform_settings.get_transform_settings()
 	data.portraits = _portrait_tree.get_portraits_data()
@@ -242,18 +227,12 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	if not SproutyDialogsFileUtils.check_valid_uid_path(data.dialog_box_uid):
 		if data.dialog_box_uid != -1:
 			printerr("[Sprouty Dialogs] Dialog box not found for character '" + _key_name
-					+"'. Check that the file '" + data.dialog_box_path + "' exists.")
-		_to_dialog_box_scene_button.visible = false
-		_new_dialog_box_scene_button.visible = true
-		_dialog_box_scene_field.set_value("")
+					+ "'. Check that the file '" + data.dialog_box_path + "' exists.")
+		_dialog_box_scene_field.set_scene_path("")
 	else:
 		_dialog_box_path = ResourceUID.get_id_path(data.dialog_box_uid)
-		_dialog_box_scene_field.set_value(_dialog_box_path)
+		_dialog_box_scene_field.set_scene_path(_dialog_box_path)
 	
-	if SproutyDialogsFileUtils.check_valid_extension(
-			_dialog_box_scene_field.get_value(), _dialog_box_scene_field.file_filters):
-		_to_dialog_box_scene_button.visible = true
-		_new_dialog_box_scene_button.visible = false
 	_portrait_on_dialog_box = data.portrait_on_dialog_box
 	%PortraitOnDialogBoxToggle.button_pressed = _portrait_on_dialog_box
 
@@ -368,8 +347,8 @@ func _on_default_display_name_changed(new_text: String) -> void:
 		undo_redo.create_action("Change Display Name", 1)
 		undo_redo.add_do_property(_name_default_locale_field, "text", new_text)
 		undo_redo.add_undo_property(_name_default_locale_field, "text", temp)
-		undo_redo.add_do_method(self, "_on_modified", true)
-		undo_redo.add_undo_method(self, "_on_modified", false)
+		undo_redo.add_do_method(self , "_on_modified", true)
+		undo_redo.add_undo_method(self , "_on_modified", false)
 		undo_redo.commit_action(false)
 		# ------------------------------------------------------------------
 
@@ -384,78 +363,23 @@ func _on_default_display_focus_exited() -> void:
 
 #region === Dialog Box =========================================================
 
-## Check if a dialog box scene path is valid
-func _check_valid_dialog_box_scene(path: String, print_error: bool = true) -> bool:
-	var is_valid = SproutyDialogsFileUtils.check_valid_extension(path,
-			_dialog_box_scene_field.file_filters) and FileAccess.file_exists(path)
-	
-	if is_valid: # Check if the scene inherits from DialogBox class
-		var scene = load(path).instantiate()
-		if not scene is DialogBox:
-			if print_error:
-				printerr("[Sprouty Dialogs] The scene '" + path + "' is not valid."
-						+" The root node must inherit from DialogBox class.")
-			is_valid = false
-			scene.queue_free()
-	
-	return is_valid
-
-
 ## Handle the dialog box scene file path
 func _on_dialog_box_scene_path_changed(path: String) -> void:
-	# If the path is valid, show the open scene button and hide the new scene button
-	var is_valid = _check_valid_dialog_box_scene(path)
-	_to_dialog_box_scene_button.visible = is_valid
-	_new_dialog_box_scene_button.visible = not is_valid
 	var temp = _dialog_box_path
 	_dialog_box_path = path
 	_on_modified(true)
 	
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Change Dialog Box Scene")
-	undo_redo.add_do_method(_dialog_box_scene_field, "set_value", path)
-	undo_redo.add_undo_method(_dialog_box_scene_field, "set_value", temp)
-	undo_redo.add_do_property(self, "_dialog_box_path", path)
-	undo_redo.add_undo_property(self, "_dialog_box_path", temp)
-
-	undo_redo.add_do_property(_to_dialog_box_scene_button, "visible", is_valid)
-	undo_redo.add_undo_property(_to_dialog_box_scene_button, "visible",
-		_check_valid_dialog_box_scene(temp, false))
+	undo_redo.add_do_method(_dialog_box_scene_field, "set_scene_path", path)
+	undo_redo.add_undo_method(_dialog_box_scene_field, "set_scene_path", temp)
+	undo_redo.add_do_property(self , "_dialog_box_path", path)
+	undo_redo.add_undo_property(self , "_dialog_box_path", temp)
 	
-	undo_redo.add_do_property(_new_dialog_box_scene_button, "visible", not is_valid)
-	undo_redo.add_undo_property(_new_dialog_box_scene_button, "visible",
-		not _check_valid_dialog_box_scene(temp, false))
-	
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
-
-
-## Handle the dialog box scene button press
-func _on_dialog_box_scene_button_pressed() -> void:
-	SproutyDialogsFileUtils.open_scene_in_editor(
-			_dialog_box_scene_field.get_value(), get_tree())
-
-
-## Create a new dialog box scene and open it in the editor
-func _on_new_dialog_box_scene_pressed() -> void:
-	_new_dialog_box_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("dialog_box_files"))
-	_new_dialog_box_dialog.get_line_edit().text = "new_dialog_box.tscn"
-	_new_dialog_box_dialog.popup_centered()
-
-
-## Create a new dialog box scene file
-func _new_dialog_box(scene_path: String) -> void:
-	SproutyDialogsFileUtils.create_new_scene_file(scene_path, "dialog_box")
-	
-	# Set the dialog box scene path
-	_dialog_box_scene_field.set_value(scene_path)
-	_on_dialog_box_scene_path_changed(scene_path)
-
-	# Open the new scene in the editor
-	SproutyDialogsFileUtils.open_scene_in_editor(scene_path, get_tree())
-	_on_modified(true)
 
 
 ## Handle the text box portrait display toggle
@@ -468,8 +392,8 @@ func _on_portrait_dialog_box_toggled(toggled_on: bool) -> void:
 	undo_redo.create_action("Toggle Portrait on Dialog Box")
 	undo_redo.add_do_property(%PortraitOnDialogBoxToggle, "button_pressed", toggled_on)
 	undo_redo.add_undo_property(%PortraitOnDialogBoxToggle, "button_pressed", temp)
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -522,11 +446,11 @@ func _on_default_portrait_selected(index: int) -> void:
 	undo_redo.create_action("Select Default Portrait")
 	undo_redo.add_do_property(_default_portrait_dropdown, "selected", index)
 	undo_redo.add_undo_property(_default_portrait_dropdown, "selected", _previous_portrait_index)
-	undo_redo.add_do_property(self, "_previous_portrait_index", index)
-	undo_redo.add_undo_property(self, "_previous_portrait_index", _previous_portrait_index)
+	undo_redo.add_do_property(self , "_previous_portrait_index", index)
+	undo_redo.add_undo_property(self , "_previous_portrait_index", _previous_portrait_index)
 
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.add_do_method(self , "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 	undo_redo.commit_action()
 	# -----------------------------------------------------------------------
 
@@ -588,18 +512,18 @@ func _on_add_portrait_button_pressed() -> void:
 	undo_redo.create_action("Add New Portrait")
 	undo_redo.add_do_reference(item)
 	undo_redo.add_do_method(parent, "add_child", item)
-	undo_redo.add_do_property(self, "_current_portrait", item)
-	undo_redo.add_do_method(self, "_select_item_on_tree", item)
+	undo_redo.add_do_property(self , "_current_portrait", item)
+	undo_redo.add_do_method(self , "_select_item_on_tree", item)
 	
 	undo_redo.add_undo_method(parent, "remove_child", item)
-	undo_redo.add_undo_property(self, "_current_portrait", temp)
-	undo_redo.add_undo_method(self, "_select_item_on_tree", temp)
+	undo_redo.add_undo_property(self , "_current_portrait", temp)
+	undo_redo.add_undo_method(self , "_select_item_on_tree", temp)
 
-	undo_redo.add_do_method(self, "_update_default_portrait_dropdown")
-	undo_redo.add_undo_method(self, "_update_default_portrait_dropdown")
+	undo_redo.add_do_method(self , "_update_default_portrait_dropdown")
+	undo_redo.add_undo_method(self , "_update_default_portrait_dropdown")
 	
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ------------------------------------------------------------------
 
@@ -630,8 +554,8 @@ func _on_add_portrait_group_button_pressed() -> void:
 	undo_redo.add_do_reference(item)
 	undo_redo.add_do_method(parent, "add_child", item)
 	undo_redo.add_undo_method(parent, "remove_child", item)
-	undo_redo.add_do_method(self, "_on_modified", true)
-	undo_redo.add_undo_method(self, "_on_modified", false)
+	undo_redo.add_do_method(self , "_on_modified", true)
+	undo_redo.add_undo_method(self , "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ------------------------------------------------------------------
 
@@ -662,8 +586,8 @@ func _on_portrait_selected(item: TreeItem) -> void:
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Select Portrait: " + item.get_text(0))
-	undo_redo.add_do_method(self, "_select_item_on_tree", item)
-	undo_redo.add_undo_method(self, "_select_item_on_tree", _previous_portrait)
+	undo_redo.add_do_method(self , "_select_item_on_tree", item)
+	undo_redo.add_undo_method(self , "_select_item_on_tree", _previous_portrait)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 

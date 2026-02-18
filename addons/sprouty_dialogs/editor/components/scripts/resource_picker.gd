@@ -15,7 +15,7 @@ signal resource_picked(res: Resource)
 signal clear_pressed
 
 ## Resource types enum
-enum ResourceType {DIALOG_CHAR, DIALOGUE, CHARACTER, PORTRAIT_SCENE, DIALOG_BOX}
+enum ResourceType {DIALOG_CHAR, DIALOGUE, CHARACTER, DIALOG_BOX, PORTRAIT_SCENE}
 
 ## Resource type to load
 @export var resource_type: ResourceType = ResourceType.DIALOG_CHAR
@@ -62,15 +62,15 @@ func set_resource_type(type: ResourceType) -> void:
 			_dialog_title = "Open a Character"
 			_recent_file_type = "character_files"
 			_file_filters = ["*.tres"]
-		ResourceType.PORTRAIT_SCENE:
-			base_type = "PackedScene"
-			_dialog_title = "Open a Portrait Scene"
-			_recent_file_type = "portrait_files"
-			_file_filters = ["*.tscn"]
 		ResourceType.DIALOG_BOX:
 			base_type = "PackedScene"
 			_dialog_title = "Open a Dialog Box Scene"
 			_recent_file_type = "dialog_box_files"
+			_file_filters = ["*.tscn"]
+		ResourceType.PORTRAIT_SCENE:
+			base_type = "PackedScene"
+			_dialog_title = "Open a Portrait Scene"
+			_recent_file_type = "portrait_files"
 			_file_filters = ["*.tscn"]
 
 
