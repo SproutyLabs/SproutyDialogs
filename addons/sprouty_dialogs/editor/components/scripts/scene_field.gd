@@ -37,13 +37,17 @@ var scene_picker: EditorSproutyDialogsResourcePicker
 
 
 func _ready() -> void:
-	# Set new and go to buttons
+	# Setup buttons
 	$GoToSceneButton.pressed.connect(_on_go_to_scene_button_pressed)
 	$NewSceneButton.pressed.connect(_on_new_scene_button_pressed)
 	$GoToSceneButton.icon = get_theme_icon("PackedScene", "EditorIcons")
 	$NewSceneButton.icon = get_theme_icon("Add", "EditorIcons")
 	$GoToSceneButton.hide()
 	$NewSceneButton.show()
+
+	# Setup new scene file dialog
+	_new_scene_dialog.file_selected.connect(_new_scene)
+	_new_scene_dialog.filters = ["*.tscn"]
 
 	# Add the resource picker to open scenes
 	scene_picker = EditorSproutyDialogsResourcePicker.new()
@@ -52,7 +56,6 @@ func _ready() -> void:
 	scene_picker.resource_picked.connect(_on_scene_selected)
 	scene_picker.clear_pressed.connect(clear_path)
 
-	_new_scene_dialog.filters = ["*.tscn"]
 	set_scene_type(scene_type)
 
 
@@ -84,18 +87,17 @@ func get_scene_uid() -> int:
 
 ## Returns the current scene path in the field.
 func get_scene_path() -> String:
-	if _check_valid_scene(_path_field.text):
-		return _path_field.text
-	else:
+	if not _check_valid_scene(_path_field.text):
 		return ""
+	return _path_field.text
 
 
 ## Set the scene path in the field
 func set_scene_path(path: String) -> void:
-	if _check_valid_scene(path):
-		_path_field.text = path
-	else:
+	if not _check_valid_scene(path):
 		_path_field.text = ""
+	else:
+		_path_field.text = path
 
 
 ## Clear the current value of the field.
@@ -129,7 +131,7 @@ func _new_scene(scene_path: String) -> void:
 	SproutyDialogsFileUtils.create_new_scene_file(scene_path, _new_scene_type)
 	
 	# Set the dialog box scene path
-	_path_field.set_value(scene_path)
+	set_scene_path(scene_path)
 	scene_path_changed.emit(scene_path)
 
 	# Open the new scene in the editor

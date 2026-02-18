@@ -191,7 +191,7 @@ func get_character_data() -> SproutyDialogsCharacterData:
 	data.key_name = _key_name
 	data.display_name = _get_name_translations()
 	data.description = _description_field.text
-	
+
 	data.dialog_box_uid = _dialog_box_scene_field.get_scene_uid()
 	data.dialog_box_path = _dialog_box_scene_field.get_scene_path()
 	data.portrait_on_dialog_box = _portrait_on_dialog_box
