@@ -7,14 +7,11 @@
 [ext_resource type="Texture2D" uid="uid://chd4ylouli7dj" path="res://addons/sprouty_dialogs/editor/icons/Reload.svg" id="3_og6kh"]
 [ext_resource type="Texture2D" uid="uid://t7ujqvnbwl36" path="res://addons/sprouty_dialogs/editor/icons/settings.svg" id="4_kixug"]
 [ext_resource type="Texture2D" uid="uid://bakgk0f1wpx5t" path="res://addons/sprouty_dialogs/editor/icons/text_editor/image.svg" id="5_kixug"]
+[ext_resource type="PackedScene" uid="uid://bjh56ylap5dsx" path="res://addons/sprouty_dialogs/editor/components/scene_field.tscn" id="7_og6kh"]
 [ext_resource type="Texture2D" uid="uid://3ygkqeueqkrd" path="res://addons/sprouty_dialogs/editor/icons/text_editor/magic-wand.svg" id="8_euhf0"]
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_0n6vl"]
 load_path = "res://.godot/imported/Reload.svg-1d5ff8ddb6eb04117bb9a29b4622fe29.editor.ctex"
-
-[sub_resource type="DPITexture" id="DPITexture_euhf0"]
-_source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
-"
 
 [sub_resource type="CompressedTexture2D" id="CompressedTexture2D_jvnsa"]
 load_path = "res://.godot/imported/Reload.svg-1d5ff8ddb6eb04117bb9a29b4622fe29.editor.ctex"
@@ -104,6 +101,7 @@ fit_content = true
 layout_mode = 2
 tooltip_text = "Default dialog box that will be displayed when no character is selected.
 It will also be used as a template when creating a new dialog box for a character.
+
 The root of the scene must be a node inherited from the DialogBox class."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=1266357145]
@@ -117,25 +115,9 @@ layout_mode = 2
 icon = SubResource("CompressedTexture2D_0n6vl")
 flat = true
 
-[node name="NewDialogBoxButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=1664787710]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-icon = SubResource("DPITexture_euhf0")
-
-[node name="ToDialogBoxSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=1787468392]
+[node name="DefaultDialogBoxField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=1138976857 instance=ExtResource("7_og6kh")]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Open the dialog box scene."
-icon = SubResource("DPITexture_euhf0")
-
-[node name="DefaultDialogBoxField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultDialogBox" unique_id=1895062874 instance=ExtResource("3_hokrq")]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-_open_directory = false
-_placeholder_text = "Select a dialog box scene..."
-file_filters = PackedStringArray("*.tscn")
 
 [node name="DefaultPortraitWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1343983695]
 unique_name_in_owner = true
@@ -148,6 +130,7 @@ fit_content = true
 [node name="DefaultPortraitScene" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=559072571]
 layout_mode = 2
 tooltip_text = "Default portrait scene that will be used as a template when creating a new portrait for a character.
+
 The root of the scene must be a node inherited from the DialogPortrait class."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1581300342]
@@ -161,25 +144,9 @@ layout_mode = 2
 icon = SubResource("CompressedTexture2D_jvnsa")
 flat = true
 
-[node name="NewPortraitSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1000870692]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-icon = SubResource("DPITexture_euhf0")
-
-[node name="ToPortraitSceneButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1826129689]
+[node name="DefaultPortraitSceneField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1154758004 instance=ExtResource("7_og6kh")]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "Open the dialog box scene."
-icon = SubResource("DPITexture_euhf0")
-
-[node name="DefaultPortraitSceneField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1050102050 instance=ExtResource("3_hokrq")]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-_open_directory = false
-_placeholder_text = "Select a portrait scene..."
-file_filters = PackedStringArray("*.tscn")
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1021078704]
 layout_mode = 2
@@ -341,7 +308,6 @@ flat = true
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-_open_directory = false
 _placeholder_text = "Select a script file..."
 file_filters = PackedStringArray("*.gd")
 
@@ -349,21 +315,3 @@ file_filters = PackedStringArray("*.gd")
 visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="NewDialogBoxDialog" type="FileDialog" parent="." unique_id=1140125940]
-auto_translate_mode = 1
-oversampling_override = 1.0
-title = "New Dialog Box Scene"
-initial_position = 4
-size = Vector2i(600, 400)
-ok_button_text = "Create file"
-filters = PackedStringArray("*.tscn")
-
-[node name="NewPortraitSceneDialog" type="FileDialog" parent="." unique_id=2038238859]
-auto_translate_mode = 1
-oversampling_override = 1.0
-title = "New Portrait Scene"
-initial_position = 4
-size = Vector2i(600, 400)
-ok_button_text = "Create file"
-filters = PackedStringArray("*.tscn")

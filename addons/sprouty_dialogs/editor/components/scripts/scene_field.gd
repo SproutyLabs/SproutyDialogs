@@ -110,7 +110,7 @@ func clear_path() -> void:
 func _on_scene_selected(res: Resource) -> void:
 	SproutyDialogsFileUtils.set_recent_file_path(_recent_file_type, res.resource_path)
 	set_scene_path(res.resource_path)
-	scene_path_changed.emit(res.resource_path)
+	scene_path_changed.emit(get_scene_path())
 
 
 ## Handle when the go to scene button is pressed
