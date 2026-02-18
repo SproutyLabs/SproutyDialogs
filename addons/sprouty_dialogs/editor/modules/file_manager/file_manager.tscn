@@ -15,7 +15,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_uexgy"]
 
-[sub_resource type="DPITexture" id="DPITexture_rjq41"]
+[sub_resource type="DPITexture" id="DPITexture_lvb0l"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -86,15 +86,6 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_styles/panel = ExtResource("5_lvb0l")
 
-[node name="OpenFileButton" type="Button" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=456714443]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-tooltip_text = "Open a file"
-theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
-icon = SubResource("DPITexture_rjq41")
-flat = true
-
 [node name="---" type="VSeparator" parent="ContentContainer/Container/FileManager/FileOptions" unique_id=1882684084]
 layout_mode = 2
 
@@ -105,7 +96,7 @@ tooltip_text = "Save current file"
 theme_override_styles/normal = SubResource("StyleBoxEmpty_uexgy")
 theme_override_styles/disabled = SubResource("StyleBoxEmpty_uexgy")
 disabled = true
-icon = SubResource("DPITexture_rjq41")
+icon = SubResource("DPITexture_lvb0l")
 
 [node name="FileList" type="VBoxContainer" parent="ContentContainer/Container/FileManager" unique_id=200220843]
 layout_mode = 2
@@ -117,7 +108,7 @@ layout_mode = 2
 placeholder_text = "Search files..."
 caret_blink = true
 caret_blink_interval = 0.5
-right_icon = SubResource("DPITexture_rjq41")
+right_icon = SubResource("DPITexture_lvb0l")
 
 [node name="FileItemList" type="ItemList" parent="ContentContainer/Container/FileManager/FileList" unique_id=55579572]
 custom_minimum_size = Vector2(0, 100)
@@ -155,18 +146,18 @@ unique_name_in_owner = true
 size = Vector2i(108, 120)
 item_count = 5
 item_0/text = "Save"
-item_0/icon = SubResource("DPITexture_rjq41")
+item_0/icon = SubResource("DPITexture_lvb0l")
 item_0/id = 0
 item_1/text = "Save As..."
-item_1/icon = SubResource("DPITexture_rjq41")
+item_1/icon = SubResource("DPITexture_lvb0l")
 item_1/id = 1
 item_2/id = 4
 item_2/separator = true
 item_3/text = "Close"
-item_3/icon = SubResource("DPITexture_rjq41")
+item_3/icon = SubResource("DPITexture_lvb0l")
 item_3/id = 2
 item_4/text = "Close All"
-item_4/icon = SubResource("DPITexture_rjq41")
+item_4/icon = SubResource("DPITexture_lvb0l")
 item_4/id = 3
 
 [node name="ConfirmCloseFiles" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1858451831]
@@ -180,7 +171,7 @@ Are you sure you want to close this file/s?"
 [node name="NewDialog" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=790664647]
 title = "New Dialogue"
 initial_position = 4
-size = Vector2i(600, 400)
+size = Vector2i(1500, 1000)
 ok_button_text = "Create File"
 filters = PackedStringArray("*.tres")
 
@@ -188,7 +179,7 @@ filters = PackedStringArray("*.tres")
 auto_translate_mode = 1
 title = "New Character"
 initial_position = 4
-size = Vector2i(600, 400)
+size = Vector2i(1500, 1000)
 ok_button_text = "Create File"
 filters = PackedStringArray("*.tres")
 
@@ -196,7 +187,7 @@ filters = PackedStringArray("*.tres")
 auto_translate_mode = 1
 title = "Open a File"
 initial_position = 4
-size = Vector2i(600, 400)
+size = Vector2i(1500, 1000)
 ok_button_text = "Open"
 file_mode = 0
 filters = PackedStringArray("*.tres")
@@ -204,7 +195,7 @@ filters = PackedStringArray("*.tres")
 [node name="SaveFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=296390590]
 auto_translate_mode = 1
 initial_position = 4
-size = Vector2i(600, 400)
+size = Vector2i(1500, 1000)
 filters = PackedStringArray("*.tres")
 
 [node name="BottomContainer" type="HBoxContainer" parent="ContentContainer/Container" unique_id=369707668]
