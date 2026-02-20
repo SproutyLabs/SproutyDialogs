@@ -20,6 +20,9 @@ signal item_added(item: Dictionary)
 ## Emmited when an item is removed from the array
 signal item_removed(item: Dictionary)
 
+## If true, you only can edit the previouly setted items
+@export var parameters_array: bool = false
+
 ## Collapse button to show/hide the array items
 @onready var _collapse_button: Button = $CollapseButton
 ## Button to add new items to the array
@@ -37,6 +40,9 @@ func _ready() -> void:
 	_add_button.icon = get_theme_icon("Add", "EditorIcons")
 	_on_collapse_button_toggled(false) # Start collapsed
 
+	if parameters_array: # Cannot add items
+		_add_button.hide()
+
 
 ## Return the current array of items data
 ## Each item is a dictionary with the following estructure:
@@ -50,7 +56,10 @@ func get_array() -> Array:
 	var items = []
 	for child in _items_container.get_children():
 		if child is EditorSproutyDialogsArrayFieldItem:
-			items.append(child.get_item_data())
+			var data = child.get_item_data()
+			if parameters_array:
+				data["name"] = child.get_meta("name")
+			items.append(data)
 	return items
 
 
@@ -78,6 +87,9 @@ func set_array(items: Array) -> void:
 	for i in range(0, items.size()):
 		var new_item := _new_array_item()
 		new_item.set_value(items[i]["value"], items[i]["type"], items[i]["metadata"])
+		if parameters_array:
+			new_item.set_parameter_field(items[i]["name"])
+			new_item.set_meta("name", items[i]["name"])
 
 
 ## Clear the array items
@@ -86,6 +98,11 @@ func clear_array() -> void:
 		if child is EditorSproutyDialogsArrayFieldItem:
 			_items_container.remove_child(child)
 			child.queue_free()
+
+
+## Disable or enable the array field
+func disable_field(disabled: bool) -> void:
+	_collapse_button.disabled = disabled
 
 
 ## Create a new array item
