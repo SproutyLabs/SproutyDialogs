@@ -108,6 +108,13 @@ func set_type(type: int, metadata: Dictionary) -> void:
 	_set_value_field(_type_index, type)
 
 
+## Set the item field as a parameter field
+func set_as_parameter_field(name: String) -> void:
+	tooltip_text = "Parameter: " + name.capitalize()
+	_type_dropdown.disabled = true
+	_remove_button.hide()
+
+
 ## Set the value field based on the variable type
 func _set_value_field(index: int, type: int = -1) -> void:
 	# Clear previous field
