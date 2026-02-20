@@ -109,7 +109,7 @@ func set_type(type: int, metadata: Dictionary) -> void:
 
 
 ## Set the item field as a parameter field
-func set_parameter_field(name: String) -> void:
+func set_as_parameter_field(name: String) -> void:
 	tooltip_text = "Parameter: " + name.capitalize()
 	_type_dropdown.disabled = true
 	_remove_button.hide()

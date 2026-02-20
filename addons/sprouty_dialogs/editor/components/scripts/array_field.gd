@@ -88,7 +88,7 @@ func set_array(items: Array) -> void:
 		var new_item := _new_array_item()
 		new_item.set_value(items[i]["value"], items[i]["type"], items[i]["metadata"])
 		if parameters_array:
-			new_item.set_parameter_field(items[i]["name"])
+			new_item.set_as_parameter_field(items[i]["name"])
 			new_item.set_meta("name", items[i]["name"])
 
 
@@ -98,10 +98,12 @@ func clear_array() -> void:
 		if child is EditorSproutyDialogsArrayFieldItem:
 			_items_container.remove_child(child)
 			child.queue_free()
+	_collapse_button.text = "Array (size 0)"
 
 
 ## Disable or enable the array field
 func disable_field(disabled: bool) -> void:
+	_on_collapse_button_toggled(false)
 	_collapse_button.disabled = disabled
 
 
