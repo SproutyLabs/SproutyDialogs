@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://df36b060lsrjk" path="res://addons/sprouty_dialogs/event_nodes/scripts/wait_node.gd" id="5_w2kpx"]
 [ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/wait.svg" id="6_hj7a4"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kvgs0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8t1qi"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
@@ -16,7 +16,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2pibj"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8fvvd"]
 content_margin_left = 18.0
 content_margin_top = 12.0
 content_margin_right = 18.0
@@ -29,12 +29,12 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="WaitNode" type="GraphNode"]
-offset_right = 9.0
-offset_bottom = 55.0
+[node name="WaitNode" type="GraphNode" unique_id=118781460]
+offset_right = 145.0
+offset_bottom = 86.0
 theme = ExtResource("1_sdbh8")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_kvgs0")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_2pibj")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_8t1qi")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_8fvvd")
 title = "Wait Node"
 slot/0/left_enabled = true
 slot/0/left_type = 0
@@ -48,16 +48,17 @@ slot/0/draw_stylebox = true
 script = ExtResource("5_w2kpx")
 node_color = Color(0.0117647, 0.517647, 0.67451, 1)
 node_icon = ExtResource("6_hj7a4")
+node_list_index = 7
 
-[node name="Container" type="HBoxContainer" parent="."]
+[node name="Container" type="HBoxContainer" parent="." unique_id=1702291560]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Container"]
+[node name="Label" type="Label" parent="Container" unique_id=1357544034]
 layout_mode = 2
 text = "Time"
 
-[node name="SpinBox" type="SpinBox" parent="Container"]
+[node name="SpinBox" type="SpinBox" parent="Container" unique_id=1594426017]
 layout_mode = 2
 step = 0.01
 allow_greater = true

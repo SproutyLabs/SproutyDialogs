@@ -5,7 +5,7 @@
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="4_l3xvy"]
 [ext_resource type="Script" uid="uid://d1s7kmoh1qgr0" path="res://addons/sprouty_dialogs/event_nodes/scripts/condition_node.gd" id="5_swe6e"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_avnbs"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0tisq"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
@@ -17,7 +17,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_que3n"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hgtp1"]
 content_margin_left = 18.0
 content_margin_top = 12.0
 content_margin_right = 18.0
@@ -30,12 +30,12 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="ConditionNode" type="GraphNode"]
+[node name="ConditionNode" type="GraphNode" unique_id=279791330]
 offset_right = 429.0
 offset_bottom = 195.0
 theme = ExtResource("1_8k3p6")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_avnbs")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_que3n")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_0tisq")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_hgtp1")
 resizable = true
 title = "Condition Node"
 slot/0/left_enabled = true
@@ -68,25 +68,26 @@ slot/2/draw_stylebox = true
 script = ExtResource("5_swe6e")
 node_color = Color(1.66051e-06, 0.543819, 0.103967, 1)
 node_icon = ExtResource("3_7frl5")
+node_list_index = 3
 
-[node name="Container" type="HFlowContainer" parent="."]
+[node name="Container" type="HFlowContainer" parent="." unique_id=852834977]
 layout_mode = 2
 
-[node name="FirstVar" type="HBoxContainer" parent="Container"]
+[node name="FirstVar" type="HBoxContainer" parent="Container" unique_id=123342452]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TypeField" type="PanelContainer" parent="Container/FirstVar"]
+[node name="TypeField" type="PanelContainer" parent="Container/FirstVar" unique_id=1563625216]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = ExtResource("4_l3xvy")
 
-[node name="ValueField" type="PanelContainer" parent="Container/FirstVar"]
+[node name="ValueField" type="PanelContainer" parent="Container/FirstVar" unique_id=1104308014]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_l3xvy")
 
-[node name="OperatorDropdown" type="OptionButton" parent="Container"]
+[node name="OperatorDropdown" type="OptionButton" parent="Container" unique_id=1622158335]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -100,32 +101,32 @@ popup/item_1/id = 1
 popup/item_2/text = "<"
 popup/item_2/id = 2
 popup/item_3/text = ">"
-popup/item_3/id = 3
+popup/item_3/id = 4
 popup/item_4/text = "<="
-popup/item_4/id = 4
+popup/item_4/id = 3
 popup/item_5/text = ">="
 popup/item_5/id = 5
 
-[node name="SecondVar" type="HBoxContainer" parent="Container"]
+[node name="SecondVar" type="HBoxContainer" parent="Container" unique_id=156325431]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TypeField" type="PanelContainer" parent="Container/SecondVar"]
+[node name="TypeField" type="PanelContainer" parent="Container/SecondVar" unique_id=1771520238]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = ExtResource("4_l3xvy")
 
-[node name="ValueField" type="PanelContainer" parent="Container/SecondVar"]
+[node name="ValueField" type="PanelContainer" parent="Container/SecondVar" unique_id=2021350787]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_l3xvy")
 
-[node name="True" type="Label" parent="."]
+[node name="True" type="Label" parent="." unique_id=1703958436]
 layout_mode = 2
 text = "True"
 horizontal_alignment = 2
 
-[node name="False" type="Label" parent="."]
+[node name="False" type="Label" parent="." unique_id=1893951328]
 layout_mode = 2
 text = "False"
 horizontal_alignment = 2
