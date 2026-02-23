@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://bbxvuya7njed5" path="res://addons/sprouty_dialogs/event_nodes/scripts/dialogue_node.gd" id="5_v7cqa"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/sprouty_dialogs/editor/components/expandable_text_box.tscn" id="6_2llfw"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s4f0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lv0q5"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -17,7 +17,7 @@ bg_color = Color(0.827451, 0.27451, 0.262745, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_358xh"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5s4f0"]
 content_margin_left = 5.0
 content_margin_top = 5.0
 content_margin_right = 5.0
@@ -35,8 +35,8 @@ offset_right = 250.0
 offset_bottom = 439.0
 size_flags_vertical = 3
 theme = ExtResource("1_05qy5")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_5s4f0")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_358xh")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_lv0q5")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_5s4f0")
 resizable = true
 title = "Dialogue Node"
 slot/0/left_enabled = true
@@ -87,6 +87,7 @@ slot/4/draw_stylebox = true
 script = ExtResource("5_v7cqa")
 node_color = Color(0.827451, 0.27451, 0.262745, 1)
 node_icon = ExtResource("4_hljjc")
+node_list_index = 1
 
 [node name="CharacterContainer" type="VBoxContainer" parent="." unique_id=1375918612]
 layout_mode = 2

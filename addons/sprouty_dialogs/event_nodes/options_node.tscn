@@ -25,7 +25,7 @@ border_width_right = 2
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
-[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
+[sub_resource type="DPITexture" id="DPITexture_vpchq"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
@@ -37,7 +37,7 @@ size_flags_vertical = 3
 theme = ExtResource("1_4odiy")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_qm86d")
 theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_6yiaj")
-position_offset = Vector2(0, 0.20000003)
+position_offset = Vector2(0, 0.23000005)
 resizable = true
 title = "Options Node"
 slot/0/left_enabled = true
@@ -61,10 +61,11 @@ slot/1/draw_stylebox = true
 script = ExtResource("5_jgvn8")
 node_color = Color(0.13186, 0.623383, 0.509555, 1)
 node_icon = ExtResource("3_d57bv")
+node_list_index = 2
 
 [node name="AddOptionButton" type="Button" parent="." unique_id=1720163507]
 layout_mode = 2
 text = "Add Option"
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_vpchq")
 
 [connection signal="pressed" from="AddOptionButton" to="." method="_on_add_option_button_pressed"]

@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dutvcwiqufcor" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/comment.svg" id="3_g6856"]
 [ext_resource type="Script" uid="uid://cybxpd2fvt5vq" path="res://addons/sprouty_dialogs/event_nodes/scripts/comment_node.gd" id="5_achcx"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_42b30"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_18nhy"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
@@ -16,7 +16,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cjfsv"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lvxk1"]
 content_margin_left = 18.0
 content_margin_top = 12.0
 content_margin_right = 18.0
@@ -29,13 +29,13 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="CommentNode" type="GraphNode"]
+[node name="CommentNode" type="GraphNode" unique_id=174925552]
 custom_minimum_size = Vector2(200, 0)
-offset_right = 9.0
-offset_bottom = 55.0
+offset_right = 200.0
+offset_bottom = 155.0
 theme = ExtResource("1_0q2mk")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_42b30")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_cjfsv")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_18nhy")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_lvxk1")
 resizable = true
 title = "Comment Node"
 slot/0/left_enabled = false
@@ -50,8 +50,9 @@ slot/0/draw_stylebox = true
 script = ExtResource("5_achcx")
 node_color = Color(0.154876, 0.154876, 0.154876, 1)
 node_icon = ExtResource("3_g6856")
+node_list_index = 8
 
-[node name="TextInput" type="TextEdit" parent="."]
+[node name="TextInput" type="TextEdit" parent="." unique_id=415333059]
 custom_minimum_size = Vector2(150, 100)
 layout_mode = 2
 size_flags_vertical = 3

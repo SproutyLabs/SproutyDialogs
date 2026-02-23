@@ -34,7 +34,7 @@ corner_detail = 5
 [node name="CallMethodNode" type="GraphNode" unique_id=386465807]
 custom_minimum_size = Vector2(200, 0)
 offset_right = 235.0
-offset_bottom = 208.0
+offset_bottom = 203.0
 theme = ExtResource("1_8pr20")
 theme_override_styles/titlebar = SubResource("StyleBoxFlat_34kpq")
 theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_8yx6b")
@@ -79,6 +79,7 @@ slot/3/draw_stylebox = true
 script = ExtResource("2_kwnl7")
 node_color = Color(0.6525743, 0.13914663, 0.99950343, 1)
 node_icon = ExtResource("3_xbrbu")
+node_list_index = 5
 
 [node name="GridContainer" type="GridContainer" parent="." unique_id=1517490971]
 layout_mode = 2

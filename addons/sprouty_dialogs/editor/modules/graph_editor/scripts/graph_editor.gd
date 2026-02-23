@@ -153,7 +153,10 @@ func _get_nodes_references(path: String) -> Dictionary:
 			var node_scene = load(path + "/" + node)
 			var instance = node_scene.instantiate()
 			if instance is SproutyDialogsBaseNode:
-				nodes_dict[node_name] = node_scene
+				nodes_dict[node_name] = {
+					"index": instance.node_list_index,
+					"scene": node_scene
+				}
 			instance.queue_free()
 	return nodes_dict
 
@@ -179,9 +182,9 @@ func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_
 		printerr("[Sprouty Dialogs] Cannot load '" + node_type + "' node. "
 			+ "Go to Settings > General, check that the custom nodes are enabled "
 			+ "and that the '" + node_type + "' scene exist in the 'custom event nodes' folder.")
-		new_node = _nodes_references["placeholder_node"].instantiate()
+		new_node = _nodes_references["placeholder_node"]["scene"].instantiate()
 	else:
-		new_node = _nodes_references[node_type].instantiate()
+		new_node = _nodes_references[node_type]["scene"].instantiate()
 	
 	new_node.title = node_type.capitalize() + " #" + str(node_index)
 	new_node.name = node_type + "_" + str(node_index)
@@ -943,11 +946,14 @@ func on_node_option_selected(id: int) -> void:
 ## Set nodes list on popup node menu
 func _set_add_node_menu() -> void:
 	_add_node_menu.clear()
+	var sorted_nodes = _nodes_references.keys() as Array
+	sorted_nodes.sort_custom(func(a, b):
+		return _nodes_references[a]["index"] < _nodes_references[b]["index"])
 	var index = 0
-	for node in _nodes_references:
+	for node in sorted_nodes:
 		if node == "placeholder_node":
 			continue # Skip the placeholder node
-		var node_aux = _nodes_references[node].instantiate()
+		var node_aux = _nodes_references[node]["scene"].instantiate()
 		_add_node_menu.add_icon_item(node_aux.node_icon, node_aux.name.capitalize(), index)
 		_add_node_menu.set_item_metadata(index, node)
 		node_aux.queue_free()

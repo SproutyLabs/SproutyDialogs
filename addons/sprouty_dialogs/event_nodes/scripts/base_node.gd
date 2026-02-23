@@ -20,9 +20,10 @@ signal modified(modified: bool)
 
 ## Node color to display on the node titlebar.
 @export_color_no_alpha var node_color: Color
-
 ## Icon to display on the node titlebar.
 @export var node_icon: Texture2D
+## Node list position index
+@export var node_list_index: int = 0
 
 ## Name of the start node in the dialog tree where the node belongs.
 ## Used to find the start node in the graph editor on load.
@@ -95,7 +96,7 @@ func _set_node_titlebar():
 	remove_button.texture_normal = get_theme_icon('Remove', 'EditorIcons')
 	remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	if get_parent() is EditorSproutyDialogsGraphEditor:
-		remove_button.pressed.connect(get_parent().delete_node.bind(self))
+		remove_button.pressed.connect(get_parent().delete_node.bind(self ))
 	node_titlebar.add_child(remove_button)
 
 

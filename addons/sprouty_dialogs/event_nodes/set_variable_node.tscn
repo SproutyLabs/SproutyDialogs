@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="5_oao84"]
 [ext_resource type="Texture2D" uid="uid://b4iocr6w7ajw2" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/set-variable.svg" id="6_sx7hg"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0am0n"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7i5mu"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
@@ -18,7 +18,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5130m"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_chfaq"]
 content_margin_left = 18.0
 content_margin_top = 12.0
 content_margin_right = 18.0
@@ -31,12 +31,12 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="SetVariableNode" type="GraphNode"]
+[node name="SetVariableNode" type="GraphNode" unique_id=2134358531]
 offset_right = 537.0
 offset_bottom = 95.0
 theme = ExtResource("1_bouee")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_0am0n")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_5130m")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_7i5mu")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_chfaq")
 resizable = true
 title = "Set Variable Node"
 slot/0/left_enabled = true
@@ -51,24 +51,25 @@ slot/0/draw_stylebox = true
 script = ExtResource("5_5o0bh")
 node_color = Color(0.396078, 0.572549, 0, 1)
 node_icon = ExtResource("6_sx7hg")
+node_list_index = 4
 
-[node name="Container" type="HFlowContainer" parent="."]
+[node name="Container" type="HFlowContainer" parent="." unique_id=1557399764]
 layout_mode = 2
 
-[node name="VarField" type="HBoxContainer" parent="Container"]
+[node name="VarField" type="HBoxContainer" parent="Container" unique_id=622897151]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TypeField" type="PanelContainer" parent="Container/VarField"]
+[node name="TypeField" type="PanelContainer" parent="Container/VarField" unique_id=1425559046]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = ExtResource("4_7k7se")
 
-[node name="NameInput" parent="Container/VarField" instance=ExtResource("5_oao84")]
+[node name="NameInput" parent="Container/VarField" unique_id=1323093229 instance=ExtResource("5_oao84")]
 layout_mode = 2
 placeholder_text = "Variable name..."
 
-[node name="OperatorDropdown" type="OptionButton" parent="Container"]
+[node name="OperatorDropdown" type="OptionButton" parent="Container" unique_id=98476796]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "The type of the value to set."
@@ -79,7 +80,7 @@ popup/item_0/id = 0
 popup/item_1/text = "+="
 popup/item_1/id = 1
 
-[node name="ValueField" type="PanelContainer" parent="Container"]
+[node name="ValueField" type="PanelContainer" parent="Container" unique_id=1789497864]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_7k7se")
