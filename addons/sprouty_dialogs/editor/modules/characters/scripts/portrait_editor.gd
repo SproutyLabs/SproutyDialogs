@@ -190,6 +190,11 @@ func _on_expand_transform_settings_toggled(toggled_on: bool) -> void:
 
 func _on_export_property_changed(name: String, value: Variant) -> void:
 	# Override the property value in the preview scene
+	if value is Dictionary:
+		value = SproutyDialogsVariableUtils.get_dictionary_from_data(value)
+	elif value is Array:
+		value = SproutyDialogsVariableUtils.get_array_from_data(value)
+	
 	_preview_container.get_child(0).set(name, value)
 
 	# Update the portrait preview scene

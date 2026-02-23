@@ -225,7 +225,6 @@ func _on_property_changed(value: Variant, type: Variant, field: Control, name: S
 	if type == TYPE_COLOR: # Save color value as a hexadecimal string
 		value = value.to_html()
 	
-	print("\nChanged property: " + name + " to value: " + str(value))
 	_set_property_on_dict(name, value, type)
 	property_changed.emit(name, value)
 	_properties_modified[name] = true
@@ -241,14 +240,14 @@ func _on_property_changed(value: Variant, type: Variant, field: Control, name: S
 	undo_redo.add_undo_method(SproutyDialogsVariableUtils,
 			"set_field_value", field, temp["type"], temp["value"])
 
-	undo_redo.add_do_method(self, "_set_property_on_dict", name, value, type)
-	undo_redo.add_undo_method(self, "_set_property_on_dict", name, temp["value"], temp["type"])
+	undo_redo.add_do_method(self , "_set_property_on_dict", name, value, type)
+	undo_redo.add_undo_method(self , "_set_property_on_dict", name, temp["value"], temp["type"])
 
-	undo_redo.add_do_method(self, "emit_signal", "property_changed", name, value)
-	undo_redo.add_undo_method(self, "emit_signal", "property_changed", name, temp["value"])
+	undo_redo.add_do_method(self , "emit_signal", "property_changed", name, value)
+	undo_redo.add_undo_method(self , "emit_signal", "property_changed", name, temp["value"])
 
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.add_do_method(self , "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# --------------------------------------------------------------------------
 
