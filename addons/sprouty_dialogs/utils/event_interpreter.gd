@@ -38,7 +38,8 @@ var node_processors: Dictionary = {
 	"options_node": _process_options,
 	"set_variable_node": _process_set_variable,
 	"signal_node": _process_signal,
-	"wait_node": _process_wait
+	"wait_node": _process_wait,
+	"call_method_node": _process_call_method
 }
 ## # If true, will print debug messages to the console
 var print_debug: bool = true
@@ -125,4 +126,19 @@ func _process_signal(node_data: Dictionary) -> void:
 func _process_wait(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing wait node...")
 	await get_tree().create_timer(node_data.wait_time).timeout
+	continue_to_node.emit(node_data.to_node[0])
+
+
+func _process_call_method(node_data: Dictionary) -> void:
+	if print_debug: print("[Sprouty Dialogs] Processing call method node...")
+
+	for node in get_tree().root.get_children():
+		if node.name == node_data.autoload:
+			if node.has_method(node_data.method):
+				var args = []
+				for param in node_data.parameters:
+					args.append(param.value)
+				node.callv(node_data.method, args)
+				break
+	
 	continue_to_node.emit(node_data.to_node[0])
