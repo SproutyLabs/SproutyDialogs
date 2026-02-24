@@ -549,11 +549,10 @@ static func get_comparison_operators() -> Dictionary:
 ## Assigns a value to a given property of an object.
 ## Ensures that collections values are passed properly
 static func set_property(object: Object, name: String, value: Variant, type: int) -> void:
-	# If the property is a collection, get the real value
 	if type == TYPE_DICTIONARY:
-		value = SproutyDialogsVariableUtils.get_dictionary_from_data(value)
+		value = get_dictionary_from_data(value)
 	elif type == TYPE_ARRAY:
-		value = SproutyDialogsVariableUtils.get_array_from_data(value)
+		value = get_array_from_data(value)
 	object.set(name, value)
 
 
@@ -584,7 +583,6 @@ static func get_dictionary_from_data(dict_data: Dictionary) -> Dictionary:
 		var item = dict_data[key]
 		var value = item["value"]
 		var type = item["type"]
-		print("key: ", value)
 		if type == TYPE_DICTIONARY:
 			if value == null:
 				value = {}
