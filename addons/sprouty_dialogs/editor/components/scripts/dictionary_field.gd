@@ -20,12 +20,20 @@ signal item_added(item: Dictionary)
 ## Emmited when an item is removed from the dictionary
 signal item_removed(item: Dictionary)
 
+## Emitted when press the expand button in a text box field
+signal open_text_editor(text_box: TextEdit)
+## Emitted when a text box field gains focus and should update the text editor
+signal update_text_editor(text_box: TextEdit)
+
 ## Collapse button to show/hide the dictionary items
 @onready var _collapse_button = $CollapseButton
 ## Button to add new items to the dictionary
 @onready var _add_button = $ItemsPanel/ItemsContainer/AddButton
 ## Items container
 @onready var _items_container = $ItemsPanel/ItemsContainer
+
+## Flag to remove the expandable text box from string fields
+var no_expandable_textbox: bool = false
 
 ## Dictionary item field scene
 var _item_field := preload("res://addons/sprouty_dialogs/editor/components/dictionary_field_item.tscn")
@@ -102,8 +110,11 @@ func clear_dictionary() -> void:
 func _new_dictionary_item() -> EditorSproutyDialogsDictionaryFieldItem:
 	var item = _item_field.instantiate()
 	var index := _items_container.get_child_count() - 1
+	item.no_expandable_textbox = no_expandable_textbox
 
 	item.key_modified.connect(_on_key_modified.bind(item))
+	item.open_text_editor.connect(open_text_editor.emit)
+	item.update_text_editor.connect(update_text_editor.emit)
 	item.item_removed.connect(_on_remove_button_pressed)
 	item.item_changed.connect(_on_item_changed)
 	item.modified.connect(modified.emit)

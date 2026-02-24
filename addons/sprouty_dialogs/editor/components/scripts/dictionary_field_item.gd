@@ -18,6 +18,11 @@ signal item_removed(index: int)
 ## Emitted when the item key is modified
 signal key_modified(key: String)
 
+## Emitted when press the expand button in a text box field
+signal open_text_editor(text_box: TextEdit)
+## Emitted when a text box field gains focus and should update the text editor
+signal update_text_editor(text_box: TextEdit)
+
 ## Item key field
 @onready var _key_field: LineEdit = $KeyInput
 ## Item remove button
@@ -38,6 +43,9 @@ var _item_value: Variant = ""
 ## Key modified tracker
 var _key_modified: bool = false
 
+## Flag to remove the expandable text box from string fields
+var no_expandable_textbox: bool = false
+
 
 func _ready():
 	_remove_button.icon = get_theme_icon("Remove", "EditorIcons")
@@ -49,8 +57,9 @@ func _ready():
 	_type_dropdown = $TypeField/TypeDropdown
 	_type_dropdown.item_selected.connect(_on_type_selected)
 
-	# Set the string field without expandable text box
-	_type_dropdown.set_item_metadata(_type_index, {"hint": PROPERTY_HINT_NONE})
+	if no_expandable_textbox: # Set the string field without expandable text box
+		_type_dropdown.set_item_metadata(_type_index, {"hint": PROPERTY_HINT_NONE})
+	
 	_type_dropdown.select(_type_index) # Default type (String)
 	_set_value_field(_type_index) # Default type (String)
 
@@ -105,7 +114,9 @@ func set_value(value: Variant, type: int, metadata: Dictionary) -> void:
 func set_type(type: int, metadata: Dictionary) -> void:
 	_type_index = _type_dropdown.get_item_index(type)
 	if metadata.has("hint"): # Handle File/Dir Path types
-		if metadata["hint"] == PROPERTY_HINT_FILE:
+		if metadata["hint"] == PROPERTY_HINT_EXPRESSION:
+			_type_index = _type_dropdown.item_count - 3
+		elif metadata["hint"] == PROPERTY_HINT_FILE:
 			_type_index = _type_dropdown.item_count - 2
 		elif metadata["hint"] == PROPERTY_HINT_DIR:
 			_type_index = _type_dropdown.item_count - 1
@@ -131,7 +142,8 @@ func _set_value_field(index: int, type: int = -1) -> void:
 	metadata = metadata if metadata else {}
 	if metadata.has("hint"):
 		if metadata["hint"] == PROPERTY_HINT_FILE or \
-				metadata["hint"] == PROPERTY_HINT_DIR:
+				metadata["hint"] == PROPERTY_HINT_DIR or \
+					metadata["hint"] == PROPERTY_HINT_EXPRESSION:
 			type = TYPE_STRING # File/Dir Path is treated as String type
 	
 	# Create new field based on type
@@ -144,8 +156,19 @@ func _set_value_field(index: int, type: int = -1) -> void:
 	_value_input = field_data.field
 	_item_type = type
 
+	# Connect the expand button to open the text editor
+	if type == TYPE_STRING and field_data.field is HBoxContainer:
+		var text_box = field_data.field.get_node("TextEdit")
+		field_data.field.get_node("ExpandButton").pressed.connect(
+				open_text_editor.emit.bind(text_box))
+		text_box.focus_entered.connect(update_text_editor.emit.bind(text_box))
+	
+	elif type == TYPE_DICTIONARY or type == TYPE_ARRAY:
+		field_data.field.open_text_editor.connect(open_text_editor.emit)
+		field_data.field.update_text_editor.connect(update_text_editor.emit)
 
-# Set the variable type and update the value field accordingly
+	
+## Set the variable type and update the value field accordingly
 func _on_type_selected(index: int) -> void:
 	_set_value_field(index)
 	_type_index = index

@@ -175,6 +175,10 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 			_on_property_changed.bind(property_data["name"]),
 			_on_property_modified.bind(property_data["name"])
 		)
+	if field_data.field is EditorSproutyDialogsArrayField:
+		field_data.field.no_expandable_textbox = true
+	elif field_data.field is EditorSproutyDialogsDictionaryField:
+		field_data.field.no_expandable_textbox = true
 	return field_data.field
 
 
