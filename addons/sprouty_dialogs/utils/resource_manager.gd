@@ -350,12 +350,7 @@ func _set_portrait_properties(character_name: String,
 	for prop in portrait_data.export_overrides: # Set export overrides
 		var value = portrait_data.export_overrides[prop]["value"]
 		var type = portrait_data.export_overrides[prop]["type"]
-		# If the property is a collection, get the real value
-		if type == TYPE_DICTIONARY:
-			value = SproutyDialogsVariableUtils.get_dictionary_from_data(value)
-		elif type == TYPE_ARRAY:
-			value = SproutyDialogsVariableUtils.get_array_from_data(value)
-		portrait_scene.set(prop, value)
+		SproutyDialogsVariableUtils.set_property(portrait_scene, prop, value, type)
 	
 	# Set transform settings
 	var main_transform = _characters_data[character_name].main_transform_settings

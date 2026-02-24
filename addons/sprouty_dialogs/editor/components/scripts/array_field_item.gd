@@ -27,7 +27,7 @@ var _type_dropdown: OptionButton
 var _value_input: Control
 
 ## Current type index in the dropdown
-var _type_index: int = TYPE_STRING - 1
+var _type_index: int = TYPE_STRING
 ## Current type of the item
 var _item_type: int = TYPE_STRING
 ## Current value in the input field

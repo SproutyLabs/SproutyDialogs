@@ -544,7 +544,18 @@ static func get_comparison_operators() -> Dictionary:
 
 #endregion
 
-#region === Get Collections Values =============================================
+#region === Handle Properties and Collections Values ===========================
+
+## Assigns a value to a given property of an object.
+## Ensures that collections values are passed properly
+static func set_property(object: Object, name: String, value: Variant, type: int) -> void:
+	# If the property is a collection, get the real value
+	if type == TYPE_DICTIONARY:
+		value = SproutyDialogsVariableUtils.get_dictionary_from_data(value)
+	elif type == TYPE_ARRAY:
+		value = SproutyDialogsVariableUtils.get_array_from_data(value)
+	object.set(name, value)
+
 
 ## Recursively get array from array data
 static func get_array_from_data(array_data: Array) -> Array:
@@ -553,9 +564,15 @@ static func get_array_from_data(array_data: Array) -> Array:
 		var value = item["value"]
 		var type = item["type"]
 		if type == TYPE_DICTIONARY:
-			value = get_dictionary_from_data(value)
+			if value == null:
+				value = {}
+			else:
+				value = get_dictionary_from_data(value)
 		elif type == TYPE_ARRAY:
-			value = get_array_from_data(value)
+			if value == null:
+				value = []
+			else:
+				value = get_array_from_data(value)
 		array.append(value)
 	return array
 
@@ -567,10 +584,17 @@ static func get_dictionary_from_data(dict_data: Dictionary) -> Dictionary:
 		var item = dict_data[key]
 		var value = item["value"]
 		var type = item["type"]
+		print("key: ", value)
 		if type == TYPE_DICTIONARY:
-			value = get_dictionary_from_data(value)
+			if value == null:
+				value = {}
+			else:
+				value = get_dictionary_from_data(value)
 		elif type == TYPE_ARRAY:
-			value = get_array_from_data(value)
+			if value == null:
+				value = []
+			else:
+				value = get_array_from_data(value)
 		dict[key] = value
 	return dict
 
