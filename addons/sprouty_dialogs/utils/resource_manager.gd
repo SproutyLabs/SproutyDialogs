@@ -94,8 +94,8 @@ func _enter_tree() -> void:
 	var default_box_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
 	if not SproutyDialogsFileUtils.check_valid_uid_path(default_box_uid):
 		printerr("[Sprouty Dialogs] No default dialog box scene found." \
-				+" Check that the default dialog box is set in Settings > General" \
-				+" plugin tab, and that the scene resource exists.")
+				+ " Check that the default dialog box is set in Settings > General" \
+				+ " plugin tab, and that the scene resource exists.")
 		return
 	var default_box_path = ResourceUID.get_id_path(default_box_uid)
 	_dialog_boxes[default_box_path] = load(default_box_path)
@@ -182,9 +182,9 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 			var char_uid = dialog_data.characters[start_id][char]
 			if not SproutyDialogsFileUtils.check_valid_uid_path(char_uid):
 				printerr("[Sprouty Dialogs] No character resource found for '" + char \
-						+"' character in dialog: " + dialog_data.resource_path + \
+						+ "' character in dialog: " + dialog_data.resource_path + \
 						". Check that the '" + char + ".tres' character file exists"
-						+" or reassign the character in the dialogue nodes.")
+						+ " or reassign the character in the dialogue nodes.")
 				return
 			else: # Load the character data resource
 				_characters_data[char] = load(ResourceUID.get_id_path(char_uid))
@@ -197,15 +197,15 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 		if not SproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
 			if dialog_box_uid != -1:
 				printerr("[Sprouty Dialogs] No dialog box found for '" + char \
-						+"' character in dialog: " + dialog_data.resource_path + \
+						+ "' character in dialog: " + dialog_data.resource_path + \
 						". Check that the file '" + _characters_data[char].dialog_box_path \
-						+"' exists. Using default dialog box instead.")
+						+ "' exists. Using default dialog box instead.")
 			# Use the default dialog box if no dialog box is set for the character
 			dialog_box_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
 			if not SproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
 				printerr("[Sprouty Dialogs] No default dialog box scene found." \
-						+" Check that the default dialog box is set in Settings > General" \
-						+" plugin tab, and that the scene resource exists.")
+						+ " Check that the default dialog box is set in Settings > General" \
+						+ " plugin tab, and that the scene resource exists.")
 				return
 		
 		# Load the dialog box if not already loaded
@@ -234,14 +234,14 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 			var portrait_data = _characters_data[character_name].get_portrait_from_path_name(portrait_name)
 			if not portrait_data:
 				printerr("[Sprouty Dialogs] No portrait data found for '" + portrait_name \
-						+"' in character '" + character_name + "'. Check that the portrait is" \
-						+" in the character resource.")
+						+ "' in character '" + character_name + "'. Check that the portrait is" \
+						+ " in the character resource.")
 				_portraits[character_name][portrait_name] = null
 				continue
 			# If the portrait UID is set, load the portrait scene
 			if not SproutyDialogsFileUtils.check_valid_uid_path(portrait_data.portrait_scene_uid):
 				printerr("[Sprouty Dialogs] No portrait scene found for '" + portrait_name \
-						+"' in character '" + character_name + "'. Check that the file '" \
+						+ "' in character '" + character_name + "'. Check that the file '" \
 						+ portrait_data.portrait_scene_path + "' exists.")
 				_portraits[character_name][portrait_name] = null
 				continue
@@ -274,8 +274,8 @@ func instantiate_dialog_box(character_name: String, dialog_box_parent: Node) -> 
 	
 	if not _dialog_boxes.has(dialog_box_path):
 		printerr("[Sprouty Dialogs] Cannot instantiate dialog box. No dialog box" \
-				+" scene is loaded for the character " + character_name \
-				+". Check if the character is in a dialog of the current scene.")
+				+ " scene is loaded for the character " + character_name \
+				+ ". Check if the character is in a dialog of the current scene.")
 		return null
 	var dialog_box = _dialog_boxes[dialog_box_path].instantiate()
 
@@ -297,17 +297,17 @@ func instantiate_portrait(character_name: String, portrait_name: String,
 	
 	if (not _portraits.has(character_name)) or (not _portraits[character_name].has(portrait_name)):
 		printerr("[Sprouty Dialogs] Cannot instantiate '" + portrait_name + "' portrait" \
-				+" from character '" + character_name + "'. Portrait scene is not loaded." \
-				+" The character or portrait are not in a dialog of the current scene.")
+				+ " from character '" + character_name + "'. Portrait scene is not loaded." \
+				+ " The character or portrait are not in a dialog of the current scene.")
 		return null
 	
 	if not _portraits[character_name][portrait_name]:
 		print(portrait_name)
 		printerr("[Sprouty Dialogs] Cannot instantiate '" + portrait_name + "' portrait" \
-				+" from character '" + character_name + "'. No scene is set for '" + portrait_name \
-				+"' portrait. Check that the file '" + _characters_data[character_name] \
+				+ " from character '" + character_name + "'. No scene is set for '" + portrait_name \
+				+ "' portrait. Check that the file '" + _characters_data[character_name] \
 				.get_portrait_from_path_name(portrait_name).portrait_scene_path \
-				+"' exists or reassign the portrait scene in the character resource.")
+				+ "' exists or reassign the portrait scene in the character resource.")
 		return null
 	
 	var portrait_scene = _portraits[character_name][portrait_name].instantiate()
@@ -338,24 +338,19 @@ func _set_portrait_properties(character_name: String,
 		portrait_name: String, portrait_scene: DialogPortrait) -> void:
 	if not _characters_data.has(character_name):
 		printerr("[Sprouty Dialogs] No character data found for '" + character_name + "'." \
-				+" Cannot set portrait properties.")
+				+ " Cannot set portrait properties.")
 		return
 	
 	var portrait_data = _characters_data[character_name].get_portrait_from_path_name(portrait_name)
 	if not portrait_data:
 		printerr("[Sprouty Dialogs] No portrait data found for '" + portrait_name \
-				+"' in character " + character_name + ". Cannot set portrait properties.")
+				+ "' in character " + character_name + ". Cannot set portrait properties.")
 		return
 	
 	for prop in portrait_data.export_overrides: # Set export overrides
 		var value = portrait_data.export_overrides[prop]["value"]
 		var type = portrait_data.export_overrides[prop]["type"]
-		# If the property is a collection, get the real value
-		if type == TYPE_DICTIONARY:
-			value = _get_dictionary_from_data(value)
-		elif type == TYPE_ARRAY:
-			value = _get_array_from_data(value)
-		portrait_scene.set(prop, value)
+		SproutyDialogsVariableUtils.set_property(portrait_scene, prop, value, type)
 	
 	# Set transform settings
 	var main_transform = _characters_data[character_name].main_transform_settings
@@ -385,35 +380,5 @@ func _new_portrait_parent(character_name: String, parent: Node) -> Control:
 		node.set_anchors_preset(Control.PRESET_CENTER)
 		return node
 	return parent.get_node(character_name)
-
-
-## Recursively get array from array data
-func _get_array_from_data(array_data: Array) -> Array:
-	var array = []
-	for item in array_data:
-		var value = item["value"]
-		var type = item["type"]
-		if type == TYPE_DICTIONARY:
-			value = _get_dictionary_from_data(value)
-		elif type == TYPE_ARRAY:
-			value = _get_array_from_data(value)
-		array.append(value)
-	return array
-
-
-## Recursively get dictionary from dictionary data
-func _get_dictionary_from_data(dict_data: Dictionary) -> Dictionary:
-	var dict = {}
-	for key in dict_data.keys():
-		var item = dict_data[key]
-		var value = item["value"]
-		var type = item["type"]
-		if type == TYPE_DICTIONARY:
-			value = _get_dictionary_from_data(value)
-		elif type == TYPE_ARRAY:
-			value = _get_array_from_data(value)
-		dict[key] = value
-	return dict
-
 
 #endregion

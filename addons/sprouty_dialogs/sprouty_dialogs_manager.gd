@@ -41,7 +41,7 @@ var Settings := SproutyDialogsSettingsManager
 func _ready():
 	# Make the manager available as a singleton
 	if not Engine.has_singleton("SproutyDialogs"):
-		Engine.register_singleton("SproutyDialogs", self)
+		Engine.register_singleton("SproutyDialogs", self )
 
 	# Set managers instances
 	Variables.name = "VariablesManager"

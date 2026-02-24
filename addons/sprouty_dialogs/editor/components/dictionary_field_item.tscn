@@ -1,34 +1,35 @@
-[gd_scene load_steps=4 format=3 uid="uid://dc0v3at1s0l52"]
+[gd_scene format=3 uid="uid://dc0v3at1s0l52"]
 
 [ext_resource type="Script" uid="uid://cvbutiif0ps6r" path="res://addons/sprouty_dialogs/editor/components/scripts/dictionary_field_item.gd" id="1_wyyno"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="2_7k83i"]
 
-[sub_resource type="DPITexture" id="DPITexture_7k83i"]
+[sub_resource type="DPITexture" id="DPITexture_vpchq"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
-[node name="DictionaryFieldItem" type="HBoxContainer"]
+[node name="DictionaryFieldItem" type="HBoxContainer" unique_id=991604891]
 script = ExtResource("1_wyyno")
 
-[node name="KeyInput" type="LineEdit" parent="."]
+[node name="KeyInput" type="LineEdit" parent="." unique_id=713922593]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Key..."
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=1421584453]
 layout_mode = 2
 text = ":"
 
-[node name="TypeField" type="PanelContainer" parent="."]
+[node name="TypeField" type="PanelContainer" parent="." unique_id=187138831]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = ExtResource("2_7k83i")
 
-[node name="ValueField" type="PanelContainer" parent="."]
+[node name="ValueField" type="PanelContainer" parent="." unique_id=525481589]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("2_7k83i")
 
-[node name="RemoveButton" type="Button" parent="."]
+[node name="RemoveButton" type="Button" parent="." unique_id=601347630]
 layout_mode = 2
-icon = SubResource("DPITexture_7k83i")
+theme_override_styles/normal = ExtResource("2_7k83i")
+icon = SubResource("DPITexture_vpchq")

@@ -11,7 +11,7 @@ extends VBoxContainer
 ## Emmited when a property is modified
 signal modified(modified: bool)
 ## Emmited when a property value is changed
-signal property_changed(name: String, value: Variant)
+signal property_changed(name: String, value: Variant, type: int)
 
 ## Exported properties section
 @onready var _properties_grid: Container = $ExportedPropertiesGrid
@@ -146,35 +146,6 @@ func _get_dictionary_data(dict: Dictionary) -> Dictionary:
 		}
 	return items
 
-
-## Recursively get array from array data
-func _get_array_from_data(array_data: Array) -> Array:
-	var array = []
-	for item in array_data:
-		var value = item["value"]
-		var type = item["type"]
-		if type == TYPE_DICTIONARY:
-			value = _get_dictionary_from_data(value)
-		elif type == TYPE_ARRAY:
-			value = _get_array_from_data(value)
-		array.append(value)
-	return array
-
-
-## Recursively get dictionary from dictionary data
-func _get_dictionary_from_data(dict_data: Dictionary) -> Dictionary:
-	var dict = {}
-	for key in dict_data.keys():
-		var item = dict_data[key]
-		var value = item["value"]
-		var type = item["type"]
-		if type == TYPE_DICTIONARY:
-			value = _get_dictionary_from_data(value)
-		elif type == TYPE_ARRAY:
-			value = _get_array_from_data(value)
-		dict[key] = value
-	return dict
-
 #endregion
 
 
@@ -184,13 +155,8 @@ func _override_exported_properties(scene: Node) -> void:
 	for prop in _export_overrides.keys():
 		if property_list.any(func(p): return p["name"] == prop):
 			var value = _export_overrides[prop]["value"]
-			# If the property is a collection, get the real value
-			if _export_overrides[prop]["type"] == TYPE_DICTIONARY:
-				value = _get_dictionary_from_data(value)
-			elif _export_overrides[prop]["type"] == TYPE_ARRAY:
-				value = _get_array_from_data(value)
-			
-			scene.set(prop, value)
+			var type = _export_overrides[prop]["type"]
+			SproutyDialogsVariableUtils.set_property(scene, prop, value, type)
 		else:
 			_export_overrides.erase(prop)
 
@@ -209,25 +175,28 @@ func _new_property_field(property_data: Dictionary, value: Variant) -> Control:
 			_on_property_changed.bind(property_data["name"]),
 			_on_property_modified.bind(property_data["name"])
 		)
+	if field_data.field is EditorSproutyDialogsArrayField:
+		field_data.field.no_expandable_textbox = true
+	elif field_data.field is EditorSproutyDialogsDictionaryField:
+		field_data.field.no_expandable_textbox = true
 	return field_data.field
 
 
 ## Set a property on the export overrides dictionary
-func _set_property_on_dict(name: String, value: Variant, type: Variant) -> void:
+func _set_property_on_dict(name: String, value: Variant, type: int) -> void:
 	_export_overrides[name]["value"] = value
 	_export_overrides[name]["type"] = type
 
 
 ## Update the exported properties when the value changes
-func _on_property_changed(value: Variant, type: Variant, field: Control, name: String) -> void:
+func _on_property_changed(value: Variant, type: int, field: Control, name: String) -> void:
 	var temp = _export_overrides[name].duplicate()
 	
 	if type == TYPE_COLOR: # Save color value as a hexadecimal string
 		value = value.to_html()
 	
-	print("\nChanged property: " + name + " to value: " + str(value))
 	_set_property_on_dict(name, value, type)
-	property_changed.emit(name, value)
+	property_changed.emit(name, value, type)
 	_properties_modified[name] = true
 
 	if not _properties_loaded:
@@ -241,14 +210,14 @@ func _on_property_changed(value: Variant, type: Variant, field: Control, name: S
 	undo_redo.add_undo_method(SproutyDialogsVariableUtils,
 			"set_field_value", field, temp["type"], temp["value"])
 
-	undo_redo.add_do_method(self, "_set_property_on_dict", name, value, type)
-	undo_redo.add_undo_method(self, "_set_property_on_dict", name, temp["value"], temp["type"])
+	undo_redo.add_do_method(self , "_set_property_on_dict", name, value, type)
+	undo_redo.add_undo_method(self , "_set_property_on_dict", name, temp["value"], temp["type"])
 
-	undo_redo.add_do_method(self, "emit_signal", "property_changed", name, value)
-	undo_redo.add_undo_method(self, "emit_signal", "property_changed", name, temp["value"])
+	undo_redo.add_do_method(self , "emit_signal", "property_changed", name, value)
+	undo_redo.add_undo_method(self , "emit_signal", "property_changed", name, temp["value"])
 
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.add_do_method(self , "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# --------------------------------------------------------------------------
 

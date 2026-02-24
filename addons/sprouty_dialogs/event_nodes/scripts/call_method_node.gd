@@ -7,6 +7,11 @@ extends SproutyDialogsBaseNode
 ## Node to call a method from an autoload between dialog nodes.
 # -----------------------------------------------------------------------------
 
+## Emitted when press the expand button in a text box field
+signal open_text_editor(text_box: TextEdit)
+## Emitted when a text box field gains focus and should update the text editor
+signal update_text_editor(text_box: TextEdit)
+
 ## Autoloads dropdown
 @onready var _autoloads_dropdown: OptionButton = %AutoloadsDropdown
 ## Method combo box
@@ -30,6 +35,8 @@ func _ready():
 	_autoloads_dropdown.item_selected.connect(_on_autoload_selected)
 	_method_combo_box.option_selected.connect(_on_method_selected)
 	_parameters_field.item_changed.connect(_on_parameter_changed)
+	_parameters_field.open_text_editor.connect(open_text_editor.emit)
+	_parameters_field.update_text_editor.connect(update_text_editor.emit)
 	_parameters_field.modified.connect(modified.emit.bind(true))
 	_parameters_field.resized.connect(func(): size.y=0.0)
 	_parameters_field.disable_field(true)

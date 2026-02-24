@@ -188,9 +188,9 @@ func _on_expand_transform_settings_toggled(toggled_on: bool) -> void:
 	%ExpandTransformSettingsButton.icon = _collapse_up_icon if toggled_on else _collapse_down_icon
 
 
-func _on_export_property_changed(name: String, value: Variant) -> void:
+func _on_export_property_changed(name: String, value: Variant, type: int) -> void:
 	# Override the property value in the preview scene
-	_preview_container.get_child(0).set(name, value)
+	SproutyDialogsVariableUtils.set_property(_preview_container.get_child(0), name, value, type)
 
 	# Update the portrait preview scene
 	if _preview_container.get_child(0).has_method("set_portrait"):

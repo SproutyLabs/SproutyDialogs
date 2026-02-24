@@ -58,7 +58,7 @@ static func get_variables_of_type(type: int = -1, metadata: Dictionary = {}, gro
 ## that can be selected. You can exclude types by passing their names
 ## in the 'excluded' array. Also, you can hide the label text by setting
 ## 'label' to false.
-static func get_types_dropdown(label: bool = true, excluded: Array[String] = []) -> OptionButton:
+static func get_types_dropdown(label: bool = true, excluded: Array[String]=[]) -> OptionButton:
 	var dropdown: OptionButton = OptionButton.new()
 	dropdown.name = "TypeDropdown"
 	dropdown.tooltip_text = "Select variable type"
@@ -290,7 +290,7 @@ static func new_field_by_type(
 					var options := []
 					for enum_option in property_data["hint_string"].split(","):
 						options.append(enum_option.split(':')[0].strip_edges())
-						field.add_item(options[-1])
+						field.add_item(options[ - 1])
 					if init_value != null:
 						field.select(options.find(init_value))
 					default_value = field.selected
@@ -353,11 +353,11 @@ static func new_field_by_type(
 				
 				component_field.get_line_edit().focus_exited.connect(on_modified_callable)
 				component_field.value_changed.connect(func(value):
-					var vector_value = default_value
+					var vector_value=default_value
 					for j in range(0, vector_n):
 						if field.get_child_count() > j:
-							var component = field.get_child(j).get_node("Field")
-							vector_value[j] = component.value
+							var component=field.get_child(j).get_node("Field")
+							vector_value[j]=component.value
 					on_value_changed.call(vector_value, type, field)
 				)
 		
@@ -375,7 +375,7 @@ static func new_field_by_type(
 			field.ready.connect(func():
 				if init_value != null:
 					field.set_dictionary(init_value)
-				default_value = field.get_dictionary()
+				default_value=field.get_dictionary()
 			)
 			field.dictionary_changed.connect(on_value_changed.bind(type, field))
 			field.modified.connect(on_modified_callable)
@@ -385,7 +385,7 @@ static func new_field_by_type(
 			field.ready.connect(func():
 				if init_value != null:
 					field.set_array(init_value)
-				default_value = field.get_array()
+				default_value=field.get_array()
 			)
 			field.array_changed.connect(on_value_changed.bind(type, field))
 			field.modified.connect(on_modified_callable)
@@ -541,5 +541,59 @@ static func get_comparison_operators() -> Dictionary:
 		"<=": OP_LESS_EQUAL,
 		">=": OP_GREATER_EQUAL
 	}
+
+#endregion
+
+#region === Handle Properties and Collections Values ===========================
+
+## Assigns a value to a given property of an object.
+## Ensures that collections values are passed properly
+static func set_property(object: Object, name: String, value: Variant, type: int) -> void:
+	if type == TYPE_DICTIONARY:
+		value = get_dictionary_from_data(value)
+	elif type == TYPE_ARRAY:
+		value = get_array_from_data(value)
+	object.set(name, value)
+
+
+## Recursively get array from array data
+static func get_array_from_data(array_data: Array) -> Array:
+	var array = []
+	for item in array_data:
+		var value = item["value"]
+		var type = item["type"]
+		if type == TYPE_DICTIONARY:
+			if value == null:
+				value = {}
+			else:
+				value = get_dictionary_from_data(value)
+		elif type == TYPE_ARRAY:
+			if value == null:
+				value = []
+			else:
+				value = get_array_from_data(value)
+		array.append(value)
+	return array
+
+
+## Recursively get dictionary from dictionary data
+static func get_dictionary_from_data(dict_data: Dictionary) -> Dictionary:
+	var dict = {}
+	for key in dict_data.keys():
+		var item = dict_data[key]
+		var value = item["value"]
+		var type = item["type"]
+		if type == TYPE_DICTIONARY:
+			if value == null:
+				value = {}
+			else:
+				value = get_dictionary_from_data(value)
+		elif type == TYPE_ARRAY:
+			if value == null:
+				value = []
+			else:
+				value = get_array_from_data(value)
+		dict[key] = value
+	return dict
 
 #endregion

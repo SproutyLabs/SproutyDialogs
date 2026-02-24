@@ -137,7 +137,12 @@ func _process_call_method(node_data: Dictionary) -> void:
 			if node.has_method(node_data.method):
 				var args = []
 				for param in node_data.parameters:
-					args.append(param.value)
+					var value = param.value
+					if param.type == TYPE_DICTIONARY:
+						value = SproutyDialogsVariableUtils.get_dictionary_from_data(param.value)
+					elif param.type == TYPE_ARRAY:
+						value = SproutyDialogsVariableUtils.get_array_from_data(param.value)
+					args.append(value)
 				node.callv(node_data.method, args)
 				break
 	
