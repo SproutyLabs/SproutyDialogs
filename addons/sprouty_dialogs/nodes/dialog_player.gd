@@ -168,8 +168,8 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 ## Set extra properties on editor
 func _get_property_list():
+	var props = [{}]
 	if Engine.is_editor_hint():
-		var props = []
 		props.append({
 			"name": &"_dialog_data",
 			"type": TYPE_OBJECT,
@@ -236,7 +236,7 @@ func _get_property_list():
 						"hint": PROPERTY_HINT_NODE_TYPE,
 						"hint_string": "Node",
 					})
-		return props
+	return props
 
 
 func _get(property: StringName):
@@ -249,6 +249,7 @@ func _get(property: StringName):
 	if property.ends_with("_dialog_box_parent"):
 		var char_name = property.get_slice("_dialog_", 0)
 		return _dialog_box_parents[char_name]
+	return null
 
 
 func _set(property: StringName, value: Variant) -> bool:
