@@ -168,7 +168,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 ## Set extra properties on editor
 func _get_property_list():
-	var props = [{}]
+	var props: Array[Dictionary] = [{}]
 	if Engine.is_editor_hint():
 		props.append({
 			"name": &"_dialog_data",
