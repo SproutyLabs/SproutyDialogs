@@ -1,10 +1,11 @@
 [gd_scene format=3 uid="uid://kw2vrwc8qd44"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_j2rs0"]
+[ext_resource type="PackedScene" uid="uid://bet0ba0xkipef" path="res://addons/sprouty_dialogs/editor/components/array_field.tscn" id="4_mo55h"]
 [ext_resource type="Script" uid="uid://cyxxjwme4x1gg" path="res://addons/sprouty_dialogs/event_nodes/scripts/signal_node.gd" id="5_vbbrw"]
 [ext_resource type="Texture2D" uid="uid://xthom8qls1aa" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/signal.svg" id="6_b1lau"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hndjr"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2pxhj"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
@@ -16,7 +17,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mo55h"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bkdou"]
 content_margin_left = 18.0
 content_margin_top = 12.0
 content_margin_right = 18.0
@@ -30,11 +31,11 @@ corner_radius_bottom_left = 3
 corner_detail = 5
 
 [node name="SignalNode" type="GraphNode" unique_id=1800147296]
-offset_right = 180.0
-offset_bottom = 114.0
+offset_right = 156.0
+offset_bottom = 178.0
 theme = ExtResource("1_j2rs0")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_hndjr")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_mo55h")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_2pxhj")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_bkdou")
 resizable = true
 title = "Signal Node"
 slot/0/left_enabled = true
@@ -55,6 +56,24 @@ slot/1/right_type = 0
 slot/1/right_color = Color(1, 1, 1, 1)
 slot/1/right_icon = null
 slot/1/draw_stylebox = true
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color(1, 1, 1, 1)
+slot/2/left_icon = null
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color(1, 1, 1, 1)
+slot/2/right_icon = null
+slot/2/draw_stylebox = true
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color(1, 1, 1, 1)
+slot/3/left_icon = null
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color(1, 1, 1, 1)
+slot/3/right_icon = null
+slot/3/draw_stylebox = true
 script = ExtResource("5_vbbrw")
 node_color = Color(0.52549, 0.282353, 1, 1)
 node_icon = ExtResource("6_b1lau")
@@ -62,8 +81,15 @@ node_list_index = 6
 
 [node name="Label" type="Label" parent="." unique_id=1205182436]
 layout_mode = 2
-text = "Argument"
+text = "Identifier"
 
-[node name="Input" type="LineEdit" parent="." unique_id=285390260]
+[node name="IdentifierInput" type="LineEdit" parent="." unique_id=285390260]
 layout_mode = 2
-placeholder_text = "Value..."
+placeholder_text = "Write a name..."
+
+[node name="Label2" type="Label" parent="." unique_id=1782545885]
+layout_mode = 2
+text = "Arguments"
+
+[node name="ArgsArray" parent="." unique_id=1875105205 instance=ExtResource("4_mo55h")]
+layout_mode = 2
