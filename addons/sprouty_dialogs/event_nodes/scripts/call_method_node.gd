@@ -52,7 +52,7 @@ func get_data() -> Dictionary:
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
 		"node_index": node_index,
-		"autoload": _autoloads_dropdown.get_item_text(_autoloads_dropdown.selected),
+		"autoload": _get_selected_autoload(),
 		"method": _method_combo_box.get_value(),
 		"parameters": _parameters_field.get_array(),
 		"to_node": get_output_connections(),
@@ -82,6 +82,14 @@ func set_data(dict: Dictionary) -> void:
 		_parameters_field.disable_field(false)
 
 #endregion
+
+
+## Returns the name of the selected autoload 
+func _get_selected_autoload() -> String:
+	var autoload = _autoloads_dropdown.get_item_text(_autoloads_dropdown.selected)
+	if autoload == "(No one)":
+		return ""
+	return autoload
 
 
 ## Setup autoloads options on the dropdown

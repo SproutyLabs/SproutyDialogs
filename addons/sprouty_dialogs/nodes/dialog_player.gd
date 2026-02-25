@@ -25,7 +25,7 @@ signal dialog_ended()
 ## Emitted when a dialog option is selected.
 signal option_selected(option_index: int, option_dialog: Dictionary)
 ## Emitted when a signal event is emitted.
-signal signal_event(argument: String)
+signal signal_event(signal_id: String, args: Array)
 
 ## Emitted when the dialog player stops.
 signal dialog_player_stop()
@@ -157,12 +157,12 @@ func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 	if not _dialog_data: # Check if the node is empty or invalid
 		warnings.push_back("A dialog data must be provided to play a dialogue. "
-			+"Please assign a '.tres' dialogue data file in the inspector.")
+			+ "Please assign a '.tres' dialogue data file in the inspector.")
 	elif not SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
 		warnings.push_back("The dialog data assigned is invalid, please check that the file exist.")
 	elif _start_id == "(Select a dialog)":
 		warnings.push_back("A start ID must be provided to play a dialogue. "
-			+"Please select a start ID in the inspector.")
+			+ "Please select a start ID in the inspector.")
 	return warnings
 
 
@@ -291,10 +291,10 @@ func _enter_tree() -> void:
 
 		# Connect signals to autoload manager
 		dialog_started.connect(func():
-			sprouty_dialogs_manager.dialog_players_running.append(self)
+			sprouty_dialogs_manager.dialog_players_running.append(self )
 			sprouty_dialogs_manager.dialog_started.emit()
 		)
-		dialog_player_stop.connect(sprouty_dialogs_manager.dialog_players_running.erase.bind(self))
+		dialog_player_stop.connect(sprouty_dialogs_manager.dialog_players_running.erase.bind(self ))
 		dialog_paused.connect(sprouty_dialogs_manager.dialog_paused.emit)
 		dialog_resumed.connect(sprouty_dialogs_manager.dialog_resumed.emit)
 		dialog_ended.connect(sprouty_dialogs_manager.dialog_ended.emit)
@@ -312,7 +312,7 @@ func _ready() -> void:
 		# In editor, check if the dialogue data resource exists
 		if _dialog_data_uid != -1 and not SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
 			printerr("[Sprouty Dialogs] Dialog Player '" + name
-				+"' cannot find the dialogue data resource '" \
+				+ "' cannot find the dialogue data resource '" \
 				+ _dialog_file_name + ".tres'. Check if it was deleted.")
 			_dialog_data = null
 			_dialog_data_uid = -1
@@ -525,9 +525,9 @@ func _process_node(node_name: String) -> void:
 			)
 	else:
 		printerr("[Sprouty Dialogs] Cannot process '" + node_name + "'. "
-		+"Go to Settings > General, check that the custom nodes are enabled, "
-		+"that the 'custom event interpreter' is setted and that it has the process "
-		+"method to run '" + node_type + "'.")
+		+ "Go to Settings > General, check that the custom nodes are enabled, "
+		+ "that the 'custom event interpreter' is setted and that it has the process "
+		+ "method to run '" + node_type + "'.")
 		_process_node(_dialog_data.graph_data[_start_id][node_name]["to_node"][0])
 
 
@@ -561,8 +561,8 @@ func _on_option_selected(option_index: int) -> void:
 
 
 ## Emit a signal event when the signal node is processed
-func _on_signal_processed(signal_argument: String, next_node: String) -> void:
-	signal_event.emit(signal_argument)
+func _on_signal_processed(signal_id: String, args: Array, next_node: String) -> void:
+	signal_event.emit(signal_id, args)
 	_next_node = next_node
 	_process_node(_next_node)
 
