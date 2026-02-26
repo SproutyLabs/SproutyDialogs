@@ -73,17 +73,20 @@ Also, you have a [class reference](https://SproutyLabs.github.io/SproutyDialogsD
 
 ## Roadmap
 
-These are some features that I want to implement in the future:
+These are some features that are planned to implement in the future:
 
-- [ ] Grouping nodes support
-- [ ] Typing sounds support
-- [ ] Adding more event nodes:
+- [x] Add more event nodes:
+  - [x] Call method node
+  - [ ] Character node
   - [ ] Randomize node
   - [ ] Play sound node
   - [ ] Switch case node
+- [ ] Grouping nodes support
+- [ ] Typing sounds support
+- [ ] A new class to handle the dialogue headlessly
 - [ ] Text effect tags (e.g. to change the typing speed in between dialogues)
 
-And I will probably add more as I need for my game ;)
+*And more to come!*
 
 ## Contribute
 
@@ -103,9 +106,11 @@ Also, you can ask anything in [Github discussions](https://github.com/SproutyLab
 
 ## Credits
 
-Made by [Kazy](https://github.com/Kazymila) 🌱
+Made by [Kazy](https://github.com/Kazymila) 🌱 
 
-Logo design and vector graphics by [Maty](https://es.fiverr.com/matias_donaire).
+With help of these [cool contributors](https://github.com/SproutyLabs/SproutyDialogs/graphs/contributors) 😎
+
+Logo design and vector graphics by [Maty](https://es.fiverr.com/matias_donaire) 🖋️
 
 Special thanks to [Vicho](https://github.com/Vicente-G)!
 
