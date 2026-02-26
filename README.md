@@ -108,7 +108,7 @@ Also, you can ask anything in [Github discussions](https://github.com/SproutyLab
 
 Made by [Kazy](https://github.com/Kazymila) 🌱 
 
-With help of these cool people 😎: [Vicho](https://github.com/Vicente-G), [Mimique-jpg](https://github.com/Mimique-jpg), [and more contributors](https://github.com/SproutyLabs/SproutyDialogs/graphs/contributors)!
+With help of these [cool contributors](https://github.com/SproutyLabs/SproutyDialogs/graphs/contributors) 😎
 
 Logo design and vector graphics by [Maty](https://es.fiverr.com/matias_donaire) 🖋️
 
