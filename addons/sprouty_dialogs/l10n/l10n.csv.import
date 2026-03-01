@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dddj815iqluar"
+
+[deps]
+
+files=["res://addons/sprouty_dialogs/l10n/l10n.en.translation", "res://addons/sprouty_dialogs/l10n/l10n.zh_Hans.translation"]
+
+source_file="res://addons/sprouty_dialogs/l10n/l10n.csv"
+dest_files=["res://addons/sprouty_dialogs/l10n/l10n.en.translation", "res://addons/sprouty_dialogs/l10n/l10n.zh_Hans.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

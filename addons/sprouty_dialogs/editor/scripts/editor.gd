@@ -51,6 +51,7 @@ var undo_redo: EditorUndoRedoManager
 
 func _ready():
 	set_tabs_icons()
+	set_translation_settings()
 	# Set undo redo manager
 	dialogue_panel.undo_redo = undo_redo
 	character_panel.undo_redo = undo_redo
@@ -163,6 +164,29 @@ func set_tabs_icons() -> void:
 ## Switch the active tab
 func switch_active_tab(tab: int):
 	tab_container.current_tab = tab
+
+
+func set_translation_settings() -> void:
+	var domain_name: String = "sprouty_dialogs"
+	var domain: TranslationDomain = TranslationServer.get_or_add_domain(domain_name)
+	var dir_path: String = "res://addons/sprouty_dialogs/l10n/"
+	var dir: DirAccess = DirAccess.open(dir_path)
+	if dir == null:
+		printerr("[Sprouty Dialogs] Failed to open translation directory.")
+		return
+	dir.list_dir_begin()
+	var file_name: String = dir.get_next()
+	while file_name != "":
+		if dir.current_is_dir() == false:
+			if file_name.ends_with(".translation"):
+				var full_path: String = dir_path.path_join(file_name)
+				var translation: Translation = load(full_path)
+				if translation and translation is Translation:
+					domain.add_translation(translation)
+				else:
+					printerr("[Sprouty Dialogs] Failed to load translation file: " + full_path)
+		file_name = dir.get_next()
+	set_translation_domain(domain_name)
 
 
 ## Handle the tab selection
