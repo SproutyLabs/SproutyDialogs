@@ -966,26 +966,12 @@ func _set_node_actions_menu(has_selection: bool = false, paste_enabled: bool = f
 	_node_actions_menu.add_icon_item(get_theme_icon("Add", "EditorIcons"), "Add Node", 0)
 	_node_actions_menu.add_separator()
 	if has_selection:
-		_node_actions_menu.add_icon_item(get_theme_icon("Remove", "EditorIcons"),
-			"Remove Nodes" if _selected_nodes.size() > 1 else "Remove Node", 1)
-		_node_actions_menu.add_icon_item(get_theme_icon("Duplicate", "EditorIcons"),
-			"Duplicate Nodes" if _selected_nodes.size() > 1 else "Duplicate Node", 2)
-		_node_actions_menu.add_icon_item(get_theme_icon("ActionCopy", "EditorIcons"),
-			"Copy Nodes" if _selected_nodes.size() > 1 else "Copy Node", 3)
-		_node_actions_menu.add_icon_item(get_theme_icon("ActionCut", "EditorIcons"),
-			"Cut Nodes" if _selected_nodes.size() > 1 else "Cut Node", 4)
+		_node_actions_menu.add_icon_item(get_theme_icon("Remove", "EditorIcons"), "Remove Node(s)")
+		_node_actions_menu.add_icon_item(get_theme_icon("Duplicate", "EditorIcons"), "Duplicate Node(s)")
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionCopy", "EditorIcons"), "Copy Node(s)")
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionCut", "EditorIcons"), "Cut Node(s)")
 	if paste_enabled:
-		_node_actions_menu.add_icon_item(get_theme_icon("ActionPaste", "EditorIcons"),
-			"Paste Nodes" if _nodes_copy.size() > 1 else "Paste Node", 5)
-
-
-## Rename the node actions menu items based on the number of selected nodes
-func _rename_node_actions(plural: bool) -> void:
-	_node_actions_menu.set_item_text(2, "Remove Nodes" if plural else "Remove Node")
-	_node_actions_menu.set_item_text(3, "Duplicate Nodes" if plural else "Duplicate Node")
-	_node_actions_menu.set_item_text(4, "Copy Nodes" if plural else "Copy Node")
-	_node_actions_menu.set_item_text(5, "Cut Nodes" if plural else "Cut Node")
-	_node_actions_menu.set_item_text(6, "Paste Nodes" if plural else "Paste Node")
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionPaste", "EditorIcons"), "Paste Node(s)")
 
 
 ## Show a pop-up menu at a given position
