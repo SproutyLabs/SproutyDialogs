@@ -272,6 +272,7 @@ and apply only the transform settings of this portrait.","忽略基础 Transform
 Portrait scale.,Editor -> Character Panel -> Editor Panel,Portrait scale.,头像缩放。
 Portrait position offset.,Editor -> Character Panel -> Editor Panel,Portrait position offset.,头像位置偏移。
 Portrait rotation in degrees.,Editor -> Character Panel -> Editor Panel,Portrait rotation in degrees.,头像旋转角度（度）。
+Add some variables!,Editor -> Variable Panel,Add some variables!,添加一些变量！
 Search variables...,Editor -> Variable Panel,Search variables...,搜索变量...
 Add a new variable,Editor -> Variable Panel,Add a new variable,添加新变量
 Add a new group,Editor -> Variable Panel,Add a new group,添加新变量组
@@ -284,6 +285,11 @@ Unsaved changes,Editor -> Variable Panel,Unsaved changes,有未保存的更改
 (No items in the group),Editor -> Variable Panel,(No items in the group),(空)
 Write text here...,Editor -> Variable Panel,Write text here...,在这里输入文本...
 Write a expression here...,Editor -> Variable Panel,Write a expression here...,在这里输入表达式...
+"Are you sure you want to remove this group? 
+All variables and groups inside will be removed.",Editor -> Variable Panel -> Confirmation Dialog,"Are you sure you want to remove this group? 
+All variables and groups inside will be removed.","确定要移除此组吗？
+组内的所有变量和子组都将被删除。"
+Confirm,Editor -> Variable Panel -> Confirmation Dialog,Confirm,确认
 Select a file...,Editor -> Settings Panel -> General Tab,Select a file...,选择文件...
 Select a directory...,Editor -> Settings Panel -> General Tab,Select a directory...,选择目录...
 Select a Directory,Editor -> Settings Panel -> File Dialog,Select a Directory,选择目录
