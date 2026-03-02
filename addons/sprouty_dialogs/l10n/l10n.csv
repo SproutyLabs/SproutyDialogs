@@ -102,11 +102,11 @@ Change the snapping distance.,Editor -> Dialogue Panel -> Graph Edit,Change the 
 Toggle the graph minimap.,Editor -> Dialogue Panel -> Graph Edit,Toggle the graph minimap.,开关小地图。
 Automatically arrange selected nodes.,Editor -> Dialogue Panel -> Graph Edit,Automatically arrange selected nodes.,自动排列所选节点。
 Add Node,Editor -> Dialogue Panel -> Graph Edit,Add Node,添加节点
-Paste Node,Editor -> Dialogue Panel -> Graph Edit,Paste Node,粘贴节点
-Remove Node,Editor -> Dialogue Panel -> Graph Edit,Remove Node,删除节点
-Duplicate Node,Editor -> Dialogue Panel -> Graph Edit,Duplicate Node,复制节点
-Copy Node,Editor -> Dialogue Panel -> Graph Edit,Copy Node,复制节点（到剪切板）
-Cut Node,Editor -> Dialogue Panel -> Graph Edit,Cut Node,剪切节点
+Paste Node(s),Editor -> Dialogue Panel -> Graph Edit,Paste Node,粘贴节点
+Remove Node(s),Editor -> Dialogue Panel -> Graph Edit,Remove Node,删除节点
+Duplicate Node(s),Editor -> Dialogue Panel -> Graph Edit,Duplicate Node,复制节点
+Copy Node(s),Editor -> Dialogue Panel -> Graph Edit,Copy Node,复制节点（到剪切板）
+Cut Node(s),Editor -> Dialogue Panel -> Graph Edit,Cut Node,剪切节点
 Makes the selected text use bold font.,Editor -> Dialogue Panel -> Text Edit,Makes the selected text use bold font.,使所选文本使用粗体。
 Makes the selected text use italic font.,Editor -> Dialogue Panel -> Text Edit,Makes the selected text use italic font.,使所选文本使用斜体。
 Makes the selected text underlined.,Editor -> Dialogue Panel -> Text Edit,Makes the selected text underlined.,使所选文本使用下划线。
