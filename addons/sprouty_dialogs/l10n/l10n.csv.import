@@ -15,5 +15,3 @@ dest_files=["res://addons/sprouty_dialogs/l10n/l10n.en.translation", "res://addo
 
 compress=1
 delimiter=0
-unescape_keys=false
-unescape_translations=true

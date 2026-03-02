@@ -117,6 +117,7 @@ layout_mode = 2
 [node name="CharacterButton" type="Button" parent="CharacterContainer/Content/CharacterFieldContainer" unique_id=1724001864]
 unique_name_in_owner = true
 layout_mode = 2
+auto_translate_mode = 2
 size_flags_horizontal = 3
 disabled = true
 text = "(No one)"
@@ -132,6 +133,7 @@ text = "Portrait"
 [node name="PortraitSelect" type="OptionButton" parent="CharacterContainer/Content/PortraitContainer" unique_id=480226487]
 unique_name_in_owner = true
 layout_mode = 2
+auto_translate_mode = 2
 selected = 0
 fit_to_longest_item = false
 item_count = 1

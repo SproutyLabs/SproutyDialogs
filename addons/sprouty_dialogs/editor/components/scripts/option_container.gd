@@ -179,7 +179,7 @@ func _on_default_focus_exited() -> void:
 
 ## Update the option position index
 func update_option_index(index: int) -> void:
-	_option_label.text = "Option #" + str(index + 1)
+	_option_label.text = tr("Option") + " #" + str(index + 1)
 	name = name.split('_')[0] + "_" + str(index)
 	option_index = index
 	_show_remove_button()

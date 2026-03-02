@@ -29,6 +29,7 @@ stretch_mode = 3
 
 [node name="PortraitName" type="Label" parent="Title" unique_id=1388123118]
 layout_mode = 2
+auto_translate_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "New Portrait"
 

@@ -92,6 +92,7 @@ text = "Autoload"
 [node name="AutoloadsDropdown" type="OptionButton" parent="GridContainer" unique_id=998070977]
 unique_name_in_owner = true
 layout_mode = 2
+auto_translate_mode = 2
 size_flags_horizontal = 3
 selected = 0
 fit_to_longest_item = false
@@ -110,6 +111,7 @@ text = "Method"
 [node name="MethodComboBox" parent="GridContainer" unique_id=622840650 instance=ExtResource("4_34kpq")]
 unique_name_in_owner = true
 layout_mode = 2
+auto_translate_mode = 2
 placeholder_text = "Method name..."
 editable = false
 _placeholder_text = "Method name..."

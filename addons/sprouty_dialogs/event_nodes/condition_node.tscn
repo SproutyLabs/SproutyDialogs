@@ -79,11 +79,13 @@ size_flags_horizontal = 3
 
 [node name="TypeField" type="PanelContainer" parent="Container/FirstVar" unique_id=1563625216]
 layout_mode = 2
+auto_translate_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = ExtResource("4_l3xvy")
 
 [node name="ValueField" type="PanelContainer" parent="Container/FirstVar" unique_id=1104308014]
 layout_mode = 2
+auto_translate_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_l3xvy")
 
@@ -113,11 +115,13 @@ size_flags_horizontal = 3
 
 [node name="TypeField" type="PanelContainer" parent="Container/SecondVar" unique_id=1771520238]
 layout_mode = 2
+auto_translate_mode = 2
 size_flags_horizontal = 4
 theme_override_styles/panel = ExtResource("4_l3xvy")
 
 [node name="ValueField" type="PanelContainer" parent="Container/SecondVar" unique_id=2021350787]
 layout_mode = 2
+auto_translate_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("4_l3xvy")
 

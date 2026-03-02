@@ -55,6 +55,7 @@ node_list_index = 4
 
 [node name="Container" type="HFlowContainer" parent="." unique_id=1557399764]
 layout_mode = 2
+auto_translate_mode = 2
 
 [node name="VarField" type="HBoxContainer" parent="Container" unique_id=622897151]
 layout_mode = 2
