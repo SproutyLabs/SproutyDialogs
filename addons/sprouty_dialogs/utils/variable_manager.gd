@@ -86,19 +86,22 @@ func get_variable_data(name: String) -> Dictionary:
 		var autoloads = _get_autoloads()
 		if autoloads.has(from):
 			var variable_name = name.get_slice(".", 1)
-			var prop = autoloads[from].script.get_script_property_list().find(
-				func(p): return p["name"] == variable_name
-			)
-			return {
-			"index": 0,
-			"name": variable_name,
-			"type": prop["type"],
-			"value": prop["value"],
-			"metadata": {
-				"hint": prop["hint"],
-				"hint_string": prop["hint_string"]
-			}
-		}
+			var prop = null
+			for p in autoloads[from].script.get_script_property_list():
+				if p["name"] == variable_name:
+					prop = p
+					break
+			if prop:
+				return {
+					"index": 0,
+					"name": variable_name,
+					"type": prop["type"],
+					"value": autoloads[from].get(variable_name),
+					"metadata": {
+						"hint": prop["hint"],
+						"hint_string": prop["hint_string"]
+					}
+				}
 	return {}
 
 
@@ -185,7 +188,7 @@ func get_variables_in_group(group_name: String) -> Array:
 			return []
 	# Fallback, no group found
 	printerr("[Sprouty Dialogs] Cannot get variables from group '" + group_name \
-		+"'. Group not found, please check the variable editor.")
+		+ "'. Group not found, please check the variable editor.")
 	return []
 
 
@@ -390,7 +393,7 @@ func get_comparison_result(first_var: Dictionary, second_var: Dictionary,
 		if first_var.type != second_var.type: # If types do not match, cannot compare
 			printerr("[Sprouty Dialogs] Cannot compare variables of type '" +
 				type_string(first_var.type) + "' and '" + type_string(second_var.type) + "'." \
-				+" Values '" + str(first_var.value) + "' and '" + str(second_var.value) + "' are not comparable.")
+				+ " Values '" + str(first_var.value) + "' and '" + str(second_var.value) + "' are not comparable.")
 			return null
 
 	match operator:
