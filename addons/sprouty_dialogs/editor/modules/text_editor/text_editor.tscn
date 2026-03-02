@@ -181,7 +181,7 @@ flat = true
 
 [node name="AddURL" type="Button" parent="Container/Toolbar" unique_id=1463144813]
 layout_mode = 2
-tooltip_text = "Insert a hiperlink in the selected text."
+tooltip_text = "Insert a hyperlink in the selected text."
 icon = ExtResource("12_cel0j")
 flat = true
 

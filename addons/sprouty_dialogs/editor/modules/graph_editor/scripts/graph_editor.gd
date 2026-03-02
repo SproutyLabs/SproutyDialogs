@@ -186,7 +186,7 @@ func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_
 	else:
 		new_node = _nodes_references[node_type]["scene"].instantiate()
 	
-	new_node.title = node_type.capitalize() + " #" + str(node_index)
+	new_node.title = tr(node_type.capitalize()) + " #" + str(node_index)
 	new_node.name = node_type + "_" + str(node_index)
 	new_node.position_offset = node_offset
 	new_node.node_index = node_index

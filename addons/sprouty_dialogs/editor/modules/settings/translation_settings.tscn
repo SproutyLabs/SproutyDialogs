@@ -211,6 +211,7 @@ flat = true
 
 [node name="OptionButton" type="OptionButton" parent="LocalesSettings/ScrollContainer/Container/DefaultLocale" unique_id=920138625]
 layout_mode = 2
+auto_translate_mode = 2
 size_flags_horizontal = 3
 selected = 0
 item_count = 3
@@ -238,6 +239,7 @@ flat = true
 
 [node name="OptionButton" type="OptionButton" parent="LocalesSettings/ScrollContainer/Container/TestingLocale" unique_id=1663728241]
 layout_mode = 2
+auto_translate_mode = 2
 size_flags_horizontal = 3
 selected = 1
 item_count = 4

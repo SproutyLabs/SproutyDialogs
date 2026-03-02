@@ -1,0 +1,459 @@
+keys,_notes,en,zh_Hans
+Dialogues,Editor -> Tab Bar,Dialogues,对话
+Characters,Editor -> Tab Bar,Characters,角色
+Variables,Editor -> Tab Bar,Variables,变量
+Settings,Editor -> Tab Bar,Settings,设置
+Search files...,Editor -> Side Bar,Search files...,搜索文件...
+New dialogue,Editor -> Side Bar,New dialogue,新建对话
+New character,Editor -> Side Bar,New character,新建角色
+Quick Load,Editor -> Side Bar,Quick Load,快速加载
+Save current file,Editor -> Side Bar,Save current file,保存当前文件
+Save,Editor -> Side Bar,Save,保存
+Save As...,Editor -> Side Bar,Save As...,另存为...
+Save a File,Editor -> Side Bar,Save a File,保存文件
+Close,Editor -> Side Bar,Close,关闭
+Close All,Editor -> Side Bar,Close All,全部关闭
+Emoji & Symbols,Editor -> Side Bar,Emoji & Symbols,表情和符号
+Cut,Editor -> Side Bar,Cut,剪切
+Copy,Editor -> Side Bar,Copy,复制
+Paste,Editor -> Side Bar,Paste,粘贴
+Select All,Editor -> Side Bar,Select All,全选
+Clear,Editor -> Side Bar,Clear,清除
+Undo,Editor -> Side Bar,Undo,撤销
+Redo,Editor -> Side Bar,Redo,重做
+Text Writing Direction,Editor -> Side Bar,Text Writing Direction,文本书写方向
+Same as Layout Direction,Editor -> Side Bar,Same as Layout Direction,与布局方向相同
+Auto-Detect Direction,Editor -> Side Bar,Auto-Detect Direction,自动检测方向
+Left-to-Right,Editor -> Side Bar,Left-to-Right,从左到右
+Right-to-Left,Editor -> Side Bar,Right-to-Left,从右到左
+Display Control Characters,Editor -> Side Bar,Display Control Characters,显示控制字符
+Insert Control Character,Editor -> Side Bar,Insert Control Character,插入控制字符
+"[center][wave]Create or open a [color=orange]dialogue[/color] to start!
+[center]\( ^-^)/
+
+",Editor -> Dialogue Panel -> Start Panel,"[center][wave]Create or open a [color=orange]dialogue[/color] to start!
+[center]\( ^-^)/
+
+","[center][wave]创建或打开一个[color=orange]对话[/color]来开始！
+[center]\( ^-^)/
+
+"
+New Dialogue,Editor -> Dialogue Panel -> Start Panel,New Dialogue,新建对话
+Open Dialogue,Editor -> Dialogue Panel -> Start Panel,Open Dialogue,打开对话
+Create File,Editor -> Dialogue Panel -> File Dialog,Create File,创建文件
+Cancel,Editor -> Dialogue Panel -> File Dialog,Cancel,取消
+File:,Editor -> Dialogue Panel -> File Dialog,File:,文件：
+Favorites:,Editor -> Dialogue Panel -> File Dialog,Favorites:,收藏：
+Path:,Editor -> Dialogue Panel -> File Dialog,Path:,路径：
+Directories & Files:,Editor -> Dialogue Panel -> File Dialog,Directories & Files:,目录和文件：
+Recent:,Editor -> Dialogue Panel -> File Dialog,Recent:,最近使用：
+Filter:,Editor -> Dialogue Panel -> File Dialog,Filter:,过滤：
+Toggle the visibility of hidden files.,Editor -> Dialogue Panel -> File Dialog,Toggle the visibility of hidden files.,切换隐藏文件的可见性。
+View items as a grid of thumbnails.,Editor -> Dialogue Panel -> File Dialog,View items as a grid of thumbnails.,以栅格缩略图的形式查看项目。
+View items as a list.,Editor -> Dialogue Panel -> File Dialog,View items as a list.,以列表的形式查看项目。
+Toggle the visibility of the filter for file names.,Editor -> Dialogue Panel -> File Dialog,Toggle the visibility of the filter for file names.,显示/隐藏文件名过滤器。
+Sort files,Editor -> Dialogue Panel -> File Dialog,Sort files,排序文件
+Sort by Name (Ascending),Editor -> Dialogue Panel -> File Dialog,Sort by Name (Ascending),按名称排序（升序）
+Sort by Name (Descending),Editor -> Dialogue Panel -> File Dialog,Sort by Name (Descending),按名称排序（降序）
+Sort by Type (Ascending),Editor -> Dialogue Panel -> File Dialog,Sort by Type (Ascending),按类型排序（升序）
+Sort by Type (Descending),Editor -> Dialogue Panel -> File Dialog,Sort by Type (Descending),按类型排序（降序）
+Sort by Modified Time (Newest First),Editor -> Dialogue Panel -> File Dialog,Sort by Modified Time (Newest First),按修改时间排序（最新优先）
+Sort by Modified Time (Oldest First),Editor -> Dialogue Panel -> File Dialog,Sort by Modified Time (Oldest First),按修改时间排序（最早优先）
+Refresh files.,Editor -> Dialogue Panel -> File Dialog,Refresh files.,刷新文件。
+(Un)favorite current folder.,Editor -> Dialogue Panel -> File Dialog,(Un)favorite current folder.,收藏/取消收藏当前文件夹。
+Create a new folder.,Editor -> Dialogue Panel -> File Dialog,Create a new folder.,新建文件夹。
+Name:,Editor -> Dialogue Panel -> File Dialog,Name:,名称：
+OK,Editor -> Dialogue Panel -> File Dialog,OK,确定
+Create Folder,Editor -> Dialogue Panel -> File Dialog,Create Folder,新建文件夹
+Go to parent folder.,Editor -> Dialogue Panel -> File Dialog,Go to parent folder.,返回上级文件夹。
+Go to previous folder.,Editor -> Dialogue Panel -> File Dialog,Go to previous folder.,返回上一个文件夹。
+Go to next folder.,Editor -> Dialogue Panel -> File Dialog,Go to next folder.,进入下一个文件夹。
+Open a File,Editor -> Dialogue Panel -> File Dialog,Open a File,打开文件
+Open,Editor -> Dialogue Panel -> File Dialog,Open,打开
+New Folder...,Editor -> Dialogue Panel -> File Dialog,New Folder...,新建文件夹...
+Refresh,Editor -> Dialogue Panel -> File Dialog,Refresh,刷新
+Open in File Manager,Editor -> Dialogue Panel -> File Dialog,Open in File Manager,在文件管理器中打开
+Add event node,Editor -> Dialogue Panel -> Toolbar,Add event node,添加事件节点
+Start Node,Editor -> Dialogue Panel -> Toolbar,Start Node,开始节点
+Dialogue Node,Editor -> Dialogue Panel -> Toolbar,Dialogue Node,对话节点
+Options Node,Editor -> Dialogue Panel -> Toolbar,Options Node,选项节点
+Condition Node,Editor -> Dialogue Panel -> Toolbar,Condition Node,条件节点
+Set Variable Node,Editor -> Dialogue Panel -> Toolbar,Set Variable Node,设置变量节点
+Call Method Node,Editor -> Dialogue Panel -> Toolbar,Call Method Node,调用方法节点
+Signal Node,Editor -> Dialogue Panel -> Toolbar,Signal Node,信号节点
+Wait Node,Editor -> Dialogue Panel -> Toolbar,Wait Node,等待节点
+Comment Node,Editor -> Dialogue Panel -> Toolbar,Comment Node,注释节点
+Remove selected node(s),Editor -> Dialogue Panel -> Toolbar,Remove selected node(s),删除选中的节点
+Duplicate selected node(s),Editor -> Dialogue Panel -> Toolbar,Duplicate selected node(s),复制选中的节点
+Copy selected node(s),Editor -> Dialogue Panel -> Toolbar,Copy selected node(s),复制选中的节点（到剪切板）
+Cut selected node(s),Editor -> Dialogue Panel -> Toolbar,Cut selected node(s),剪切选中的节点
+Paste node(s),Editor -> Dialogue Panel -> Toolbar,Paste node(s),粘贴节点
+Run Dialog,Editor -> Dialogue Panel -> Toolbar,Run Dialog,运行对话
+Run a preview of the dialog,Editor -> Dialogue Panel -> Toolbar,Run a preview of the dialog,运行对话预览
+Collapse toolbar,Editor -> Dialogue Panel -> Toolbar,Collapse toolbar,折叠工具栏
+Expand toolbar,Editor -> Dialogue Panel -> Toolbar,Expand toolbar,展开工具栏
+Open menu,Editor -> Dialogue Panel -> Toolbar,Open menu,打开菜单
+Zoom Out,Editor -> Dialogue Panel -> Graph Edit,Zoom Out,缩小
+Zoom Reset,Editor -> Dialogue Panel -> Graph Edit,Zoom Reset,重置缩放
+Zoom In,Editor -> Dialogue Panel -> Graph Edit,Zoom In,放大
+Toggle the visual grid.,Editor -> Dialogue Panel -> Graph Edit,Toggle the visual grid.,开关可视网格。
+Toggle snapping to the grid.,Editor -> Dialogue Panel -> Graph Edit,Toggle snapping to the grid.,开关网格吸附。
+Change the snapping distance.,Editor -> Dialogue Panel -> Graph Edit,Change the snapping distance.,修改吸附距离。
+Toggle the graph minimap.,Editor -> Dialogue Panel -> Graph Edit,Toggle the graph minimap.,开关小地图。
+Automatically arrange selected nodes.,Editor -> Dialogue Panel -> Graph Edit,Automatically arrange selected nodes.,自动排列所选节点。
+Add Node,Editor -> Dialogue Panel -> Graph Edit,Add Node,添加节点
+Paste Node,Editor -> Dialogue Panel -> Graph Edit,Paste Node,粘贴节点
+Remove Node,Editor -> Dialogue Panel -> Graph Edit,Remove Node,删除节点
+Duplicate Node,Editor -> Dialogue Panel -> Graph Edit,Duplicate Node,复制节点
+Copy Node,Editor -> Dialogue Panel -> Graph Edit,Copy Node,复制节点（到剪切板）
+Cut Node,Editor -> Dialogue Panel -> Graph Edit,Cut Node,剪切节点
+Makes the selected text use bold font.,Editor -> Dialogue Panel -> Text Edit,Makes the selected text use bold font.,使所选文本使用粗体。
+Makes the selected text use italic font.,Editor -> Dialogue Panel -> Text Edit,Makes the selected text use italic font.,使所选文本使用斜体。
+Makes the selected text underlined.,Editor -> Dialogue Panel -> Text Edit,Makes the selected text underlined.,使所选文本使用下划线。
+Makes the selected text strikethrough.,Editor -> Dialogue Panel -> Text Edit,Makes the selected text strikethrough.,使所选文本使用删除线。
+Change the font of the selected text.,Editor -> Dialogue Panel -> Text Edit,Change the font of the selected text.,更改所选文本的字体。
+Add outline to the selected text.,Editor -> Dialogue Panel -> Text Edit,Add outline to the selected text.,为所选文本添加轮廓。
+Change the color of the selected text.,Editor -> Dialogue Panel -> Text Edit,Change the color of the selected text.,更改所选文本的颜色。
+Change the background color of the selected text.,Editor -> Dialogue Panel -> Text Edit,Change the background color of the selected text.,更改所选文本的背景颜色。
+Horizontally align the selected text to left.,Editor -> Dialogue Panel -> Text Edit,Horizontally align the selected text to left.,将所选文本水平对齐到左边。
+Horizontally align the selected text to center.,Editor -> Dialogue Panel -> Text Edit,Horizontally align the selected text to center.,将所选文本水平对齐到中间。
+Horizontally align the selected text to right.,Editor -> Dialogue Panel -> Text Edit,Horizontally align the selected text to right.,将所选文本水平对齐到右边。
+Justify the selected text.,Editor -> Dialogue Panel -> Text Edit,Justify the selected text.,将所选文本两端对齐。
+Insert a variable in text.,Editor -> Dialogue Panel -> Text Edit,Insert a variable in text.,在文本中插入变量。
+Insert an image in text.,Editor -> Dialogue Panel -> Text Edit,Insert an image in text.,在文本中插入图片。
+Insert a hyperlink in the selected text.,Editor -> Dialogue Panel -> Text Edit,Insert a hyperlink in the selected text.,在所选文本中插入超链接。
+Add an effect in the selected text.,Editor -> Dialogue Panel -> Text Edit,Add an effect in the selected text.,在所选文本中添加效果。
+Write your dialogue here...,Editor -> Dialogue Panel -> Text Edit,Write your dialogue here...,在这里编写你的对话...
+Text Preview,Editor -> Dialogue Panel -> Text Edit,Text Preview,文本预览
+Font Style,Editor -> Dialogue Panel -> Text Edit,Font Style,字体样式
+Advanced Options,Editor -> Dialogue Panel -> Text Edit,Advanced Options,高级选项
+Spacing Options,Editor -> Dialogue Panel -> Text Edit,Spacing Options,间距选项
+Style Options,Editor -> Dialogue Panel -> Text Edit,Style Options,样式选项
+Custom font size.,Editor -> Dialogue Panel -> Text Edit,Custom font size.,自定义字体大小。
+Font resource path.,Editor -> Dialogue Panel -> Text Edit,Font resource path.,字体资源路径。
+Font advanced options.,Editor -> Dialogue Panel -> Text Edit,Font advanced options.,字体高级选项
+Font spacing options.,Editor -> Dialogue Panel -> Text Edit,Font spacing options.,字体间距选项
+Extra spacing for each glyph.,Editor -> Dialogue Panel -> Text Edit,Extra spacing for each glyph.,每个字形的额外间距。
+Extra spacing for the space character.,Editor -> Dialogue Panel -> Text Edit,Extra spacing for the space character.,空格的额外间距。
+Extra spacing at the top of the line.,Editor -> Dialogue Panel -> Text Edit,Exrra spacing at the top of the line.,行顶部的额外间距。
+Extra spacing at the bottom of the line.,Editor -> Dialogue Panel -> Text Edit,Extra spacing at the bottom of the line.,行底部的额外间距。
+Custom bold and italic font style.,Editor -> Dialogue Panel -> Text Edit,Custom bold and italic font style.,自定义粗体和斜体字体样式。
+"Font embolden strength, if it is not equal to zero, emboldens the font outlines. Negative values reduce the outline thickness.",Editor -> Dialogue Panel -> Text Edit,"Font embolden strength, if it is not equal to zero, emboldens the font outlines. Negative values reduce the outline thickness.",字体加粗强度，若不为零，则对字体轮廓进行加粗。负值可减细轮廓。
+"Font slant strength, positive values slant glyphs to the right. Negative values to the left.",Editor -> Dialogue Panel -> Text Edit,"Font slant strength, positive values slant glyphs to the right. Negative values to the left.",字体倾斜强度，正值使字形向右倾斜，负值向左倾斜。
+Text Outline,Editor -> Dialogue Panel -> Text Edit,Text Outline,文本轮廓
+Custom outline size.,Editor -> Dialogue Panel -> Text Edit,Custom outline size.,自定义轮廓大小。
+Custom outline color.,Editor -> Dialogue Panel -> Text Edit,Custom outline color.,自定义轮廓颜色。
+Text Color,Editor -> Dialogue Panel -> Text Edit,Text Color,文本颜色
+Background Color,Editor -> Dialogue Panel -> Text Edit,Background Color,背景颜色
+Insert Variable,Editor -> Dialogue Panel -> Text Edit,Insert Variable,插入变量
+Enter a variable name...,Editor -> Dialogue Panel -> Text Edit,Enter a variable name...,输入变量名称...
+Insert Image,Editor -> Dialogue Panel -> Text Edit,Insert Image,插入图片
+Image Settings,Editor -> Dialogue Panel -> Text Edit,Image Settings,图片设置
+Path,Editor -> Dialogue Panel -> Text Edit,Path,路径
+Open File,Editor -> Dialogue Panel -> File Dialog,Open File,打开文件
+More image options.,Editor -> Dialogue Panel -> Text Edit,More image options.,更多图片选项。
+Image size settings.,Editor -> Dialogue Panel -> Text Edit,Image size settings.,图像大小设置。
+"Region rect of the image. This can be used to display a single image from a spritesheet.",Editor -> Dialogue Panel -> Text Edit,"Region rect of the image. This can be used to display a single image from a spritesheet.","图像的矩形裁剪区域。可用于从精灵表中显示单个图像。"
+Color tint of the image (modulation).,Editor -> Dialogue Panel -> Text Edit,Color tint of the image (modulation).,图像色调 (modulation) 。
+"Target width of the image. If is provided, the image will try to fit that width maintaining the aspect ratio.",Editor -> Dialogue Panel -> Text Edit,"Target width of the image. If is provided, the image will try to fit that width maintaining the aspect ratio.",图像目标宽度。若指定该值，图像将在保持宽高比的前提下适应此宽度。
+"Target height of the image. If both width and height are provided, the image will be scaled to that size.",Editor -> Dialogue Panel -> Text Edit,"Target height of the image. If both width and height are provided, the image will be scaled to that size.",图像目标高度。若同时指定宽度和高度，图像将缩放至该尺寸。
+"If set to true, and the image is smaller than the size specified by width and height, the image padding is added to match the size instead of upscaling.",Editor -> Dialogue Panel -> Text Edit,"If set to true, and the image is smaller than the size specified by width and height, the image padding is added to match the size instead of upscaling.",若启用此选项，当图像小于指定的宽度和高度时，将添加内边距以匹配尺寸，而非进行放大。
+X coordinate where the image region begins.,Editor -> Dialogue Panel -> Text Edit,X coordinate where the image region begins.,图像裁剪区域的起始 X 坐标。
+Y coordinate where the image region begins.,Editor -> Dialogue Panel -> Text Edit,Y coordinate where the image region begins.,图像裁剪区域的起始 Y 坐标。
+Width of the image region.,Editor -> Dialogue Panel -> Text Edit,Width of the image region.,图像裁剪区域的宽度
+Height of the image region.,Editor -> Dialogue Panel -> Text Edit,Height of the image region.,图像裁剪区域的高度
+Insert Link,Editor -> Dialogue Panel -> Text Edit,Insert Link,插入链接
+Enter a URL...,Editor -> Dialogue Panel -> Text Edit,Enter a URL...,输入 URL...
+"Add a hyperlink. By default, meta tags do nothing when clicked. Must be handled with the ""meta_clicked"" signal in the DialogBox to have an effect",Editor -> Dialogue Panel -> Text Edit,"Add a hyperlink. By default, meta tags do nothing when clicked. Must be handled with the """meta_clicked" signal in the DialogBox to have an effect","添加超链接。默认情况下，点击 meta 标签不会产生任何效果，需通过 DialogBox 的 ""meta_clicked"" 信号进行处理才能实现交互功能。"
+Add Pulse Effect,Editor -> Dialogue Panel -> Text Edit,Add Pulse Effect,添加脉冲效果
+Add Wave Effect,Editor -> Dialogue Panel -> Text Edit,Add Wave Effect,添加波浪效果
+Add Tornado Effect,Editor -> Dialogue Panel -> Text Edit,Add Tornado Effect,添加龙卷风效果
+Add Shake Effect,Editor -> Dialogue Panel -> Text Edit,Add Shake Effect,添加震动效果
+Add Fade Effect,Editor -> Dialogue Panel -> Text Edit,Add Fade Effect,添加淡入淡出效果
+Add Rainbow Effect,Editor -> Dialogue Panel -> Text Edit,Add Rainbow Effect,添加彩虹效果
+Pulse Effect,Editor -> Dialogue Panel -> Text Edit,Pulse Effect,脉冲效果
+Pulse creates an animated pulsing effect that multiplies each character's opacity and color.,Editor -> Dialogue Panel -> Text Edit,Pulse creates an animated pulsing effect that multiplies each character's opacity and color.,脉冲效果会生成一个动态的脉动动画，改变每个字符的不透明度和颜色。
+Frequency of the half-pulsing cycle (higher is faster). A full pulsing cycle takes 2 * (1.0 / freq) seconds. ,Editor -> Dialogue Panel -> Text Edit,Frequency of the half-pulsing cycle (higher is faster). A full pulsing cycle takes 2 * (1.0 / freq) seconds. ,半脉冲周期的频率（数值越高速度越快）。一个完整脉冲周期需要 2 * (1.0 / 频率) 秒。
+"Ease is the easing function exponent to use. Negative values provide in-out easing, which is why the default is -2.0.",Editor -> Dialogue Panel -> Text Edit,"Ease is the easing function exponent to use. Negative values provide in-out easing, which is why the default is -2.0.",缓动指数，用于控制动画曲线。负值产生先加速后减速的缓动效果，因此默认值为 -2.0。
+"Color is the target color multiplier for blinking. The default mostly fades out text, but not entirely.",Editor -> Dialogue Panel -> Text Edit,"Color is the target color multiplier for blinking. The default mostly fades out text, but not entirely.",颜色是闪烁效果的目标颜色乘数。默认设置通常会让文本淡出，但不会完全消失。
+Wave Effect,Editor -> Dialogue Panel -> Text Edit,Wave Effect,波浪效果
+Wave makes the text go up and down.,Editor -> Dialogue Panel -> Text Edit,Wave makes the text go up and down.,波浪效果让文本上下浮动。
+Amplitude controls how high and low the effect goes.,Editor -> Dialogue Panel -> Text Edit,Amplitude controls how high and low the effect goes.,振幅控制波浪效果的高低幅度。
+"If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures.",Editor -> Dialogue Panel -> Text Edit,"If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures.",若连接值设为 1（默认值），具有连字的字形将整体移动。若设为 0，即使存在连字，每个字形也会单独移动。这可以解决某些字体连字的渲染问题。
+Tornado Effect,Editor -> Dialogue Panel -> Text Edit,Tornado Effect,龙卷风效果
+Tornado makes the text move around in a circle.,Editor -> Dialogue Panel -> Text Edit,Tornado makes the text move around in a circle.,龙卷风效果让文本围绕圆心旋转。
+Radius is the radius of the circle that controls the offset.,Editor -> Dialogue Panel -> Text Edit,Radius is the radius of the circle that controls the offset.,半径控制文本偏移的圆周大小。
+"Frequency is how fast the text moves in a circle. A frequency value of 0 will pause the animation, while negative frequency will play the animation backwards.",Editor -> Dialogue Panel -> Text Edit,"Frequency is how fast the text moves in a circle. A frequency value of 0 will pause the animation, while negative frequency will play the animation backwards.",频率控制文本旋转的速度。频率为 0 时动画暂停，负值则使动画反向播放。
+Shake Effect,Editor -> Dialogue Panel -> Text Edit,Shake Effect,震动效果
+Shake makes the text shake.,Editor -> Dialogue Panel -> Text Edit,Shake makes the text shake.,震动效果让文本产生震动。
+Rate controls how fast the text shakes.,Editor -> Dialogue Panel -> Text Edit,Rate controls how fast the text shakes.,速率控制文本震动的快慢。
+Level controls how far the text is offset from the origin.,Editor -> Dialogue Panel -> Text Edit,Level controls how far the text is offset from the origin.,强度控制文本偏离原点的距离。
+"If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures.",Editor -> Dialogue Panel -> Text Edit,"If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures.",若连接值设为 0，即使存在连字，每个字形也会单独移动。这可以解决某些字体连字的渲染问题。
+Fade Effect,Editor -> Dialogue Panel -> Text Edit,Fade Effect,淡入淡出效果
+Fade creates a static fade effect that multiplies each character's opacity.,Editor -> Dialogue Panel -> Text Edit,Fade creates a static fade effect that multiplies each character's opacity.,淡入淡出效果会生成一个静态的淡变效果，改变每个字符的不透明度。
+Start controls the starting position of the falloff relative to where the fade command is inserted.,Editor -> Dialogue Panel -> Text Edit,Start controls the starting position of the falloff relative to where the fade command is inserted.,起始位置控制衰减效果的起点，相对于插入淡变命令的位置。
+Length controls over how many characters should the fade out take place.,Editor -> Dialogue Panel -> Text Edit,Length controls over how many characters should the fade out take place.,长度控制淡出效果覆盖的字符数量。
+Rainbow Effect,Editor -> Dialogue Panel -> Text Edit,Rainbow Effect,彩虹效果 
+Rainbow gives the text a rainbow color that changes over time.,Editor -> Dialogue Panel -> Text Edit,Rainbow gives the text a rainbow color that changes over time.,彩虹效果让文本呈现随时间变化的彩虹色。
+Frequency determines how many letters the rainbow extends over before it repeats itself.,Editor -> Dialogue Panel -> Text Edit,Frequency determines how many letters the rainbow extends over before it repeats itself.,频率决定彩虹色在多少个字符上循环一次。
+Saturation of the rainbow.,Editor -> Dialogue Panel -> Text Edit,Saturation of the rainbow.,彩虹饱和度。
+Value of the rainbow.,Editor -> Dialogue Panel -> Text Edit,Value of the rainbow.,彩虹明度。
+"Speed is the number of full rainbow cycles per second. A positive speed value will play the animation forwards, a value of 0 will pause the animation, and a negative speed value will play the animation backwards.",Editor -> Dialogue Panel -> Text Edit,"Speed is the number of full rainbow cycles per second. A positive speed value will play the animation forwards, a value of 0 will pause the animation, and a negative speed value will play the animation backwards.",速度是每秒完成的彩虹循环次数。正速度值使动画正向播放，速度值为 0 时动画暂停，负速度值使动画反向播放。
+"The file/s contains unsaved changes. 
+Are you sure you want to close this file/s?",Editor -> Dialogue Panel -> Confirmation Dialog,"The file/s contains unsaved changes. 
+Are you sure you want to close this file/s?","文件包含未保存的更改。
+确定要关闭这些文件吗？"
+Discard,Editor -> Dialogue Panel -> Confirmation Dialog,Discard,放弃
+"[center][wave]Create or open a [color=orange]character[/color] to start!
+[center]\( ^-^)/
+
+",Editor -> Character Panel -> Start Panel,"[center][wave]Create or open a [color=orange]character[/color] to start!
+[center]\( ^-^)/
+
+","[center][wave]创建或打开一个[color=orange]角色[/color]来开始！
+[center]\( ^-^)/
+
+"
+New Character,Editor -> Character Panel -> Start Panel,New Character,新建角色
+Open Character,Editor -> Character Panel -> Start Panel,Open Character,打开角色
+The character key name to reference it is the filename.,Editor -> Character Panel -> Editor Panel,The character key name to reference it is the filename.,角色的引用键名为文件名
+Display Name,Editor -> Character Panel -> Editor Panel,Display Name,显示名称
+The name that will be displayed for this character.,Editor -> Character Panel -> Editor Panel,The name that will be displayed for this character.,此角色在游戏中的显示名称。
+Insert character name...,Editor -> Character Panel -> Editor Panel,Insert character name...,输入角色名称...
+Description,Editor -> Character Panel -> Editor Panel,Description,描述
+Character description (optional)...,Editor -> Character Panel -> Editor Panel,Character description (optional)...,角色描述（可选）...
+It does nothing. It is for your reference only.,Editor -> Character Panel -> Editor Panel,It does nothing. It is for your reference only.,无实际功能，仅供参考。
+Dialog Box Settings,Editor -> Character Panel -> Editor Panel,Dialog Box Settings,对话框设置
+Dialog Box,Editor -> Character Panel -> Editor Panel,Dialog Box,对话框
+"Scene with the dialog box where the text will be displayed.
+The root of the scene must be a node inherited from the DialogBox class.",Editor -> Character Panel -> Editor Panel,"Scene with the dialog box where the text will be displayed.
+The root of the scene must be a node inherited from the DialogBox class.","显示文本的对话框的场景。
+场景的根节点必须是继承自DialogBox类的节点。"
+Select a scene...,Editor -> Character Panel -> Editor Panel,Select a scene...,选择场景...
+Create a new scene,Editor -> Character Panel -> Editor Panel,Create a new scene,创建新场景
+New Dialog Box Scene,Editor -> Character Panel -> File Dialog,New Dialog Box Scene,新建对话框场景
+Portrait on dialog box,Editor -> Character Panel -> Editor Panel,Portrait on dialog box,对话框中的头像
+"Select this option to display the portrait inside the dialog box. 
+You need to assign a node in 'Dialog Box Components > Portrait Display'
+property from the DialogBox to use it as a parent to display the portrait.",Editor -> Character Panel -> Editor Panel,"Select this option to display the portrait inside the dialog box.
+You need to assign a node in 'Dialog Box Components > Portrait Display' property from the DialogBox to use it as a parent to display the portrait.","选择此选项将在对话框内显示头像。
+你需要在DialogBox的“Dialog Box Components > Portrait Display”属性中分配一个节点，作为显示头像的父节点。"
+Open the scene to edit,Editor -> Character Panel -> Editor Panel,Open the scene to edit,打开场景进行编辑
+Portraits Settings,Editor -> Character Panel -> Editor Panel,Portraits Settings,头像设置
+Default portrait,Editor -> Character Panel -> Editor Panel,Default portrait,默认头像
+Default portrait to be used for the character when no portrait is selected.,Editor -> Character Panel -> Editor Panel,Default portrait to be used for the character when no portrait is selected.,当未选择头像时，角色使用的默认头像。
+(no one),Editor -> Character Panel -> Editor Panel,(no one),(无)
+Main Transform Settings,Editor -> Character Panel -> Editor Panel,Main Transform Settings,基础 Transform 设置
+"Transform settings for all portraits.
+You can override this for each portrait.",Editor -> Character Panel -> Editor Panel,"Transform settings for all portraits.
+You can override this for each portrait.","所有头像的 Transform 设置。
+你可以针对单个头像覆盖此设置。"
+Portraits scale.,Editor -> Character Panel -> Editor Panel,Portraits scale.,头像缩放。
+Portraits position offset.,Editor -> Character Panel -> Editor Panel,Portraits position offset.,头像位置偏移。
+Portraits rotation in degrees.,Editor -> Character Panel -> Editor Panel,Portraits rotation in degrees.,头像旋转角度（度）。
+Mirror,Editor -> Character Panel -> Editor Panel,Mirror,镜像
+Flip the portraits horizontally.,Editor -> Character Panel -> Editor Panel,Flip the portraits horizontally.,水平翻转头像。
+Portraits,Editor -> Character Panel -> Editor Panel,Portraits,头像
+Search portraits...,Editor -> Character Panel -> Editor Panel,Search portraits...,搜索头像...
+Add a new portrait,Editor -> Character Panel -> Editor Panel,Add a new portrait,添加新头像
+Add a new portrait group,Editor -> Character Panel -> Editor Panel,Add a new portrait group,添加新头像组
+Remove portrait,Editor -> Character Panel -> Editor Panel,Remove portrait,删除头像
+No portrait selected.,Editor -> Character Panel -> Editor Panel,No portrait selected.,未选择头像。
+Portrait Preview,Editor -> Character Panel -> Editor Panel,Portrait Preview,头像预览
+Reload scene,Editor -> Character Panel -> Editor Panel,Reload scene,重新加载场景
+Portrait Settings,Editor -> Character Panel -> Editor Panel,Portrait Settings,头像设置
+New Portrait Scene,Editor -> Character Panel -> File Dialog,New Portrait Scene,新建头像场景
+Transform Settings,Editor -> Character Panel -> Editor Panel,Transform Settings,Transform 设置
+Ignore Main Transform,Editor -> Character Panel -> Editor Panel,Ignore Main Transform,忽略基础 Transform
+"Ignore transform settings for all portraits
+and apply only the transform settings of this portrait.",Editor -> Character Panel -> Editor Panel,"Ignore transform settings for all portraits
+and apply only the transform settings of this portrait.","忽略基础 Transform 设置
+仅应用此头像的 Transform 设置。"
+Portrait scale.,Editor -> Character Panel -> Editor Panel,Portrait scale.,头像缩放。
+Portrait position offset.,Editor -> Character Panel -> Editor Panel,Portrait position offset.,头像位置偏移。
+Portrait rotation in degrees.,Editor -> Character Panel -> Editor Panel,Portrait rotation in degrees.,头像旋转角度（度）。
+Add some variables!,Editor -> Variable Panel,Add some variables!,添加一些变量！
+Search variables...,Editor -> Variable Panel,Search variables...,搜索变量...
+Add a new variable,Editor -> Variable Panel,Add a new variable,添加新变量
+Add a new group,Editor -> Variable Panel,Add a new group,添加新变量组
+Save variables,Editor -> Variable Panel,Save variables,保存变量
+Name,Editor -> Variable Panel,Name,名称
+Type,Editor -> Variable Panel,Type,类型
+Initial Value,Editor -> Variable Panel,Initial Value,初始值
+Select variable type,Editor -> Variable Panel,Select variable type,选择变量类型
+Unsaved changes,Editor -> Variable Panel,Unsaved changes,有未保存的更改
+(No items in the group),Editor -> Variable Panel,(No items in the group),(空)
+Write text here...,Editor -> Variable Panel,Write text here...,在这里输入文本...
+Write a expression here...,Editor -> Variable Panel,Write a expression here...,在这里输入表达式...
+"Are you sure you want to remove this group? 
+All variables and groups inside will be removed.",Editor -> Variable Panel -> Confirmation Dialog,"Are you sure you want to remove this group? 
+All variables and groups inside will be removed.","确定要移除此组吗？
+组内的所有变量和子组都将被删除。"
+Confirm,Editor -> Variable Panel -> Confirmation Dialog,Confirm,确认
+Select a file...,Editor -> Settings Panel -> General Tab,Select a file...,选择文件...
+Select a directory...,Editor -> Settings Panel -> General Tab,Select a directory...,选择目录...
+Select a Directory,Editor -> Settings Panel -> File Dialog,Select a Directory,选择目录
+General,Editor -> Settings Panel -> Tab Bar,General,常规
+Text,Editor -> Settings Panel -> Tab Bar,Text,文本
+Translation,Editor -> Settings Panel -> Tab Bar,Translation,翻译
+Input,Editor -> Settings Panel -> General Panel,Input,输入
+Continue input action,Editor -> Settings Panel -> General Panel,Continue input action,继续输入操作
+Defaults,Editor -> Settings Panel -> General Panel,Defaults,默认
+Default dialog box,Editor -> Settings Panel -> General Panel,Default dialog box,默认对话框
+Default portrait scene,Editor -> Settings Panel -> General Panel,Default portrait scene,默认头像场景
+Canvas Layers,Editor -> Settings Panel -> General Panel,Canvas Layers,Canvas 层
+Dialog box canvas layer,Editor -> Settings Panel -> General Panel,Dialog box canvas layer,对话框 Canvas 层
+Portrait canvas layer,Editor -> Settings Panel -> General Panel,Portrait canvas layer,头像 Canvas 层
+Custom Event Nodes,Editor -> Settings Panel -> General Panel,Custom Event Nodes,自定义事件节点
+Use custom event nodes,Editor -> Settings Panel -> General Panel,Use custom event nodes,使用自定义事件节点
+Custom event nodes folder,Editor -> Settings Panel -> General Panel,Custom event nodes folder,自定义事件节点文件夹
+Select a directory...,Editor -> Settings Panel -> General Panel -> Custom Event Nodes Folder,Select a directory...,选择目录...
+Custom event interpreter,Editor -> Settings Panel -> General Panel,Custom event interpreter,自定义事件解释器
+Select a file...,Editor -> Settings Panel -> General Panel -> Custom Event Interpreter,Select a file...,选择文件...
+Input action...,Editor -> Settings Panel -> General Panel,Input action...,输入操作...
+The input action that allows the dialog to continue.,Editor -> Settings Panel -> General Panel,The input action that allows the dialog to continue.,允许对话继续的输入操作。
+"Default dialog box that will be displayed when no character is selected.
+It will also be used as a template when creating a new dialog box for a character.
+
+The root of the scene must be a node inherited from the DialogBox class.",Editor -> Settings Panel -> General Panel,"Default dialog box that will be displayed when no character is selected.
+It will also be used as a template when creating a new dialog box for a character.
+
+The root of the scene must be a node inherited from the DialogBox class.","当未选择角色时显示的默认对话框。
+它也将作为创建角色新对话框的模板。
+
+场景的根节点必须是继承自DialogBox类的节点。"
+[color=tomato]Please select a valid scene file for the default portrait scene.,Editor -> Settings Panel -> General Panel,[color=tomato]Please select a valid scene file for the default portrait scene.,[color=tomato]请选择一个有效的场景文件作为默认头像场景。
+"Default portrait scene that will be used as a template when creating a new portrait for a character.
+
+The root of the scene must be a node inherited from the DialogPortrait class.",Editor -> Settings Panel -> General Panel,"Default portrait scene that will be used as a template when creating a new portrait for a character.
+
+The root of the scene must be a node inherited from the DialogPortrait class.","创建角色头像时使用的默认头像场景模板。
+
+场景的根节点必须是继承自DialogPortrait类的节点。"
+"Layer index for the draw order of the canvas layer where dialog boxes will be displayed by default, 
+if the dialog box parent is not overriden.",Editor -> Settings Panel -> General Panel,"Layer index for the draw order of the canvas layer where dialog boxes will be displayed by default, 
+if the dialog box parent is not overriden.","默认对话框画布层的绘制顺序索引，
+当未覆盖对话框父节点时生效。"
+"Layer index for the draw order of the canvas layer where portraits will be displayed by default, 
+if the portrait parent is not overriden.",Editor -> Settings Panel -> General Panel,"Layer index for the draw order of the canvas layer where portraits will be displayed by default, 
+if the portrait parent is not overriden.","默认头像画布层的绘制顺序索引，
+当未覆盖头像父节点时生效。"
+Enable/disable the use of custom event nodes.,Editor -> Settings Panel -> General Panel,Enable/disable the use of custom event nodes.,启用/禁用自定义事件节点的使用。
+Path to the directory where you have your custom event nodes (.tscn files).,Editor -> Settings Panel -> General Panel,Path to the directory where you have your custom event nodes (.tscn files).,自定义事件节点（.tscn 文件）所在的目录路径。
+[color=tomato]Please select a valid directory for the custom event nodes.,Editor -> Settings Panel -> General Panel,[color=tomato]Please select a valid directory for the custom event nodes.,[color=tomato]请选择一个有效的目录来存放自定义事件节点。
+[color=tomato]Please select a valid script (.gd) that extends the SproutyDialogsEventInterpreter class.,Editor -> Settings Panel -> General Panel,[color=tomato]Please select a valid script (.gd) that extends the SproutyDialogsEventInterpreter class.,
+"Path to the custom event interpreter script file (.gd) 
+that extends from the SproutyDialogsEventInterpreter class.
+Where you define the process methods to run your custom event nodes.",Editor -> Settings Panel -> General Panel,"Path to the custom event interpreter script file (.gd) 
+that extends from the SproutyDialogsEventInterpreter class.
+Where you define the process methods to run your custom event nodes.","自定义事件解释器脚本文件（.gd）的路径，
+该脚本必须继承自 SproutyDialogsEventInterpreter 类，
+用于定义处理自定义事件节点的方法。"
+Text Behavior,Editor -> Settings Panel -> Text Panel,Text Behavior,文本行为
+Default typing speed,Editor -> Settings Panel -> Text Panel,Default typing speed,默认打字速度
+Open URL on meta tag click,Editor -> Settings Panel -> Text Panel,Open URL on meta tag click,点击 meta 标签时打开 URL
+Dialogue Display,Editor -> Settings Panel -> Text Panel,Dialogue Display,对话显示
+New line as new dialog,Editor -> Settings Panel -> Text Panel,New line as new dialog,将换行视为新对话
+Split dialog by max characters,Editor -> Settings Panel -> Text Panel,Split dialog by max characters,按最大字符数分割对话
+Max characters,Editor -> Settings Panel -> Text Panel,Max characters,最大字符数
+Skip Text Reveal,Editor -> Settings Panel -> Text Panel,Skip Text Reveal,跳过文本显示动画
+Allow skip text reveal,Editor -> Settings Panel -> Text Panel,Allow skip text reveal,允许跳过文本显示动画
+Can skip delay,Editor -> Settings Panel -> Text Panel,Can skip delay,允许跳过延迟
+Skip continue delay,Editor -> Settings Panel -> Text Panel,Skip continue delay,跳过对话继续的延迟
+"Time in seconds that the text takes to reveal each character. 
+The higher the number, the longer it will take to reveal the next character.",Editor -> Settings Panel -> Text Panel,"Time in seconds that the text takes to reveal each character. 
+The higher the number, the longer it will take to reveal the next character.","文本显示每个字符所需的时间（秒）。
+数值越大，显示下一个字符所需的时间越长。"
+"If enabled, opens a hyperlink in the browser when a URL tag is clicked during a dialog.
+By default the URL tags are handled by 'meta_clicked' signal on RichTextLabels.
+You can do the same with the 'meta_clicked' signal in a DialogBox to more advanced use cases.",Editor -> Settings Panel -> Text Panel,"If enabled, opens a hyperlink in the browser when a URL tag is clicked during a dialog.
+By default the URL tags are handled by 'meta_clicked' signal on RichTextLabels.
+You can do the same with the 'meta_clicked' signal in a DialogBox to more advanced use cases.","启用后，在对话中点击网址标签时将在浏览器中打开超链接。
+默认情况下，网址标签由 RichTextLabel 的 'meta_clicked' 信号处理。
+您也可以通过 DialogBox 的 'meta_clicked' 信号实现相同功能，以满足更高级的使用场景。"
+"Line breaks will be considered paragraphs. Each paragraph is displayed as a new dialog (or block of text in the dialog box). Otherwise, the text is displayed all at once.",Editor -> Settings Panel -> Text Panel,"Line breaks will be considered paragraphs. Each paragraph is displayed as a new dialog (or block of text in the dialog box). Otherwise, the text is displayed all at once.",换行符将被视为段落分隔符。每个段落将显示为一段新对话（或对话框中的独立文本块）。否则，所有文本将一次性显示。
+"The text is divided into paragraphs according to a character limit. Otherwise, it is displayed all at once.",Editor -> Settings Panel -> Text Panel,"The text is divided into paragraphs according to a character limit. Otherwise, it is displayed all at once.",文本将根据字符数限制自动分段，否则将一次性全部显示。
+Maximum character limit. Only used if the dialogue is split by a character limit.,Editor -> Settings Panel -> Text Panel,Maximum character limit. Only used if the dialogue is split by a character limit.,最大字符数限制。仅在按字符数分割对话时生效。
+Allows to skip text reveal and display everything at once.,Editor -> Settings Panel -> Text Panel,Allows to skip text reveal and display everything at once.,允许跳过文字显示动画，直接显示全部内容。
+"Time in seconds during which the text cannot be skipped again. 
+This is necessary to prevent the entire text from being skipped.",Editor -> Settings Panel -> Text Panel,"Time in seconds during which the text cannot be skipped again. 
+This is necessary to prevent the entire text from being skipped.","两次跳过操作之间的最小间隔时间（秒）。
+用于防止连续跳过导致整段文本被略过。"
+Time in seconds during which you must wait for the dialogue to continue after skipping the text reveal.,Editor -> Settings Panel -> Text Panel,Time in seconds during which you must wait for the dialogue to continue after skipping the text reveal.,跳过文字显示动画后，等待对话继续的时间（秒）
+Enable translations,Editor -> Settings Panel -> Translation Panel,Enable translations,启用翻译
+Use CSV files,Editor -> Settings Panel -> Translation Panel,Use CSV files,使用 CSV 文件
+[color=tomato]Please select a valid directory for the CSV files.,Editor -> Settings Panel -> Translation Panel,[color=tomato]Please select a valid directory for the CSV files.,[color=tomato]请选择一个有效的目录来存放 CSV 文件。
+CSV translations folder,Editor -> Settings Panel -> Translation Panel,CSV translations folder,CSV 翻译文件夹
+Fallback to resource,Editor -> Settings Panel -> Translation Panel,Fallback to resource,回退到资源
+Translate character names,Editor -> Settings Panel -> Translation Panel,Translate character names,翻译角色名称
+Use CSV for character names,Editor -> Settings Panel -> Translation Panel,Use CSV for character names,使用 CSV 文件翻译角色名称
+[color=tomato]Please select a valid CSV file for character name translation [i](It must be inside the CSV file directory).,Editor -> Settings Panel -> Translation Panel,[color=tomato]Please select a valid CSV file for character name translation [i](It must be inside the CSV file directory).,[color=tomato]请为角色名称翻译选择一个有效的CSV文件来[i]（必须在CSV文件目录内）。
+Character names CSV,Editor -> Settings Panel -> Translation Panel,Character names CSV,角色名称 CSV
+Collect Translations,Editor -> Settings Panel -> Translation Panel,Collect Translations,收集翻译
+Enable/disable translations for dialogues.,Editor -> Settings Panel -> Translation Panel,Enable/disable translations for dialogues.,启用/禁用对话翻译。
+"Enable the use of CSV files for translations.
+Otherwise, translations will be saved in the dialogue data file.",Editor -> Settings Panel -> Translation Panel,"Enable the use of CSV files for translations.
+Otherwise, translations will be saved in the dialogue data file.","启用 CSV 文件进行翻译。
+否则，翻译内容将保存在对话数据文件中。"
+"Path to the directory of the CSV translation files.
+This directory must contain all the CSV files used for the dialogs. 
+(It is necessary to collect all translations in godot).",Editor -> Settings Panel -> Translation Panel,"Path to the directory of the CSV translation files.
+This directory must contain all the CSV files used for the dialogs. 
+(It is necessary to collect all translations in godot).","CSV 翻译文件所在的目录路径。
+该目录必须包含对话所使用的所有CSV文件。
+（这是 Godot 中收集所有翻译的必要条件。）"
+"When a dialog key is not found in the CSV file, the dialog will be loaded from the dialogue data file.
+(This only applies when opening a dialog file in the editor, not when running the dialog).",Editor -> Settings Panel -> Translation Panel,"When a dialog key is not found in the CSV file, the dialog will be loaded from the dialogue data file.
+(This only applies when opening a dialog file in the editor, not when running the dialog).","当 CSV 文件中找不到指定的对话键时，将从对话数据文件中加载该对话。
+（此规则仅适用于在编辑器中打开对话文件时，运行时无效。）"
+Enable translation for the character names.,Editor -> Settings Panel -> Translation Panel,Enable translation for the character names.,启用角色名称翻译。 
+"Enable the use of CSV files for character name translations.
+Otherwise, translations will be saved in the character data file.",Editor -> Settings Panel -> Translation Panel,"Enable the use of CSV files for character name translations.
+Otherwise, translations will be saved in the character data file.","启用 CSV 文件进行角色名称翻译。
+否则，翻译内容将保存在角色数据文件中。"
+Path to the CSV file with the character name translations. It must be inside the CSV translations folder.,Editor -> Settings Panel -> Translation Panel,Path to the CSV file with the character name translations. It must be inside the CSV translations folder.,包含角色名称翻译的 CSV 文件路径。该文件必须位于 CSV 翻译文件夹内。
+"Collect the translations from CSV files into Godot so they can be used. You can find the collected translations 
+in Project > Project settings > Localization > Translations.",Editor -> Settings Panel -> Translation Panel,"Collect the translations from CSV files into Godot so they can be used. You can find the collected translations 
+in Project > Project settings > Localization > Translations.",将CSV文件中的翻译内容收集到 Godot 中以便使用。收集到的翻译可在“项目 > 项目设置 > 本地化 > 翻译”中查看。
+Locales Settings,Editor -> Settings Panel -> Translation Panel,Locales Settings,区域设置
+Default Locale,Editor -> Settings Panel -> Translation Panel,Default Locale,默认区域
+Testing Locale,Editor -> Settings Panel -> Translation Panel,Testing Locale,测试区域
+Locales,Editor -> Settings Panel -> Translation Panel,Locales,区域
+New +,Editor -> Settings Panel -> Translation Panel,New +,新建 +
+Code,Editor -> Settings Panel -> Translation Panel,Code,代码
+Language,Editor -> Settings Panel -> Translation Panel,Language,语言
+Country,Editor -> Settings Panel -> Translation Panel,Country Code,国家/地区
+Add some locales!,Editor -> Settings Panel -> Translation Panel,Add some locales!,添加一些区域设置！
+Save Locales,Editor -> Settings Panel -> Translation Panel,Save Locales Code,保存区域设置
+Save Locales (*),Editor -> Settings Panel -> Translation Panel,Save Locales (*),保存区域设置 (*)
+Set the locales into which the dialogs will be translated.,Editor -> Settings Panel -> Translation Panel,Set the locales into which the dialogs will be translated.,设置对话的目标翻译区域。
+Add a new locale.,Editor -> Settings Panel -> Translation Panel,Add a new locale.,添加新区域。
+Save the current locales.,Editor -> Settings Panel -> Translation Panel,Save the current locales.,保存当前区域设置。
+Please Confirm...,Editor -> Settings Panel -> Translation Panel,Please Confirm...,请确认...
+"Some locales have been removed, so their respective texts in the CSV translation files will be removed when saving the dialog files.
+
+Do you want to save the changes anyway?",Editor -> Settings Panel -> Translation Panel,"Some locales have been removed, so their respective texts in the CSV translation files will be removed when saving the dialog files.
+
+Do you want to save the changes anyway?","部分区域已被移除，保存对话文件时，CSV 翻译文件中对应的文本也将被删除。
+
+是否仍要保存更改？"
+Save Changes,Editor -> Settings Panel -> Translation Panel,Save Changes,保存更改
+Discard Changes,Editor -> Settings Panel -> Translation Panel,Discard Changes,放弃更改
+Locale code...,Editor -> Settings Panel -> Translation Panel,Locale code...,区域代码...
+Character,Event Node -> Dialogue Node,Character,角色
+Portrait,Event Node -> Dialogue Node,Portrait,头像
+Dialogue,Event Node -> Dialogue Node,Dialogue,对话
+Write text here...,Event Node -> Dialogue Node,Write text here...,在这里输入文本...
+Next,Event Node -> Dialogue Node,Next,输出
+Translations,Event Node -> Dialogue Node,Translations,翻译
+Option,Event Node -> Option Node,Option,选项
+Add Option,Event Node -> Option Node,Add Option,添加选项
+Autoload,Event Node -> Call Method Node,Autoload,自动加载
+Method,Event Node -> Call Method Node,Method,方法
+Parameters,Event Node -> Call Method Node,Parameters,参数
+Identifier,Event Node -> Signal Node,Identifier,标识符
+Arguments,Event Node -> Signal Node,Arguments,参数
+Write a name...,Event Node -> Signal Node,Write a name...,输入名称...
+Add Element,Event Node -> Signal Node,Add Element,添加元素
+Time,Event Node -> Wait Node,Time,时间
+Write a comment...,Event Node -> Comment Node,Write a comment...,输入注释...
