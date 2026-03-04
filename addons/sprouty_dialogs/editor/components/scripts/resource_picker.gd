@@ -34,11 +34,17 @@ var _dialog_title: String
 
 func _ready() -> void:
 	resource_changed.connect(_on_resource_changed)
-	remove_child(get_child(1)) # Remove extra space
 
-	if only_icon: # Show the icon button without the arrow button
-		get_child(2).icon = get_theme_icon("Load", "EditorIcons")
-		remove_child(get_child(1))
+	if get_children().size() < 4: # Godot version < 4.6
+		remove_child(get_child(0)) # Remove extra space
+		if only_icon: # Show the icon button without the arrow button
+			get_child(1).icon = get_theme_icon("Load", "EditorIcons")
+			remove_child(get_child(0))
+	else:
+		remove_child(get_child(1)) # Remove extra space
+		if only_icon: # Show the icon button without the arrow button
+			get_child(2).icon = get_theme_icon("Load", "EditorIcons")
+			remove_child(get_child(1))
 	
 	set_resource_type(resource_type)
 
