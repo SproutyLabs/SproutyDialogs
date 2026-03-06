@@ -48,11 +48,14 @@ var _new_char_icon := preload("res://addons/sprouty_dialogs/editor/icons/add-cha
 var _graph_scene := preload("res://addons/sprouty_dialogs/editor/modules/graph_editor/graph_editor.tscn")
 var _char_scene := preload("res://addons/sprouty_dialogs/editor/modules/characters/character_editor.tscn")
 
-## UndoRedo manager
-var undo_redo: EditorUndoRedoManager
+## Editor main reference
+var _plugin_editor = null
 
 ## Save shortcut (Command/Ctrl-S)
-var save_shortcut = Shortcut.new()
+var _save_shortcut = Shortcut.new()
+
+## UndoRedo manager
+var undo_redo: EditorUndoRedoManager
 
 
 func _ready() -> void:
@@ -61,7 +64,8 @@ func _ready() -> void:
 	key_event.keycode = KEY_S
 	key_event.ctrl_pressed = true
 	key_event.command_or_control_autoremap = true
-	save_shortcut.events = [key_event]
+	_save_shortcut.events = [key_event]
+	_plugin_editor = find_parent("Editor")
 
 	# Connect signals
 	_new_dialog_button.pressed.connect(on_new_dialog_pressed)
@@ -100,10 +104,11 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if save_shortcut.matches_event(event) and event.is_pressed() and not event.is_echo():
-		if not _file_list.get_current_index() < 0:
-			save_file() # Save current file with shortcut
-		get_viewport().set_input_as_handled() # Prevent default editor actions
+	# Capture save shortcut (Command/Ctrl-S)
+	if _save_shortcut.matches_event(event) and event.is_pressed() and not event.is_echo():
+		if _plugin_editor.visible and not _file_list.get_current_index() < 0:
+			save_file() # Save current file
+			get_viewport().set_input_as_handled()
 
 
 ## Returns the current open file path
