@@ -182,7 +182,7 @@ func _get_property_list():
 			for id in _starts_ids:
 				id_list += id
 				if id != _starts_ids[-1]:
-					id_list += ", "
+					id_list += ","
 			props.append({
 				"name": &"_start_id",
 				"type": TYPE_STRING,
@@ -292,10 +292,10 @@ func _enter_tree() -> void:
 
 		# Connect signals to autoload manager
 		dialog_started.connect(func():
-			sprouty_dialogs_manager.dialog_players_running.append(self )
+			sprouty_dialogs_manager.dialog_players_running.append(self)
 			sprouty_dialogs_manager.dialog_started.emit()
 		)
-		dialog_player_stop.connect(sprouty_dialogs_manager.dialog_players_running.erase.bind(self ))
+		dialog_player_stop.connect(sprouty_dialogs_manager.dialog_players_running.erase.bind(self))
 		dialog_paused.connect(sprouty_dialogs_manager.dialog_paused.emit)
 		dialog_resumed.connect(sprouty_dialogs_manager.dialog_resumed.emit)
 		dialog_ended.connect(sprouty_dialogs_manager.dialog_ended.emit)
