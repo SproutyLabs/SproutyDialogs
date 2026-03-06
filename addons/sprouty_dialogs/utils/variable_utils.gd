@@ -252,7 +252,7 @@ static func new_field_by_type(
 			field.value_changed.connect(on_value_changed.bind(type, field))
 			field.get_line_edit().focus_exited.connect(on_modified_callable)
 		
-		TYPE_STRING:
+		TYPE_STRING, TYPE_STRING_NAME:
 			var line_edit = LineEdit.new()
 			line_edit.name = "TextEdit"
 			line_edit.set_h_size_flags(Control.SIZE_EXPAND_FILL)
@@ -444,7 +444,7 @@ static func set_field_value(field: Control, type: int, value: Variant) -> void:
 			if field is SpinBox: # Regular int/float
 				field.set_value_no_signal(value)
 		
-		TYPE_STRING:
+		TYPE_STRING, TYPE_STRING_NAME:
 			if field is OptionButton: # Enum string
 				field.select(value)
 			if field is EditorSproutyDialogsFileField: # File/Directory path
@@ -572,6 +572,12 @@ static func get_array_from_data(array_data: Array) -> Array:
 				value = []
 			else:
 				value = get_array_from_data(value)
+		elif type == TYPE_STRING_NAME:
+			if value == null:
+				value = StringName("")
+			else:
+				value = StringName(str(value))
+
 		array.append(value)
 	return array
 
@@ -593,6 +599,12 @@ static func get_dictionary_from_data(dict_data: Dictionary) -> Dictionary:
 				value = []
 			else:
 				value = get_array_from_data(value)
+		elif type == TYPE_STRING_NAME:
+			if value == null:
+				value = StringName("")
+			else:
+				value = StringName(str(value))
+
 		dict[key] = value
 	return dict
 
