@@ -162,11 +162,23 @@ item_4/id = 3
 
 [node name="ConfirmCloseFiles" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1858451831]
 unique_name_in_owner = true
+oversampling_override = 1.0
 title = "Please Confirm..."
 initial_position = 4
 size = Vector2i(336, 106)
 dialog_text = "The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?"
+
+[node name="CloseEditorWarning" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=913469440]
+unique_name_in_owner = true
+oversampling_override = 1.0
+title = "Please Confirm..."
+initial_position = 4
+size = Vector2i(336, 106)
+exclusive = false
+dialog_text = "There are modified dialogue/character resources.
+
+Save modified resources before closing?"
 
 [node name="NewDialog" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=790664647]
 title = "New Dialogue"

@@ -244,6 +244,15 @@ func set_file_as_modified(index: int, value: bool) -> void:
 	_file_list.set_item_text(index, metadata["file_name"] + suffix)
 
 
+## Check if there are any file with unsaved changes
+func has_unsaved_files() -> bool:
+	for index in get_item_count():
+		var metadata = _file_list.get_item_metadata(index)
+		if metadata["modified"]:
+			return true
+	return false
+
+
 ## Filter file list by a input filter text
 func _filter_file_list(search_text: String) -> void:
 	_filtered_list.clear()
@@ -294,8 +303,8 @@ func _on_file_selected(index: int) -> void:
 
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Select File: " + str(_file_list.get_item_text(index)))
-	undo_redo.add_do_method(self , "_switch_to_file", index)
-	undo_redo.add_undo_method(self , "_switch_to_file", temp)
+	undo_redo.add_do_method(self, "_switch_to_file", index)
+	undo_redo.add_undo_method(self, "_switch_to_file", temp)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
