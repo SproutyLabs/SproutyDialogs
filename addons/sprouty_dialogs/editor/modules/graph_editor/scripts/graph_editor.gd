@@ -432,6 +432,11 @@ func _load_nodes_connections() -> void:
 				if output_node == "END":
 					continue
 				connect_node(child.name, child.to_node.find(output_node), output_node, 0)
+				
+				var next_node = get_node_or_null(output_node)
+				if next_node != null:
+					next_node.start_node = child.start_node
+					_update_connections_start_node(next_node)
 
 #endregion
 
@@ -901,13 +906,16 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 
 
 ## Update connected nodes with the new start node
-func _update_connections_start_node(node: SproutyDialogsBaseNode) -> void:
+func _update_connections_start_node(node: SproutyDialogsBaseNode, visited: Dictionary = {}) -> void:
+	if visited.has(node.name):
+		return
+	visited[node.name] = true
 	var connections = node.get_output_connections()
 	for node_name in connections:
 		var next_node = get_node_or_null(node_name)
-		if next_node != null:
+		if next_node != null and not visited.has(next_node.name):
 			next_node.start_node = node.start_node
-			_update_connections_start_node(next_node)
+			_update_connections_start_node(next_node, visited)
 
 
 ## If connection ends on empty space, show add node menu to add a new node
