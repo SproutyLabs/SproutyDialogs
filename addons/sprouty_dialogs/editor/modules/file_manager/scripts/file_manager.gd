@@ -106,7 +106,8 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	# Capture save shortcut (Command/Ctrl-S)
 	if _save_shortcut.matches_event(event) and event.is_pressed() and not event.is_echo():
-		if _plugin_editor.visible and not _file_list.get_current_index() < 0:
+		if _plugin_editor.visible and _plugin_editor.tab_container.current_tab < 2 \
+				and not _file_list.get_current_index() < 0:
 			save_file() # Save current file
 			get_viewport().set_input_as_handled()
 
