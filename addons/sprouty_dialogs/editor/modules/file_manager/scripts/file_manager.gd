@@ -51,8 +51,18 @@ var _char_scene := preload("res://addons/sprouty_dialogs/editor/modules/characte
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
 
+## Save shortcut (Command/Ctrl-S)
+var save_shortcut = Shortcut.new()
+
 
 func _ready() -> void:
+	# Set save shortcut
+	var key_event = InputEventKey.new()
+	key_event.keycode = KEY_S
+	key_event.ctrl_pressed = true
+	key_event.command_or_control_autoremap = true
+	save_shortcut.events = [key_event]
+
 	# Connect signals
 	_new_dialog_button.pressed.connect(on_new_dialog_pressed)
 	_new_char_button.pressed.connect(on_new_character_pressed)
@@ -87,6 +97,13 @@ func _ready() -> void:
 
 	await get_tree().process_frame # Wait a frame to ensure undo_redo is ready
 	_file_list.undo_redo = undo_redo
+
+
+func _input(event: InputEvent) -> void:
+	if save_shortcut.matches_event(event) and event.is_pressed() and not event.is_echo():
+		if not _file_list.get_current_index() < 0:
+			save_file() # Save current file with shortcut
+		get_viewport().set_input_as_handled() # Prevent default editor actions
 
 
 ## Returns the current open file path
