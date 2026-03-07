@@ -59,6 +59,9 @@ func _ready():
 	settings_panel.undo_redo = undo_redo
 	file_manager.undo_redo = undo_redo
 
+	variable_panel.plugin_editor = self
+	file_manager.plugin_editor = self
+
 	# File manager signals
 	file_manager.all_dialog_files_closed.connect(dialogue_panel.show_start_panel)
 	file_manager.all_character_files_closed.connect(character_panel.show_start_panel)

@@ -13,6 +13,12 @@ extends Container
 ## Text editor for edit string variables
 @onready var _text_editor: EditorSproutyDialogsTextEditor = $TextEditor
 
+# Set the main editor reference in the variable editor
+var plugin_editor: Control:
+	set(value):
+		plugin_editor = value
+		_variable_editor.plugin_editor = value
+
 ## Set the UndoRedo manager in the variable editor
 var undo_redo: EditorUndoRedoManager:
 	set(value):

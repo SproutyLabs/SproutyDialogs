@@ -34,11 +34,11 @@ var _remove_group: EditorSproutyDialogsVariableGroup = null
 ## Modified counter to track changes
 var _modified_counter: int = 0
 
-## Editor main reference
-var _plugin_editor: Control = null
-
 ## Save shortcut (Command/Ctrl-S)
 var _save_shortcut: Shortcut = Shortcut.new()
+
+## Editor main reference
+var plugin_editor: Control = null
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
@@ -51,7 +51,6 @@ func _ready():
 	key_event.ctrl_pressed = true
 	key_event.command_or_control_autoremap = true
 	_save_shortcut.events = [key_event]
-	_plugin_editor = find_parent("Editor")
 
 	# Connect signals
 	_variable_container.child_order_changed.connect(_on_child_order_changed)
@@ -82,9 +81,7 @@ func _ready():
 func _input(event: InputEvent) -> void:
 	# Capture save shortcut (Command/Ctrl-S)
 	if _save_shortcut.matches_event(event) and event.is_pressed() and not event.is_echo():
-		if _plugin_editor == null:
-			_plugin_editor = find_parent("Editor")
-		if _plugin_editor.visible and _plugin_editor.tab_container.current_tab == 2:
+		if plugin_editor.visible and plugin_editor.tab_container.current_tab == 2:
 			_on_save_button_pressed() # Save variables
 			get_viewport().set_input_as_handled()
 
