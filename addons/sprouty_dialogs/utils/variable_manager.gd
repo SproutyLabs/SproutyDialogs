@@ -118,7 +118,6 @@ func get_variable_data(name: String) -> Dictionary:
 	return {}
 
 
-
 ## Get the value of a variable defined in the variable editor or from the autoloads.
 ## If the variable is found, it returns a dictionary with its data.
 ## If the variable does not exist, it returns null.
@@ -202,7 +201,7 @@ func get_variables_in_group(group_name: String) -> Array:
 			return []
 	# Fallback, no group found
 	printerr("[Sprouty Dialogs] Cannot get variables from group '" + group_name \
-		+"'. Group not found, please check the variable editor.")
+		+ "'. Group not found, please check the variable editor.")
 	return []
 
 
@@ -319,11 +318,8 @@ func _get_parsed_variable(var_name: String, ignore_error: bool = false,
 	
 	elif not only_parse_var: # Try to execute as expression
 		var result = _execute_expression(var_name, ignore_error)
-		if result == null: # Error evaluating expression
-			if not ignore_error:
-				printerr("[Sprouty Dialogs] Cannot found variable or parse {"
-						+ var_name + "} as expression. ")
-			return null
+		if result == null: # The expression returns nothing
+			result = ""
 		variable = {
 			"index": 0,
 			"name": var_name,
@@ -350,7 +346,7 @@ func _execute_expression(command: String, ignore_error: bool = false) -> Variant
 		if not ignore_error:
 			printerr("[Sprouty Dialogs] Error parsing expression: " + expression.get_error_text())
 		return null
-	var result = expression.execute(autoloads.values(), self , not ignore_error)
+	var result = expression.execute(autoloads.values(), self, not ignore_error)
 	if expression.has_execute_failed():
 		if not ignore_error:
 			printerr("[Sprouty Dialogs] Error executing expression: " + expression.get_error_text())
@@ -418,7 +414,7 @@ func get_comparison_result(first_var: Dictionary, second_var: Dictionary,
 		if first_var.type != second_var.type: # If types do not match, cannot compare
 			printerr("[Sprouty Dialogs] Cannot compare variables of type '" +
 				type_string(first_var.type) + "' and '" + type_string(second_var.type) + "'." \
-				+" Values '" + str(first_var.value) + "' and '" + str(second_var.value) + "' are not comparable.")
+				+ " Values '" + str(first_var.value) + "' and '" + str(second_var.value) + "' are not comparable.")
 			return null
 
 	match operator:
