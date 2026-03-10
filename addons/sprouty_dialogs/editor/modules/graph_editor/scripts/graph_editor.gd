@@ -922,6 +922,23 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 			connection_data["prev_node"].start_node = null
 			_update_connections_start_node(connection_data["prev_node"])
 	
+	# Ensure that the target node has only one start node
+	if from_node.contains("start_node"):
+		var input_connections = get_node_connections(to_node, false, false)
+		# If the target node has an input connection from a start node, disconnect it
+		for connection in input_connections:
+				if connection["from_node"].contains("start_node"):
+					connection_data["prev_start_node_data"] = {
+						"from_node": connection["from_node"],
+						"from_port": connection["from_port"],
+						"to_node": connection["to_node"],
+						"to_port": connection["to_port"],
+						"start_node": get_node_or_null(NodePath(connection["from_node"]))
+					}
+					disconnect_node(connection["from_node"], connection["from_port"], to_node, connection["to_port"])
+					connection_data["prev_start_node_data"]["start_node"].to_dialog = ""
+					next_node.start_node = null
+
 	# Create new connection
 	connect_node(from_node, from_port, to_node, to_port)
 
@@ -933,6 +950,8 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 		next_node.start_node = start_node
 		if start_node != null:
 			_update_connections_start_node(start_node)
+		elif connection_data.has("prev_start_node_data"):
+			_update_connections_start_node(origin_node)
 	elif next_start_node != start_node:
 		origin_node.to_dialog = next_node.get_start_id()
 	
@@ -951,9 +970,20 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 		
 		if connection_data["prev_node"] != null:
 			undo_redo.add_do_property(connection_data["prev_node"], "start_node", null)
-			undo_redo.add_undo_property(connection_data["prev_node"], "start_node", connection_data["prev_node_prev_start_node"])
+			undo_redo.add_undo_property(connection_data["prev_node"], "start_node",
+					connection_data["prev_node_prev_start_node"])
 			undo_redo.add_do_method(self, "_update_connections_start_node", connection_data["prev_node"])
 			undo_redo.add_undo_method(self, "_update_connections_start_node", connection_data["prev_node"])
+	
+	# Handle previous start node disconnection
+	if connection_data.has("prev_start_node_data"):
+		var start_connection_data = connection_data["prev_start_node_data"]
+		undo_redo.add_do_method(self, "disconnect_node", start_connection_data["from_node"],
+			start_connection_data["from_port"], start_connection_data["to_node"],
+			start_connection_data["to_port"])
+		undo_redo.add_undo_method(self, "connect_node", start_connection_data["from_node"],
+			start_connection_data["from_port"], start_connection_data["to_node"],
+			start_connection_data["to_port"])
 	
 	# Create new connection
 	undo_redo.add_do_method(self, "connect_node", from_node, from_port, to_node, to_port)
@@ -966,6 +996,9 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 		if start_node != null:
 			undo_redo.add_do_method(self, "_update_connections_start_node", start_node)
 			undo_redo.add_undo_method(self, "_update_connections_start_node", start_node)
+		elif connection_data.has("prev_start_node_data"):
+			undo_redo.add_do_method(self, "_update_connections_start_node", origin_node)
+			undo_redo.add_undo_method(self, "_update_connections_start_node", origin_node)
 	elif next_start_node != start_node:
 		undo_redo.add_do_property(origin_node, "to_dialog", connection_data["prev_next_start_id"])
 		undo_redo.add_undo_property(origin_node, "to_dialog", connection_data["prev_origin_to_dialog"])
