@@ -520,16 +520,30 @@ func _process_node(node_name: String) -> void:
 	_current_node = node_name
 	# Get the node type to process
 	var node_type = node_name.split("_node_")[0] + "_node"
+	var node_data = {}
+
+	if _dialog_data.graph_data[_start_id].has(node_name):
+		node_data = _dialog_data.graph_data[_start_id][node_name]
+	else: # If the node is not found in the dialog, search for it in other dialogs
+		for dialog in _dialog_data.graph_data:
+			if _dialog_data.graph_data[dialog].has(node_name):
+				node_data = _dialog_data.graph_data[dialog][node_name]
+				break
+
+	if node_data == {}:
+		printerr("[Sprouty Dialogs] Node '" + node_name + "' not found in dialog data.")
+		return
+
 	if _dialog_interpreter.node_processors.has(node_type):
-		_dialog_interpreter.node_processors[node_type].call(
-			_dialog_data.graph_data[_start_id][node_name]
-			)
+		_dialog_interpreter.node_processors[node_type].call(node_data)
 	else:
 		printerr("[Sprouty Dialogs] Cannot process '" + node_name + "'. "
 		+ "Go to Settings > General, check that the custom nodes are enabled, "
 		+ "that the 'custom event interpreter' is setted and that it has the process "
 		+ "method to run '" + node_type + "'.")
-		_process_node(_dialog_data.graph_data[_start_id][node_name]["to_node"][0])
+		# If the node type is not found, continue to the next node if there is one
+		if node_data.has("to_node") and node_data["to_node"].size() > 0:
+			_process_node(_dialog_data.graph_data[_start_id][node_name]["to_node"][0])
 
 
 ## Play dialog when the dialogue node is processed
