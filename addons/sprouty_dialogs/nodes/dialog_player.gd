@@ -141,6 +141,8 @@ var _current_portrait: DialogPortrait
 var _next_options: Array = []
 ## Next node to process in the dialog tree after a dialogue node.
 var _next_node: String = ""
+## Next dialog to process if the next node belongs to another dialog tree.
+var _next_node_dialog: String = ""
 ## Node where the dialog was paused, to resume later.
 var _paused_node: String = ""
 ## Current node being processing
@@ -382,7 +384,7 @@ func get_current_dialog_box() -> DialogBox:
 
 ## Set the dialogue data and start ID to play a dialog tree.
 ## This method loads the dialog resources and prepares the player to process
-## the dialog tree before calling the [method start()]method.
+## the dialog tree before calling the [method start()] method.
 func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
 		portrait_parents: Dictionary = {}, dialog_box_parents: Dictionary = {}) -> void:
 	if not data:
@@ -404,6 +406,13 @@ func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
 	
 	# Load the resources
 	_resource_manager.load_resources(_dialog_data, _start_id)
+
+	for node in _dialog_data.graph_data[_start_id].keys():
+		if _dialog_data.graph_data[_start_id][node].has("to_dialog"):
+			# If the node has a reference to another dialog, load its resources too
+			var to_dialog = _dialog_data.graph_data[_start_id][node]["to_dialog"]
+			if to_dialog != "" and to_dialog != _start_id:
+				_resource_manager.load_resources(_dialog_data, to_dialog)
 
 
 #region === Run dialog =========================================================
@@ -522,18 +531,22 @@ func _process_node(node_name: String) -> void:
 	var node_type = node_name.split("_node_")[0] + "_node"
 	var node_data = {}
 
+	# Try to find the node in the current dialog data
 	if _dialog_data.graph_data[_start_id].has(node_name):
 		node_data = _dialog_data.graph_data[_start_id][node_name]
-	else: # If the node is not found in the dialog, search for it in other dialogs
-		for dialog in _dialog_data.graph_data:
-			if _dialog_data.graph_data[dialog].has(node_name):
-				node_data = _dialog_data.graph_data[dialog][node_name]
-				break
+	# If the node is not found in the current dialog, check if it has a reference to another dialog
+	elif _next_node_dialog != "" and _dialog_data.graph_data.has(_next_node_dialog):
+		node_data = _dialog_data.graph_data[_next_node_dialog].get(node_name, {})
+		_start_id = _next_node_dialog # Update the start ID to the new dialog reference
 
 	if node_data == {}:
 		printerr("[Sprouty Dialogs] Node '" + node_name + "' not found in dialog data.")
 		return
-
+	
+	# If the next node has a reference to another dialog, update the reference
+	_next_node_dialog = node_data.get("to_dialog", "")
+	
+	# Process the node with the dialog interpreter if it has a processor for the node type
 	if _dialog_interpreter.node_processors.has(node_type):
 		_dialog_interpreter.node_processors[node_type].call(node_data)
 	else:

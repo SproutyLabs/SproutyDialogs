@@ -18,6 +18,7 @@ func get_data() -> Dictionary:
 	# Update the position and connections
 	_node_data["offset"] = position_offset
 	_node_data["to_node"] = get_output_connections()
+	_node_data["to_dialog"] = to_dialog
 
 	dict[name.to_snake_case()] = _node_data
 	return dict # Return the updated node data
@@ -31,6 +32,9 @@ func set_data(dict: Dictionary) -> void:
 	to_node = dict["to_node"]
 	size = dict["size"]
 	_node_data = dict
+
+	if dict.has("to_dialog"):
+		to_dialog = dict["to_dialog"]
 
 	# Set the original node slots to keep connections
 	_set_node_slots(_node_data["to_node"])

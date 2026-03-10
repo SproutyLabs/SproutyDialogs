@@ -56,6 +56,7 @@ func get_data() -> Dictionary:
 		"method": _method_combo_box.get_value(),
 		"parameters": _parameters_field.get_array(),
 		"to_node": get_output_connections(),
+		"to_dialog": to_dialog,
 		"offset": position_offset,
 		"size": size
 	}
@@ -68,6 +69,9 @@ func set_data(dict: Dictionary) -> void:
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
 	size = dict["size"]
+	
+	if dict.has("to_dialog"):
+		to_dialog = dict["to_dialog"]
 
 	_set_autoloads_dropdown(dict["autoload"])
 	_set_method_combo_box(dict["autoload"])
@@ -165,8 +169,8 @@ func _on_autoload_selected(index: int) -> void:
 	undo_redo.add_do_property(_autoloads_dropdown, "selected", index)
 	undo_redo.add_undo_property(_autoloads_dropdown, "selected", temp_autoload)
 
-	undo_redo.add_do_method(self , "_set_method_combo_box", autoload)
-	undo_redo.add_undo_method(self , "_set_method_combo_box",
+	undo_redo.add_do_method(self, "_set_method_combo_box", autoload)
+	undo_redo.add_undo_method(self, "_set_method_combo_box",
 			_autoloads_dropdown.get_item_text(temp_autoload))
 	undo_redo.add_do_method(_method_combo_box, "set_value", "")
 	undo_redo.add_undo_method(_method_combo_box, "set_value", temp_method)
@@ -176,8 +180,8 @@ func _on_autoload_selected(index: int) -> void:
 	undo_redo.add_do_method(_parameters_field, "disable_field", true)
 	undo_redo.add_undo_method(_parameters_field, "disable_field", false)
 
-	undo_redo.add_do_method(self , "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------
 
@@ -200,8 +204,8 @@ func _on_method_selected(method: String) -> void:
 	undo_redo.add_do_method(_parameters_field, "set_array", _parameters_field.get_array())
 	undo_redo.add_undo_method(_parameters_field, "set_array", temp_params)
 
-	undo_redo.add_do_method(self , "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------
 
@@ -215,7 +219,7 @@ func _on_parameter_changed(item: Dictionary) -> void:
 	undo_redo.create_action("Parameter Changed")
 	undo_redo.add_do_method(_parameters_field, "set_array", _previous_params)
 	undo_redo.add_undo_method(_parameters_field, "set_array", temp_params)
-	undo_redo.add_do_method(self , "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------

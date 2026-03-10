@@ -43,6 +43,7 @@ func get_data() -> Dictionary:
 		"node_index": node_index,
 		"options_keys": [],
 		"to_node": get_output_connections(),
+		"to_dialog": to_dialog,
 		"offset": position_offset,
 		"size": size
 	}
@@ -60,8 +61,12 @@ func set_data(dict: Dictionary) -> void:
 	node_index = dict["node_index"]
 	_options_keys = dict["options_keys"]
 	to_node = dict["to_node"]
+	to_dialog = dict["to_dialog"]
 	position_offset = dict["offset"]
 	size = dict["size"]
+
+	if dict.has("to_dialog"):
+		to_dialog = dict["to_dialog"]
 #endregion
 
 

@@ -50,6 +50,7 @@ func get_data() -> Dictionary:
 		"signal_id": _signal_identifier,
 		"extra_args": _args_array.get_array(),
 		"to_node": get_output_connections(),
+		"to_dialog": to_dialog,
 		"offset": position_offset,
 		"size": size
 	}
@@ -62,6 +63,9 @@ func set_data(dict: Dictionary) -> void:
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
 	size = dict["size"]
+
+	if dict.has("to_dialog"):
+		to_dialog = dict["to_dialog"]
 
 	if dict.has("signal_argument"):
 		_signal_identifier = dict["signal_argument"]
@@ -86,13 +90,13 @@ func _on_identifier_input_changed(new_text: String) -> void:
 
 		# --- UndoRedo --------------------------------------------------
 		undo_redo.create_action("Edit Signal", 1)
-		undo_redo.add_do_property(self , "_signal_identifier", _signal_identifier)
+		undo_redo.add_do_property(self, "_signal_identifier", _signal_identifier)
 		undo_redo.add_do_property(_identifier_input, "text", _signal_identifier)
-		undo_redo.add_undo_property(self , "_signal_identifier", temp)
+		undo_redo.add_undo_property(self, "_signal_identifier", temp)
 		undo_redo.add_undo_property(_identifier_input, "text", temp)
 
-		undo_redo.add_do_method(self , "emit_signal", "modified", true)
-		undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 		undo_redo.commit_action(false)
 		# ---------------------------------------------------------------
 
@@ -113,7 +117,7 @@ func _on_args_array_changed() -> void:
 	undo_redo.create_action("Arguments Changed")
 	undo_redo.add_do_method(_args_array, "set_array", _previous_args)
 	undo_redo.add_undo_method(_args_array, "set_array", temp_args)
-	undo_redo.add_do_method(self , "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------

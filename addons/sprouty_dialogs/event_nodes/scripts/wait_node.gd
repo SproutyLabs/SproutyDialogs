@@ -33,6 +33,7 @@ func get_data() -> Dictionary:
 		"node_index": node_index,
 		"wait_time": _wait_time,
 		"to_node": get_output_connections(),
+		"to_dialog": to_dialog,
 		"offset": position_offset,
 		"size": size
 	}
@@ -43,6 +44,7 @@ func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
+	to_dialog = dict["to_dialog"]
 	position_offset = dict["offset"]
 	size = dict["size"]
 

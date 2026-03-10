@@ -86,6 +86,7 @@ func get_data() -> Dictionary:
 		"portrait": get_portrait(),
 		"char_expand": _character_expand_button.button_pressed,
 		"to_node": get_output_connections(),
+		"to_dialog": to_dialog,
 		"offset": position_offset,
 		"size": size
 	}
@@ -96,6 +97,10 @@ func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
+	
+	if dict.has("to_dialog"):
+		to_dialog = dict["to_dialog"]
+	
 	# Show or hide character section
 	_character_expand_button.button_pressed = dict["char_expand"]
 	position_offset = dict["offset"]
@@ -180,12 +185,12 @@ func _on_character_changed(res: Resource) -> void:
 
 	# --- UndoRedo ----------------------------------------------------------
 	undo_redo.create_action("Assign Character")
-	undo_redo.add_do_method(self , "load_character", res.resource_path)
-	undo_redo.add_undo_method(self , "load_character", previous_character_path)
+	undo_redo.add_do_method(self, "load_character", res.resource_path)
+	undo_redo.add_undo_method(self, "load_character", previous_character_path)
 	undo_redo.add_undo_property(_portrait_dropdown, "selected", previous_portrait)
 	
-	undo_redo.add_do_method(self , "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------
 
@@ -195,12 +200,12 @@ func _on_portrait_selected(index: int) -> void:
 	# --- UndoRedo ----------------------------------------------------------
 	undo_redo.create_action("Select Portrait")
 	undo_redo.add_do_property(_portrait_dropdown, "selected", index)
-	undo_redo.add_do_property(self , "_previous_portrait_index", index)
+	undo_redo.add_do_property(self, "_previous_portrait_index", index)
 	undo_redo.add_undo_property(_portrait_dropdown, "selected", _previous_portrait_index)
-	undo_redo.add_undo_property(self , "_previous_portrait_index", _previous_portrait_index)
+	undo_redo.add_undo_property(self, "_previous_portrait_index", _previous_portrait_index)
 
-	undo_redo.add_do_method(self , "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action()
 	# -----------------------------------------------------------------------
 
@@ -214,12 +219,12 @@ func _on_character_clear() -> void:
 
 	# --- UndoRedo ----------------------------------------------------------
 	undo_redo.create_action("Clear Character")
-	undo_redo.add_do_method(self , "_clear_character_field")
-	undo_redo.add_undo_method(self , "load_character", previous_character_path)
+	undo_redo.add_do_method(self, "_clear_character_field")
+	undo_redo.add_undo_method(self, "load_character", previous_character_path)
 	undo_redo.add_undo_property(_portrait_dropdown, "selected", previous_portrait)
 	
-	undo_redo.add_do_method(self , "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------
 
@@ -373,13 +378,13 @@ func _on_default_text_changed(new_text: String = "") -> void:
 		# --- UndoRedo ----------------------------------------------------------
 		undo_redo.create_action("Edit Dialog Text"
 			+ (" (" + _default_locale + ")") if _default_locale != "" else "", 1)
-		undo_redo.add_do_property(self , "_default_text", _default_text)
+		undo_redo.add_do_property(self, "_default_text", _default_text)
 		undo_redo.add_do_method(_default_text_box, "set_text", _default_text)
-		undo_redo.add_undo_property(self , "_default_text", temp)
+		undo_redo.add_undo_property(self, "_default_text", temp)
 		undo_redo.add_undo_method(_default_text_box, "set_text", temp)
 
-		undo_redo.add_do_method(self , "emit_signal", "modified", true)
-		undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 		undo_redo.commit_action(false)
 		# -----------------------------------------------------------------------
 

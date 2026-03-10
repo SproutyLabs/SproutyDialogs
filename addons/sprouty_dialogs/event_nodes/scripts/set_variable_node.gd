@@ -69,6 +69,7 @@ func get_data() -> Dictionary:
 		"operator": _operator_dropdown.get_item_id(_operator_dropdown.selected),
 		"new_value": _var_value,
 		"to_node": get_output_connections(),
+		"to_dialog": to_dialog,
 		"offset": position_offset,
 		"size": size
 	}
@@ -81,6 +82,9 @@ func set_data(dict: Dictionary) -> void:
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
 	size = dict["size"]
+
+	if dict.has("to_dialog"):
+		to_dialog = dict["to_dialog"]
 
 	# Set the type on the dropdown
 	var type_index = _type_dropdown.get_item_index(dict["var_type"])

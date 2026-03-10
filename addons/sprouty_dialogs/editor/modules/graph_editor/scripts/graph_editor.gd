@@ -837,6 +837,10 @@ func disconnect_node_on_port(node: String, port: int, as_action: bool = false) -
 		if next_node != null and next_node.start_node == from_node.start_node:
 			next_node.start_node = null
 			_update_connections_start_node(next_node)
+		elif next_node != null and from_node.to_dialog == next_node.get_start_id():
+			from_node.to_dialog = ""
+			print("Disconnecting node '" + connection["from_node"] + "' from '" + connection["to_node"] \
+				+ "' which belongs to '" + next_node.get_start_id() + "'. Removing the reference to the dialog tree.")
 
 	if not as_action:
 		return # Skip UndoRedo if not requested
@@ -863,6 +867,10 @@ func disconnect_node_on_port(node: String, port: int, as_action: bool = false) -
 				get_node(NodePath(connection["from_node"])).start_node)
 			undo_redo.add_do_method(self, "_update_connections_start_node", next_node)
 			undo_redo.add_undo_method(self, "_update_connections_start_node", next_node)
+		
+		elif next_node != null and from_node.to_dialog == next_node.get_start_id():
+			undo_redo.add_do_method(from_node, "to_dialog", null)
+			undo_redo.add_undo_method(from_node, "to_dialog", next_node.start_node)
 	
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)
@@ -885,14 +893,21 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 	
 	# Handle nodes connection and assign the node to the connected dialog tree
 	connect_node(from_node, from_port, to_node, to_port)
+	var origin_node = get_node(NodePath(from_node))
 	var next_node = get_node(NodePath(to_node))
-	var start_node = get_node(NodePath(from_node)).start_node
+	var start_node = origin_node.start_node
+	var next_start_node = next_node.start_node
+	var prev_to_dialog = origin_node.to_dialog
 
 	# If the connected node already has a start node, don't update it to avoid breaking other connections
-	if not next_node.start_node != null:
+	if not next_start_node != null:
 		next_node.start_node = start_node
 		if start_node != null:
 			_update_connections_start_node(start_node)
+	# If the connected node is from other dialog tree, store the start id reference
+	elif next_start_node != start_node:
+		origin_node.to_dialog = next_node.get_start_id()
+		print("Connecting node '" + from_node + "' to '" + to_node + "' which belongs to '" + next_node.get_start_id() + "'.")
 	
 	_on_modified(true)
 
@@ -918,13 +933,16 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 	undo_redo.add_do_method(self, "connect_node", from_node, from_port, to_node, to_port)
 	undo_redo.add_undo_method(self, "disconnect_node", from_node, from_port, to_node, to_port)
 
-	if not (next_node.start_node != null and next_node.start_node.to_node.find(next_node) != -1):
+	if not next_start_node != null:
 		undo_redo.add_do_property(next_node, "start_node", start_node)
-		undo_redo.add_undo_property(next_node, "start_node", null)
-
+		undo_redo.add_undo_property(next_node, "start_node", next_start_node)
 		if start_node != null:
 			undo_redo.add_do_method(self, "_update_connections_start_node", start_node)
 			undo_redo.add_undo_method(self, "_update_connections_start_node", start_node)
+	
+	elif next_start_node != start_node:
+		undo_redo.add_do_property(origin_node, "to_dialog", next_node.get_start_id())
+		undo_redo.add_undo_property(origin_node, "to_dialog", prev_to_dialog)
 
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)

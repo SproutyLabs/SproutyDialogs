@@ -77,6 +77,7 @@ func get_data() -> Dictionary:
 		},
 		"operator": operator_dropdown.get_item_id(operator_dropdown.selected),
 		"to_node": get_output_connections(),
+		"to_dialog": to_dialog,
 		"offset": position_offset,
 		"size": size
 	}
@@ -89,6 +90,9 @@ func set_data(dict: Dictionary) -> void:
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
 	size = dict["size"]
+
+	if dict.has("to_dialog"):
+		to_dialog = dict["to_dialog"]
 
 	# Set the types on the dropdowns
 	load_type_data(dict, 0)

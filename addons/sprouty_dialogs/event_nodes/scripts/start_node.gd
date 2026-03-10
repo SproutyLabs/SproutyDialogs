@@ -49,6 +49,7 @@ func get_data() -> Dictionary:
 		"node_index": node_index,
 		"start_id": _start_id.to_upper(),
 		"to_node": get_output_connections(),
+		"to_dialog": to_dialog,
 		"offset": position_offset,
 		"size": size
 	}
@@ -61,6 +62,9 @@ func set_data(dict: Dictionary) -> void:
 	to_node = dict["to_node"]
 	position_offset = dict["offset"]
 	size = dict["size"]
+
+	if dict.has("to_dialog"):
+		to_dialog = dict["to_dialog"]
 
 	_start_id = dict["start_id"]
 	_id_input_text.text = dict["start_id"]
@@ -94,14 +98,14 @@ func _on_id_input_changed(new_text: String) -> void:
 
 		# --- UndoRedo --------------------------------------------------
 		undo_redo.create_action("Edit Start ID", 1)
-		undo_redo.add_do_property(self , "_start_id", new_text)
+		undo_redo.add_do_property(self, "_start_id", new_text)
 		undo_redo.add_do_property(_id_input_text, "text", new_text.to_upper())
-		undo_redo.add_undo_property(self , "_start_id", temp)
+		undo_redo.add_undo_property(self, "_start_id", temp)
 		undo_redo.add_undo_property(_id_input_text, "text", temp.to_upper())
-		undo_redo.add_undo_method(self , "_on_id_input_focus_exited")
+		undo_redo.add_undo_method(self, "_on_id_input_focus_exited")
 
-		undo_redo.add_do_method(self , "emit_signal", "modified", true)
-		undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 		undo_redo.commit_action(false)
 		# ---------------------------------------------------------------
 

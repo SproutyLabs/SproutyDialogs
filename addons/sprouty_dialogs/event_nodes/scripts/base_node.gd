@@ -30,8 +30,12 @@ signal modified(modified: bool)
 var start_node_name: String = ""
 ## Start node of the dialog tree where the node belongs.
 var start_node: SproutyDialogsBaseNode = null
+
 ## Array to store the output nodes connections.
 var to_node: Array = []
+## Start ID of the dialog tree where the next node belongs. 
+## If the next node belongs to another dialog, it will be used to find the node.
+var to_dialog: String = ""
 
 ## Node type name.
 var node_type: String = ""
@@ -96,7 +100,7 @@ func _set_node_titlebar():
 	remove_button.texture_normal = get_theme_icon('Remove', 'EditorIcons')
 	remove_button.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
 	if get_parent() is EditorSproutyDialogsGraphEditor:
-		remove_button.pressed.connect(get_parent().delete_node.bind(self ))
+		remove_button.pressed.connect(get_parent().delete_node.bind(self))
 	node_titlebar.add_child(remove_button)
 
 
