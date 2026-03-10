@@ -827,21 +827,40 @@ func get_node_output_connections(node: String, port: int) -> Array:
 ## Disconnect a output connection from a node on the given port
 func disconnect_node_on_port(node: String, port: int, as_action: bool = false) -> void:
 	var port_connections = get_node_output_connections(node, port)
+	
+	# Store all connection data before making changes (for undo/redo)
+	var connection_data: Dictionary = {}
+	for connection in port_connections:
+		var next_node = get_node_or_null(NodePath(connection["to_node"]))
+		var from_node = get_node(NodePath(connection["from_node"]))
+		
+		connection_data[connection["to_node"]] = {
+			"next_node": next_node,
+			"from_node": from_node,
+			"prev_next_start_node": next_node.start_node if next_node != null else null,
+			"prev_from_to_dialog": from_node.to_dialog if from_node != null else "",
+			"next_start_id": next_node.get_start_id() if next_node != null else "",
+			"same_start_node": (next_node != null and from_node != null and next_node.start_node == from_node.start_node)
+		}
 
+	# Disconnect all connections from the port
 	for connection in port_connections:
 		disconnect_node(connection["from_node"], connection["from_port"],
 			connection["to_node"], connection["to_port"])
-		var next_node = get_node_or_null(NodePath(connection["to_node"]))
-		var from_node = get_node(NodePath(connection["from_node"]))
-		# If the disconnected node has the same start node as the from node, update its start node to null
-		if next_node != null and next_node.start_node == from_node.start_node:
+		var data = connection_data[connection["to_node"]]
+		var next_node = data["next_node"]
+		var from_node = data["from_node"]
+		
+		# If the disconnected node has the same start node, remove the reference
+		if data["same_start_node"]:
 			next_node.start_node = null
 			_update_connections_start_node(next_node)
-		elif next_node != null and from_node.to_dialog == next_node.get_start_id():
+		# If the disconnected node belongs to other dialog tree, remove the reference to the dialog tree
+		elif next_node != null and from_node.to_dialog == data["next_start_id"]:
 			from_node.to_dialog = ""
 			print("Disconnecting node '" + connection["from_node"] + "' from '" + connection["to_node"] \
-				+ "' which belongs to '" + next_node.get_start_id() + "'. Removing the reference to the dialog tree.")
-
+				+ "' which belongs to '" + data["next_start_id"] + "'. Removing the reference to the dialog tree.")
+	
 	if not as_action:
 		return # Skip UndoRedo if not requested
 	
@@ -851,26 +870,26 @@ func disconnect_node_on_port(node: String, port: int, as_action: bool = false) -
 	undo_redo.create_action("Disconnect " + node.capitalize())
 
 	for connection in port_connections:
+		var data = connection_data[connection["to_node"]]
+		var next_node = data["next_node"]
+		var from_node = data["from_node"]
+		
 		# Disconnect the connection
 		undo_redo.add_do_method(self, "disconnect_node", connection["from_node"],
 			connection["from_port"], connection["to_node"], connection["to_port"])
 		undo_redo.add_undo_method(self, "connect_node", connection["from_node"],
 			connection["from_port"], connection["to_node"], connection["to_port"])
 		
-		# Update the start node of the disconnected node to null
-		var next_node = get_node_or_null(NodePath(connection["to_node"]))
-		var from_node = get_node(NodePath(connection["from_node"]))
-
-		if next_node != null and next_node.start_node == from_node.start_node:
+		# If the disconnected node has the same start node, update the start node reference
+		if data["same_start_node"]:
 			undo_redo.add_do_property(next_node, "start_node", null)
-			undo_redo.add_undo_property(next_node, "start_node",
-				get_node(NodePath(connection["from_node"])).start_node)
+			undo_redo.add_undo_property(next_node, "start_node", data["prev_next_start_node"])
 			undo_redo.add_do_method(self, "_update_connections_start_node", next_node)
 			undo_redo.add_undo_method(self, "_update_connections_start_node", next_node)
-		
-		elif next_node != null and from_node.to_dialog == next_node.get_start_id():
-			undo_redo.add_do_method(from_node, "to_dialog", null)
-			undo_redo.add_undo_method(from_node, "to_dialog", next_node.start_node)
+		# If the disconnected node belongs to other dialog tree, update the reference to the dialog tree
+		elif next_node != null and from_node.to_dialog == data["next_start_id"]:
+			undo_redo.add_do_property(from_node, "to_dialog", "")
+			undo_redo.add_undo_property(from_node, "to_dialog", data["prev_from_to_dialog"])
 	
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)
