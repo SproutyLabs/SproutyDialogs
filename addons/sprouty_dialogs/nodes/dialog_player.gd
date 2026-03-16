@@ -136,6 +136,8 @@ var _resource_manager: SproutyDialogsResourceManager
 var _current_dialog_box: DialogBox
 ## Current portrait being displayed.
 var _current_portrait: DialogPortrait
+## Audio player for dialogue node audio paths.
+var _dialog_audio_player: AudioStreamPlayer
 
 ## Next nodes options to process when a dialog option is selected.
 var _next_options: Array = []
@@ -303,6 +305,11 @@ func _enter_tree() -> void:
 		dialog_ended.connect(sprouty_dialogs_manager.dialog_ended.emit)
 		option_selected.connect(sprouty_dialogs_manager.option_selected.emit)
 		signal_event.connect(sprouty_dialogs_manager.signal_event.emit)
+
+		if _dialog_audio_player == null or not is_instance_valid(_dialog_audio_player):
+			_dialog_audio_player = AudioStreamPlayer.new()
+			_dialog_audio_player.name = "DialogueAudioPlayer"
+			add_child(_dialog_audio_player)
 
 
 func _exit_tree() -> void:
@@ -561,10 +568,11 @@ func _process_node(node_name: String) -> void:
 
 ## Play dialog when the dialogue node is processed
 func _on_dialogue_processed(character_name: String, translated_name: String,
-		portrait: String, dialog: String, next_node: String) -> void:
+		portrait: String, dialog: String, audio_path: String, next_node: String) -> void:
 	_next_node = next_node
 	_update_dialog_box(character_name)
 	await _update_portrait(character_name, portrait)
+	_play_dialogue_audio(audio_path)
 	_current_dialog_box.play_dialog(translated_name, dialog)
 
 
@@ -683,5 +691,26 @@ func _on_dialog_display_ends() -> void:
 func _on_dialog_typing_ends() -> void:
 	if _current_portrait:
 		_current_portrait.on_portrait_stop_talking()
+
+#endregion
+
+#region === Audio management =================================
+
+func _play_dialogue_audio(audio_path: String) -> void:
+	if _dialog_audio_player == null or not is_instance_valid(_dialog_audio_player):
+		return
+
+	var path := audio_path.strip_edges()
+	if path.is_empty():
+		_dialog_audio_player.stop()
+		return
+
+	var stream = load(path)
+	if stream is AudioStream:
+		_dialog_audio_player.stop()
+		_dialog_audio_player.stream = stream
+		_dialog_audio_player.play()
+	elif _print_debug:
+		printerr("[Sprouty Dialogs] Invalid dialogue audio stream: " + path)
 
 #endregion

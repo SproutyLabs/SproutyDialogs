@@ -21,6 +21,7 @@ signal dialogue_processed(
 	translated_name: String,
 	portrait: String,
 	dialog: String,
+	audio_path: String,
 	next_node: String
 )
 ## Emitted when a options node was processed.
@@ -74,8 +75,10 @@ func _process_dialogue(node_data: Dictionary) -> void:
 		if portrait.is_empty(): # Use default portrait
 			portrait = character_data.default_portrait
 
+	var audio_path: String = node_data.get("audio_path", "")
+
 	dialogue_processed.emit(node_data["character"], display_name,
-			portrait, dialog, node_data["to_node"][0])
+			portrait, dialog, audio_path, node_data["to_node"][0])
 
 
 func _process_options(node_data: Dictionary) -> void:

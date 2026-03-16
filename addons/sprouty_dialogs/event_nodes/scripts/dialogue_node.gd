@@ -25,6 +25,10 @@ signal update_text_editor(text_box: TextEdit)
 @onready var _default_text_box: EditorSproutyDialogsExpandableTextBox = %DefaultTextBox
 ## Text boxes container for translations
 @onready var _translation_boxes: EditorSproutyDialogsTranslationsContainer = %Translations
+## Audio expand/collapse button
+@onready var _audio_expand_button: Button = %AudioExpandButton
+## Audio path file field
+@onready var _audio_field: EditorSproutyDialogsFileField = %AudioField
 
 ## Default locale for dialog text
 var _default_locale: String = ""
@@ -45,6 +49,10 @@ var _default_text_modified: bool = false
 
 ## Previous selected portrait index (for UndoRedo)
 var _previous_portrait_index: int = 0
+## Current audio path (for UndoRedo)
+var _audio_path: String = ""
+## Flag to check if the audio path was modified (for UndoRedo)
+var _audio_path_modified: bool = false
 
 ## Collapse/Expand icons
 var _collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
@@ -67,6 +75,11 @@ func _ready():
 	# Connect signals for character selection
 	_portrait_dropdown.item_selected.connect(_on_portrait_selected)
 	_character_expand_button.toggled.connect(_on_expand_character_button_toggled)
+	# Connect signals for audio selection
+	_audio_expand_button.toggled.connect(_on_expand_audio_button_toggled)
+	_audio_field.path_submitted.connect(_on_audio_path_submitted)
+	_audio_field.field_focus_exited.connect(_on_audio_focus_exited)
+	_audio_field.set_value(_audio_path)
 	
 	_translation_boxes.undo_redo = undo_redo
 	_set_translation_text_boxes()
@@ -85,6 +98,8 @@ func get_data() -> Dictionary:
 		"character": get_character_name(),
 		"portrait": get_portrait(),
 		"char_expand": _character_expand_button.button_pressed,
+		"audio_path": _audio_path,
+		"audio_expand": _audio_expand_button.button_pressed,
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
 		"offset": position_offset,
@@ -103,6 +118,8 @@ func set_data(dict: Dictionary) -> void:
 	
 	# Show or hide character section
 	_character_expand_button.button_pressed = dict["char_expand"]
+	_audio_expand_button.button_pressed = dict.get("audio_expand", false)
+	load_audio(dict.get("audio_path", ""))
 	position_offset = dict["offset"]
 	size = dict["size"]
 
@@ -394,5 +411,60 @@ func _on_default_focus_exited() -> void:
 	if _default_text_modified:
 		_default_text_modified = false
 		modified.emit(true)
+
+#endregion
+
+#region === Audio ============================================================
+
+## Returns the selected audio path
+func get_audio_path() -> String:
+	return _audio_path
+
+
+## Load the audio path into the field
+func load_audio(path: String) -> void:
+	_audio_path = path.strip_edges()
+	_audio_field.set_value(_audio_path)
+
+
+## Handle the audio path submitted signal
+func _on_audio_path_submitted(path: String) -> void:
+	path = path.strip_edges()
+	if _audio_path == path:
+		return
+
+	var previous_path = _audio_path
+	_audio_path = path
+	_audio_path_modified = true
+
+	# --- UndoRedo ----------------------------------------------------------
+	undo_redo.create_action("Set Dialogue Audio")
+	undo_redo.add_do_property(self, "_audio_path", _audio_path)
+	undo_redo.add_do_method(_audio_field, "set_value", _audio_path)
+	undo_redo.add_undo_property(self, "_audio_path", previous_path)
+	undo_redo.add_undo_method(_audio_field, "set_value", previous_path)
+
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# -----------------------------------------------------------------------
+
+
+## Handle the audio path field focus exited signal
+func _on_audio_focus_exited() -> void:
+	if _audio_path_modified:
+		_audio_path_modified = false
+		modified.emit(true)
+
+
+## Handle the expand audio button pressed signal
+func _on_expand_audio_button_toggled(toggled_on: bool) -> void:
+	$AudioContainer/Content.visible = toggled_on
+	if toggled_on:
+		_audio_expand_button.icon = _collapse_up_icon
+	else:
+		_audio_expand_button.icon = _collapse_down_icon
+	position_offset.y += -size.y / 4 if toggled_on else size.y / 4
+	_on_resized()
 
 #endregion

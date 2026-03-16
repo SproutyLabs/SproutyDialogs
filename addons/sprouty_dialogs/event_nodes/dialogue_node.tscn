@@ -3,10 +3,12 @@
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_05qy5"]
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/dialogue.svg" id="4_hljjc"]
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg" id="4_urrmu"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="4_lv0q5"]
 [ext_resource type="Texture2D" uid="uid://j23crfderjkx" path="res://addons/sprouty_dialogs/editor/icons/character.svg" id="5_hoe8b"]
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/sprouty_dialogs/editor/components/translations_container.tscn" id="5_kt63k"]
 [ext_resource type="Script" uid="uid://bbxvuya7njed5" path="res://addons/sprouty_dialogs/event_nodes/scripts/dialogue_node.gd" id="5_v7cqa"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/sprouty_dialogs/editor/components/expandable_text_box.tscn" id="6_2llfw"]
+[ext_resource type="PackedScene" uid="uid://bxwvdcjc16ytf" path="res://addons/sprouty_dialogs/editor/components/file_field.tscn" id="9_358xh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lv0q5"]
 content_margin_left = 5.0
@@ -84,6 +86,15 @@ slot/4/right_type = 0
 slot/4/right_color = Color(1, 1, 1, 1)
 slot/4/right_icon = null
 slot/4/draw_stylebox = true
+slot/5/left_enabled = false
+slot/5/left_type = 0
+slot/5/left_color = Color(1, 1, 1, 1)
+slot/5/left_icon = null
+slot/5/right_enabled = false
+slot/5/right_type = 0
+slot/5/right_color = Color(1, 1, 1, 1)
+slot/5/right_icon = null
+slot/5/draw_stylebox = true
 script = ExtResource("5_v7cqa")
 node_color = Color(0.827451, 0.27451, 0.262745, 1)
 node_icon = ExtResource("4_hljjc")
@@ -179,6 +190,36 @@ layout_mode = 2
 layout_mode = 2
 text = "Next"
 horizontal_alignment = 2
+
+[node name="AudioContainer" type="VBoxContainer" parent="." unique_id=1866995452]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="AudioContainer" unique_id=1115963255]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="AudioContainer/Header" unique_id=1241762739]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Audio"
+
+[node name="AudioExpandButton" type="Button" parent="AudioContainer/Header" unique_id=2029020379]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_pressed = false
+icon = ExtResource("4_lv0q5")
+flat = true
+
+[node name="Content" type="VBoxContainer" parent="AudioContainer" unique_id=1867707577]
+visible = false
+layout_mode = 2
+
+[node name="AudioField" parent="AudioContainer/Content" unique_id=882926179 instance=ExtResource("9_358xh")]
+unique_name_in_owner = true
+layout_mode = 2
+_placeholder_text = "Select audio"
+_recent_file_type = "dialog_audio_files"
+file_filters = PackedStringArray("*.ogg", "*.wav", "*.mp3")
 
 [node name="MarginBottom" type="MarginContainer" parent="." unique_id=873039769]
 layout_mode = 2
