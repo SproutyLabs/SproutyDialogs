@@ -85,7 +85,7 @@ func show_text_editor(text_box: Variant) -> void:
 	_text_input.text = _opened_text_box.text
 	if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
 		_opened_text_box.text_changed.connect(_on_text_box_text_changed)
-	_text_preview.text = _variable_manager.parse_variables(_opened_text_box.text, true)
+	_text_preview.text = _parse_raw_text(_text_input.text)
 	visible = true
 
 
@@ -96,7 +96,7 @@ func update_text_editor(text_box: Variant) -> void:
 		_text_input.text = _opened_text_box.text
 		if not _opened_text_box.text_changed.is_connected(_on_text_box_text_changed):
 			_opened_text_box.text_changed.connect(_on_text_box_text_changed)
-		_text_preview.text = _variable_manager.parse_variables(_opened_text_box.text, true)
+		_text_preview.text = _parse_raw_text(_text_input.text)
 
 
 ## Hide the text editor
@@ -129,7 +129,7 @@ func _on_text_box_text_changed(_arg: Variant = null) -> void:
 	_text_input.text = _opened_text_box.text
 	_text_input.set_caret_line(caret_line)
 	_text_input.set_caret_column(caret_column)
-	_text_preview.text = _variable_manager.parse_variables(_text_input.text, true)
+	_text_preview.text = _parse_raw_text(_text_input.text)
 
 
 ## Update the text box and preview with the text editor input
@@ -139,7 +139,7 @@ func _on_code_edit_text_changed() -> void:
 		return
 	_opened_text_box.text = _text_input.text
 	_opened_text_box.text_changed.emit(_text_input.text)
-	_text_preview.text = _variable_manager.parse_variables(_text_input.text, true)
+	_text_preview.text = _parse_raw_text(_text_input.text)
 
 
 ## Expsnd or collapse the text preview box
@@ -153,6 +153,11 @@ func _on_preview_expand_button_toggled(toggled_on: bool) -> void:
 		_preview_expand_button.icon = expand_icon
 		_preview_box.size_flags_vertical = SizeFlags.SIZE_FILL
 		_text_boxes_container.collapsed = true
+
+
+func _parse_raw_text(text: String) -> String:
+	var parser: SproutyDialogsDialogueParser = SproutyDialogsDialogueParser.new(text, _variable_manager)
+	return parser.bbcode_text
 
 
 #region === BBCode tags handling ===============================================
@@ -520,4 +525,13 @@ func _on_add_url_pressed() -> void:
 func _on_url_input_submitted(new_text: String) -> void:
 	update_code_tags("[url=" + new_text + "]", "[/url]", "", true)
 
+
 #endregion
+
+
+func _on_add_typing_speed_pressed() -> void:
+	change_option_bar(8)
+
+
+func _on_add_if_condition_pressed() -> void:
+	change_option_bar(9)

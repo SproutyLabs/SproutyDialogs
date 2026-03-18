@@ -20,7 +20,7 @@ signal dialogue_processed(
 	character_name: String,
 	translated_name: String,
 	portrait: String,
-	dialog: String,
+	dialog_data: Dictionary,
 	next_node: String
 )
 ## Emitted when a options node was processed.
@@ -59,7 +59,8 @@ func _process_dialogue(node_data: Dictionary) -> void:
 	# Get the translated dialog and parse variables
 	var dialog = SproutyDialogsTranslationManager.get_translated_dialog(
 			node_data["dialog_key"], get_parent().get_dialog_data())
-	dialog = _sprouty_dialogs.Variables.parse_variables(dialog)
+	var parser: SproutyDialogsDialogueParser = SproutyDialogsDialogueParser.new(dialog, _sprouty_dialogs.Variables)
+#	dialog = parser.bbcode_text
 
 	# Get the translated character name
 	var character_data = get_parent().get_character_data(node_data["character"])
@@ -75,7 +76,7 @@ func _process_dialogue(node_data: Dictionary) -> void:
 			portrait = character_data.default_portrait
 
 	dialogue_processed.emit(node_data["character"], display_name,
-			portrait, dialog, node_data["to_node"][0])
+			portrait, parser.dialog_data, node_data["to_node"][0])
 
 
 func _process_options(node_data: Dictionary) -> void:

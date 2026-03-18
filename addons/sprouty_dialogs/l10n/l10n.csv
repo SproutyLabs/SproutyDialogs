@@ -199,6 +199,21 @@ Frequency determines how many letters the rainbow extends over before it repeats
 Saturation of the rainbow.,Editor -> Dialogue Panel -> Text Edit,Saturation of the rainbow.,彩虹饱和度。
 Value of the rainbow.,Editor -> Dialogue Panel -> Text Edit,Value of the rainbow.,彩虹明度。
 "Speed is the number of full rainbow cycles per second. A positive speed value will play the animation forwards, a value of 0 will pause the animation, and a negative speed value will play the animation backwards.",Editor -> Dialogue Panel -> Text Edit,"Speed is the number of full rainbow cycles per second. A positive speed value will play the animation forwards, a value of 0 will pause the animation, and a negative speed value will play the animation backwards.",速度是每秒完成的彩虹循环次数。正速度值使动画正向播放，速度值为 0 时动画暂停，负速度值使动画反向播放。
+Add a typing speed effect in the selected text.,Editor -> Dialogue Panel -> Text Edit,Add a typing speed effect in the selected text.,为所选文本添加打字速度效果。
+"Add a typing speed effect in the selected text.
+Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
+Relative speed: A multiplier relative to the default typing speed configured in the settings (e.g., 2x means twice the default speed). A larger value makes the typing faster (shorter character intervals).
+Wait: Inserts a fixed pause (in seconds) between characters; the typewriter pauses before continuing with the subsequent content.",Editor -> Dialogue Panel -> Text Edit,"Add a typing speed effect in the selected text.
+Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
+Relative speed: A multiplier relative to the default typing speed configured in the settings (e.g., 2x means twice the default speed). A larger value makes the typing faster (shorter character intervals).
+Wait: Inserts a fixed pause (in seconds) between characters; the typewriter pauses before continuing with the subsequent content.","为所选文本添加打字速度效果。
+绝对速度：显示每个字符所用的时间（秒）。值越大，字符之间的间隔越长，打字速度越慢。
+相对速度：相对于设置中配置的默认打字速度的倍数（例如，2x表示默认速度的两倍）。值越大，打字速度越快（字符间隔越短）。
+等待：在字符之间插入固定的停顿（以秒为单位）；打字机在继续下一个内容之前停顿了一下。"
+Absolute Speed,Editor -> Dialogue Panel -> Text Edit,Absolute Speed,绝对速度
+Relative Speed,Editor -> Dialogue Panel -> Text Edit,Relative Speed,相对速度
+Wait,Editor -> Dialogue Panel -> Text Edit,Wait,等待
+Add an if condition in the selected text. Displays the text only if a condition is met.,Editor -> Dialogue Panel -> Text Edit,Add an if condition in the selected text. Displays the text only if a condition is met.,为所选文本添加 if 条件。仅在满足条件时显示文本。
 "The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?",Editor -> Dialogue Panel -> Confirmation Dialog,"The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?","文件包含未保存的更改。

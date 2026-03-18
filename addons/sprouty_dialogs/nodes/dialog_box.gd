@@ -74,6 +74,9 @@ var _can_skip_timer: Timer
 ## Flag to control if the dialog can be skipped.
 var _can_skip: bool = true
 
+## Array to store the typing speed intervals for different parts of the dialog.
+var _typing_speed_intervals: Array = []
+
 ## Flag to control if the dialog is completed.
 var _display_completed: bool = false
 ## Array to store the dialog sentences.
@@ -83,6 +86,9 @@ var _sentences: Array[String] = []
 var _current_sentence: int = 0
 ## Current sentence lenght
 var _sentence_lenght: int = 0
+
+## Start index of the current sentence in the whole dialog (clean character count)
+var _current_sentence_start_index: int = 0
 
 ## Flag to check if the dialog box is displaying a portrait.
 var _is_displaying_portrait: bool = false
@@ -105,6 +111,12 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 func _enter_tree() -> void:
 	if not Engine.is_editor_hint():
+		# Set typing_speed here because reading the setting at variable declaration can return the original default instead of a user-modified value.
+		# Assigning it in _enter_tree ensures we pick up the user's saved setting after the settings manager has initialized.
+		# The settings manager may not be fully loaded or updated when the script is first parsed,
+		# so performing this assignment when the node enters the scene tree guarantees the current (possibly user-changed) value is used.
+		typing_speed = SproutyDialogsSettingsManager.get_setting("default_typing_speed")
+		
 		if typing_speed > 0.0:
 			_type_timer = Timer.new()
 			add_child(_type_timer)
@@ -173,7 +185,7 @@ func _input(event: InputEvent) -> void:
 
 
 ## Play a dialog on dialog box
-func play_dialog(character_name: String, dialog: String) -> void:
+func play_dialog(character_name: String, dialog_data: Dictionary) -> void:
 	if not _is_started: # First time the dialog is started
 		await _on_dialog_box_open()
 	hide_options()
@@ -183,7 +195,12 @@ func play_dialog(character_name: String, dialog: String) -> void:
 	if name_display: # Set the character name
 		name_display.text = character_name
 		name_display.visible = character_name != ""
+	var dialog: String = dialog_data.get("text", "")
 	dialog_display.text = dialog
+	
+	_typing_speed_intervals = dialog_data.get("speed", [])
+	_sort_typing_speed_intervals()
+	
 	_current_sentence = 0
 	_sentences = []
 
@@ -442,6 +459,18 @@ func _display_new_sentence(sentence: String) -> void:
 	var clean_sentence = regex.sub(sentence, "", true)
 	_sentence_lenght = clean_sentence.length()
 
+	# Compute the global start index for the current sentence by summing the
+	# clean lengths of all previous sentences. This makes _get_typing_speed_at
+	# receive an index relative to the entire dialog text (not the sentence).
+	var start_index: int = 0
+	if _sentences.size() > 0 and _current_sentence > 0:
+		var i: int = 0
+		while i < _current_sentence:
+			var prev_clean: String = regex.sub(_sentences[i], "", true)
+			start_index += prev_clean.length()
+			i += 1
+	_current_sentence_start_index = start_index
+
 	if typing_speed <= 0.0: # If typing speed is 0, show the full text
 		dialog_display.visible_characters = dialog_display.text.length()
 		_on_display_completed()
@@ -451,12 +480,21 @@ func _display_new_sentence(sentence: String) -> void:
 			continue_indicator.hide()
 		_display_completed = false
 		_type_timer.start()
+		_type_timer.wait_time = _get_typing_speed_at(_current_sentence_start_index)
+		_type_timer.start()
 
 
 ## Timer to type the dialog characters
 func _on_type_timer_timeout() -> void:
 	if dialog_display.visible_characters < _sentence_lenght:
 		dialog_display.visible_characters += 1
+		# After showing a character, update the timer interval according to the
+		# next character index so speed intervals take effect.
+		if _type_timer:
+			var next_index: int = _current_sentence_start_index + int(dialog_display.visible_characters)
+			var next_speed: float = _get_typing_speed_at(next_index)
+			if _type_timer.wait_time != next_speed:
+				_type_timer.wait_time = next_speed
 	else:
 		_type_timer.stop()
 		_on_display_completed()
@@ -480,5 +518,43 @@ func _on_dialog_meta_clicked(meta: String) -> void:
 	if SproutyDialogsSettingsManager.get_setting("open_url_on_meta_tag_click"):
 		OS.shell_open(meta) # Open the URL in the default browser
 	meta_clicked.emit(meta)
+
+#endregion
+
+
+#region === Typing speed ================================================================
+
+func _sort_typing_speed_intervals() -> void:
+	_typing_speed_intervals.sort_custom(func(a: Dictionary, b: Dictionary):
+		if a["start"] != b["start"]:
+			return a["start"] < b["start"]
+		else:
+			return a["end"] < b["end"]
+	)
+	print("_typing_speed_intervals: ", _typing_speed_intervals)
+
+
+func _get_typing_speed_at(index: int) -> float:
+	if _typing_speed_intervals.is_empty():
+		return typing_speed
+	var lo: int = 0
+	var hi: int = _typing_speed_intervals.size() - 1
+	var candidate_idx: int = -1
+	while lo <= hi:
+		var mid: int = (lo + hi) / 2
+		var mid_interval: Dictionary = _typing_speed_intervals[mid]
+		if mid_interval["start"] <= index:
+			candidate_idx = mid
+			lo = mid + 1
+		else:
+			hi = mid - 1
+	if candidate_idx == -1:
+		return typing_speed
+	var i: int = candidate_idx
+	while i >= 0 and _typing_speed_intervals[i]["start"] <= index:
+		if index <= _typing_speed_intervals[i]["end"]:
+			return _typing_speed_intervals[i]["value"]
+		i -= 1
+	return typing_speed
 
 #endregion

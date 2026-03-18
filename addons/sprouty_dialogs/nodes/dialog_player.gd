@@ -561,11 +561,11 @@ func _process_node(node_name: String) -> void:
 
 ## Play dialog when the dialogue node is processed
 func _on_dialogue_processed(character_name: String, translated_name: String,
-		portrait: String, dialog: String, next_node: String) -> void:
+		portrait: String, dialog_data: Dictionary, next_node: String) -> void:
 	_next_node = next_node
 	_update_dialog_box(character_name)
 	await _update_portrait(character_name, portrait)
-	_current_dialog_box.play_dialog(translated_name, dialog)
+	_current_dialog_box.play_dialog(translated_name, dialog_data)
 
 
 ## Handle when the options node is processed
