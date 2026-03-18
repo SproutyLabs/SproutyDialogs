@@ -11,18 +11,50 @@ var _variable_manager: SproutyDialogsVariableManager = null
 
 
 func _init(text: String, variable_manager: SproutyDialogsVariableManager) -> void:
-	_register_tag_processor(SproutyDialogsIfTagProcessor.new())
-	_register_tag_processor(SproutyDialogsSpeedTagProcessor.new())
-	_register_tag_processor(SproutyDialogsWaitTagProcessor.new())
+	_scan_tags_folder()
 	
 	raw_text = text
 	_variable_manager = variable_manager
 	_parse_dialogue_text()
 
 
-func _register_tag_processor(tag_processor: SproutyDialogsTagProcessor) -> void:
-	_tag_processors[tag_processor.get_tag_name()] = tag_processor
+#region === Tag Processor Registration ======================================================================
 
+func _scan_tags_folder() -> void:
+	var folder_path: String = "res://addons/sprouty_dialogs/utils/dialogue_parsing/tags"
+	var dir: DirAccess = DirAccess.open(folder_path)
+	if not dir:
+		printerr("[Sprouty Dialogs] Error: Could not open tags directory. No custom tags will be registered.")
+		return
+
+	dir.list_dir_begin()
+	var file_name: String = dir.get_next()
+	while file_name != "":
+		if file_name.ends_with(".gd") and not file_name.begins_with("."):
+			var path: String = folder_path + "/" + file_name
+			_register_tag_processor(path)
+		file_name = dir.get_next()
+	dir.list_dir_end()
+
+
+func _register_tag_processor(path: String) -> void:
+	var script: GDScript = load(path) as GDScript
+	if not script:
+		return
+	var tag_processor: SproutyDialogsTagProcessor = script.new()
+	if not tag_processor or not tag_processor.has_method("get_tag_name"):
+		printerr("[Sprouty Dialogs] Warning: Script at %s does not implement get_tag_name() method. Skipping." % path)
+		return
+	var tag_name: String = tag_processor.get_tag_name()
+	if tag_name == null or tag_name == "":
+		return
+	_tag_processors[tag_name] = tag_processor
+
+
+#endregion ===============================================================================================
+
+
+#region === Dialogue Parsing ===============================================================================
 
 func _parse_dialogue_text() -> void:
 	# First parse variables, then construct AST, and finally generate final text content based on the AST
@@ -228,6 +260,9 @@ func print_ast(node: ASTNode, indent: int = 0) -> void:
 		print(indent_str + "Tag: " + node.name + ", Attributes: " + str(node.attributes))
 	for child in node.children:
 		print_ast(child, indent + 1)
+
+
+#endregion ===============================================================================================
 
 
 class ASTNode:
