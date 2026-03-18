@@ -531,7 +531,6 @@ func _sort_typing_speed_intervals() -> void:
 		else:
 			return a["end"] < b["end"]
 	)
-	print("_typing_speed_intervals: ", _typing_speed_intervals)
 
 
 func _get_typing_speed_at(index: int) -> float:
