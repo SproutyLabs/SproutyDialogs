@@ -25,12 +25,12 @@ func transform(node: SproutyDialogsDialogueParser.ASTNode, variable_manager: Spr
 			TYPE_STRING: value = attrs["val"]
 			_: value = null
 		match operator:
-			"eq": comparison_result = value == variable_data["value"]
-			"ne": comparison_result = value != variable_data["value"]
-			"lt": comparison_result = value < variable_data["value"]
-			"gt": comparison_result = value > variable_data["value"]
-			"le": comparison_result = value <= variable_data["value"]
-			"ge": comparison_result = value >= variable_data["value"]
+			"eq": comparison_result = variable_data["value"] == value
+			"ne": comparison_result = variable_data["value"] != value
+			"lt": comparison_result = variable_data["value"] < value
+			"gt": comparison_result = variable_data["value"] > value
+			"le": comparison_result = variable_data["value"] <= value
+			"ge": comparison_result = variable_data["value"] >= value
 			_: comparison_result = false
 		result = comparison_result
 	var parent_node: SproutyDialogsDialogueParser.ASTNode = node.parent
