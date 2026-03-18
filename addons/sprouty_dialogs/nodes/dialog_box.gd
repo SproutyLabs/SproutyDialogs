@@ -300,7 +300,7 @@ func display_portrait(character_parent: Node, portrait_node: Node) -> void:
 #region === Display options ====================================================
 
 ## Display the dialog options
-func display_options(options: Array) -> void:
+func display_options(options: Array, disabled_flags: Array = []) -> void:
 	_is_displaying_options = true
 	if not options_container:
 		printerr("[SproutyDialogs] Dialog options container is not set. 
@@ -314,12 +314,23 @@ func display_options(options: Array) -> void:
 	for child in options_container.get_children():
 		child.queue_free()
 
+	var selectable_index := 0
 	for index in options.size(): # Add new options
 		var option_node = option_template.duplicate()
-		option_node.option_index = index
 		option_node.set_text(options[index])
+
+		var is_disabled: bool = index < disabled_flags.size() and bool(disabled_flags[index])
+		option_node.disabled = is_disabled
+		option_node.modulate = Color(0.6, 0.6, 0.6, 1.0) if is_disabled else Color(1, 1, 1, 1)
+
+		if is_disabled:
+			option_node.focus_mode = Control.FOCUS_NONE
+		else:
+			option_node.option_index = selectable_index
+			selectable_index += 1
+			option_node.option_selected.connect(option_selected.emit)
+
 		options_container.add_child(option_node)
-		option_node.option_selected.connect(option_selected.emit)
 		option_node.show()
 	_on_options_displayed()
 	show()

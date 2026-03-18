@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://qt20w1k4gtes"]
+
+[ext_resource type="Script" uid="uid://dh71lljc6hcy7" path="res://addons/sprouty_dialogs/editor/components/conditions_container.gd" id="1_58evq"]
+[ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="2_itu1p"]
+[ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="3_58evq"]
+
+[node name="ConditionsContainer" type="VBoxContainer" unique_id=1762769955]
+script = ExtResource("1_58evq")
+
+[node name="Header" type="HBoxContainer" parent="." unique_id=2044582961]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Header" unique_id=493032144]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Condition"
+
+[node name="CheckBox" type="CheckBox" parent="Header" unique_id=1687541109]
+layout_mode = 2
+
+[node name="ExpandButton" type="Button" parent="Header" unique_id=359133394]
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("2_itu1p")
+flat = true
+
+[node name="ScrollContainer" type="ScrollContainer" parent="." unique_id=733157712]
+custom_minimum_size = Vector2(150, 160)
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="ConditionBoxes" type="VBoxContainer" parent="ScrollContainer" unique_id=1297377619]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Container" type="HFlowContainer" parent="ScrollContainer/ConditionBoxes" unique_id=490822971]
+layout_mode = 2
+
+[node name="FirstVar" type="HBoxContainer" parent="ScrollContainer/ConditionBoxes/Container" unique_id=73067790]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypeField" type="PanelContainer" parent="ScrollContainer/ConditionBoxes/Container/FirstVar" unique_id=1868423832]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = ExtResource("3_58evq")
+
+[node name="ValueField" type="PanelContainer" parent="ScrollContainer/ConditionBoxes/Container/FirstVar" unique_id=1495382864]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("3_58evq")
+
+[node name="OperatorDropdown" type="OptionButton" parent="ScrollContainer/ConditionBoxes/Container" unique_id=1444755931]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+selected = 0
+item_count = 6
+popup/item_0/text = "=="
+popup/item_0/id = 0
+popup/item_1/text = "!="
+popup/item_1/id = 1
+popup/item_2/text = "<"
+popup/item_2/id = 2
+popup/item_3/text = ">"
+popup/item_3/id = 4
+popup/item_4/text = "<="
+popup/item_4/id = 3
+popup/item_5/text = ">="
+popup/item_5/id = 5
+
+[node name="SecondVar" type="HBoxContainer" parent="ScrollContainer/ConditionBoxes/Container" unique_id=1692908536]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TypeField" type="PanelContainer" parent="ScrollContainer/ConditionBoxes/Container/SecondVar" unique_id=1461565202]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/panel = ExtResource("3_58evq")
+
+[node name="ValueField" type="PanelContainer" parent="ScrollContainer/ConditionBoxes/Container/SecondVar" unique_id=968086775]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("3_58evq")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer/ConditionBoxes/Container" unique_id=950522964]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ScrollContainer/ConditionBoxes/Container/HBoxContainer" unique_id=1441401907]
+layout_mode = 2
+text = "Else:"
+
+[node name="OptionButton" type="OptionButton" parent="ScrollContainer/ConditionBoxes/Container/HBoxContainer" unique_id=1333900330]
+layout_mode = 2
+selected = 0
+item_count = 2
+popup/item_0/text = "Hidden"
+popup/item_0/id = 0
+popup/item_1/text = "Striked"
+popup/item_1/id = 1
+
+[connection signal="toggled" from="Header/ExpandButton" to="." method="_on_expand_button_toggled"]

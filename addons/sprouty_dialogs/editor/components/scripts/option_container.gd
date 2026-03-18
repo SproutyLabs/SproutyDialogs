@@ -26,6 +26,7 @@ signal option_removed(index)
 @onready var _default_text_box: EditorSproutyDialogsExpandableTextBox = $ExpandableTextBox
 ## Translations container to handle the dialog translations
 @onready var _translation_boxes: EditorSproutyDialogsTranslationsContainer = $TranslationsContainer
+@onready var _conditions_container: EditorSproutyDialogsConditionsContainer = $VBoxContainer/ConditionsContainer
 
 ## Default locale for dialog text
 var _default_locale: String = ""
@@ -66,6 +67,14 @@ func _ready() -> void:
 	on_translation_enabled_changed( # Enable/disable translation section
 			SproutyDialogsSettingsManager.get_setting("enable_translations")
 		)
+
+
+func get_conditions() -> Dictionary:
+	return _conditions_container.get_data()
+
+
+func load_conditions(data: Dictionary) -> void:
+	_conditions_container.set_data(data)
 
 
 ## Return the dialog key for this option
