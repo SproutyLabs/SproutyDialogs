@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cavuay6tm6gvn"
-path="res://.godot/imported/if.svg-bcffba0a5d7f8bc1552f93d9e0f8a18d.ctex"
+uid="uid://etdq2yrcn1ai"
+path="res://.godot/imported/tag.svg-471e385a869a29e4deef4019122b034c.ctex"
 metadata={
 "has_editor_variant": true,
 "vram_texture": false
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://addons/sprouty_dialogs/editor/icons/text_editor/if.svg"
-dest_files=["res://.godot/imported/if.svg-bcffba0a5d7f8bc1552f93d9e0f8a18d.ctex"]
+source_file="res://addons/sprouty_dialogs/editor/icons/text_editor/tag.svg"
+dest_files=["res://.godot/imported/tag.svg-471e385a869a29e4deef4019122b034c.ctex"]
 
 [params]
 
@@ -39,6 +39,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=0.8
+svg/scale=1.2
 editor/scale_with_editor_scale=true
 editor/convert_colors_with_editor_theme=true
