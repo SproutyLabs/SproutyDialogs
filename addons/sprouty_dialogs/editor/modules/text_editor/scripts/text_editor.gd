@@ -156,7 +156,7 @@ func _on_preview_expand_button_toggled(toggled_on: bool) -> void:
 
 
 func _parse_raw_text(text: String) -> String:
-	var parser: SproutyDialogsDialogueParser = SproutyDialogsDialogueParser.new(text, _variable_manager)
+	var parser: SproutyDialogsTagsParser = SproutyDialogsTagsParser.new(text, _variable_manager)
 	return parser.bbcode_text
 
 
