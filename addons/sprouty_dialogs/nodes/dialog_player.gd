@@ -139,6 +139,7 @@ var _current_portrait: DialogPortrait
 
 ## Next nodes options to process when a dialog option is selected.
 var _next_options: Array = []
+var _current_option_keys: Array = []
 ## Next node to process in the dialog tree after a dialogue node.
 var _next_node: String = ""
 ## Next dialog to process if the next node belongs to another dialog tree.
@@ -478,6 +479,7 @@ func stop() -> void:
 	_current_node = ""
 	_paused_node = ""
 	_next_node = ""
+	_current_option_keys = []
 
 	if _current_dialog_box and not _current_dialog_box.is_displaying_portrait():
 		await _current_dialog_box.stop_dialog(true)
@@ -569,18 +571,37 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 
 
 ## Handle when the options node is processed
-func _on_options_processed(options: Array, next_nodes: Array) -> void:
+func _on_options_processed(
+		options: Array,
+		next_nodes: Array,
+		option_keys: Array = [],
+		disabled_flags: Array = []
+	) -> void:
 	if not _current_dialog_box:
 		_update_dialog_box("") # Use default dialog box
-	_current_dialog_box.display_options(options)
-	_next_options = next_nodes
+
+	_next_options = []
+	_current_option_keys = []
+
+	for i in range(options.size()):
+		var is_disabled: bool = i < disabled_flags.size() and bool(disabled_flags[i])
+		if not is_disabled:
+			_next_options.append(next_nodes[i])
+			if i < option_keys.size():
+				_current_option_keys.append(option_keys[i])
+
+	_current_dialog_box.display_options(options, disabled_flags)
 
 
 ## Process the next node of the option selected
 func _on_option_selected(option_index: int) -> void:
 	_current_dialog_box.hide_options()
-	var option_key = _start_id + "_OPT" \
-			+ _current_node.split("_")[-1] + "_" + str(option_index + 1)
+	var option_key = ""
+	if option_index < _current_option_keys.size():
+		option_key = _current_option_keys[option_index]
+	else:
+		option_key = _start_id + "_OPT" \
+				+ _current_node.split("_")[-1] + "_" + str(option_index + 1)
 	var option_dialog = _dialog_data.dialogs[option_key]
 	option_dialog["key"] = option_key
 	

@@ -24,7 +24,7 @@ signal dialogue_processed(
 	next_node: String
 )
 ## Emitted when a options node was processed.
-signal options_processed(options: Array, next_nodes: Array)
+signal options_processed(options: Array, next_nodes: Array, option_keys: Array, disabled_flags: Array)
 ## Emitted when a signal node was processed.
 signal signal_processed(signal_id: String, args: Array, next_node: String)
 
@@ -81,12 +81,57 @@ func _process_dialogue(node_data: Dictionary) -> void:
 
 func _process_options(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing options node...")
-	options_processed.emit(node_data.options_keys.map(
-		func(key): # Return the translated and parsed options
-			return _sprouty_dialogs.Variables.parse_variables(
-				SproutyDialogsTranslationManager.get_translated_dialog(
-					key, get_parent().get_dialog_data()))
-	), node_data.to_node)
+
+	var filtered_options: Array = []
+	var filtered_next_nodes: Array = []
+	var filtered_option_keys: Array = []
+	var disabled_flags: Array = []
+	var options_conditions: Array = node_data.get("options_conditions", [])
+
+	for i in range(node_data.options_keys.size()):
+		var key = node_data.options_keys[i]
+		var option_text = _sprouty_dialogs.Variables.parse_variables(
+			SproutyDialogsTranslationManager.get_translated_dialog(
+				key, get_parent().get_dialog_data()
+			)
+		)
+
+		var condition_data: Dictionary = {}
+		if i < options_conditions.size() and options_conditions[i] is Dictionary:
+			condition_data = options_conditions[i].duplicate(true)
+
+		var show_option := true
+		var disable_option := false
+
+		if not condition_data.is_empty() and condition_data.get("enabled", false):
+			var result = _sprouty_dialogs.Variables.get_comparison_result(
+				condition_data.get("first_var", {}),
+				condition_data.get("second_var", {}),
+				condition_data.get("operator", OP_EQUAL)
+			)
+
+			var condition_met = result == true
+			var visibility = int(condition_data.get("visibility", 0))
+
+			if not condition_met:
+				if visibility == 0:
+					show_option = false
+				else:
+					show_option = true
+					disable_option = true
+
+		if show_option:
+			filtered_options.append(option_text)
+			filtered_next_nodes.append(node_data.to_node[i])
+			filtered_option_keys.append(key)
+			disabled_flags.append(disable_option)
+
+	options_processed.emit(
+		filtered_options,
+		filtered_next_nodes,
+		filtered_option_keys,
+		disabled_flags
+	)
 
 
 func _process_condition(node_data: Dictionary) -> void:

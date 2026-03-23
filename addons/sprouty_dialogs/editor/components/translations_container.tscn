@@ -22,7 +22,7 @@ icon = ExtResource("2_8u1nn")
 flat = true
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
-custom_minimum_size = Vector2(150, 160)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 horizontal_scroll_mode = 0
 
@@ -33,7 +33,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="TranslationBox" parent="ScrollContainer/TextBoxes" instance=ExtResource("3_sqsni")]
-custom_minimum_size = Vector2(150, 100)
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 
 [connection signal="toggled" from="Header/ExpandButton" to="." method="_on_expand_button_toggled"]

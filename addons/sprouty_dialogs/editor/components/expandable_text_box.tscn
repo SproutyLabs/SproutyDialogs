@@ -8,7 +8,7 @@ _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\">
 "
 
 [node name="ExpandableTextBox" type="HBoxContainer" unique_id=1035742864]
-custom_minimum_size = Vector2(0, 80)
+custom_minimum_size = Vector2(0, 43.32)
 offset_right = 40.0
 offset_bottom = 40.0
 size_flags_horizontal = 3
@@ -16,11 +16,12 @@ size_flags_vertical = 3
 script = ExtResource("1_ytunx")
 
 [node name="TextEdit" type="TextEdit" parent="." unique_id=764128304]
-custom_minimum_size = Vector2(150, 50)
+custom_minimum_size = Vector2(150, 40)
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Write text here..."
 wrap_mode = 1
+caret_blink = true
 syntax_highlighter = ExtResource("2_p55sv")
 highlight_all_occurrences = true
 

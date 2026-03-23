@@ -21,13 +21,25 @@ signal text_box_focus_exited()
 ## Input text box
 @onready var _text_box: TextEdit = $TextEdit
 
+const MAX_VISIBLE_LINES := 4
+const EXTRA_Y_PADDING := 8
+
 
 func _ready():
-	_text_box.text_changed.connect(text_changed.emit)
+	_text_box.text_changed.connect(_on_text_changed_internal)
 	_text_box.focus_exited.connect(text_box_focus_exited.emit)
 	_text_box.focus_entered.connect(update_text_editor.emit.bind(_text_box))
 	$ExpandButton.pressed.connect(open_text_editor.emit.bind(_text_box))
 	$ExpandButton.icon = get_theme_icon("DistractionFree", "EditorIcons")
+	_on_text_changed_internal()
+
+
+func _on_text_changed_internal() -> void:
+	text_changed.emit(_text_box.text)
+	var lines := mini(_text_box.get_total_visible_line_count(), MAX_VISIBLE_LINES)
+	var h := lines * _text_box.get_line_height() + EXTRA_Y_PADDING
+	_text_box.custom_minimum_size.y = h
+	custom_minimum_size.y = h
 
 
 ## Returns the text from the text box

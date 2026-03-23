@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://r820gcc1lism" path="res://addons/sprouty_dialogs/editor/components/translations_container.tscn" id="2_6k3ms"]
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="2_ynjo5"]
 [ext_resource type="PackedScene" uid="uid://cpvp6sfoxqigr" path="res://addons/sprouty_dialogs/editor/components/expandable_text_box.tscn" id="3_5qfnu"]
+[ext_resource type="PackedScene" uid="uid://qt20w1k4gtes" path="res://addons/sprouty_dialogs/editor/components/conditions_container.tscn" id="5_v5x4y"]
 
 [sub_resource type="DPITexture" id="DPITexture_5rvxf"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
@@ -38,6 +39,12 @@ custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
 
 [node name="TranslationsContainer" parent="." unique_id=53738011 instance=ExtResource("2_6k3ms")]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1169002712]
+layout_mode = 2
+
+[node name="ConditionsContainer" parent="VBoxContainer" unique_id=1762769955 instance=ExtResource("5_v5x4y")]
 layout_mode = 2
 
 [node name="HSeparator" type="HSeparator" parent="." unique_id=1858026252]

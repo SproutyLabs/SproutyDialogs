@@ -26,6 +26,9 @@ signal update_text_editor(text_box: TextEdit)
 
 ## Text boxes container
 @onready var _text_boxes: Container = %TextBoxes
+@onready var _scroll_container: ScrollContainer = $ScrollContainer
+
+const MAX_TRANSLATIONS_HEIGHT := 160.0
 
 ## Translation text box and text line scene resources
 var _translation_box = preload("res://addons/sprouty_dialogs/editor/components/translation_box.tscn")
@@ -44,6 +47,7 @@ func _ready():
 	if _text_boxes.get_parent() != self:
 		_text_boxes.get_parent().visible = false
 	_text_boxes.visible = false
+	_update_scroll_height()
 
 
 ## Return the dialog translations text on a dictionary
@@ -63,6 +67,7 @@ func set_translation_boxes(locales: Array) -> void:
 	
 	if locales.is_empty():
 		self.visible = false
+		_update_scroll_height()
 		return
 	
 	for locale in locales: # Add a box for each locale
@@ -77,7 +82,9 @@ func set_translation_boxes(locales: Array) -> void:
 		box.open_text_editor.connect(open_text_editor.emit)
 		box.update_text_editor.connect(update_text_editor.emit)
 		box.modified.connect(modified.emit)
+		box.resized.connect(_update_scroll_height)
 	self.visible = true
+	call_deferred("_update_scroll_height")
 
 
 ## Load dialog translations text
@@ -85,6 +92,7 @@ func load_translations_text(dialogs: Dictionary) -> void:
 	for box in _text_boxes.get_children():
 		if box is EditorSproutyDialogsTranslationBox and dialogs.has(box.get_locale()):
 			box.set_text(dialogs[box.get_locale()])
+	call_deferred("_update_scroll_height")
 
 
 ## Show or collapse the text boxes
@@ -96,3 +104,15 @@ func _on_expand_button_toggled(toggled_on: bool) -> void:
 	
 	_text_boxes.visible = toggled_on
 	$Header/ExpandButton.icon = collapse_up_icon if toggled_on else collapse_down_icon
+	call_deferred("_update_scroll_height")
+
+
+func _update_scroll_height() -> void:
+	if not is_instance_valid(_scroll_container) or not is_instance_valid(_text_boxes):
+		return
+
+	var content_height := _text_boxes.get_combined_minimum_size().y
+	if _text_boxes.visible:
+		_scroll_container.custom_minimum_size.y = minf(content_height, MAX_TRANSLATIONS_HEIGHT)
+	else:
+		_scroll_container.custom_minimum_size.y = 0.0
