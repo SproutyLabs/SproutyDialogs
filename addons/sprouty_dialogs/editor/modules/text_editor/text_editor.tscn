@@ -197,13 +197,13 @@ layout_mode = 2
 
 [node name="AddEffect" type="Button" parent="Container/Toolbar" unique_id=1807632105]
 layout_mode = 2
-tooltip_text = "Add an effect in the selected text."
+tooltip_text = "Add an effect to the selected text."
 icon = ExtResource("18_do7oi")
 flat = true
 
 [node name="AddTag" type="Button" parent="Container/Toolbar" unique_id=1725031841]
 layout_mode = 2
-tooltip_text = "Add an special tag in the selected text."
+tooltip_text = "Add a special tag to the selected text."
 icon = ExtResource("20_bxin5")
 flat = true
 
@@ -1177,11 +1177,8 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/SpeedBar" unique_id=358762511]
 layout_mode = 2
-tooltip_text = "Add a typing speed effect in the selected text.
-Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
-Relative speed: A multiplier relative to the default typing speed configured in the settings (e.g., 2x means twice the default speed). A larger value makes the typing faster (shorter character intervals).
-Wait: Inserts a fixed pause (in seconds) between characters; the typewriter pauses before continuing with the subsequent content."
-text = "Typing speed"
+tooltip_text = "Add a typing speed effect in the selected text."
+text = "Typing Speed"
 icon = ExtResource("20_4oq2i")
 flat = true
 
@@ -1192,6 +1189,8 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
+tooltip_text = "Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
+Relative speed: A multiplier relative to the default typing speed configured in the settings (e.g., 2x means twice the default speed). A larger value makes the typing faster (shorter character intervals)."
 flat = true
 alignment = 1
 selected = 0
@@ -1215,10 +1214,7 @@ layout_mode = 2
 
 [node name="Label" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1137677080]
 layout_mode = 2
-tooltip_text = "Add a typing speed effect in the selected text.
-Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
-Relative speed: A multiplier relative to the default typing speed configured in the settings (e.g., 2x means twice the default speed). A larger value makes the typing faster (shorter character intervals).
-Wait: Inserts a fixed pause (in seconds) between characters; the typewriter pauses before continuing with the subsequent content."
+tooltip_text = "Wait: Inserts a fixed pause (in seconds) between characters; the typewriter pauses before continuing with the subsequent content."
 text = "Wait"
 icon = ExtResource("39_cqwig")
 flat = true
@@ -1244,6 +1240,7 @@ layout_mode = 2
 [node name="Label" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=1733115539]
 layout_mode = 2
 tooltip_text = "Add an if condition in the selected text. Displays the text only if a condition is met."
+text = "Condition"
 icon = ExtResource("21_8bfyw")
 flat = true
 
