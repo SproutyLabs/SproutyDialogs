@@ -12,9 +12,12 @@ extends VBoxContainer
 ## Tags options bars (speed, wait, if, etc.)
 @onready var _tags_bars: Array = $TagsContainer.get_children()
 
-## Speed fields
+## Speed tag fields
 @onready var _speed_type_dropdown = %SpeedTypeDropdown
 @onready var _speed_input: SpinBox = %SpeedInput
+
+## Wait tag fields
+@onready var _wait_input: SpinBox = %WaitInput
 
 ## Current tag bar shown in the text editor
 var _current_tag_bar: Control = null
@@ -96,6 +99,11 @@ func _update_speed_tag(value: float) -> void:
 ## Add wait tag to the selected text
 func _on_wait_tag_pressed() -> void:
 	_change_tag_bar(1)
+	_on_wait_value_changed(_wait_input.value)
+
+## Update the wait value
+func _on_wait_value_changed(value: float) -> void:
+	text_editor.update_code_tags("[wait=" + str(value) + "]", "", "", true)
 
 #endregion
 

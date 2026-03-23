@@ -1222,11 +1222,12 @@ flat = true
 [node name="---" type="VSeparator" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1677912922]
 layout_mode = 2
 
-[node name="TimeLabel" type="Label" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1379408469]
+[node name="WaitLabel" type="Label" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1379408469]
 layout_mode = 2
 text = "Time"
 
-[node name="TimeField" type="SpinBox" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1307471813]
+[node name="WaitInput" type="SpinBox" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1307471813]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 step = 0.001
@@ -1515,6 +1516,7 @@ bbcode_enabled = true
 [connection signal="id_pressed" from="Container/OptionMenus/EffectsBar/EffectsMenu" to="Container/OptionMenus/EffectsBar" method="_on_effects_menu_id_pressed"]
 [connection signal="item_selected" from="Container/OptionMenus/TagsBar/TagsContainer/SpeedBar/SpeedTypeDropdown" to="Container/OptionMenus/TagsBar" method="_on_speed_type_selected"]
 [connection signal="value_changed" from="Container/OptionMenus/TagsBar/TagsContainer/SpeedBar/SpeedInput" to="Container/OptionMenus/TagsBar" method="_on_speed_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/TagsBar/TagsContainer/WaitBar/WaitInput" to="Container/OptionMenus/TagsBar" method="_on_wait_value_changed"]
 [connection signal="id_pressed" from="Container/OptionMenus/TagsBar/TagsMenu" to="Container/OptionMenus/TagsBar" method="_on_tags_menu_id_pressed"]
 [connection signal="focus_exited" from="Container/TextBoxes/TextBox" to="." method="_on_text_box_focus_exited"]
 [connection signal="text_changed" from="Container/TextBoxes/TextBox" to="." method="_on_code_edit_text_changed"]
