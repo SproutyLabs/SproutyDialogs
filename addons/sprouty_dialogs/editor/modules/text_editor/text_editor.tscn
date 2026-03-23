@@ -38,7 +38,6 @@
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="32_hkfxn"]
 [ext_resource type="Script" uid="uid://geudtmeyfrfs" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor_if_condition.gd" id="35_165q4"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="35_a35cm"]
-[ext_resource type="Script" uid="uid://ch0na7ba61oc5" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor_typing_speed.gd" id="35_pxx12"]
 [ext_resource type="Script" uid="uid://b2t5x4s5e4oaq" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor_special_tags.gd" id="36_h6it4"]
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg" id="37_phbom"]
 [ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/wait.svg" id="39_cqwig"]
@@ -205,20 +204,6 @@ flat = true
 layout_mode = 2
 tooltip_text = "Add a special tag to the selected text."
 icon = ExtResource("20_bxin5")
-flat = true
-
-[node name="AddTypingSpeed" type="Button" parent="Container/Toolbar" unique_id=1853309613]
-visible = false
-layout_mode = 2
-tooltip_text = "Add a typing speed effect in the selected text."
-icon = ExtResource("20_4oq2i")
-flat = true
-
-[node name="AddIfCondition" type="Button" parent="Container/Toolbar" unique_id=407657043]
-visible = false
-layout_mode = 2
-tooltip_text = "Add an if condition in the selected text. Displays the text only if a condition is met."
-icon = ExtResource("21_8bfyw")
 flat = true
 
 [node name="HSeparator" type="HSeparator" parent="Container" unique_id=1420447395]
@@ -1234,9 +1219,11 @@ step = 0.001
 allow_greater = true
 suffix = "s"
 
-[node name="IfConditionBar" type="HFlowContainer" parent="Container/OptionMenus/TagsBar/TagsContainer" unique_id=1831580040]
+[node name="IfConditionBar" type="HFlowContainer" parent="Container/OptionMenus/TagsBar/TagsContainer" unique_id=1831580040 node_paths=PackedStringArray("text_editor")]
 visible = false
 layout_mode = 2
+script = ExtResource("35_165q4")
+text_editor = NodePath("../../../../..")
 
 [node name="Label" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=1733115539]
 layout_mode = 2
@@ -1248,14 +1235,15 @@ flat = true
 [node name="---" type="VSeparator" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=829448118]
 layout_mode = 2
 
-[node name="VariableTypeField" type="PanelContainer" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=697894174]
-custom_minimum_size = Vector2(56, 0)
+[node name="VariableIcon" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=668882117]
 layout_mode = 2
+tooltip_text = "Variable"
+icon = ExtResource("13_m5lcx")
+flat = true
 
-[node name="VariableNameInput" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=1652503239 instance=ExtResource("24_v57nx")]
+[node name="VariableField" type="PanelContainer" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=644343145]
 layout_mode = 2
-placeholder_text = "Enter a variable name..."
-_placeholder_text = "Enter a variable name..."
+size_flags_horizontal = 3
 
 [node name="OperatorDropdown" type="OptionButton" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=144916050]
 custom_minimum_size = Vector2(48, 0)
@@ -1278,7 +1266,6 @@ popup/item_5/text = ">="
 popup/item_5/id = 5
 
 [node name="ValueTypeField" type="PanelContainer" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=2038236755]
-custom_minimum_size = Vector2(56, 0)
 layout_mode = 2
 
 [node name="ValueField" type="PanelContainer" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=1432139582]
@@ -1299,100 +1286,6 @@ item_1/id = 1
 item_2/text = "Add If Tag"
 item_2/icon = ExtResource("21_8bfyw")
 item_2/id = 2
-
-[node name="TypingSpeedBar" type="HFlowContainer" parent="Container/OptionMenus" unique_id=1837204013 node_paths=PackedStringArray("text_editor")]
-visible = false
-layout_mode = 2
-script = ExtResource("35_pxx12")
-text_editor = NodePath("../../..")
-
-[node name="Label" type="Button" parent="Container/OptionMenus/TypingSpeedBar" unique_id=219058892]
-layout_mode = 2
-tooltip_text = "Add a typing speed effect in the selected text.
-Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
-Relative speed: A multiplier relative to the default typing speed configured in the settings (e.g., 2x means twice the default speed). A larger value makes the typing faster (shorter character intervals).
-Wait: Inserts a fixed pause (in seconds) between characters; the typewriter pauses before continuing with the subsequent content."
-text = "Typing speed"
-icon = ExtResource("20_4oq2i")
-flat = true
-
-[node name="---" type="VSeparator" parent="Container/OptionMenus/TypingSpeedBar" unique_id=702805804]
-layout_mode = 2
-
-[node name="TypeDropdown" type="OptionButton" parent="Container/OptionMenus/TypingSpeedBar" unique_id=603577475]
-custom_minimum_size = Vector2(48, 0)
-layout_mode = 2
-flat = true
-alignment = 1
-selected = 0
-item_count = 3
-popup/item_0/text = "Absolute Speed"
-popup/item_0/id = 0
-popup/item_1/text = "Relative Speed"
-popup/item_1/id = 1
-popup/item_2/text = "Wait"
-popup/item_2/id = 2
-
-[node name="ValueInput" type="SpinBox" parent="Container/OptionMenus/TypingSpeedBar" unique_id=1478734596]
-custom_minimum_size = Vector2(150, 0)
-layout_mode = 2
-step = 0.001
-allow_greater = true
-suffix = "s"
-
-[node name="IfConditionBar" type="HFlowContainer" parent="Container/OptionMenus" unique_id=2144827899 node_paths=PackedStringArray("text_editor")]
-visible = false
-layout_mode = 2
-script = ExtResource("35_165q4")
-text_editor = NodePath("../../..")
-
-[node name="Label" type="Button" parent="Container/OptionMenus/IfConditionBar" unique_id=111412262]
-layout_mode = 2
-tooltip_text = "Add an if condition in the selected text. Displays the text only if a condition is met."
-icon = ExtResource("21_8bfyw")
-flat = true
-
-[node name="---" type="VSeparator" parent="Container/OptionMenus/IfConditionBar" unique_id=1599170533]
-layout_mode = 2
-
-[node name="VariableTypeField" type="PanelContainer" parent="Container/OptionMenus/IfConditionBar" unique_id=1033775540]
-custom_minimum_size = Vector2(56, 0)
-layout_mode = 2
-
-[node name="VariableNameInput" parent="Container/OptionMenus/IfConditionBar" unique_id=278403682 instance=ExtResource("24_v57nx")]
-layout_mode = 2
-placeholder_text = "Enter a variable name..."
-_placeholder_text = "Enter a variable name..."
-
-[node name="OperatorDropdown" type="OptionButton" parent="Container/OptionMenus/IfConditionBar" unique_id=1921191712]
-custom_minimum_size = Vector2(48, 0)
-layout_mode = 2
-flat = true
-alignment = 1
-selected = 0
-item_count = 6
-popup/item_0/text = "=="
-popup/item_0/id = 0
-popup/item_1/text = "!="
-popup/item_1/id = 1
-popup/item_2/text = "<"
-popup/item_2/id = 2
-popup/item_3/text = ">"
-popup/item_3/id = 4
-popup/item_4/text = "<="
-popup/item_4/id = 3
-popup/item_5/text = ">="
-popup/item_5/id = 5
-
-[node name="ValueTypeField" type="PanelContainer" parent="Container/OptionMenus/IfConditionBar" unique_id=1446171400]
-custom_minimum_size = Vector2(56, 0)
-layout_mode = 2
-
-[node name="ValueField" type="PanelContainer" parent="Container/OptionMenus/IfConditionBar" unique_id=928055394]
-auto_translate_mode = 2
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_styles/panel = ExtResource("35_a35cm")
 
 [node name="TextBoxes" type="VSplitContainer" parent="Container" unique_id=1683927142]
 unique_name_in_owner = true
@@ -1464,8 +1357,6 @@ bbcode_enabled = true
 [connection signal="pressed" from="Container/Toolbar/AddURL" to="." method="_on_add_url_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddEffect" to="Container/OptionMenus/EffectsBar" method="_on_add_effect_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddTag" to="Container/OptionMenus/TagsBar" method="_on_add_tag_pressed"]
-[connection signal="pressed" from="Container/Toolbar/AddTypingSpeed" to="." method="_on_add_typing_speed_pressed"]
-[connection signal="pressed" from="Container/Toolbar/AddIfCondition" to="." method="_on_add_if_condition_pressed"]
 [connection signal="value_changed" from="Container/OptionMenus/FontBar/HFlowContainer/SizeField" to="Container/OptionMenus/FontBar" method="_on_font_size_value_changed"]
 [connection signal="path_changed" from="Container/OptionMenus/FontBar/HFlowContainer/FontField" to="Container/OptionMenus/FontBar" method="_on_font_file_path_changed"]
 [connection signal="toggled" from="Container/OptionMenus/FontBar/FontOptionsHeader/Label" to="Container/OptionMenus/FontBar" method="_on_font_options_expand_toggled"]
