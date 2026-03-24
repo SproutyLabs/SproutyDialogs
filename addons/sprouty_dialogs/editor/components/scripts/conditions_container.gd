@@ -6,6 +6,11 @@ extends VBoxContainer
 # Sprouty Dialogs Conditions Container Component
 # -----------------------------------------------------------------------------
 
+## Emitted when press the expand button in a text box field
+signal open_text_editor(text_box: TextEdit)
+## Emitted when a text box field gains focus and should update the text editor
+signal update_text_editor(text_box: TextEdit)
+## Emitted when the condition is modified
 signal modified(modified: bool)
 
 var collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
@@ -73,6 +78,13 @@ func _set_value_field(type_index: int, field_index: int) -> void:
 	_value_inputs[field_index] = field_data.field
 	_var_values[field_index] = field_data.default_value
 	_type_indexes[field_index] = type_index
+
+	# Connect the expand button to open the text editor
+	if type == TYPE_STRING and field_data.field is HBoxContainer:
+		var text_box = field_data.field.get_node("TextEdit")
+		field_data.field.get_node("ExpandButton").pressed.connect(
+				open_text_editor.emit.bind(text_box))
+		text_box.focus_entered.connect(update_text_editor.emit.bind(text_box))
 
 
 func _on_type_selected(type_index: int, field_index: int) -> void:
