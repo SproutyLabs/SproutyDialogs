@@ -33,7 +33,7 @@ func _ready():
 	_set_type_dropdown($ScrollContainer/ConditionBoxes/Container/SecondVar/TypeField, 1)
 	_check_box.toggled.connect(func(_pressed: bool): modified.emit(true))
 	_operator_dropdown.item_selected.connect(func(index: int):
-		_operator_index = index
+		_operator_index=index
 		modified.emit(true)
 	)
 	_visibility_dropdown.item_selected.connect(func(_index: int): modified.emit(true))
@@ -41,7 +41,7 @@ func _ready():
 
 func _set_type_dropdown(dropdown_field: Node, field_index: int) -> void:
 	var types_dropdown = SproutyDialogsVariableUtils.get_types_dropdown(
-		true, ["Nil", "Dictionary", "Array"]
+		false, ["Nil", "Dictionary", "Array"]
 	)
 	dropdown_field.add_child(types_dropdown)
 	_type_dropdowns[field_index] = dropdown_field.get_node("TypeDropdown")
