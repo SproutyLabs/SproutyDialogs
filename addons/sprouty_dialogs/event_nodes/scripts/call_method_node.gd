@@ -67,11 +67,9 @@ func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
+	to_dialog = dict.get("to_dialog", "")
 	position_offset = dict["offset"]
 	size = dict["size"]
-	
-	if dict.has("to_dialog"):
-		to_dialog = dict["to_dialog"]
 
 	_set_autoloads_dropdown(dict["autoload"])
 	_set_method_combo_box(dict["autoload"])

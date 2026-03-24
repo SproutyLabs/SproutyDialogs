@@ -65,12 +65,10 @@ func set_data(dict: Dictionary) -> void:
 	_options_keys = dict["options_keys"]
 	_options_conditions = dict.get("options_conditions", [])
 	to_node = dict["to_node"]
-	to_dialog = dict["to_dialog"]
+	to_dialog = dict.get("to_dialog", "")
 	position_offset = dict["offset"]
 	size = dict["size"]
 
-	if dict.has("to_dialog"):
-		to_dialog = dict["to_dialog"]
 #endregion
 
 
