@@ -34,7 +34,7 @@ func _ready():
 	_on_text_changed_internal()
 
 
-func _on_text_changed_internal() -> void:
+func _on_text_changed_internal(_arg: Variant = null) -> void:
 	text_changed.emit(_text_box.text)
 	var lines := mini(_text_box.get_total_visible_line_count(), MAX_VISIBLE_LINES)
 	var h := lines * _text_box.get_line_height() + EXTRA_Y_PADDING
