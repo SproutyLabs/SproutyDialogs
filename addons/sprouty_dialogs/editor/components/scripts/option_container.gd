@@ -64,6 +64,7 @@ func _ready() -> void:
 	_conditions_container.open_text_editor.connect(open_text_editor.emit)
 	_conditions_container.update_text_editor.connect(update_text_editor.emit)
 	_conditions_container.modified.connect(modified.emit)
+	_conditions_container.undo_redo = undo_redo
 
 	_remove_button.pressed.connect(_on_remove_button_pressed)
 	_remove_button.icon = get_theme_icon("Remove", "EditorIcons")
