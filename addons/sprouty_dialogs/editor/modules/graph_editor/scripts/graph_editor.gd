@@ -1071,12 +1071,12 @@ func _set_node_actions_menu(has_selection: bool = false, paste_enabled: bool = f
 	_node_actions_menu.add_icon_item(get_theme_icon("Add", "EditorIcons"), "Add Node", 0)
 	_node_actions_menu.add_separator()
 	if has_selection:
-		_node_actions_menu.add_icon_item(get_theme_icon("Remove", "EditorIcons"), "Remove Node(s)")
-		_node_actions_menu.add_icon_item(get_theme_icon("Duplicate", "EditorIcons"), "Duplicate Node(s)")
-		_node_actions_menu.add_icon_item(get_theme_icon("ActionCopy", "EditorIcons"), "Copy Node(s)")
-		_node_actions_menu.add_icon_item(get_theme_icon("ActionCut", "EditorIcons"), "Cut Node(s)")
+		_node_actions_menu.add_icon_item(get_theme_icon("Remove", "EditorIcons"), "Remove Node(s)", 1)
+		_node_actions_menu.add_icon_item(get_theme_icon("Duplicate", "EditorIcons"), "Duplicate Node(s)", 2)
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionCopy", "EditorIcons"), "Copy Node(s)", 3)
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionCut", "EditorIcons"), "Cut Node(s)", 4)
 	if paste_enabled:
-		_node_actions_menu.add_icon_item(get_theme_icon("ActionPaste", "EditorIcons"), "Paste Node(s)")
+		_node_actions_menu.add_icon_item(get_theme_icon("ActionPaste", "EditorIcons"), "Paste Node(s)", 5)
 
 
 ## Show a pop-up menu at a given position
