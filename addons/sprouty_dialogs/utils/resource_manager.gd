@@ -358,7 +358,7 @@ func _set_portrait_properties(character_name: String,
 
 	# Add the parent transform
 	if not transform_settings.ignore_main_transform:
-		transform_settings.scale += main_transform.scale
+		transform_settings.scale *= main_transform.scale
 		transform_settings.offset += main_transform.offset
 		transform_settings.rotation += main_transform.rotation
 		transform_settings.mirror = not main_transform.mirror \

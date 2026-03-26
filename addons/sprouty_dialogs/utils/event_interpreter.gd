@@ -59,7 +59,7 @@ func _process_dialogue(node_data: Dictionary) -> void:
 	# Get the translated dialog and parse variables
 	var dialog = SproutyDialogsTranslationManager.get_translated_dialog(
 			node_data["dialog_key"], get_parent().get_dialog_data())
-	var parser: SproutyDialogsDialogueParser = SproutyDialogsDialogueParser.new(dialog, _sprouty_dialogs.Variables)
+	var parser: SproutyDialogsTagsParser = SproutyDialogsTagsParser.new(dialog, _sprouty_dialogs.Variables)
 #	dialog = parser.bbcode_text
 
 	# Get the translated character name

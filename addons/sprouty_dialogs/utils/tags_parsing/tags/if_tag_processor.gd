@@ -1,6 +1,21 @@
 class_name SproutyDialogsIfTagProcessor
 extends SproutyDialogsTagProcessor
 
+# -----------------------------------------------------------------------------
+# Sprouty Dialogs If Tag Processor
+# -----------------------------------------------------------------------------
+## Defines how to process an if condition tag in the dialogue.
+##
+## This tag allows to shows or hides its content based on a variable comparison.
+##
+## Attributes:
+##   - var: The name of the variable to compare.
+##   - op: The operator to compare (eq, ne, gt, lt, ge, le).
+##   - val: the value against which the variable will be compared.
+##
+## Example: [if var="score" op="gt" val="10"]You win![/if]
+# -----------------------------------------------------------------------------
+
 
 func get_tag_name() -> String:
 	return "if"
@@ -10,7 +25,7 @@ func is_block() -> bool:
 	return true
 
 
-func transform(node: SproutyDialogsDialogueParser.ASTNode, variable_manager: SproutyDialogsVariableManager) -> Array[SproutyDialogsDialogueParser.ASTNode]:
+func transform(node: SproutyDialogsTagsParser.ASTNode, variable_manager: SproutyDialogsVariableManager) -> Array[SproutyDialogsTagsParser.ASTNode]:
 	var result: bool = false
 	var attrs: Dictionary = node.attributes
 	var variable_data: Dictionary = variable_manager.get_variable_data(attrs["var"])
@@ -33,11 +48,11 @@ func transform(node: SproutyDialogsDialogueParser.ASTNode, variable_manager: Spr
 			"ge": comparison_result = variable_data["value"] >= value
 			_: comparison_result = false
 		result = comparison_result
-	var parent_node: SproutyDialogsDialogueParser.ASTNode = node.parent
+	var parent_node: SproutyDialogsTagsParser.ASTNode = node.parent
 	if parent_node == null:
 		result = false
 	if result:
-		var children: Array[SproutyDialogsDialogueParser.ASTNode] = node.children
+		var children: Array[SproutyDialogsTagsParser.ASTNode] = node.children
 		node.free_self()
 		return children
 	node.free_tree()

@@ -1,5 +1,13 @@
-class_name SproutyDialogsDialogueParser
+class_name SproutyDialogsTagsParser
 
+# -----------------------------------------------------------------------------
+# Sprouty Dialogs Tags Parser
+# -----------------------------------------------------------------------------
+## Class that process special tags from the dialogues (such as speed, if, etc).
+## 
+## The tag processors are defined in the "/tags" folder and they are automatically
+## registered. All processors must extends from SproutyDialogsTagProcessor class.
+# -----------------------------------------------------------------------------
 
 var raw_text: String = ""
 var bbcode_text: String = ""
@@ -21,7 +29,7 @@ func _init(text: String, variable_manager: SproutyDialogsVariableManager) -> voi
 #region === Tag Processor Registration ======================================================================
 
 func _scan_tags_folder() -> void:
-	var folder_path: String = "res://addons/sprouty_dialogs/utils/dialogue_parsing/tags"
+	var folder_path: String = "res://addons/sprouty_dialogs/utils/tags_parsing/tags"
 	var dir: DirAccess = DirAccess.open(folder_path)
 	if not dir:
 		push_warning("[Sprouty Dialogs] Error: Could not open tags directory. No custom tags will be registered.")
@@ -143,7 +151,6 @@ func _construct_ast(parsed_text: String) -> void:
 	if stack.size() > 1:
 		# Unclosed tags at the end, could handle error or ignore
 		push_warning("[Sprouty Dialogs] Warning: Unclosed tags at the end of dialogue text.")
-
 
 
 func _transform_ast(node: ASTNode) -> Array[ASTNode]:
@@ -314,7 +321,7 @@ class ASTNode:
 class ASTStack:
 	var items: Array[ASTNode] = []
 	
-	func _init(init_items: Array[ASTNode] = []) -> void:
+	func _init(init_items: Array[ASTNode]=[]) -> void:
 		items = init_items
 	
 	func push(item: ASTNode) -> void:

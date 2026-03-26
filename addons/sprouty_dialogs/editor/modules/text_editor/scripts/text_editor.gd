@@ -156,7 +156,7 @@ func _on_preview_expand_button_toggled(toggled_on: bool) -> void:
 
 
 func _parse_raw_text(text: String) -> String:
-	var parser: SproutyDialogsDialogueParser = SproutyDialogsDialogueParser.new(text, _variable_manager)
+	var parser: SproutyDialogsTagsParser = SproutyDialogsTagsParser.new(text, _variable_manager)
 	return parser.bbcode_text
 
 
@@ -448,7 +448,7 @@ func _on_add_text_outline_pressed() -> void:
 ## Update the outline size tags in the selected text
 func _on_outline_size_value_changed(value: float) -> void:
 	update_code_tags("[outline_size=" + str(value) + "]", "[/outline_size]", "", true,
-			["[outline_color=" + _outline_color_sample_hex.text.split("]")[-1] + "]", "[/outline_color]"])
+			["[outline_color=" + _outline_color_sample_hex.text.split("]")[ - 1] + "]", "[/outline_color]"])
 
 
 ## Update the outline color tags in the selected text
@@ -527,11 +527,3 @@ func _on_url_input_submitted(new_text: String) -> void:
 
 
 #endregion
-
-
-func _on_add_typing_speed_pressed() -> void:
-	change_option_bar(8)
-
-
-func _on_add_if_condition_pressed() -> void:
-	change_option_bar(9)

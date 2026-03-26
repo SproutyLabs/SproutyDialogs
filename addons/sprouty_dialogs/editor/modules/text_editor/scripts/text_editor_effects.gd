@@ -10,7 +10,7 @@ extends VBoxContainer
 ## Text editor reference
 @export var text_editor: EditorSproutyDialogsTextEditor
 ## Effects options bars (pulse, wave, shake, etc.)
-@onready var _effects_bars: Array = %EffectsContainer.get_children()
+@onready var _effects_bars: Array = $EffectsContainer.get_children()
 ## Pulse effect color sample hex code
 @onready var _pulse_color_sample_hex: RichTextLabel = %PulseColorSample
 
@@ -23,7 +23,7 @@ func _change_effect_bar(bar_index: int) -> void:
 	if _current_effect_bar:
 		_current_effect_bar.hide()
 	_current_effect_bar = _effects_bars[bar_index]
-	_effects_bars[bar_index].show()
+	_current_effect_bar.show()
 
 
 ## Show the effects list menu when the effects button is pressed
@@ -36,7 +36,8 @@ func _on_add_effect_pressed() -> void:
 	
 	# Show popup menu with the effects
 	var pos := get_global_mouse_position() + Vector2(get_window().position)
-	%EffectsMenu.popup(Rect2(pos, %EffectsMenu.get_contents_minimum_size()))
+	$EffectsMenu.popup(Rect2(pos, $EffectsMenu.get_contents_minimum_size()))
+
 
 ## Select an effect from the effects menu
 func _on_effects_menu_id_pressed(id: int) -> void:
@@ -74,6 +75,7 @@ func _on_pulse_color_changed(color: Color) -> void:
 ## Update the pulse ease value
 func _on_pulse_ease_value_changed(value: float) -> void:
 	text_editor.add_attribute_to_tag("pulse", "ease", snapped(value, 0.1), -2.0)
+
 #endregion
 
 #region === Wave effect handling ===============================================
@@ -94,6 +96,7 @@ func _on_wave_freq_value_changed(value: float) -> void:
 ## Update the wave speed value
 func _on_wave_connected_toggled(toggled_on: bool) -> void:
 	text_editor.add_attribute_to_tag("wave", "connected", int(toggled_on), 1)
+
 #endregion
 
 #region === Tornado effect handling ============================================
@@ -114,6 +117,7 @@ func _on_tornado_freq_value_changed(value: float) -> void:
 ## Update the tornado connected value
 func _on_tornado_connected_toggled(toggled_on: bool) -> void:
 	text_editor.add_attribute_to_tag("tornado", "connected", int(toggled_on), 1)
+
 #endregion
 
 #region === Shake effect handling ==============================================
@@ -134,6 +138,7 @@ func _on_shake_level_value_changed(value: float) -> void:
 ## Update the shake connected value
 func _on_shake_connected_toggled(toggled_on: bool) -> void:
 	text_editor.add_attribute_to_tag("shake", "connected", int(toggled_on), 1)
+
 #endregion
 
 #region === Fade effect handling ===============================================
@@ -150,6 +155,7 @@ func _on_fade_start_value_changed(value: float) -> void:
 ## Update the fade length value
 func _on_fade_length_value_changed(value: float) -> void:
 	text_editor.add_attribute_to_tag("fade", "length", snapped(value, 0.1), 10.0)
+
 #endregion
 
 #region === Rainbow effect handling ============================================
@@ -174,4 +180,5 @@ func _on_rainbow_val_value_changed(value: float) -> void:
 ## Update the rainbow speed value
 func _on_rainbow_speed_value_changed(value: float) -> void:
 	text_editor.add_attribute_to_tag("rainbow", "speed", snapped(value, 0.1), 1.0)
+
 #endregion

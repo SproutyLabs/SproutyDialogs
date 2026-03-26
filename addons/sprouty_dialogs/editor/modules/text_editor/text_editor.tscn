@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://deethj56qlsml"]
+[gd_scene format=3 uid="uid://deethj56qlsml"]
 
 [ext_resource type="Script" uid="uid://6s5bseebujdb" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor.gd" id="1_v143h"]
 [ext_resource type="Texture2D" uid="uid://d2g1blyeyjaqn" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-right.svg" id="2_bd7d8"]
@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://3ygkqeueqkrd" path="res://addons/sprouty_dialogs/editor/icons/text_editor/magic-wand.svg" id="18_do7oi"]
 [ext_resource type="Texture2D" uid="uid://5g3wml1xcuwa" path="res://addons/sprouty_dialogs/editor/icons/text_editor/rainbow.svg" id="19_djbmw"]
 [ext_resource type="Texture2D" uid="uid://djfg1br2yacm2" path="res://addons/sprouty_dialogs/editor/icons/text_editor/typing_speed.svg" id="20_4oq2i"]
+[ext_resource type="Texture2D" uid="uid://etdq2yrcn1ai" path="res://addons/sprouty_dialogs/editor/icons/text_editor/tag.svg" id="20_bxin5"]
 [ext_resource type="Texture2D" uid="uid://cyjfhon6vx11l" path="res://addons/sprouty_dialogs/editor/icons/text_editor/waves.svg" id="20_h0nhk"]
 [ext_resource type="Script" uid="uid://ddxkopvjta4wl" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor_font_options.gd" id="20_krlt7"]
 [ext_resource type="Texture2D" uid="uid://cavuay6tm6gvn" path="res://addons/sprouty_dialogs/editor/icons/text_editor/if.svg" id="21_8bfyw"]
@@ -37,15 +38,15 @@
 [ext_resource type="Texture2D" uid="uid://tkq4pamepmr5" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-down.svg" id="32_hkfxn"]
 [ext_resource type="Script" uid="uid://geudtmeyfrfs" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor_if_condition.gd" id="35_165q4"]
 [ext_resource type="StyleBox" uid="uid://dfa36wxs72oc0" path="res://addons/sprouty_dialogs/editor/theme/empty_panel.tres" id="35_a35cm"]
-[ext_resource type="Script" uid="uid://ch0na7ba61oc5" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor_typing_speed.gd" id="35_pxx12"]
+[ext_resource type="Script" uid="uid://b2t5x4s5e4oaq" path="res://addons/sprouty_dialogs/editor/modules/text_editor/scripts/text_editor_special_tags.gd" id="36_h6it4"]
 [ext_resource type="Texture2D" uid="uid://bix6vg2cttnqd" path="res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg" id="37_phbom"]
+[ext_resource type="Texture2D" uid="uid://me1oaiuyigif" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/wait.svg" id="39_cqwig"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_am7i6"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ddten"]
 
-[node name="TextEditor" type="Panel"]
-visible = false
+[node name="TextEditor" type="Panel" unique_id=740348905]
 clip_contents = true
 custom_minimum_size = Vector2(500, 0)
 anchors_preset = 15
@@ -57,7 +58,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_v143h")
 
-[node name="Container" type="VBoxContainer" parent="."]
+[node name="Container" type="VBoxContainer" parent="." unique_id=1376613848]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -66,21 +67,21 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="Header" type="HBoxContainer" parent="Container"]
+[node name="Header" type="HBoxContainer" parent="Container" unique_id=1805008590]
 visible = false
 layout_mode = 2
 
-[node name="RunButton" type="Button" parent="Container/Header"]
+[node name="RunButton" type="Button" parent="Container/Header" unique_id=324364835]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 text = "Run"
 icon = ExtResource("3_b12sr")
 
-[node name="Toolbar" type="HFlowContainer" parent="Container"]
+[node name="Toolbar" type="HFlowContainer" parent="Container" unique_id=382051928]
 layout_mode = 2
 
-[node name="CloseButton" type="Button" parent="Container/Toolbar"]
+[node name="CloseButton" type="Button" parent="Container/Toolbar" unique_id=322781484]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
@@ -88,190 +89,184 @@ text = "Close"
 icon = ExtResource("2_bd7d8")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/Toolbar"]
+[node name="---" type="VSeparator" parent="Container/Toolbar" unique_id=1080504896]
 layout_mode = 2
 
-[node name="AddBold" type="Button" parent="Container/Toolbar"]
+[node name="AddBold" type="Button" parent="Container/Toolbar" unique_id=884442293]
 layout_mode = 2
 tooltip_text = "Makes the selected text use bold font."
 icon = ExtResource("4_8loe6")
 flat = true
 
-[node name="AddItalic" type="Button" parent="Container/Toolbar"]
+[node name="AddItalic" type="Button" parent="Container/Toolbar" unique_id=1398189308]
 layout_mode = 2
 tooltip_text = "Makes the selected text use italic font."
 icon = ExtResource("5_gd2p5")
 flat = true
 
-[node name="AddUnderline" type="Button" parent="Container/Toolbar"]
+[node name="AddUnderline" type="Button" parent="Container/Toolbar" unique_id=400771988]
 layout_mode = 2
 tooltip_text = "Makes the selected text underlined."
 icon = ExtResource("6_3impe")
 flat = true
 
-[node name="AddStrikethrough" type="Button" parent="Container/Toolbar"]
+[node name="AddStrikethrough" type="Button" parent="Container/Toolbar" unique_id=1072081371]
 layout_mode = 2
 tooltip_text = "Makes the selected text strikethrough."
 icon = ExtResource("7_egkjt")
 flat = true
 
-[node name="----" type="VSeparator" parent="Container/Toolbar"]
+[node name="----" type="VSeparator" parent="Container/Toolbar" unique_id=269444843]
 layout_mode = 2
 
-[node name="TextFont" type="Button" parent="Container/Toolbar"]
+[node name="TextFont" type="Button" parent="Container/Toolbar" unique_id=722611466]
 layout_mode = 2
 tooltip_text = "Change the font of the selected text."
 icon = ExtResource("8_vunvl")
 flat = true
 
-[node name="TextOutline" type="Button" parent="Container/Toolbar"]
+[node name="TextOutline" type="Button" parent="Container/Toolbar" unique_id=1269732290]
 layout_mode = 2
 tooltip_text = "Add outline to the selected text."
 icon = ExtResource("9_8eyqo")
 flat = true
 
-[node name="TextColor" type="Button" parent="Container/Toolbar"]
+[node name="TextColor" type="Button" parent="Container/Toolbar" unique_id=707826285]
 layout_mode = 2
 tooltip_text = "Change the color of the selected text."
 icon = ExtResource("10_3icwq")
 flat = true
 
-[node name="BGColor" type="Button" parent="Container/Toolbar"]
+[node name="BGColor" type="Button" parent="Container/Toolbar" unique_id=159752636]
 layout_mode = 2
 tooltip_text = "Change the background color of the selected text."
 icon = ExtResource("9_hslfk")
 flat = true
 
-[node name="-----" type="VSeparator" parent="Container/Toolbar"]
+[node name="-----" type="VSeparator" parent="Container/Toolbar" unique_id=1931599810]
 layout_mode = 2
 
-[node name="TextLeft" type="Button" parent="Container/Toolbar"]
+[node name="TextLeft" type="Button" parent="Container/Toolbar" unique_id=261090575]
 layout_mode = 2
 tooltip_text = "Horizontally align the selected text to left."
 icon = ExtResource("11_hjf5j")
 flat = true
 
-[node name="TextCenter" type="Button" parent="Container/Toolbar"]
+[node name="TextCenter" type="Button" parent="Container/Toolbar" unique_id=126679335]
 layout_mode = 2
 tooltip_text = "Horizontally align the selected text to center."
 icon = ExtResource("12_ayoih")
 flat = true
 
-[node name="TextRight" type="Button" parent="Container/Toolbar"]
+[node name="TextRight" type="Button" parent="Container/Toolbar" unique_id=1775212228]
 layout_mode = 2
 tooltip_text = "Horizontally align the selected text to right."
 icon = ExtResource("13_lr516")
 flat = true
 
-[node name="TextFill" type="Button" parent="Container/Toolbar"]
+[node name="TextFill" type="Button" parent="Container/Toolbar" unique_id=1438197652]
 layout_mode = 2
 tooltip_text = "Justify the selected text."
 icon = ExtResource("14_vanot")
 flat = true
 
-[node name="------" type="VSeparator" parent="Container/Toolbar"]
+[node name="------" type="VSeparator" parent="Container/Toolbar" unique_id=1981218334]
 layout_mode = 2
 
-[node name="AddVariable" type="Button" parent="Container/Toolbar"]
+[node name="AddVariable" type="Button" parent="Container/Toolbar" unique_id=1313778643]
 layout_mode = 2
 tooltip_text = "Insert a variable in text."
 icon = ExtResource("13_m5lcx")
 flat = true
 
-[node name="AddImage" type="Button" parent="Container/Toolbar"]
+[node name="AddImage" type="Button" parent="Container/Toolbar" unique_id=672022178]
 layout_mode = 2
 tooltip_text = "Insert an image in text."
 icon = ExtResource("13_r6en5")
 flat = true
 
-[node name="AddURL" type="Button" parent="Container/Toolbar"]
+[node name="AddURL" type="Button" parent="Container/Toolbar" unique_id=265001460]
 layout_mode = 2
 tooltip_text = "Insert a hyperlink in the selected text."
 icon = ExtResource("12_cel0j")
 flat = true
 
-[node name="-------" type="VSeparator" parent="Container/Toolbar"]
+[node name="-------" type="VSeparator" parent="Container/Toolbar" unique_id=503362859]
 layout_mode = 2
 
-[node name="AddEffect" type="Button" parent="Container/Toolbar"]
+[node name="AddEffect" type="Button" parent="Container/Toolbar" unique_id=1807632105]
 layout_mode = 2
-tooltip_text = "Add an effect in the selected text."
+tooltip_text = "Add an effect to the selected text."
 icon = ExtResource("18_do7oi")
 flat = true
 
-[node name="AddTypingSpeed" type="Button" parent="Container/Toolbar"]
+[node name="AddTag" type="Button" parent="Container/Toolbar" unique_id=1725031841]
 layout_mode = 2
-tooltip_text = "Add a typing speed effect in the selected text."
-icon = ExtResource("20_4oq2i")
+tooltip_text = "Add a special tag to the selected text."
+icon = ExtResource("20_bxin5")
 flat = true
 
-[node name="AddIfCondition" type="Button" parent="Container/Toolbar"]
-layout_mode = 2
-tooltip_text = "Add an if condition in the selected text. Displays the text only if a condition is met."
-icon = ExtResource("21_8bfyw")
-flat = true
-
-[node name="HSeparator" type="HSeparator" parent="Container"]
+[node name="HSeparator" type="HSeparator" parent="Container" unique_id=1420447395]
 layout_mode = 2
 
-[node name="OptionMenus" type="VBoxContainer" parent="Container"]
+[node name="OptionMenus" type="VBoxContainer" parent="Container" unique_id=970894302]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="FontBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
+[node name="FontBar" type="VBoxContainer" parent="Container/OptionMenus" unique_id=1978319250 node_paths=PackedStringArray("text_editor")]
 visible = false
 layout_mode = 2
 script = ExtResource("20_krlt7")
 text_editor = NodePath("../../..")
 
-[node name="HFlowContainer" type="HFlowContainer" parent="Container/OptionMenus/FontBar"]
+[node name="HFlowContainer" type="HFlowContainer" parent="Container/OptionMenus/FontBar" unique_id=620809255]
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/HFlowContainer" unique_id=1011708738]
 layout_mode = 2
 tooltip_text = "Change the font of the selected text."
 text = "Font Style"
 icon = ExtResource("8_vunvl")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/HFlowContainer" unique_id=126402745]
 layout_mode = 2
 
-[node name="SizeLabel" type="Label" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+[node name="SizeLabel" type="Label" parent="Container/OptionMenus/FontBar/HFlowContainer" unique_id=1317698848]
 layout_mode = 2
 tooltip_text = "Custom font size."
 mouse_filter = 1
 text = "Size"
 
-[node name="SizeField" type="SpinBox" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+[node name="SizeField" type="SpinBox" parent="Container/OptionMenus/FontBar/HFlowContainer" unique_id=1786318632]
 layout_mode = 2
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/FontBar/HFlowContainer" unique_id=1806027494]
 layout_mode = 2
 
-[node name="FontLabel" type="Label" parent="Container/OptionMenus/FontBar/HFlowContainer"]
+[node name="FontLabel" type="Label" parent="Container/OptionMenus/FontBar/HFlowContainer" unique_id=260471041]
 layout_mode = 2
 tooltip_text = "Font resource path."
 mouse_filter = 1
 text = "Font"
 
-[node name="FontField" parent="Container/OptionMenus/FontBar/HFlowContainer" instance=ExtResource("25_dx6e2")]
+[node name="FontField" parent="Container/OptionMenus/FontBar/HFlowContainer" unique_id=575252400 instance=ExtResource("25_dx6e2")]
 layout_mode = 2
 size_flags_horizontal = 3
 _placeholder_text = "Select a font..."
 file_filters = PackedStringArray("*.tres", "*.fontdata", "*.res", "*.ttf", "*.ttc", "*.otf", "*.otc", "*.woff", "*.woff2", "*.pfb", "*.pfm", "*.font", "*.fnt")
 
-[node name="--" type="HSeparator" parent="Container/OptionMenus/FontBar"]
+[node name="--" type="HSeparator" parent="Container/OptionMenus/FontBar" unique_id=327826121]
 layout_mode = 2
 
-[node name="FontOptionsHeader" type="HBoxContainer" parent="Container/OptionMenus/FontBar"]
+[node name="FontOptionsHeader" type="HBoxContainer" parent="Container/OptionMenus/FontBar" unique_id=21424411]
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontOptionsHeader"]
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontOptionsHeader" unique_id=607676367]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Font advanced options."
@@ -281,25 +276,25 @@ icon = ExtResource("8_vunvl")
 flat = true
 alignment = 0
 
-[node name="FontOptionsExpandButton" type="Button" parent="Container/OptionMenus/FontBar/FontOptionsHeader"]
+[node name="FontOptionsExpandButton" type="Button" parent="Container/OptionMenus/FontBar/FontOptionsHeader" unique_id=705251808]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 icon = ExtResource("32_hkfxn")
 flat = true
 
-[node name="FontOptions" type="VBoxContainer" parent="Container/OptionMenus/FontBar"]
+[node name="FontOptions" type="VBoxContainer" parent="Container/OptionMenus/FontBar" unique_id=1608739458]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="---" type="HSeparator" parent="Container/OptionMenus/FontBar/FontOptions"]
+[node name="---" type="HSeparator" parent="Container/OptionMenus/FontBar/FontOptions" unique_id=1277956657]
 layout_mode = 2
 
-[node name="FontSpacingOptions" type="HFlowContainer" parent="Container/OptionMenus/FontBar/FontOptions"]
+[node name="FontSpacingOptions" type="HFlowContainer" parent="Container/OptionMenus/FontBar/FontOptions" unique_id=1274465696]
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=710244125]
 layout_mode = 2
 tooltip_text = "Font spacing options."
 toggle_mode = true
@@ -308,73 +303,73 @@ icon = ExtResource("8_vunvl")
 flat = true
 alignment = 0
 
-[node name="--" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="--" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=271317007]
 layout_mode = 2
 
-[node name="GlSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="GlSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=1329280460]
 layout_mode = 2
 tooltip_text = "Extra spacing for each glyph."
 mouse_filter = 1
 text = "Glyphs"
 
-[node name="GlSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="GlSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=117566296]
 layout_mode = 2
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=659137213]
 layout_mode = 2
 
-[node name="SpSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="SpSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=1173952162]
 layout_mode = 2
 tooltip_text = "Extra spacing for the space character."
 mouse_filter = 1
 text = "Spaces"
 
-[node name="SpSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="SpSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=322730405]
 layout_mode = 2
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=540327369]
 layout_mode = 2
 
-[node name="TopSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="TopSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=967333182]
 layout_mode = 2
 tooltip_text = "Extra spacing at the top of the line."
 mouse_filter = 1
 text = "Top"
 
-[node name="TopSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="TopSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=1688778267]
 layout_mode = 2
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="-----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=454017387]
 layout_mode = 2
 
-[node name="BottomSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="BottomSpaceLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=1846869454]
 layout_mode = 2
 tooltip_text = "Extra spacing at the bottom of the line."
 mouse_filter = 1
 text = "Bottom"
 
-[node name="BottomSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions"]
+[node name="BottomSpaceField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontSpacingOptions" unique_id=617364597]
 layout_mode = 2
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="----" type="HSeparator" parent="Container/OptionMenus/FontBar/FontOptions"]
+[node name="----" type="HSeparator" parent="Container/OptionMenus/FontBar/FontOptions" unique_id=1665145641]
 layout_mode = 2
 
-[node name="FontStyleOptions" type="HFlowContainer" parent="Container/OptionMenus/FontBar/FontOptions"]
+[node name="FontStyleOptions" type="HFlowContainer" parent="Container/OptionMenus/FontBar/FontOptions" unique_id=1985903338]
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
+[node name="Label" type="Button" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions" unique_id=725175991]
 layout_mode = 2
 tooltip_text = "Custom bold and italic font style."
 toggle_mode = true
@@ -383,77 +378,77 @@ icon = ExtResource("8_vunvl")
 flat = true
 alignment = 0
 
-[node name="--" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
+[node name="--" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions" unique_id=565959499]
 layout_mode = 2
 
-[node name="EmboldenLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
+[node name="EmboldenLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions" unique_id=993089932]
 layout_mode = 2
 tooltip_text = "Font embolden strength, if it is not equal to zero, emboldens the font outlines. Negative values reduce the outline thickness."
 mouse_filter = 1
 text = "Embolden"
 
-[node name="EmboldenField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
+[node name="EmboldenField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions" unique_id=162788155]
 layout_mode = 2
 step = 0.1
 suffix = "px"
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions" unique_id=1964152386]
 layout_mode = 2
 
-[node name="SlantLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
+[node name="SlantLabel" type="Label" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions" unique_id=1078950440]
 layout_mode = 2
 tooltip_text = "Font slant strength, positive values slant glyphs to the right. Negative values to the left."
 mouse_filter = 1
 text = "Slant"
 
-[node name="SlantField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions"]
+[node name="SlantField" type="SpinBox" parent="Container/OptionMenus/FontBar/FontOptions/FontStyleOptions" unique_id=1158684605]
 layout_mode = 2
 min_value = -100.0
 step = 0.1
 allow_greater = true
 suffix = "px"
 
-[node name="OutlineBar" type="HFlowContainer" parent="Container/OptionMenus"]
+[node name="OutlineBar" type="HFlowContainer" parent="Container/OptionMenus" unique_id=2013050545]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/OutlineBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/OutlineBar" unique_id=257071543]
 layout_mode = 2
 tooltip_text = "Add outline to the selected text."
 text = "Text Outline"
 icon = ExtResource("8_kwxkr")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/OutlineBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/OutlineBar" unique_id=1655955587]
 layout_mode = 2
 
-[node name="SizeLabel" type="Label" parent="Container/OptionMenus/OutlineBar"]
+[node name="SizeLabel" type="Label" parent="Container/OptionMenus/OutlineBar" unique_id=588152800]
 layout_mode = 2
 tooltip_text = "Custom outline size."
 mouse_filter = 1
 text = "Size"
 
-[node name="SizeField" type="SpinBox" parent="Container/OptionMenus/OutlineBar"]
+[node name="SizeField" type="SpinBox" parent="Container/OptionMenus/OutlineBar" unique_id=1113189261]
 layout_mode = 2
 value = 10.0
 allow_greater = true
 suffix = "px"
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/OutlineBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/OutlineBar" unique_id=1774629226]
 layout_mode = 2
 
-[node name="ColorLabel" type="Label" parent="Container/OptionMenus/OutlineBar"]
+[node name="ColorLabel" type="Label" parent="Container/OptionMenus/OutlineBar" unique_id=1328303173]
 layout_mode = 2
 tooltip_text = "Custom outline color."
 mouse_filter = 1
 text = "Color"
 
-[node name="ColorButton" type="ColorPickerButton" parent="Container/OptionMenus/OutlineBar"]
+[node name="ColorButton" type="ColorPickerButton" parent="Container/OptionMenus/OutlineBar" unique_id=1749849106]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 color = Color(1, 0, 0, 1)
 
-[node name="OutlineColorSample" type="RichTextLabel" parent="Container/OptionMenus/OutlineBar"]
+[node name="OutlineColorSample" type="RichTextLabel" parent="Container/OptionMenus/OutlineBar" unique_id=1222136068]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -465,21 +460,21 @@ text = "Hex [outline_size=5][outline_color=ff0000]#ff0000"
 fit_content = true
 scroll_active = false
 
-[node name="TextColorBar" type="HFlowContainer" parent="Container/OptionMenus"]
+[node name="TextColorBar" type="HFlowContainer" parent="Container/OptionMenus" unique_id=1627266980]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/TextColorBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/TextColorBar" unique_id=172249312]
 layout_mode = 2
 tooltip_text = "Change the color of the selected text."
 text = "Text Color"
 icon = ExtResource("10_3icwq")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/TextColorBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/TextColorBar" unique_id=727718067]
 layout_mode = 2
 
-[node name="TextColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/TextColorBar"]
+[node name="TextColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/TextColorBar" unique_id=378634482]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
@@ -487,7 +482,7 @@ size_flags_horizontal = 0
 icon = ExtResource("10_3icwq")
 color = Color(1, 0, 0, 1)
 
-[node name="TextColorSample" type="RichTextLabel" parent="Container/OptionMenus/TextColorBar"]
+[node name="TextColorSample" type="RichTextLabel" parent="Container/OptionMenus/TextColorBar" unique_id=247104695]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -499,21 +494,21 @@ text = "Hex [color=red]#ff0000"
 fit_content = true
 scroll_active = false
 
-[node name="BGColorBar" type="HFlowContainer" parent="Container/OptionMenus"]
+[node name="BGColorBar" type="HFlowContainer" parent="Container/OptionMenus" unique_id=670905734]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/BGColorBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/BGColorBar" unique_id=47583504]
 layout_mode = 2
 tooltip_text = "Change the background color of the selected text."
 text = "Background Color"
 icon = ExtResource("9_hslfk")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/BGColorBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/BGColorBar" unique_id=25835472]
 layout_mode = 2
 
-[node name="BgColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/BGColorBar"]
+[node name="BgColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/BGColorBar" unique_id=1314949207]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
@@ -521,7 +516,7 @@ size_flags_horizontal = 0
 icon = ExtResource("10_3icwq")
 color = Color(1, 0, 0, 1)
 
-[node name="BgColorSample" type="RichTextLabel" parent="Container/OptionMenus/BGColorBar"]
+[node name="BgColorSample" type="RichTextLabel" parent="Container/OptionMenus/BGColorBar" unique_id=666068982]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -533,68 +528,68 @@ text = "Hex  [bgcolor=red]#ff0000"
 fit_content = true
 scroll_active = false
 
-[node name="VariableBar" type="HFlowContainer" parent="Container/OptionMenus"]
+[node name="VariableBar" type="HFlowContainer" parent="Container/OptionMenus" unique_id=877251789]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/VariableBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/VariableBar" unique_id=76087631]
 layout_mode = 2
 text = "Insert Variable"
 icon = ExtResource("13_m5lcx")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/VariableBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/VariableBar" unique_id=1551315331]
 layout_mode = 2
 
-[node name="VariableTypeField" type="PanelContainer" parent="Container/OptionMenus/VariableBar"]
+[node name="VariableTypeField" type="PanelContainer" parent="Container/OptionMenus/VariableBar" unique_id=272934443]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="VariableNameInput" parent="Container/OptionMenus/VariableBar" instance=ExtResource("24_v57nx")]
+[node name="VariableNameInput" parent="Container/OptionMenus/VariableBar" unique_id=2007026966 instance=ExtResource("24_v57nx")]
 unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Enter a variable name..."
 _placeholder_text = "Enter a variable name..."
 
-[node name="ImageBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
+[node name="ImageBar" type="VBoxContainer" parent="Container/OptionMenus" unique_id=1302027032 node_paths=PackedStringArray("text_editor")]
 visible = false
 layout_mode = 2
 script = ExtResource("28_qnqd5")
 text_editor = NodePath("../../..")
 
-[node name="PathContainer" type="HFlowContainer" parent="Container/OptionMenus/ImageBar"]
+[node name="PathContainer" type="HFlowContainer" parent="Container/OptionMenus/ImageBar" unique_id=2047937622]
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/ImageBar/PathContainer"]
+[node name="Label" type="Button" parent="Container/OptionMenus/ImageBar/PathContainer" unique_id=1024840149]
 layout_mode = 2
 tooltip_text = "Insert an image in text."
 text = "Insert Image"
 icon = ExtResource("13_r6en5")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/PathContainer"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/PathContainer" unique_id=2111666387]
 layout_mode = 2
 
-[node name="PathLabel" type="Label" parent="Container/OptionMenus/ImageBar/PathContainer"]
+[node name="PathLabel" type="Label" parent="Container/OptionMenus/ImageBar/PathContainer" unique_id=1345769072]
 layout_mode = 2
 tooltip_text = "Path of the image to insert."
 mouse_filter = 1
 text = "Path"
 
-[node name="ImagePathField" parent="Container/OptionMenus/ImageBar/PathContainer" instance=ExtResource("25_dx6e2")]
+[node name="ImagePathField" parent="Container/OptionMenus/ImageBar/PathContainer" unique_id=235928376 instance=ExtResource("25_dx6e2")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 _placeholder_text = "Select an image..."
 file_filters = PackedStringArray("*.jpg", "*.jpeg", "*.png", "*.svg", "*.webp", "*.bmp", "*.tga", "*.dds", "*.kts", "*.hdr", "*.exr")
 
-[node name="---" type="HSeparator" parent="Container/OptionMenus/ImageBar"]
+[node name="---" type="HSeparator" parent="Container/OptionMenus/ImageBar" unique_id=404453244]
 layout_mode = 2
 
-[node name="OptionsHeader" type="HBoxContainer" parent="Container/OptionMenus/ImageBar"]
+[node name="OptionsHeader" type="HBoxContainer" parent="Container/OptionMenus/ImageBar" unique_id=915049262]
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/ImageBar/OptionsHeader"]
+[node name="Label" type="Button" parent="Container/OptionMenus/ImageBar/OptionsHeader" unique_id=744973464]
 layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "More image options."
@@ -604,25 +599,25 @@ icon = ExtResource("13_r6en5")
 flat = true
 alignment = 0
 
-[node name="ImageOptionsExpandButton" type="Button" parent="Container/OptionMenus/ImageBar/OptionsHeader"]
+[node name="ImageOptionsExpandButton" type="Button" parent="Container/OptionMenus/ImageBar/OptionsHeader" unique_id=1841090380]
 unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 icon = ExtResource("32_hkfxn")
 flat = true
 
-[node name="ImageOptions" type="VBoxContainer" parent="Container/OptionMenus/ImageBar"]
+[node name="ImageOptions" type="VBoxContainer" parent="Container/OptionMenus/ImageBar" unique_id=1494133507]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="---" type="HSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="---" type="HSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions" unique_id=1788947975]
 layout_mode = 2
 
-[node name="SizeOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="SizeOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar/ImageOptions" unique_id=1958910959]
 layout_mode = 2
 
-[node name="SizeLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+[node name="SizeLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions" unique_id=232734603]
 layout_mode = 2
 size_flags_horizontal = 4
 tooltip_text = "Image size settings."
@@ -632,30 +627,30 @@ icon = ExtResource("13_r6en5")
 flat = true
 alignment = 0
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions" unique_id=958827954]
 layout_mode = 2
 
-[node name="WidthLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+[node name="WidthLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions" unique_id=1361756687]
 layout_mode = 2
 tooltip_text = "Target width of the image. If is provided, the image will try to fit that width maintaining the aspect ratio."
 mouse_filter = 1
 text = "Width"
 
-[node name="ImageWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+[node name="ImageWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions" unique_id=1149521492]
 layout_mode = 2
 max_value = 9999.0
 
-[node name="HeightLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+[node name="HeightLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions" unique_id=755338153]
 layout_mode = 2
 tooltip_text = "Target height of the image. If both width and height are provided, the image will be scaled to that size."
 mouse_filter = 1
 text = "Height"
 
-[node name="ImageHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+[node name="ImageHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions" unique_id=1253433943]
 layout_mode = 2
 max_value = 9999.0
 
-[node name="PixelsOrPercentButton" type="OptionButton" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+[node name="PixelsOrPercentButton" type="OptionButton" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions" unique_id=499839705]
 unique_name_in_owner = true
 layout_mode = 2
 tooltip_text = "Specify width and height values as percentages or pixels."
@@ -666,21 +661,21 @@ popup/item_0/id = 0
 popup/item_1/text = "%"
 popup/item_1/id = 1
 
-[node name="-----" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions" unique_id=1830142960]
 layout_mode = 2
 
-[node name="Padding" type="CheckButton" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions"]
+[node name="Padding" type="CheckButton" parent="Container/OptionMenus/ImageBar/ImageOptions/SizeOptions" unique_id=461357228]
 layout_mode = 2
 tooltip_text = "If set to true, and the image is smaller than the size specified by width and height, the image padding is added to match the size instead of upscaling."
 text = "Padding"
 
-[node name="----" type="HSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="----" type="HSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions" unique_id=445525349]
 layout_mode = 2
 
-[node name="RegionOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="RegionOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar/ImageOptions" unique_id=992129901]
 layout_mode = 2
 
-[node name="RegionLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="RegionLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=1239884110]
 layout_mode = 2
 size_flags_horizontal = 4
 tooltip_text = "Region rect of the image. This can be used to display a single image from a spritesheet."
@@ -690,61 +685,61 @@ icon = ExtResource("13_r6en5")
 flat = true
 alignment = 0
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=586432803]
 layout_mode = 2
 
-[node name="XLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="XLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=2000850277]
 layout_mode = 2
 tooltip_text = "X coordinate where the image region begins."
 mouse_filter = 1
 text = "X"
 
-[node name="RegionX" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="RegionX" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=858053351]
 layout_mode = 2
 max_value = 9999.0
 suffix = "px"
 
-[node name="YLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="YLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=1266120205]
 layout_mode = 2
 tooltip_text = "Y coordinate where the image region begins."
 mouse_filter = 1
 text = "Y"
 
-[node name="RegionY" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="RegionY" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=2043353235]
 layout_mode = 2
 max_value = 9999.0
 update_on_text_changed = true
 suffix = "px"
 
-[node name="WLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="WLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=830841164]
 layout_mode = 2
 tooltip_text = "Width of the image region."
 mouse_filter = 1
 text = "Width"
 
-[node name="RegionWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="RegionWidth" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=1117687307]
 layout_mode = 2
 max_value = 9999.0
 suffix = "px"
 
-[node name="HLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="HLabel" type="Label" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=1600050122]
 layout_mode = 2
 tooltip_text = "Height of the image region."
 mouse_filter = 1
 text = "Height"
 
-[node name="RegionHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions"]
+[node name="RegionHeight" type="SpinBox" parent="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions" unique_id=1107187476]
 layout_mode = 2
 max_value = 9999.0
 suffix = "px"
 
-[node name="-----" type="HSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="-----" type="HSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions" unique_id=1661105802]
 layout_mode = 2
 
-[node name="ColorOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar/ImageOptions"]
+[node name="ColorOptions" type="HFlowContainer" parent="Container/OptionMenus/ImageBar/ImageOptions" unique_id=2061184795]
 layout_mode = 2
 
-[node name="ColorLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions"]
+[node name="ColorLabel" type="Button" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions" unique_id=968877834]
 layout_mode = 2
 size_flags_horizontal = 4
 tooltip_text = "Color tint of the image (modulation)."
@@ -754,10 +749,10 @@ icon = ExtResource("13_r6en5")
 flat = true
 alignment = 0
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions" unique_id=1679783766]
 layout_mode = 2
 
-[node name="ImageColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions"]
+[node name="ImageColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions" unique_id=466446761]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
@@ -765,7 +760,7 @@ size_flags_horizontal = 0
 icon = ExtResource("10_3icwq")
 color = Color(1, 1, 1, 1)
 
-[node name="ImageColorSample" type="RichTextLabel" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions"]
+[node name="ImageColorSample" type="RichTextLabel" parent="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions" unique_id=1242420118]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
@@ -777,149 +772,89 @@ text = "Hex [color=ffffff]#ffffff"
 fit_content = true
 scroll_active = false
 
-[node name="UrlBar" type="HFlowContainer" parent="Container/OptionMenus"]
+[node name="UrlBar" type="HFlowContainer" parent="Container/OptionMenus" unique_id=1993111491]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/UrlBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/UrlBar" unique_id=551707961]
 layout_mode = 2
 tooltip_text = "Add a hyperlink. By default, meta tags do nothing when clicked. Must be handled with the \"meta_clicked\" signal in the DialogBox to have an effect"
 text = "Insert Link"
 icon = ExtResource("12_cel0j")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/UrlBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/UrlBar" unique_id=1542571898]
 layout_mode = 2
 
-[node name="UrlInput" type="LineEdit" parent="Container/OptionMenus/UrlBar"]
+[node name="UrlInput" type="LineEdit" parent="Container/OptionMenus/UrlBar" unique_id=335633973]
 layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Enter a URL..."
 
-[node name="EffectsBar" type="VBoxContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
+[node name="EffectsBar" type="VBoxContainer" parent="Container/OptionMenus" unique_id=616884703 node_paths=PackedStringArray("text_editor")]
 visible = false
 layout_mode = 2
 script = ExtResource("26_g04n3")
 text_editor = NodePath("../../..")
 
-[node name="EffectsList" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar"]
+[node name="EffectsContainer" type="VBoxContainer" parent="Container/OptionMenus/EffectsBar" unique_id=1374773620]
+layout_mode = 2
+
+[node name="PulseEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer" unique_id=708880695]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
-layout_mode = 2
-text = "Text Effects"
-icon = ExtResource("18_do7oi")
-flat = true
-
-[node name="VSeparator" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsList"]
-layout_mode = 2
-
-[node name="PulseEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Pulse"
-icon = ExtResource("21_cmowh")
-
-[node name="WaveEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Wave"
-icon = ExtResource("20_h0nhk")
-
-[node name="TornadoEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Tornado"
-icon = ExtResource("22_2gb2p")
-
-[node name="ShakeEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Shake"
-icon = ExtResource("23_w4102")
-
-[node name="FadeEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Fade"
-icon = ExtResource("24_5moyk")
-
-[node name="RainbowEffect" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsList"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-text = "Rainbow"
-icon = ExtResource("19_djbmw")
-
-[node name="---" type="HSeparator" parent="Container/OptionMenus/EffectsBar"]
-visible = false
-layout_mode = 2
-
-[node name="EffectsContainer" type="VBoxContainer" parent="Container/OptionMenus/EffectsBar"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="PulseEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
-visible = false
-layout_mode = 2
-
-[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=517005929]
 layout_mode = 2
 tooltip_text = "Pulse creates an animated pulsing effect that multiplies each character's opacity and color."
 text = "Pulse Effect"
 icon = ExtResource("21_cmowh")
 flat = true
 
-[node name="--" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="--" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=1447969825]
 layout_mode = 2
 
-[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=385759454]
 layout_mode = 2
 tooltip_text = "Frequency of the half-pulsing cycle (higher is faster). A full pulsing cycle takes 2 * (1.0 / freq) seconds. "
 mouse_filter = 1
 text = "Frequency"
 
-[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=1854484389]
 layout_mode = 2
 step = 0.1
 value = 1.0
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=2107068527]
 layout_mode = 2
 
-[node name="EaseLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="EaseLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=31267107]
 layout_mode = 2
 tooltip_text = "Ease is the easing function exponent to use. Negative values provide in-out easing, which is why the default is -2.0."
 mouse_filter = 1
 text = "Ease"
 
-[node name="EaseField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="EaseField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=2102808421]
 layout_mode = 2
 min_value = -100.0
 step = 0.1
 value = -2.0
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=1104697066]
 layout_mode = 2
 
-[node name="ColorLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="ColorLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=414553676]
 layout_mode = 2
 tooltip_text = "Color is the target color multiplier for blinking. The default mostly fades out text, but not entirely."
 mouse_filter = 1
 text = "Color"
 
-[node name="ColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="ColorPicker" type="ColorPickerButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=1497963774]
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 color = Color(1, 1, 1, 0.25098)
 
-[node name="PulseColorSample" type="RichTextLabel" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar"]
+[node name="PulseColorSample" type="RichTextLabel" parent="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar" unique_id=1867000198]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(115, 0)
 layout_mode = 2
@@ -931,267 +866,266 @@ text = "Hex [color=ffffff40]#ffffff40"
 fit_content = true
 scroll_active = false
 
-[node name="WaveEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+[node name="WaveEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer" unique_id=1130357099]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar" unique_id=473173078]
 layout_mode = 2
 tooltip_text = "Wave makes the text go up and down."
 text = "Wave Effect"
 icon = ExtResource("20_h0nhk")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar" unique_id=648424535]
 layout_mode = 2
 
-[node name="AmpLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="AmpLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar" unique_id=441131222]
 layout_mode = 2
 tooltip_text = "Amplitude controls how high and low the effect goes."
 mouse_filter = 1
 text = "Amplitude"
 
-[node name="AmpField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="AmpField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar" unique_id=1844493247]
 layout_mode = 2
 max_value = 5000.0
 step = 0.1
 value = 20.0
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar" unique_id=624544740]
 layout_mode = 2
 
-[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar" unique_id=951546213]
 layout_mode = 2
 tooltip_text = "Frequency controls how fast the text goes up and down. A frequency value of 0 will result in no visible waves, and negative frequency values won't display any waves either."
 mouse_filter = 1
 text = "Frequency"
 
-[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar" unique_id=429485967]
 layout_mode = 2
 step = 0.1
 value = 5.0
 
-[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar" unique_id=173284538]
 layout_mode = 2
 
-[node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar"]
+[node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/WaveEffectBar" unique_id=718200038]
 layout_mode = 2
 tooltip_text = " If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
 button_pressed = true
 text = "Connected"
 
-[node name="TornadoEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+[node name="TornadoEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer" unique_id=1905703634]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar" unique_id=1535626827]
 layout_mode = 2
 tooltip_text = "Tornado makes the text move around in a circle."
 text = "Tornado Effect"
 icon = ExtResource("22_2gb2p")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar" unique_id=108403810]
 layout_mode = 2
 
-[node name="RadiusLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="RadiusLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar" unique_id=1262551972]
 layout_mode = 2
 tooltip_text = "Radius is the radius of the circle that controls the offset."
 mouse_filter = 1
 text = "Radius"
 
-[node name="RadiusField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="RadiusField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar" unique_id=1300579614]
 layout_mode = 2
 max_value = 500.0
 step = 0.1
 value = 10.0
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar" unique_id=1053128575]
 layout_mode = 2
 
-[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar" unique_id=359217428]
 layout_mode = 2
 tooltip_text = "Frequency is how fast the text moves in a circle. A frequency value of 0 will pause the animation, while negative frequency will play the animation backwards."
 mouse_filter = 1
 text = "Frequency"
 
-[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar" unique_id=662924646]
 layout_mode = 2
 min_value = -1000.0
 max_value = 1000.0
 step = 0.1
 value = 1.0
 
-[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar" unique_id=1949035940]
 layout_mode = 2
 
-[node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar"]
+[node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/TornadoEffectBar" unique_id=1212901020]
 layout_mode = 2
 tooltip_text = "If connected is 1 (default), glyphs with ligatures will be moved together. If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
 button_pressed = true
 text = "Connected"
 
-[node name="ShakeEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+[node name="ShakeEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer" unique_id=1819772039]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar" unique_id=1157815086]
 layout_mode = 2
 tooltip_text = "Shake makes the text shake."
 text = "Shake Effect"
 icon = ExtResource("23_w4102")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar" unique_id=1826378286]
 layout_mode = 2
 
-[node name="RateLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="RateLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar" unique_id=1546526763]
 layout_mode = 2
 tooltip_text = "Rate controls how fast the text shakes."
 mouse_filter = 1
 text = "Rate"
 
-[node name="RateField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="RateField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar" unique_id=1085451473]
 layout_mode = 2
 min_value = -1000.0
 max_value = 1000.0
 value = 20.0
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar" unique_id=752985934]
 layout_mode = 2
 
-[node name="LevelLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="LevelLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar" unique_id=1759518671]
 layout_mode = 2
 tooltip_text = "Level controls how far the text is offset from the origin."
 mouse_filter = 1
 text = "Level"
 
-[node name="LevelField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="LevelField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar" unique_id=912220222]
 layout_mode = 2
 min_value = -1000.0
 max_value = 1000.0
 value = 5.0
 
-[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar" unique_id=854086075]
 layout_mode = 2
 
-[node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar"]
+[node name="Connected" type="CheckButton" parent="Container/OptionMenus/EffectsBar/EffectsContainer/ShakeEffectBar" unique_id=1768021049]
 layout_mode = 2
 tooltip_text = "If connected is 0, each glyph is moved individually even if they are joined by ligatures. This can work around certain rendering issues with font ligatures."
 button_pressed = true
 text = "Connected"
 
-[node name="FadeEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+[node name="FadeEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer" unique_id=488183713]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar" unique_id=212528271]
 layout_mode = 2
 tooltip_text = "Fade creates a static fade effect that multiplies each character's opacity."
 text = "Fade Effect"
 icon = ExtResource("24_5moyk")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar" unique_id=1507454471]
 layout_mode = 2
 
-[node name="StartLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+[node name="StartLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar" unique_id=1912747087]
 layout_mode = 2
 tooltip_text = "Start controls the starting position of the falloff relative to where the fade command is inserted."
 mouse_filter = 1
 text = "Start"
 
-[node name="StartField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+[node name="StartField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar" unique_id=304625689]
 layout_mode = 2
 max_value = 1000.0
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar" unique_id=1699344818]
 layout_mode = 2
 
-[node name="LengthLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+[node name="LengthLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar" unique_id=663103389]
 layout_mode = 2
 tooltip_text = "Length controls over how many characters should the fade out take place."
 mouse_filter = 1
 text = "Length"
 
-[node name="LengthField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar"]
+[node name="LengthField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/FadeEffectBar" unique_id=1965651118]
 layout_mode = 2
 max_value = 1000.0
 value = 10.0
 
-[node name="RainbowEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer"]
+[node name="RainbowEffectBar" type="HFlowContainer" parent="Container/OptionMenus/EffectsBar/EffectsContainer" unique_id=511250833]
 visible = false
 layout_mode = 2
 
-[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=1452963066]
 layout_mode = 2
 tooltip_text = "Rainbow gives the text a rainbow color that changes over time."
 text = "Rainbow Effect"
 icon = ExtResource("19_djbmw")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=1792451543]
 layout_mode = 2
 
-[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="FreqLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=500331596]
 layout_mode = 2
 tooltip_text = "Frequency determines how many letters the rainbow extends over before it repeats itself."
 mouse_filter = 1
 text = "Frequency"
 
-[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="FreqField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=74680599]
 layout_mode = 2
 min_value = -100.0
 step = 0.1
 value = 1.0
 
-[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=897974688]
 layout_mode = 2
 
-[node name="SatLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="SatLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=1434527393]
 layout_mode = 2
 tooltip_text = "Saturation of the rainbow."
 mouse_filter = 1
 text = "Saturation"
 
-[node name="SatField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="SatField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=1768464330]
 layout_mode = 2
 max_value = 1.0
 step = 0.1
 value = 0.8
 
-[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="-----" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=723745030]
 layout_mode = 2
 
-[node name="ValLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="ValLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=331207485]
 layout_mode = 2
 tooltip_text = "Value of the rainbow."
 mouse_filter = 1
 text = "Value"
 
-[node name="ValField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="ValField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=1084731646]
 layout_mode = 2
 max_value = 5.0
 step = 0.1
 value = 0.8
 
-[node name="------" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="------" type="VSeparator" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=2025965638]
 layout_mode = 2
 
-[node name="SpeedLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="SpeedLabel" type="Label" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=1808979990]
 layout_mode = 2
 tooltip_text = "Speed is the number of full rainbow cycles per second. A positive speed value will play the animation forwards, a value of 0 will pause the animation, and a negative speed value will play the animation backwards."
 mouse_filter = 1
 text = "Speed"
 
-[node name="SpeedField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar"]
+[node name="SpeedField" type="SpinBox" parent="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar" unique_id=1330435254]
 layout_mode = 2
 min_value = -100.0
 step = 0.1
 value = 1.0
 
-[node name="EffectsMenu" type="PopupMenu" parent="Container/OptionMenus/EffectsBar"]
-unique_name_in_owner = true
+[node name="EffectsMenu" type="PopupMenu" parent="Container/OptionMenus/EffectsBar" unique_id=238096724]
 size = Vector2i(202, 224)
 item_count = 6
 item_0/text = "Add Pulse Effect"
@@ -1213,71 +1147,105 @@ item_5/text = "Add Rainbow Effect"
 item_5/icon = ExtResource("19_djbmw")
 item_5/id = 5
 
-[node name="TypingSpeedBar" type="HFlowContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
+[node name="TagsBar" type="VBoxContainer" parent="Container/OptionMenus" unique_id=1717120267 node_paths=PackedStringArray("text_editor")]
 visible = false
 layout_mode = 2
-script = ExtResource("35_pxx12")
+script = ExtResource("36_h6it4")
 text_editor = NodePath("../../..")
 
-[node name="Label" type="Button" parent="Container/OptionMenus/TypingSpeedBar"]
+[node name="TagsContainer" type="VBoxContainer" parent="Container/OptionMenus/TagsBar" unique_id=23890449]
 layout_mode = 2
-tooltip_text = "Add a typing speed effect in the selected text.
-Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
-Relative speed: A multiplier relative to the default typing speed configured in the settings (e.g., 2x means twice the default speed). A larger value makes the typing faster (shorter character intervals).
-Wait: Inserts a fixed pause (in seconds) between characters; the typewriter pauses before continuing with the subsequent content."
-text = "Typing speed"
+
+[node name="SpeedBar" type="HFlowContainer" parent="Container/OptionMenus/TagsBar/TagsContainer" unique_id=973603066]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/SpeedBar" unique_id=358762511]
+layout_mode = 2
+tooltip_text = "Add a typing speed effect in the selected text."
+text = "Typing Speed"
 icon = ExtResource("20_4oq2i")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/TypingSpeedBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/TagsBar/TagsContainer/SpeedBar" unique_id=1179278549]
 layout_mode = 2
 
-[node name="TypeDropdown" type="OptionButton" parent="Container/OptionMenus/TypingSpeedBar"]
+[node name="SpeedTypeDropdown" type="OptionButton" parent="Container/OptionMenus/TagsBar/TagsContainer/SpeedBar" unique_id=636576396]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
+tooltip_text = "Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
+Relative speed: A multiplier relative to the default typing speed configured in the settings (e.g., 2x means twice the default speed). A larger value makes the typing faster (shorter character intervals)."
 flat = true
 alignment = 1
 selected = 0
-item_count = 3
+item_count = 2
 popup/item_0/text = "Absolute Speed"
 popup/item_0/id = 0
 popup/item_1/text = "Relative Speed"
 popup/item_1/id = 1
-popup/item_2/text = "Wait"
-popup/item_2/id = 2
 
-[node name="ValueInput" type="SpinBox" parent="Container/OptionMenus/TypingSpeedBar"]
+[node name="SpeedInput" type="SpinBox" parent="Container/OptionMenus/TagsBar/TagsContainer/SpeedBar" unique_id=1922367531]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 step = 0.001
 allow_greater = true
 suffix = "s"
 
-[node name="IfConditionBar" type="HFlowContainer" parent="Container/OptionMenus" node_paths=PackedStringArray("text_editor")]
+[node name="WaitBar" type="HFlowContainer" parent="Container/OptionMenus/TagsBar/TagsContainer" unique_id=287078617]
+visible = false
+layout_mode = 2
+
+[node name="Label" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1137677080]
+layout_mode = 2
+tooltip_text = "Wait: Inserts a fixed pause (in seconds) between characters; the typewriter pauses before continuing with the subsequent content."
+text = "Wait"
+icon = ExtResource("39_cqwig")
+flat = true
+
+[node name="---" type="VSeparator" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1677912922]
+layout_mode = 2
+
+[node name="WaitLabel" type="Label" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1379408469]
+layout_mode = 2
+text = "Time"
+
+[node name="WaitInput" type="SpinBox" parent="Container/OptionMenus/TagsBar/TagsContainer/WaitBar" unique_id=1307471813]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+step = 0.001
+allow_greater = true
+suffix = "s"
+
+[node name="IfConditionBar" type="HFlowContainer" parent="Container/OptionMenus/TagsBar/TagsContainer" unique_id=1831580040 node_paths=PackedStringArray("text_editor")]
 visible = false
 layout_mode = 2
 script = ExtResource("35_165q4")
-text_editor = NodePath("../../..")
+text_editor = NodePath("../../../../..")
 
-[node name="Label" type="Button" parent="Container/OptionMenus/IfConditionBar"]
+[node name="Label" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=1733115539]
 layout_mode = 2
 tooltip_text = "Add an if condition in the selected text. Displays the text only if a condition is met."
+text = "Condition"
 icon = ExtResource("21_8bfyw")
 flat = true
 
-[node name="---" type="VSeparator" parent="Container/OptionMenus/IfConditionBar"]
+[node name="---" type="VSeparator" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=829448118]
 layout_mode = 2
 
-[node name="VariableTypeField" type="PanelContainer" parent="Container/OptionMenus/IfConditionBar"]
-custom_minimum_size = Vector2(56, 0)
+[node name="VariableIcon" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=668882117]
 layout_mode = 2
+tooltip_text = "Variable"
+icon = ExtResource("13_m5lcx")
+flat = true
 
-[node name="VariableNameInput" parent="Container/OptionMenus/IfConditionBar" instance=ExtResource("24_v57nx")]
+[node name="VariableField" type="PanelContainer" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=644343145]
 layout_mode = 2
-placeholder_text = "Enter a variable name..."
-_placeholder_text = "Enter a variable name..."
+size_flags_horizontal = 3
 
-[node name="OperatorDropdown" type="OptionButton" parent="Container/OptionMenus/IfConditionBar"]
+[node name="OperatorDropdown" type="OptionButton" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=144916050]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 flat = true
@@ -1297,23 +1265,35 @@ popup/item_4/id = 3
 popup/item_5/text = ">="
 popup/item_5/id = 5
 
-[node name="ValueTypeField" type="PanelContainer" parent="Container/OptionMenus/IfConditionBar"]
-custom_minimum_size = Vector2(56, 0)
+[node name="ValueTypeField" type="PanelContainer" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=2038236755]
 layout_mode = 2
 
-[node name="ValueField" type="PanelContainer" parent="Container/OptionMenus/IfConditionBar"]
+[node name="ValueField" type="PanelContainer" parent="Container/OptionMenus/TagsBar/TagsContainer/IfConditionBar" unique_id=1432139582]
 auto_translate_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/panel = ExtResource("35_a35cm")
 
-[node name="TextBoxes" type="VSplitContainer" parent="Container"]
+[node name="TagsMenu" type="PopupMenu" parent="Container/OptionMenus/TagsBar" unique_id=512383511]
+size = Vector2i(202, 224)
+item_count = 3
+item_0/text = "Add Speed Tag"
+item_0/icon = ExtResource("20_4oq2i")
+item_0/id = 0
+item_1/text = "Add Wait Tag"
+item_1/icon = ExtResource("39_cqwig")
+item_1/id = 1
+item_2/text = "Add If Tag"
+item_2/icon = ExtResource("21_8bfyw")
+item_2/id = 2
+
+[node name="TextBoxes" type="VSplitContainer" parent="Container" unique_id=1683927142]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 collapsed = true
 
-[node name="TextBox" type="CodeEdit" parent="Container/TextBoxes"]
+[node name="TextBox" type="CodeEdit" parent="Container/TextBoxes" unique_id=1949035336]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -1326,24 +1306,24 @@ gutters_draw_line_numbers = true
 auto_brace_completion_enabled = true
 auto_brace_completion_highlight_matching = true
 
-[node name="PreviewBox" type="MarginContainer" parent="Container/TextBoxes"]
+[node name="PreviewBox" type="MarginContainer" parent="Container/TextBoxes" unique_id=280000070]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="Container" type="VBoxContainer" parent="Container/TextBoxes/PreviewBox"]
+[node name="Container" type="VBoxContainer" parent="Container/TextBoxes/PreviewBox" unique_id=1916052524]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="Header" type="HBoxContainer" parent="Container/TextBoxes/PreviewBox/Container"]
+[node name="Header" type="HBoxContainer" parent="Container/TextBoxes/PreviewBox/Container" unique_id=249188169]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="Container/TextBoxes/PreviewBox/Container/Header"]
+[node name="Label" type="Label" parent="Container/TextBoxes/PreviewBox/Container/Header" unique_id=2005094232]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_type_variation = &"HeaderSmall"
 text = "Text Preview"
 
-[node name="ExpandPreviewButton" type="Button" parent="Container/TextBoxes/PreviewBox/Container/Header"]
+[node name="ExpandPreviewButton" type="Button" parent="Container/TextBoxes/PreviewBox/Container/Header" unique_id=18156402]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -1351,7 +1331,7 @@ toggle_mode = true
 icon = ExtResource("37_phbom")
 flat = true
 
-[node name="TextPreview" type="RichTextLabel" parent="Container/TextBoxes/PreviewBox/Container"]
+[node name="TextPreview" type="RichTextLabel" parent="Container/TextBoxes/PreviewBox/Container" unique_id=1163878590]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -1376,8 +1356,7 @@ bbcode_enabled = true
 [connection signal="pressed" from="Container/Toolbar/AddImage" to="Container/OptionMenus/ImageBar" method="_on_add_image_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddURL" to="." method="_on_add_url_pressed"]
 [connection signal="pressed" from="Container/Toolbar/AddEffect" to="Container/OptionMenus/EffectsBar" method="_on_add_effect_pressed"]
-[connection signal="pressed" from="Container/Toolbar/AddTypingSpeed" to="." method="_on_add_typing_speed_pressed"]
-[connection signal="pressed" from="Container/Toolbar/AddIfCondition" to="." method="_on_add_if_condition_pressed"]
+[connection signal="pressed" from="Container/Toolbar/AddTag" to="Container/OptionMenus/TagsBar" method="_on_add_tag_pressed"]
 [connection signal="value_changed" from="Container/OptionMenus/FontBar/HFlowContainer/SizeField" to="Container/OptionMenus/FontBar" method="_on_font_size_value_changed"]
 [connection signal="path_changed" from="Container/OptionMenus/FontBar/HFlowContainer/FontField" to="Container/OptionMenus/FontBar" method="_on_font_file_path_changed"]
 [connection signal="toggled" from="Container/OptionMenus/FontBar/FontOptionsHeader/Label" to="Container/OptionMenus/FontBar" method="_on_font_options_expand_toggled"]
@@ -1407,12 +1386,6 @@ bbcode_enabled = true
 [connection signal="value_changed" from="Container/OptionMenus/ImageBar/ImageOptions/RegionOptions/RegionHeight" to="Container/OptionMenus/ImageBar" method="_on_region_height_value_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/ImageBar/ImageOptions/ColorOptions/ImageColorPicker" to="Container/OptionMenus/ImageBar" method="_on_image_color_changed"]
 [connection signal="text_submitted" from="Container/OptionMenus/UrlBar/UrlInput" to="." method="_on_url_input_submitted"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/PulseEffect" to="." method="_on_pulse_effect_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/WaveEffect" to="." method="_on_wave_effect_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/TornadoEffect" to="." method="_on_tornado_effect_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/ShakeEffect" to="." method="_on_shake_effect_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/FadeEffect" to="." method="_on_fade_effect_pressed"]
-[connection signal="pressed" from="Container/OptionMenus/EffectsBar/EffectsList/RainbowEffect" to="." method="_on_rainbow_effect_pressed"]
 [connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/FreqField" to="Container/OptionMenus/EffectsBar" method="_on_pulse_freq_value_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/EaseField" to="Container/OptionMenus/EffectsBar" method="_on_pulse_ease_value_changed"]
 [connection signal="color_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/PulseEffectBar/ColorPicker" to="Container/OptionMenus/EffectsBar" method="_on_pulse_color_changed"]
@@ -1432,6 +1405,10 @@ bbcode_enabled = true
 [connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/ValField" to="Container/OptionMenus/EffectsBar" method="_on_rainbow_val_value_changed"]
 [connection signal="value_changed" from="Container/OptionMenus/EffectsBar/EffectsContainer/RainbowEffectBar/SpeedField" to="Container/OptionMenus/EffectsBar" method="_on_rainbow_speed_value_changed"]
 [connection signal="id_pressed" from="Container/OptionMenus/EffectsBar/EffectsMenu" to="Container/OptionMenus/EffectsBar" method="_on_effects_menu_id_pressed"]
+[connection signal="item_selected" from="Container/OptionMenus/TagsBar/TagsContainer/SpeedBar/SpeedTypeDropdown" to="Container/OptionMenus/TagsBar" method="_on_speed_type_selected"]
+[connection signal="value_changed" from="Container/OptionMenus/TagsBar/TagsContainer/SpeedBar/SpeedInput" to="Container/OptionMenus/TagsBar" method="_on_speed_value_changed"]
+[connection signal="value_changed" from="Container/OptionMenus/TagsBar/TagsContainer/WaitBar/WaitInput" to="Container/OptionMenus/TagsBar" method="_on_wait_value_changed"]
+[connection signal="id_pressed" from="Container/OptionMenus/TagsBar/TagsMenu" to="Container/OptionMenus/TagsBar" method="_on_tags_menu_id_pressed"]
 [connection signal="focus_exited" from="Container/TextBoxes/TextBox" to="." method="_on_text_box_focus_exited"]
 [connection signal="text_changed" from="Container/TextBoxes/TextBox" to="." method="_on_code_edit_text_changed"]
 [connection signal="toggled" from="Container/TextBoxes/PreviewBox/Container/Header/ExpandPreviewButton" to="." method="_on_preview_expand_button_toggled"]
