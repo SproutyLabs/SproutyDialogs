@@ -24,9 +24,10 @@ signal option_removed(index)
 
 ## Expandable text box for the option text
 @onready var _default_text_box: EditorSproutyDialogsExpandableTextBox = $ExpandableTextBox
-## Translations container to handle the dialog translations
+## Translations container reference
 @onready var _translation_boxes: EditorSproutyDialogsTranslationsContainer = $TranslationsContainer
-@onready var _conditions_container: EditorSproutyDialogsConditionsContainer = $VBoxContainer/ConditionsContainer
+## Conditions container reference
+@onready var _conditions_container: EditorSproutyDialogsConditionsContainer = $ConditionsContainer
 
 ## Default locale for dialog text
 var _default_locale: String = ""
@@ -51,14 +52,19 @@ var undo_redo: EditorUndoRedoManager
 
 func _ready() -> void:
 	_default_text_box.open_text_editor.connect(open_text_editor.emit)
-	_translation_boxes.open_text_editor.connect(open_text_editor.emit)
 	_default_text_box.update_text_editor.connect(update_text_editor.emit)
-	_translation_boxes.update_text_editor.connect(update_text_editor.emit)
 	_default_text_box.text_box_focus_exited.connect(_on_default_focus_exited)
 	_default_text_box.text_changed.connect(_on_default_text_changed)
+	
+	_translation_boxes.open_text_editor.connect(open_text_editor.emit)
+	_translation_boxes.update_text_editor.connect(update_text_editor.emit)
 	_translation_boxes.modified.connect(modified.emit)
-	_conditions_container.modified.connect(modified.emit)
 	_translation_boxes.undo_redo = undo_redo
+
+	_conditions_container.open_text_editor.connect(open_text_editor.emit)
+	_conditions_container.update_text_editor.connect(update_text_editor.emit)
+	_conditions_container.modified.connect(modified.emit)
+	_conditions_container.undo_redo = undo_redo
 
 	_remove_button.pressed.connect(_on_remove_button_pressed)
 	_remove_button.icon = get_theme_icon("Remove", "EditorIcons")
@@ -68,7 +74,6 @@ func _ready() -> void:
 	on_translation_enabled_changed( # Enable/disable translation section
 			SproutyDialogsSettingsManager.get_setting("enable_translations")
 		)
-
 
 
 func get_conditions() -> Dictionary:
@@ -140,6 +145,7 @@ func on_translation_enabled_changed(enabled: bool) -> void:
 	else: # Hide translation boxes and default locale label
 		%DefaultLocaleLabel.visible = false
 		_translation_boxes.visible = false
+		$EndSeparator.visible = false
 
 
 ## Set translation text boxes
@@ -158,6 +164,7 @@ func _set_translation_text_boxes() -> void:
 		)
 	%DefaultLocaleLabel.visible = _translations_enabled and _default_locale != ""
 	_translation_boxes.visible = _translations_enabled and locales.size() > 1
+	$EndSeparator.visible = _translation_boxes.visible
 
 
 ## Handle the default text box text changed signal

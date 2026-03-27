@@ -3,23 +3,23 @@
 [ext_resource type="Script" uid="uid://qx800jrfowgk" path="res://addons/sprouty_dialogs/editor/components/scripts/expandable_text_box.gd" id="1_ytunx"]
 [ext_resource type="CodeHighlighter" uid="uid://dfy2njb4ljtel" path="res://addons/sprouty_dialogs/editor/modules/text_editor/text_highlighter.tres" id="2_p55sv"]
 
-[sub_resource type="DPITexture" id="DPITexture_5rvxf"]
+[sub_resource type="DPITexture" id="DPITexture_22hq6"]
 _source = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\"><path fill=\"#ff5d5d\" d=\"M2 1v8.586l1.293-1.293a1 1 0 0 1 1.414 0L7 10.587l2.293-2.293a1 1 0 0 1 1.414 0L13 10.586l1-1V6H9V1H2zm8 0v4h4zm-6 9.414-2 2V15h12v-2.586l-.293.293a1 1 0 0 1-1.414 0L10 10.414l-2.293 2.293a1 1 0 0 1-1.414 0L4 10.414z\"/></svg>
 "
 
 [node name="ExpandableTextBox" type="HBoxContainer" unique_id=1035742864]
-custom_minimum_size = Vector2(0, 43.32)
-offset_right = 40.0
-offset_bottom = 40.0
+custom_minimum_size = Vector2(0, 35)
+offset_right = 178.0
+offset_bottom = 35.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_ytunx")
 
 [node name="TextEdit" type="TextEdit" parent="." unique_id=764128304]
-custom_minimum_size = Vector2(150, 40)
+custom_minimum_size = Vector2(150, 35)
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Write text here..."
+placeholder_text = "Write here..."
 wrap_mode = 1
 caret_blink = true
 syntax_highlighter = ExtResource("2_p55sv")
@@ -27,4 +27,4 @@ highlight_all_occurrences = true
 
 [node name="ExpandButton" type="Button" parent="." unique_id=13839841]
 layout_mode = 2
-icon = SubResource("DPITexture_5rvxf")
+icon = SubResource("DPITexture_22hq6")

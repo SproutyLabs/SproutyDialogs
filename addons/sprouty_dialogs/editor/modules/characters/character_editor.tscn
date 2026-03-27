@@ -42,8 +42,8 @@ size_flags_vertical = 3
 
 [node name="KeyNameLabel" type="Label" parent="CharacterSettings/ScrollContainer/Container" unique_id=356866724]
 unique_name_in_owner = true
-layout_mode = 2
 auto_translate_mode = 2
+layout_mode = 2
 tooltip_text = "The character key name to reference it is the filename."
 mouse_filter = 1
 theme_type_variation = &"HeaderMedium"
@@ -100,13 +100,13 @@ icon_alignment = 2
 visible = false
 layout_mode = 2
 
-[node name="Panel" type="ScrollContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer" unique_id=620352713]
+[node name="ScrollContainer" type="ScrollContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer" unique_id=620352713]
 visible = false
 custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 theme_override_styles/panel = ExtResource("5_k1upw")
 
-[node name="TextBoxes" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/Panel" unique_id=562617203]
+[node name="TextBoxes" type="VBoxContainer" parent="CharacterSettings/ScrollContainer/Container/NameTranslationsContainer/ScrollContainer" unique_id=562617203]
 unique_name_in_owner = true
 visible = false
 custom_minimum_size = Vector2(100, 120)
@@ -231,8 +231,8 @@ text = "Default portrait"
 
 [node name="DefaultPortraitDropdown" type="OptionButton" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings/DefaultPortrait" unique_id=1750830111]
 unique_name_in_owner = true
-layout_mode = 2
 auto_translate_mode = 2
+layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="ExpandTransformSettingsButton" type="Button" parent="CharacterSettings/ScrollContainer/Container/PortraitSettings" unique_id=1743235991]

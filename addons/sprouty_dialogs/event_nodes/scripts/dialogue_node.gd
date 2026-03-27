@@ -97,9 +97,7 @@ func set_data(dict: Dictionary) -> void:
 	node_type = dict["node_type"]
 	node_index = dict["node_index"]
 	to_node = dict["to_node"]
-	
-	if dict.has("to_dialog"):
-		to_dialog = dict["to_dialog"]
+	to_dialog = dict.get("to_dialog", "")
 	
 	# Show or hide character section
 	_character_expand_button.button_pressed = dict["char_expand"]
@@ -312,7 +310,7 @@ func get_dialogs_text() -> Dictionary:
 func load_dialogs(dialogs: Dictionary) -> void:
 	if dialogs.size() > 1: # There are translations
 		_dialog_without_translation = false
-	
+
 	if _translations_enabled and dialogs.has(_default_locale):
 		_default_text_box.set_text(dialogs[_default_locale])
 		_default_text = dialogs[_default_locale]

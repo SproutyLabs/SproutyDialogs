@@ -260,6 +260,9 @@ static func new_field_by_type(
 			line_edit.text_changed.connect(on_value_changed.bind(type, field))
 			line_edit.focus_exited.connect(on_modified_callable)
 			
+			if type == TYPE_STRING_NAME:
+				property_data["hint"] = PROPERTY_HINT_NONE
+			
 			if not property_data.is_empty():
 				# File path string
 				if property_data["hint"] == PROPERTY_HINT_FILE:

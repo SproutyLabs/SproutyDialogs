@@ -30,11 +30,9 @@ func set_data(dict: Dictionary) -> void:
 	node_index = dict["node_index"]
 	position_offset = dict["offset"]
 	to_node = dict["to_node"]
+	to_dialog = dict.get("to_dialog", "")
 	size = dict["size"]
 	_node_data = dict
-
-	if dict.has("to_dialog"):
-		to_dialog = dict["to_dialog"]
 
 	# Set the original node slots to keep connections
 	_set_node_slots(_node_data["to_node"])
