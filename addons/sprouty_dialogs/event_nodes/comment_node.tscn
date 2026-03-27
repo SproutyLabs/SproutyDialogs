@@ -50,7 +50,7 @@ slot/0/draw_stylebox = true
 script = ExtResource("5_achcx")
 node_color = Color(0.154876, 0.154876, 0.154876, 1)
 node_icon = ExtResource("3_g6856")
-node_list_index = 8
+node_list_index = 9
 
 [node name="TextInput" type="TextEdit" parent="." unique_id=415333059]
 custom_minimum_size = Vector2(150, 100)
