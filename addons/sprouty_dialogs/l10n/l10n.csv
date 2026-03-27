@@ -471,5 +471,10 @@ Identifier,Event Node -> Signal Node,Identifier,标识符
 Arguments,Event Node -> Signal Node,Arguments,参数
 Write a name...,Event Node -> Signal Node,Write a name...,输入名称...
 Add Element,Event Node -> Signal Node,Add Element,添加元素
-Time,Event Node -> Wait Node,Time,时间
+Wait Time,Event Node -> Wait Node,Wait Time,等待时间
+Close Dialog Box,Event Node -> Wait Node,Close Dialog Box,关闭对话框
+"If true, the dialog box will close while waiting.
+Otherwise, the dialog box will remain visible while waiting.",Event Node -> Wait Node,"If true, the dialog box will close while waiting.
+Otherwise, the dialog box will remain visible while waiting.","如果为真，对话框将在等待期间关闭。
+否则，对话框将在等待期间保持可见。"
 Write a comment...,Event Node -> Comment Node,Write a comment...,输入注释...
