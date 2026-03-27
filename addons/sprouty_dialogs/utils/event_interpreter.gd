@@ -27,6 +27,8 @@ signal dialogue_processed(
 signal options_processed(options: Array, next_nodes: Array, option_keys: Array, disabled_flags: Array)
 ## Emitted when a signal node was processed.
 signal signal_processed(signal_id: String, args: Array, next_node: String)
+## Emitted when a wait node was processed
+signal wait_processed(wait_time: float, next_node: String)
 ## Emitted when a jump node was processed.
 signal jump_to_node(start_node: String, start_id: String, return_node: String)
 
@@ -203,6 +205,14 @@ func _process_signal(node_data: Dictionary) -> void:
 
 func _process_wait(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing wait node...")
+	var dialog_box = get_parent().get_current_dialog_box()
+
+	if node_data.get("close_dialog", false): # Close the dialog box
+		dialog_box.stop_dialog(true)
+	else: # Stop the dialog, but keeps the dialog box visible
+		dialog_box.stop_dialog()
+		dialog_box.show()
+	
 	await get_tree().create_timer(node_data.wait_time).timeout
 	continue_to_node.emit(node_data.to_node[0])
 

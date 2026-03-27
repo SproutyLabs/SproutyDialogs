@@ -8,7 +8,9 @@ extends SproutyDialogsBaseNode
 # -----------------------------------------------------------------------------
 
 ## Time input spin box
-@onready var _time_input: SpinBox = $Container/SpinBox
+@onready var _time_input: SpinBox = $Container/TimeInput
+## Close dialog box check
+@onready var _close_dialog_check: CheckButton = $CloseDialogToggle
 ## Wait time value
 @onready var _wait_time: float = _time_input.value
 
@@ -18,9 +20,9 @@ var _time_modified: bool = false
 
 func _ready():
 	super ()
-	# Connect time input signals
 	_time_input.value_changed.connect(_on_time_value_changed)
 	_time_input.focus_exited.connect(_on_time_input_focus_exited)
+	_close_dialog_check.toggled.connect(_on_close_dialog_toggled)
 
 
 #region === Node Data ==========================================================
@@ -32,6 +34,7 @@ func get_data() -> Dictionary:
 		"node_type": node_type,
 		"node_index": node_index,
 		"wait_time": _wait_time,
+		"close_dialog": _close_dialog_check.button_pressed,
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
 		"offset": position_offset,
@@ -50,6 +53,7 @@ func set_data(dict: Dictionary) -> void:
 
 	_wait_time = dict["wait_time"]
 	_time_input.value = dict["wait_time"]
+	_close_dialog_check.set_pressed_no_signal(dict.get("close_dialog", false))
 
 #endregion
 
@@ -77,3 +81,14 @@ func _on_time_input_focus_exited() -> void:
 	if _time_modified:
 		_time_modified = false
 		modified.emit(true)
+
+
+func _on_close_dialog_toggled(toggled_on: bool) -> void:
+	# --- UndoRedo --------------------------------------------------
+	undo_redo.create_action("Toggle Close Dialog")
+	undo_redo.add_do_method(_close_dialog_check, "set_pressed_no_signal", toggled_on)
+	undo_redo.add_undo_method(_close_dialog_check, "set_pressed_no_signal", not toggled_on)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+	undo_redo.commit_action(false)
+	# ---------------------------------------------------------------
