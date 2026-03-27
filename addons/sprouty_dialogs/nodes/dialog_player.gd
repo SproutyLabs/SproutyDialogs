@@ -290,7 +290,6 @@ func _enter_tree() -> void:
 		_dialog_interpreter.continue_to_node.connect(_process_node)
 		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
 		_dialog_interpreter.options_processed.connect(_on_options_processed)
-		_dialog_interpreter.signal_processed.connect(_on_signal_processed)
 		_dialog_interpreter.jump_to_node.connect(_on_jump_to_node)
 		_dialog_interpreter.print_debug = _print_debug
 		add_child(_dialog_interpreter)
@@ -654,13 +653,6 @@ func _on_option_selected(option_index: int) -> void:
 	
 	option_selected.emit(option_index + 1, option_dialog)
 	_process_node(_next_options[option_index])
-
-
-## Emit a signal event when the signal node is processed
-func _on_signal_processed(signal_id: String, args: Array, next_node: String) -> void:
-	signal_event.emit(signal_id, args)
-	_next_node = next_node
-	_process_node(_next_node)
 
 
 ## Handle when a jump node is processed

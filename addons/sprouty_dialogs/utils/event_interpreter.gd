@@ -200,7 +200,8 @@ func _process_signal(node_data: Dictionary) -> void:
 		node_data["extra_args"] = []
 	
 	var args = SproutyDialogsVariableUtils.get_array_from_data(node_data.extra_args)
-	signal_processed.emit(node_data.signal_id, args, node_data.to_node[0])
+	get_parent().signal_event.emit(node_data.signal_id, args)
+	continue_to_node.emit(node_data.to_node[0])
 
 
 func _process_wait(node_data: Dictionary) -> void:
