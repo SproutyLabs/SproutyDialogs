@@ -530,8 +530,10 @@ func stop() -> void:
 	# Free all portraits displayed
 	for char in _portraits_instances.keys():
 		for portrait in _portraits_instances[char].values():
-			if portrait:
-				portrait.get_parent().queue_free()
+			if portrait: # Remove the character node with the portraits
+				var portrait_parent = portrait.get_parent()
+				portrait_parent.get_parent().remove_child(portrait_parent)
+				portrait_parent.queue_free()
 	
 	if _current_dialog_box: # If there is a current dialog box, stop it
 		await _current_dialog_box.stop_dialog(true)
