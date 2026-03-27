@@ -21,6 +21,9 @@ var _value: Variant = null
 
 
 func _ready() -> void:
+	# Wait a frame to ensure that variables are loaded
+	await get_tree().process_frame
+
 	# Add the variable name input field with search option
 	_variable_name_input = SproutyDialogsVariableUtils.new_field_by_type(40).field
 	_variable_name_input.text_changed.connect(_on_variable_name_text_changed)
