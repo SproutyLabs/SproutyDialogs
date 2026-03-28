@@ -49,7 +49,7 @@ slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
 script = ExtResource("2_script")
-node_color = Color(0.176471, 0.639216, 0.592157, 1)
+node_color = Color(0, 0.5324174, 0.36580393, 1)
 node_icon = ExtResource("3_b1sp0")
 node_list_index = 8
 
