@@ -1,11 +1,11 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dq5f18olfs8re"]
 
 [ext_resource type="Theme" uid="uid://q74awv67f4ih" path="res://addons/sprouty_dialogs/editor/theme/sprouty_dialogs_theme.tres" id="1_theme"]
-[ext_resource type="Script" path="res://addons/sprouty_dialogs/event_nodes/scripts/jump_to_node.gd" id="2_script"]
+[ext_resource type="Script" uid="uid://xa1ypu4ppqp6" path="res://addons/sprouty_dialogs/event_nodes/scripts/jump_to_node.gd" id="2_script"]
+[ext_resource type="Texture2D" uid="uid://da63a2wkyi8j6" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/jump_to.svg" id="3_b1sp0"]
 [ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="3_combo"]
-[ext_resource type="Texture2D" uid="uid://dgpnxk1kubotw" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/start.svg" id="4_icon"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jump"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1sp0"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
@@ -17,7 +17,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jump_selected"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uqmym"]
 content_margin_left = 18.0
 content_margin_top = 12.0
 content_margin_right = 18.0
@@ -30,13 +30,13 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[node name="JumpToNode" type="GraphNode"]
+[node name="JumpToNode" type="GraphNode" unique_id=769019640]
 custom_minimum_size = Vector2(200, 0)
 offset_right = 240.0
 offset_bottom = 104.0
 theme = ExtResource("1_theme")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_jump")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_jump_selected")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_b1sp0")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_uqmym")
 resizable = true
 title = "Jump To Node"
 slot/0/left_enabled = true
@@ -48,32 +48,22 @@ slot/0/right_type = 0
 slot/0/right_color = Color(1, 1, 1, 1)
 slot/0/right_icon = null
 slot/0/draw_stylebox = true
-slot/1/left_enabled = false
-slot/1/left_type = 0
-slot/1/left_color = Color(1, 1, 1, 1)
-slot/1/left_icon = null
-slot/1/right_enabled = false
-slot/1/right_type = 0
-slot/1/right_color = Color(1, 1, 1, 1)
-slot/1/right_icon = null
-slot/1/draw_stylebox = true
 script = ExtResource("2_script")
-node_color = Color(0.176471, 0.639216, 0.592157, 1)
-node_icon = ExtResource("4_icon")
-node_list_index = 9
+node_color = Color(0, 0.5324174, 0.36580393, 1)
+node_icon = ExtResource("3_b1sp0")
+node_list_index = 8
 
-[node name="Container" type="HBoxContainer" parent="."]
+[node name="Container" type="HBoxContainer" parent="." unique_id=1305589538]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="Label" type="Label" parent="Container"]
+[node name="Label" type="Label" parent="Container" unique_id=484850292]
 layout_mode = 2
 text = "Start ID"
 
-[node name="TargetIdInput" parent="Container" instance=ExtResource("3_combo")]
+[node name="TargetIdInput" parent="Container" unique_id=971869995 instance=ExtResource("3_combo")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 3
 placeholder_text = "Start ID..."
 
 [editable path="Container/TargetIdInput"]
