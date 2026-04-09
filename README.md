@@ -75,8 +75,10 @@ Also, you have a [class reference](https://SproutyLabs.github.io/SproutyDialogsD
 
 These are some features that are planned to implement in the future:
 
+- [x] Text effect tags (e.g. to change the typing speed in between dialogues)
 - [x] Add more event nodes:
   - [x] Call method node
+  - [x] Jump to node
   - [ ] Character node
   - [ ] Randomize node
   - [ ] Play sound node
@@ -84,7 +86,6 @@ These are some features that are planned to implement in the future:
 - [ ] Grouping nodes support
 - [ ] Typing sounds support
 - [ ] A new class to handle the dialogue headlessly
-- [ ] Text effect tags (e.g. to change the typing speed in between dialogues)
 
 *And more to come!*
 
