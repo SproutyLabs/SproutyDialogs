@@ -97,14 +97,21 @@ func _on_update_check_request_completed(result: int, response_code: int,
 
 
 ## Compare two semantic version strings
+## Returns true if v1 > v2 (newer version)
 func _compare_versions(v1: String, v2: String) -> bool:
 	var parts1 = v1.split(".")
 	var parts2 = v2.split(".")
 	
 	for i in range(max(parts1.size(), parts2.size())):
-		if parts1[i] > parts2[i]:
+		var p1 = int(parts1[i]) if i < parts1.size() else 0
+		var p2 = int(parts2[i]) if i < parts2.size() else 0
+		
+		if p1 > p2:
 			return true
-	return false
+		elif p1 < p2:
+			return false
+	
+	return false # Equal versions
 
 
 ## Handle download request completed
