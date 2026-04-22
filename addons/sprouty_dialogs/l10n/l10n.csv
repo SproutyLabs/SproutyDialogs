@@ -202,7 +202,7 @@ Value of the rainbow.,Editor -> Dialogue Panel -> Text Edit,Value of the rainbow
 "Speed is the number of full rainbow cycles per second. A positive speed value will play the animation forwards, a value of 0 will pause the animation, and a negative speed value will play the animation backwards.",Editor -> Dialogue Panel -> Text Edit,"Speed is the number of full rainbow cycles per second. A positive speed value will play the animation forwards, a value of 0 will pause the animation, and a negative speed value will play the animation backwards.",速度是每秒完成的彩虹循环次数。正速度值使动画正向播放，速度值为 0 时动画暂停，负速度值使动画反向播放。
 Add Speed Tag,Editor -> Dialogue Panel -> Text Edit,Add Speed Tag,添加速度标签
 Add Wait Tag,Editor -> Dialogue Panel -> Text Edit,Add Wait Tag,添加暂停标签
-Add If Tag,Editor -> Dialogue Panel -> Text Edit,Add If Tag,添加 if 标签
+Add If Tag,Editor -> Dialogue Panel -> Text Edit,Add If Tag,添加条件标签
 Add a typing speed effect in the selected text.,Editor -> Dialogue Panel -> Text Edit,Add a typing speed effect in the selected text.,为所选文本添加打字速度效果。
 "Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
 Relative speed: A multiplier relative to the default typing speed configured in the settings (e.g., 2x means twice the default speed). A larger value makes the typing faster (shorter character intervals).",Editor -> Dialogue Panel -> Text Edit,"Absolute speed: The time (in seconds) taken to display each character. A larger value results in a longer interval between characters, making the typing speed slower.
@@ -215,6 +215,10 @@ Relative Speed,Editor -> Dialogue Panel -> Text Edit,Relative Speed,相对速度
 Wait,Editor -> Dialogue Panel -> Text Edit,Wait,等待
 Condition,Editor -> Dialogue Panel -> Text Edit,Condition,条件
 Add an if condition in the selected text. Displays the text only if a condition is met.,Editor -> Dialogue Panel -> Text Edit,Add an if condition in the selected text. Displays the text only if a condition is met.,为所选文本添加 if 条件。仅在满足条件时显示文本。
+Repeat,Editor -> Dialogue Panel -> Text Edit,Repeat,重复
+Count,Editor -> Dialogue Panel -> Text Edit,Count,次数
+Add Repeat Tag,Editor -> Dialogue Panel -> Text Edit,Add Repeat Tag,添加重复标签
+Add a repeat tag in the selected text. Repeats the content inside the tag a specified number of times.,Editor -> Dialogue Panel -> Text Edit,Add a repeat tag in the selected text. Repeats the content inside the tag a specified number of times.,为所选文本添加 repeat 标签。将标签内的内容重复指定次数。
 "The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?",Editor -> Dialogue Panel -> Confirmation Dialog,"The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?","文件包含未保存的更改。

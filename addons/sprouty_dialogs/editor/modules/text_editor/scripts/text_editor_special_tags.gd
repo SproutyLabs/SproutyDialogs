@@ -53,6 +53,8 @@ func _on_tags_menu_id_pressed(id: int) -> void:
 			_on_wait_tag_pressed()
 		2:
 			_on_if_tag_pressed()
+		3:
+			_on_repeat_tag_pressed()
 
 
 #region === Speed tag handling =================================================
@@ -112,5 +114,17 @@ func _on_wait_value_changed(value: float) -> void:
 ## Add if tag to the selected text
 func _on_if_tag_pressed() -> void:
 	_change_tag_bar(2)
+
+#endregion
+
+#region === Repeat tag handling =================================================
+
+## Add repeat tag to the selected text
+func _on_repeat_tag_pressed() -> void:
+	_change_tag_bar(3)
+
+## Update the repeat value
+func _on_repeat_input_value_changed(value: float) -> void:
+	text_editor.update_code_tags("[repeat=" + str(int(value)) + "]", "[/repeat]", "", true)
 
 #endregion
