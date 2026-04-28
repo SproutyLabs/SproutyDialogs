@@ -14,8 +14,8 @@ signal modified(modified: bool)
 ## Triggered when all the nodes are loaded
 signal nodes_loaded
 
-## Emitted when is requesting to open a character file
-signal open_character_file_request(path: String)
+## Emitted when is requesting to open a file
+signal open_file_request(path: String)
 ## Emitted when is requesting to play a dialog from a start node
 signal play_dialog_request(start_id: String)
 
@@ -218,11 +218,11 @@ func _connect_node_signals(node: SproutyDialogsBaseNode) -> void:
 			not is_connected("translation_enabled_changed", node.on_translation_enabled_changed):
 		translation_enabled_changed.connect(node.on_translation_enabled_changed)
 	
-	match node.node_type: # Connect specific node signals
-		"start_node":
-			node.play_dialog_request.connect(play_dialog_request.emit)
-		"dialogue_node":
-			node.open_character_file_request.connect(open_character_file_request.emit)
+	# Connect other signals
+	if node.has_signal("open_file_request"):
+		node.open_file_request.connect(open_file_request.emit)
+	if node.has_signal("play_dialog_request"):
+		node.play_dialog_request.connect(play_dialog_request.emit)
 
 
 ## Disconnect node signals
@@ -236,17 +236,17 @@ func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
 	if node.has_signal("update_text_editor"):
 		node.update_text_editor.disconnect(update_text_editor.emit)
 	
-	# Connect translation signals
+	# Disconnect translation signals
 	if node.has_signal("on_locales_changed"):
 		locales_changed.disconnect(node.on_locales_changed)
 	if node.has_signal("on_translation_enabled_changed"):
 		translation_enabled_changed.disconnect(node.on_translation_enabled_changed)
 	
-	match node.node_type: # Disconnect specific node signals
-		"start_node":
-			node.play_dialog_request.disconnect(play_dialog_request.emit)
-		"dialogue_node":
-			node.open_character_file_request.disconnect(open_character_file_request.emit)
+	# Disconnect other signals
+	if node.has_signal("open_file_request"):
+		node.open_file_request.disconnect(open_file_request.emit)
+	if node.has_signal("play_dialog_request"):
+		node.play_dialog_request.disconnect(play_dialog_request.emit)
 
 #endregion
 

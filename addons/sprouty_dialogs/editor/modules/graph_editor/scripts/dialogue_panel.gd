@@ -15,8 +15,8 @@ signal new_dialog_file_pressed
 ## Emitted when the open dialog file button is pressed
 signal open_dialog_file_pressed
 
-## Emitted when is requesting to open a character file
-signal open_character_file_request(path: String)
+## Emitted when is requesting to open a file
+signal open_file_request(path: String)
 ## Emitted when is requesting to play a dialog from a start node
 signal play_dialog_request(start_id: String)
 
@@ -77,7 +77,7 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 	if not new_graph.is_connected("open_text_editor", _show_text_editor):
 		new_graph.open_text_editor.connect(_show_text_editor)
 		new_graph.update_text_editor.connect(_text_editor.update_text_editor)
-		new_graph.open_character_file_request.connect(open_character_file_request.emit)
+		new_graph.open_file_request.connect(open_file_request.emit)
 		new_graph.play_dialog_request.connect(play_dialog_request.emit)
 		new_graph.toolbar_expanded.connect(_on_toolbar_expanded)
 		new_graph.nodes_selection_changed.connect(_graph_toolbar.update_node_options)
