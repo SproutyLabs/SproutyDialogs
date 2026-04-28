@@ -67,6 +67,7 @@ func get_data() -> Dictionary:
 		"jump_to_dialogue": _jump_to_dialogue_toggle.button_pressed,
 		"to_dialogue_uid": ResourceSaver.get_resource_id_for_path(
 				_dialogue_data.resource_path, true) if _dialogue_data else -1,
+		"to_dialogue_path": _dialogue_data.resource_path if _dialogue_data else "",
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
 		"offset": position_offset,
@@ -87,12 +88,11 @@ func set_data(dict: Dictionary) -> void:
 	_target_input.set_value(_target_id)
 
 	if dict.has("to_dialogue_uid"):
-		var path = ""
 		if SproutyDialogsFileUtils.check_valid_uid_path(dict["to_dialogue_uid"]):
-			path = ResourceUID.get_id_path(dict["to_dialogue_uid"])
+			var path = ResourceUID.get_id_path(dict["to_dialogue_uid"])
 			_load_dialogue(load(path))
-		elif path != "":
-			printerr("[Sprouty Dialogs] The dialogue file '" + path
+		else:
+			printerr("[Sprouty Dialogs] The dialogue file '" + dict["to_dialogue_path"]
 				+ "' cannot be found by Jump To Node #" + str(node_index)
 				+ ". Please check if the dialogue file exist or select another one.")
 	
@@ -222,8 +222,8 @@ func _load_dialogue(dialogue: Resource) -> void:
 	# Show the character's display name and set the portrait dropdown
 	_dialogue_button.disabled = false
 	_dialogue_button.text = path.get_file().get_basename().capitalize()
-	if not _dialogue_button.pressed.is_connected(open_file_request.emit.bind(path)):
-		_dialogue_button.pressed.connect(open_file_request.emit.bind(path))
+	_dialogue_button.pressed.disconnect(open_file_request.emit.bind(path))
+	_dialogue_button.pressed.connect(open_file_request.emit.bind(path))
 	_refresh_target_options()
 	_dialogue_data = dialogue
 
