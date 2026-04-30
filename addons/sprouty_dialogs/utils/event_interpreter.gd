@@ -27,10 +27,13 @@ signal dialogue_processed(
 signal options_processed(options: Array, next_nodes: Array, option_keys: Array, disabled_flags: Array)
 ## Emitted when a signal node was processed.
 signal signal_processed(signal_id: String, args: Array, next_node: String)
-## Emitted when a wait node was processed
-signal wait_processed(wait_time: float, next_node: String)
 ## Emitted when a jump node was processed.
-signal jump_to_node(start_node: String, start_id: String, return_node: String)
+signal jump_to_node(
+	start_node: String,
+	start_id: String,
+	return_node: String,
+	dialog_data: SproutyDialogsDialogueData
+)
 
 ## Node processors reference dictionary.
 ## This dictionary maps the node type to its processing method.
@@ -227,6 +230,17 @@ func _process_jump_to(node_data: Dictionary) -> void:
 		return_node = node_data["to_node"][0]
 	var dialog_data: SproutyDialogsDialogueData = get_parent().get_dialog_data()
 
+	# Handle when jump to another dialogue file
+	if node_data.get("jump_to_dialogue", false):
+		if SproutyDialogsFileUtils.check_valid_uid_path(node_data.get("to_dialogue_uid", -1)):
+			var path = ResourceUID.get_id_path(node_data["to_dialogue_uid"])
+			dialog_data = load(path)
+		else:
+			push_warning("[Sprouty Dialogs] Jump To Node #" + str(node_data.node_index)
+			+ " cannot find the dialogue file '" + node_data["to_dialogue_path"] + "' to jump to.")
+			continue_to_node.emit(return_node)
+			return
+
 	if target_id.is_empty() or dialog_data == null:
 		push_warning("[Sprouty Dialogs] Jump To Node #" + str(node_data.node_index)
 			+ " does not have a valid target ID.")
@@ -251,4 +265,4 @@ func _process_jump_to(node_data: Dictionary) -> void:
 		continue_to_node.emit(return_node)
 		return
 
-	jump_to_node.emit(start_node, target_id, return_node)
+	jump_to_node.emit(start_node, target_id, return_node, dialog_data)
