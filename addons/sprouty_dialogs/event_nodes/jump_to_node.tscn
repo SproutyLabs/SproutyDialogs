@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://drlmb1kt08wlv" path="res://addons/sprouty_dialogs/editor/components/combo_box.tscn" id="3_combo"]
 [ext_resource type="Texture2D" uid="uid://cdnxgodp2ep" path="res://addons/sprouty_dialogs/editor/icons/event_nodes/dialogue.svg" id="5_uqmym"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_b1sp0"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uqmym"]
 content_margin_left = 4.0
 content_margin_top = 4.0
 content_margin_right = 4.0
@@ -18,7 +18,7 @@ corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 corner_detail = 5
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uqmym"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m57uy"]
 content_margin_left = 18.0
 content_margin_top = 12.0
 content_margin_right = 18.0
@@ -34,10 +34,10 @@ corner_detail = 5
 [node name="JumpToNode" type="GraphNode" unique_id=769019640]
 custom_minimum_size = Vector2(200, 0)
 offset_right = 229.0
-offset_bottom = 175.0
+offset_bottom = 122.0
 theme = ExtResource("1_theme")
-theme_override_styles/titlebar = SubResource("StyleBoxFlat_b1sp0")
-theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_uqmym")
+theme_override_styles/titlebar = SubResource("StyleBoxFlat_uqmym")
+theme_override_styles/titlebar_selected = SubResource("StyleBoxFlat_m57uy")
 resizable = true
 title = "Jump To Node"
 slot/0/left_enabled = true
@@ -91,6 +91,7 @@ tooltip_text = "Jump to a start ID of another dialogue file"
 text = "Jump to another file"
 
 [node name="DialogueContainer" type="VBoxContainer" parent="." unique_id=2016544915]
+visible = false
 layout_mode = 2
 
 [node name="HSeparator" type="HSeparator" parent="DialogueContainer" unique_id=1676983201]

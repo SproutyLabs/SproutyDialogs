@@ -39,7 +39,6 @@ signal dialog_player_stop()
 var _dialog_data: SproutyDialogsDialogueData:
 	set(value):
 		_dialog_data = value
-		_start_id = "(Select a dialog)"
 		if value:
 			_dialog_data_uid = ResourceLoader.get_resource_uid(value.resource_path)
 			_dialog_file_name = value.resource_path.get_file().get_basename()
@@ -49,6 +48,7 @@ var _dialog_data: SproutyDialogsDialogueData:
 			_dialog_file_name = ""
 			_starts_ids = []
 		if Engine.is_editor_hint():
+			_start_id = "(Select a dialog)"
 			notify_property_list_changed()
 			update_configuration_warnings()
 
@@ -568,6 +568,7 @@ func _process_node(node_name: String) -> void:
 			var jump_frame = _jump_stack.pop_back()
 			_start_id = jump_frame["start_id"]
 			_next_node_dialog = jump_frame["next_node_dialog"]
+			_dialog_data = jump_frame["dialog_data"]
 			var return_node = jump_frame["return_node"]
 			if return_node == "" or return_node == "END":
 				_process_node("END")
@@ -658,9 +659,13 @@ func _on_option_selected(option_index: int) -> void:
 
 
 ## Handle when a jump node is processed
-func _on_jump_to_node(start_node: String, start_id: String, return_node: String) -> void:
+func _on_jump_to_node(start_node: String, start_id: String,
+		return_node: String, dialog_data: SproutyDialogsDialogueData) -> void:
 	if not _is_running:
 		return
+	
+	var from_dialog_data = _dialog_data
+	_dialog_data = dialog_data
 
 	if start_node.is_empty():
 		start_node = _get_start_node_name(start_id)
@@ -673,6 +678,7 @@ func _on_jump_to_node(start_node: String, start_id: String, return_node: String)
 		"start_id": _start_id,
 		"next_node_dialog": _next_node_dialog,
 		"return_node": return_node,
+		"dialog_data": from_dialog_data,
 	})
 	_start_id = start_id
 	_next_node_dialog = ""
