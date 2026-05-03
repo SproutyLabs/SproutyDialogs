@@ -16,7 +16,7 @@ signal file_closed(metadata: Dictionary)
 ## Emitted when requesting to save a file.
 signal request_save_file(index: int)
 ## Emitted when requesting to save a file as.
-signal request_save_file_as()
+signal request_save_file_as(index: int)
 
 ## File search input
 @onready var _file_search: LineEdit = $FileSearch
@@ -43,6 +43,8 @@ var _closing_queue: Array[int] = []
 var _dialogs_count: int = 0
 ## Number of characters in the file list
 var _characters_count: int = 0
+## Item that was right clicked
+var _right_clicked_item: int = -1
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
@@ -317,7 +319,8 @@ func _on_empty_clicked(at_pos: Vector2, mouse_button_index: int) -> void:
 
 
 ## When a file is right clicked, show the file menu options
-func _on_item_clicked(_idx, at_pos: Vector2, mouse_button_index: int) -> void:
+func _on_item_clicked(index: int, at_pos: Vector2, mouse_button_index: int) -> void:
+	_right_clicked_item = index
 	_on_empty_clicked(at_pos, mouse_button_index)
 
 
@@ -327,11 +330,13 @@ func _on_file_menu_pressed(id: int) -> void:
 		0:
 			request_save_file.emit(get_current_index()) # Save current file
 		1:
-			request_save_file_as.emit() # Save file as
+			request_save_file_as.emit(_right_clicked_item) # Save file as
 		2:
 			close_file() # Close current file
 		3:
 			close_all() # Close all files
+	
+	_right_clicked_item = -1
 
 
 ## Set the confirm closing dialog actions

@@ -53,6 +53,9 @@ var _char_scene := preload("res://addons/sprouty_dialogs/editor/modules/characte
 ## Save shortcut (Command/Ctrl-S)
 var _save_shortcut: Shortcut = Shortcut.new()
 
+## File index to save as
+var _save_as_file_index: int = -1
+
 ## Editor main reference
 var plugin_editor: Control = null
 
@@ -74,14 +77,19 @@ func _ready() -> void:
 	_save_file_button.pressed.connect(save_file)
 
 	open_file_dialog.file_selected.connect(load_file)
-	save_file_dialog.file_selected.connect(save_file)
+	save_file_dialog.file_selected.connect(func(path): save_file(_save_as_file_index, path))
 	new_dialog_file_dialog.file_selected.connect(new_dialog_file)
 	new_char_file_dialog.file_selected.connect(new_character_file)
 
 	_file_list.file_selected.connect(switch_to_selected_file)
 	_file_list.file_closed.connect(_on_file_closed)
 	_file_list.request_save_file.connect(save_file)
-	_file_list.request_save_file_as.connect(save_file_dialog.popup_centered)
+	_file_list.request_save_file_as.connect((func(index):
+			_save_as_file_index=index
+			save_file_dialog.current_path=_file_list.get_item_metadata(index)["file_path"]
+			save_file_dialog.popup_centered()
+			)
+		)
 
 	_close_editor_warning.custom_action.connect(_on_confirm_closing_editor_action)
 	_close_editor_warning.canceled.connect(func(): return null)
