@@ -321,6 +321,13 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		print("[Sprouty Dialogs] File '" + file_metadata.file_name + "' could not be saved.")
 		return
 	
+	# Update the character resources in the inspector
+	var inspector = Engine.get_singleton("EditorInterface").get_inspector()
+	var current_edited = inspector.get_edited_object()
+	if (current_edited is SproutyDialogsCharacterData and
+			current_edited.key_name == file_metadata["data"].key_name):
+		EditorInterface.edit_resource(file_metadata["data"])
+	
 	_file_list.set_item_metadata(index, file_metadata)
 	_file_list.set_file_as_modified(index, false)
 
