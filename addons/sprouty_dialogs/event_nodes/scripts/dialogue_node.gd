@@ -145,8 +145,9 @@ func load_character(path: String) -> void:
 	# Show the character's display name and set the portrait dropdown
 	_character_button.disabled = false
 	_character_button.text = character.key_name.capitalize()
-	if not _character_button.pressed.is_connected(open_file_request.emit.bind(path)):
-		_character_button.pressed.connect(open_file_request.emit.bind(path))
+	if _character_button.pressed.is_connected(open_file_request.emit.bind(path)):
+		_character_button.pressed.disconnect(open_file_request.emit.bind(path))
+	_character_button.pressed.connect(open_file_request.emit.bind(path))
 	_set_portrait_dropdown(character)
 	_character_data = character
 
