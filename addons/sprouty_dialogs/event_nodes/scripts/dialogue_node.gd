@@ -136,7 +136,7 @@ func load_character(path: String) -> void:
 		_clear_character_field()
 		return
 	
-	var character = load(path)
+	var character = ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
 	if not character is SproutyDialogsCharacterData:
 		printerr("[Sprouty Dialogs] Invalid character resource: " + path)
 		_clear_character_field()

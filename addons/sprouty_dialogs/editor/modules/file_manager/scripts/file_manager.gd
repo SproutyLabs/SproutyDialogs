@@ -315,8 +315,10 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 			SproutyDialogsCSVFileManager.save_character_names_on_csv(data.key_name, data.display_name)
 	
 	# Save file on the given path
-	file_metadata["data"].take_over_path(save_path)
-	var result = ResourceSaver.save(file_metadata["data"], save_path, ResourceSaver.FLAG_REPLACE_SUBRESOURCE_PATHS)
+	if file_metadata["data"] is SproutyDialogsCharacterData:
+		file_metadata["data"].take_over_path(save_path)
+	
+	var result = ResourceSaver.save(file_metadata["data"], save_path)
 	if result != OK:
 		print("[Sprouty Dialogs] File '" + file_metadata.file_name + "' could not be saved.")
 		return
@@ -324,9 +326,9 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 	# Update the character resources in the inspector
 	var inspector = Engine.get_singleton("EditorInterface").get_inspector()
 	var current_edited = inspector.get_edited_object()
-	if (current_edited is SproutyDialogsCharacterData and
-			current_edited.key_name == file_metadata["data"].key_name):
-		EditorInterface.edit_resource(file_metadata["data"])
+	if current_edited is SproutyDialogsCharacterData and file_metadata["data"] is SproutyDialogsCharacterData:
+		if current_edited.key_name == file_metadata["data"].key_name:
+			EditorInterface.edit_resource(file_metadata["data"])
 	
 	_file_list.set_item_metadata(index, file_metadata)
 	_file_list.set_file_as_modified(index, false)
