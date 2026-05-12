@@ -130,3 +130,41 @@ static func create_new_scene_file(scene_path: String, scene_type: String) -> voi
 
 	# Set the recent file path
 	set_recent_file_path(scene_type.replace("_scene", "") + "_files", scene_path)
+
+
+## Return all the resources of a given type in the project.
+## The type can be: "dialogue" or "character" resource.
+static func get_resources_of_type(type: String = "dialogue", path: String = "res://") -> Array:
+	var dialogue_resources: Array = []
+	var dir = DirAccess.open(path)
+	
+	if not dir:
+		printerr("[Sprouty Dialogs] Cannot open directory: " + path)
+		return dialogue_resources
+	
+	dir.list_dir_begin()
+	var file_name = dir.get_next()
+	
+	while file_name != "":
+		# Skip hidden files and current/parent directory markers
+		if not file_name.begins_with("."):
+			var file_path = path.path_join(file_name)
+			
+			# If it's a directory, recurse
+			if dir.current_is_dir():
+				var sub_resources = get_resources_of_type(type, file_path)
+				dialogue_resources.append_array(sub_resources)
+			# If it's a file with .tres extension, try to load it
+			elif file_name.ends_with(".tres"):
+				var resource = load(file_path)
+				match type:
+					"dialogue":
+						if resource is SproutyDialogsDialogueData:
+							dialogue_resources.append(resource)
+					"character":
+						if resource is SproutyDialogsCharacterData:
+							dialogue_resources.append(resource)
+		
+		file_name = dir.get_next()
+	
+	return dialogue_resources

@@ -174,7 +174,7 @@ unique_name_in_owner = true
 oversampling_override = 1.0
 title = "Please Confirm..."
 initial_position = 4
-size = Vector2i(336, 106)
+size = Vector2i(399, 132)
 exclusive = false
 dialog_text = "There are modified dialogue/character resources.
 
@@ -197,6 +197,7 @@ filters = PackedStringArray("*.tres")
 
 [node name="OpenFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1262344259]
 auto_translate_mode = 1
+oversampling_override = 1.0
 title = "Open a File"
 initial_position = 4
 size = Vector2i(1500, 1000)
@@ -206,9 +207,23 @@ filters = PackedStringArray("*.tres")
 
 [node name="SaveFile" type="FileDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=296390590]
 auto_translate_mode = 1
+oversampling_override = 1.0
 initial_position = 4
 size = Vector2i(1500, 1000)
 filters = PackedStringArray("*.tres")
+
+[node name="MissingCharacters" type="ConfirmationDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=116836602]
+oversampling_override = 1.0
+title = "Missing character references"
+initial_position = 4
+size = Vector2i(699, 262)
+exclusive = false
+dialog_text = "There is some missing character references in the loaded dialogue.
+
+Missing characters:
+[list]
+
+Do you want to automatically search and reassing the missing characters?"
 
 [node name="BottomContainer" type="HBoxContainer" parent="ContentContainer/Container" unique_id=369707668]
 layout_mode = 2
