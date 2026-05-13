@@ -345,19 +345,22 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 
 ## Check for missing character references in a dialogue resource
 func _check_missing_characters(dialog_data: SproutyDialogsDialogueData) -> void:
+	var char_references = dialog_data.get_all_character_references()
 	var missing_chars = []
 	var char_list = ""
+
 	for id in dialog_data.characters.keys():
 		for char in dialog_data.characters[id].keys():
-			if dialog_data.characters[id][char] < 0:
+			if not SproutyDialogsFileUtils.check_valid_uid_path(dialog_data.characters[id][char]):
 				if not missing_chars.has(char):
 					missing_chars.append(char)
-					char_list += "\n - " + char.capitalize()
+					char_list += "\n - " + char.capitalize() + " (References: " + str(char_references[char]) + ")"
 	
 	if not missing_chars.is_empty():
 		if _missing_chars_dialog.confirmed.is_connected(_reassign_missing_characters.bind(dialog_data)):
 			_missing_chars_dialog.confirmed.disconnect(_reassign_missing_characters.bind(dialog_data))
 		_missing_chars_dialog.confirmed.connect(_reassign_missing_characters.bind(dialog_data))
+		_missing_chars_dialog.dialog_text = _missing_chars_dialog.dialog_text.replace("[dialogue]", dialog_data.resource_path)
 		_missing_chars_dialog.dialog_text = _missing_chars_dialog.dialog_text.replace("[list]", char_list)
 		_missing_chars_dialog.popup_centered()
 
@@ -376,7 +379,7 @@ func _reassign_missing_characters(dialog_data: SproutyDialogsDialogueData) -> vo
 	var chars_not_found = []
 	for id in dialog_data.characters.keys():
 		for char in dialog_data.characters[id].keys():
-			if dialog_data.characters[id][char] < 0:
+			if not SproutyDialogsFileUtils.check_valid_uid_path(dialog_data.characters[id][char]):
 				if characters.has(char):
 					dialog_data.characters[id][char] = characters[char]
 				else:

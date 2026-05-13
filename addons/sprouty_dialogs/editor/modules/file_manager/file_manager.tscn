@@ -214,16 +214,18 @@ filters = PackedStringArray("*.tres")
 
 [node name="MissingCharacters" type="ConfirmationDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=116836602]
 oversampling_override = 1.0
-title = "Missing character references"
+title = "Missing characters"
 initial_position = 4
 size = Vector2i(699, 262)
 exclusive = false
-dialog_text = "There is some missing character references in the loaded dialogue.
+dialog_text = "Some character references are missing from the loaded dialog file:
+[dialogue]
 
 Missing characters:
 [list]
 
-Do you want to automatically search and reassing the missing characters?"
+Do you want to automatically search and reassing the missing characters?
+(Otherwise, all missing references will be removed from the dialog file!)"
 
 [node name="BottomContainer" type="HBoxContainer" parent="ContentContainer/Container" unique_id=369707668]
 layout_mode = 2
