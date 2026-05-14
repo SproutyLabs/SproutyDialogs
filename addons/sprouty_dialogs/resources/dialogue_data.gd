@@ -89,3 +89,16 @@ func get_portraits_on_dialog(start_id: String) -> Dictionary:
 			else:
 				portraits[node["character"]].append(node["portrait"])
 	return portraits
+
+
+## Return all the character references count from the dialogue file
+func get_all_character_references() -> Dictionary:
+	var references = {}
+	for start_id in graph_data.keys():
+		for node in graph_data[start_id].values():
+			if node.has("character"):
+				if not references.has(node["character"]):
+					references[node["character"]] = 1
+				else:
+					references[node["character"]] += 1
+	return references
