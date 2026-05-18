@@ -515,16 +515,17 @@ func stop() -> void:
 	_paused_node = ""
 	_next_node = ""
 	_current_option_keys = []
-
-	if _current_dialog_box and not _current_dialog_box.is_displaying_portrait():
-		await _current_dialog_box.stop_dialog(true)
-		_current_dialog_box = null
 	
 	# Exit all active portraits
 	for char in _portraits_instances.keys():
 		for portrait in _portraits_instances[char].values():
 			if portrait and portrait.is_visible():
 				await portrait.on_portrait_exit()
+	
+	# If there is a visible dialog box, stop it
+	if _current_dialog_box:
+		await _current_dialog_box.stop_dialog(true)
+		_current_dialog_box = null
 	
 	# Free all portraits displayed
 	for char in _portraits_instances.keys():
@@ -534,20 +535,18 @@ func stop() -> void:
 				portrait_parent.get_parent().remove_child(portrait_parent)
 				portrait_parent.queue_free()
 	
-	if _current_dialog_box: # If there is a current dialog box, stop it
-		await _current_dialog_box.stop_dialog(true)
-		_current_dialog_box = null
-	
 	# Free all dialog boxes displayed
 	for dialog_box in _dialog_box_instances.values():
 		dialog_box.queue_free()
 	
 	_portraits_instances.clear()
 	_dialog_box_instances.clear()
-	_release_dialog_resources()
+
 	dialog_ended.emit()
 	dialog_player_stop.emit()
+
 	if _destroy_on_end:
+		_release_dialog_resources()
 		queue_free()
 
 
