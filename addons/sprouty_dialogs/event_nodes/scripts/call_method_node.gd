@@ -116,8 +116,16 @@ func _set_method_combo_box(autoload: String) -> void:
 		return
 	
 	var methods = []
-	var script = load(ProjectSettings.get_setting("autoload/" + autoload).replace("*", "")).new()
-	for data in script.get_method_list():
+	var res = load(ProjectSettings.get_setting("autoload/" + autoload).replace("*", ""))
+	var methods_list
+	if res is PackedScene:
+		var root_node = res.instantiate()
+		methods_list = root_node.get_method_list()
+		root_node.free()
+	elif res is Script:
+		methods_list = res.new().get_method_list()
+
+	for data in methods_list:
 		if not data.name.begins_with("_"):
 			methods.append(data.name)
 			_methods_params[data.name] = {
