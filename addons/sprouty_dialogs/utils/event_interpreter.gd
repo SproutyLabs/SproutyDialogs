@@ -190,7 +190,7 @@ func _process_call_method(node_data: Dictionary) -> void:
 					node_data.autoload + "' autoload. Check that the method exist.")
 	else:
 		printerr("[Sprouty Dialogs] Autoload '" + node_data.autoload + "' not found. "
-				+ "Check that your script is register as an autoload in Project > Project Settings > Globals.")
+				+ "Make sure the autoload is registered in Project > Project Settings > Globals > Autoload.")
 	
 	continue_to_node.emit(node_data.to_node[0])
 
