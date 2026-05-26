@@ -109,6 +109,14 @@ func set_data(dict: Dictionary) -> void:
 #endregion
 
 
+## Handle when the variables have changed to update the variable dropdown options
+func on_variables_changed() -> void:
+	# Update the variable dropdown options based on the current type
+	var type = _type_dropdown.get_item_id(_type_dropdown.selected)
+	var metadata = _type_dropdown.get_item_metadata(_type_dropdown.selected)
+	_name_input.set_options(SproutyDialogsVariableUtils.get_variables_of_type(type, metadata))
+
+
 ## Handle when the type is selected from the dropdown
 func _set_variable_type(index: int) -> void:
 	var type = _type_dropdown.get_item_id(index)

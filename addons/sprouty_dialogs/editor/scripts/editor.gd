@@ -77,6 +77,8 @@ func _ready():
 	dialogue_panel.open_file_request.connect(file_manager.load_file)
 	dialogue_panel.play_dialog_request.connect(play_dialog_scene)
 
+	variable_panel.variables_changed.connect(dialogue_panel.variables_changed.emit)
+
 	# Character panel signals
 	character_panel.new_character_file_pressed.connect(
 			file_manager.on_new_character_pressed)

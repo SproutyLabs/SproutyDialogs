@@ -44,19 +44,6 @@ func _ready():
 		operator_dropdown.add_item(operator, operators[operator])
 
 
-## Set the type dropdowns and connect their signals
-func _set_type_dropdown(dropdown_field: Node, field_index: int) -> void:
-	var types_dropdown = SproutyDialogsVariableUtils.get_types_dropdown(
-			true, ["Nil", "Dictionary", "Array"] # Excluded from options
-		)
-	dropdown_field.add_child(types_dropdown)
-	_type_dropdowns[field_index] = dropdown_field.get_node("TypeDropdown")
-	_type_dropdowns[field_index].item_selected.connect(_on_type_selected.bind(field_index))
-
-	_type_dropdowns[field_index].select(0) # Default type (Variable)
-	_set_value_field(0, field_index) # Default type (Variable)
-
-
 #region === Node Data ==========================================================
 
 func get_data() -> Dictionary:
@@ -122,6 +109,27 @@ func load_type_data(data: Dictionary, field_index: int) -> void:
 	_type_indexes[field_index] = type_index
 
 #endregion
+
+
+## Handle when the variables have changed to update the variable dropdown options
+func on_variables_changed() -> void:
+	for i in range(2):
+		var type = _type_dropdowns[i].get_item_id(_type_dropdowns[i].selected)
+		if type == 40: # If type is Variable, update the options
+			_value_inputs[i].set_options(SproutyDialogsVariableUtils.get_variables_of_type())
+
+
+## Set the type dropdowns and connect their signals
+func _set_type_dropdown(dropdown_field: Node, field_index: int) -> void:
+	var types_dropdown = SproutyDialogsVariableUtils.get_types_dropdown(
+			true, ["Nil", "Dictionary", "Array"] # Excluded from options
+		)
+	dropdown_field.add_child(types_dropdown)
+	_type_dropdowns[field_index] = dropdown_field.get_node("TypeDropdown")
+	_type_dropdowns[field_index].item_selected.connect(_on_type_selected.bind(field_index))
+
+	_type_dropdowns[field_index].select(0) # Default type (Variable)
+	_set_value_field(0, field_index) # Default type (Variable)
 
 
 ## Set a value field based on the variable type

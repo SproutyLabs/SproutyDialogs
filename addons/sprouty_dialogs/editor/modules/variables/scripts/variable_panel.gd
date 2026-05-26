@@ -8,6 +8,9 @@ extends Container
 ## variables in the Sprouty Dialogs editor.
 # -----------------------------------------------------------------------------
 
+## Emitted when variables are saved
+signal variables_changed
+
 ## Variable editor
 @onready var _variable_editor: EditorSproutyDialogsVariableEditor = $VariableEditor
 ## Text editor for edit string variables
@@ -28,6 +31,9 @@ var undo_redo: EditorUndoRedoManager:
 
 func _ready():
 	# Connect signals
+	_variable_editor.variables_changed.connect(variables_changed.emit)
+	variables_changed.connect(_text_editor.update_variables)
+	
 	_variable_editor.open_text_editor.connect(_on_open_text_editor)
 	_variable_editor.update_text_editor.connect(_text_editor.update_text_editor)
 	_text_editor.hide()

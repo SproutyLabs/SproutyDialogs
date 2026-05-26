@@ -9,6 +9,8 @@ extends MarginContainer
 ## editor. It allows the user to add, remove, rename, filter and save variables.
 # -----------------------------------------------------------------------------
 
+## Emitted when variables are saved
+signal variables_changed
 ## Emitted when a variable is changed
 signal variable_changed(var_data: Dictionary)
 ## Emitted when a text editor is called to edit a string variable
@@ -58,7 +60,7 @@ func _ready():
 	%AddVarButton.pressed.connect(_on_add_var_button_pressed)
 	%AddGroupButton.pressed.connect(_on_add_group_button_pressed)
 	%SearchBar.text_changed.connect(_on_search_bar_text_changed)
-	_save_button.pressed.connect(_on_save_button_pressed)
+	_save_button.pressed.connect(_save_variables)
 
 	%AddVarButton.icon = get_theme_icon("Add", "EditorIcons")
 	%AddGroupButton.icon = get_theme_icon("Folder", "EditorIcons")
@@ -75,14 +77,14 @@ func _ready():
 		_empty_label.show() # Show the empty label if there are no variables
 	
 	await get_tree().process_frame # Wait a frame to ensure settings are loaded
-	_load_variables_data(SproutyDialogsSettingsManager.get_setting("variables"))
+	_load_variables(SproutyDialogsSettingsManager.get_setting("variables"))
 
 
 func _input(event: InputEvent) -> void:
 	# Capture save shortcut (Command/Ctrl-S)
 	if _save_shortcut.matches_event(event) and event.is_pressed() and not event.is_echo():
 		if plugin_editor.visible and plugin_editor.tab_container.current_tab == 2:
-			_on_save_button_pressed() # Save variables
+			_save_variables()
 			get_viewport().set_input_as_handled()
 
 
@@ -107,8 +109,24 @@ func _get_variables_data(variables_array: Array = _variable_container.get_childr
 	return variables_data
 
 
+## Save the current variables to the project settings
+func _save_variables() -> void:
+	# Unmark all items as modified
+	for child in _variable_container.get_children():
+		if child is EditorSproutyDialogsVariableItem or \
+			child is EditorSproutyDialogsVariableGroup:
+			child.clear_modified_state()
+	_modified_counter = 0
+	_save_button.text = ""
+
+	# Save the variables to project settings
+	var data = _get_variables_data()
+	SproutyDialogsSettingsManager.set_setting("variables", data)
+	variables_changed.emit() # Emit signal to notify changes
+
+
 ## Load variables data into the editor
-func _load_variables_data(data: Dictionary, parent: Node = _variable_container) -> void:
+func _load_variables(data: Dictionary, parent: Node = _variable_container) -> void:
 	# Sort keys by their index value
 	var sorted_keys := data.keys()
 	sorted_keys.sort_custom(func(a, b):
@@ -132,7 +150,7 @@ func _load_variables_data(data: Dictionary, parent: Node = _variable_container) 
 			new_item.ready.connect(func():
 				new_item.set_item_name(name)
 				new_item.set_color(value.color)
-				_load_variables_data(value.variables, new_item) # Recursively load group variables
+				_load_variables(value.variables, new_item) # Recursively load group variables
 			)
 		
 		if parent is EditorSproutyDialogsVariableGroup:
@@ -310,21 +328,6 @@ func _on_add_group_button_pressed() -> void:
 ## Handle variable changes
 func _on_variable_changed(var_data: Dictionary) -> void:
 	variable_changed.emit(var_data)
-
-
-## Save the current variables to the project settings
-func _on_save_button_pressed() -> void:
-	# Unmark all items as modified
-	for child in _variable_container.get_children():
-		if child is EditorSproutyDialogsVariableItem or \
-			child is EditorSproutyDialogsVariableGroup:
-			child.clear_modified_state()
-	_modified_counter = 0
-	_save_button.text = ""
-
-	# Save the variables to project settings
-	var data = _get_variables_data()
-	SproutyDialogsSettingsManager.set_setting("variables", data)
 
 
 ## Handle the removal of a variable item
