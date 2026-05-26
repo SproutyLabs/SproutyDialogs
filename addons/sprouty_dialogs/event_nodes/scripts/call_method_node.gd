@@ -32,7 +32,9 @@ var _previous_params: Array = []
 
 func _ready():
 	super ()
+	_autoloads_dropdown.mouse_entered.connect(_on_autoload_mouse_entered)
 	_autoloads_dropdown.item_selected.connect(_on_autoload_selected)
+	_method_combo_box.editing_toggled.connect(_on_method_editing_toggled)
 	_method_combo_box.option_selected.connect(_on_method_selected)
 	_parameters_field.item_changed.connect(_on_parameter_changed)
 	_parameters_field.open_text_editor.connect(open_text_editor.emit)
@@ -115,8 +117,15 @@ func _set_method_combo_box(autoload: String) -> void:
 		_method_combo_box.editable = false
 		return
 	
+	var autoload_path = ProjectSettings.get_setting("autoload/" + autoload, null)
+	if autoload_path == null:
+		printerr("[Sprouty Dialogs] Call Method Node #" + str(node_index)
+				+ ": Autoload '" + autoload + "' not found in project settings. "
+				+ "Make sure the autoload is registered in Project > Project Settings > Globals > Autoload.")
+		return
+	
+	var res = load(autoload_path.replace("*", ""))
 	var methods = []
-	var res = load(ProjectSettings.get_setting("autoload/" + autoload).replace("*", ""))
 	var methods_list
 	if res is PackedScene:
 		var root_node = res.instantiate()
@@ -229,3 +238,14 @@ func _on_parameter_changed(item: Dictionary) -> void:
 	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------
+
+
+## Update the autoloads dropdown when it gains focus in case of any changes in the autoloads list
+func _on_autoload_mouse_entered() -> void:
+	_set_autoloads_dropdown(_autoloads_dropdown.get_item_text(_autoloads_dropdown.selected))
+
+
+## Update the methods list in case of any changes when editing the method name
+func _on_method_editing_toggled(editing: bool) -> void:
+	if editing:
+		_set_method_combo_box(_autoloads_dropdown.get_item_text(_autoloads_dropdown.selected))
