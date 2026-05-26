@@ -26,14 +26,13 @@ signal update_text_editor(text_box: TextEdit)
 
 ## Emitted when a character is changed
 signal character_changed(character: SproutyDialogsCharacterData)
+## Emitted when variables are saved
+signal variables_changed
 
 ## Emitted when the locales are changed
 signal locales_changed
 ## Emitted when the translation enabled state is changed
 signal translation_enabled_changed(enabled: bool)
-
-## Emitted when variables are saved
-signal variables_changed
 
 ## Emitted when nodes are selected or deselected
 signal nodes_selection_changed(has_selection: bool)
@@ -248,6 +247,10 @@ func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
 	if node.has_method("on_translation_enabled_changed"):
 		translation_enabled_changed.disconnect(node.on_translation_enabled_changed)
 	
+	# Disconnect character changed signal
+	if node.has_method("on_character_changed"):
+		character_changed.disconnect(node.on_character_changed)
+
 	# Disconnect variables changed signal
 	if node.has_method("on_variables_changed"):
 		variables_changed.disconnect(node.on_variables_changed)
