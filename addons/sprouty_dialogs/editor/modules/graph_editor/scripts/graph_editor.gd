@@ -26,6 +26,8 @@ signal update_text_editor(text_box: TextEdit)
 
 ## Emitted when a character is changed
 signal character_changed(character: SproutyDialogsCharacterData)
+## Emitted when variables are saved
+signal variables_changed
 
 ## Emitted when the locales are changed
 signal locales_changed
@@ -114,16 +116,6 @@ func _input(_event):
 	if (not _add_node_menu.visible) and _request_port > -1:
 		_request_node = ""
 		_request_port = -1
-
-
-## Notify the nodes that the locales have changed
-func on_locales_changed():
-	locales_changed.emit()
-
-
-## Notify the nodes that the translation enabled state has changed
-func on_translation_enabled_changed(enabled: bool):
-	translation_enabled_changed.emit(enabled)
 
 
 ## Returns all the start ids in the graph
@@ -226,6 +218,11 @@ func _connect_node_signals(node: SproutyDialogsBaseNode) -> void:
 			not is_connected("character_changed", node.on_character_changed):
 		character_changed.connect(node.on_character_changed)
 
+	# Connect variables changed signal
+	if node.has_method("on_variables_changed") and \
+			not is_connected("variables_changed", node.on_variables_changed):
+		variables_changed.connect(node.on_variables_changed)
+	
 	# Connect other signals
 	if node.has_signal("open_file_request"):
 		node.open_file_request.connect(open_file_request.emit)
@@ -245,11 +242,19 @@ func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
 		node.update_text_editor.disconnect(update_text_editor.emit)
 	
 	# Disconnect translation signals
-	if node.has_signal("on_locales_changed"):
+	if node.has_method("on_locales_changed"):
 		locales_changed.disconnect(node.on_locales_changed)
-	if node.has_signal("on_translation_enabled_changed"):
+	if node.has_method("on_translation_enabled_changed"):
 		translation_enabled_changed.disconnect(node.on_translation_enabled_changed)
 	
+	# Disconnect character changed signal
+	if node.has_method("on_character_changed"):
+		character_changed.disconnect(node.on_character_changed)
+
+	# Disconnect variables changed signal
+	if node.has_method("on_variables_changed"):
+		variables_changed.disconnect(node.on_variables_changed)
+
 	# Disconnect other signals
 	if node.has_signal("open_file_request"):
 		node.open_file_request.disconnect(open_file_request.emit)

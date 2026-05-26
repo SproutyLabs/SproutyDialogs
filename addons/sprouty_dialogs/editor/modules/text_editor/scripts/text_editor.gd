@@ -114,6 +114,11 @@ func change_option_bar(bar_index: int) -> void:
 	_options_bars[bar_index].show()
 
 
+## Update the variable options in the text editor
+func update_variables() -> void:
+	_on_variable_type_selected(_variable_type_dropdown.selected)
+
+
 ## Close the text editor
 func _on_close_button_pressed() -> void:
 	text_editor_closed.emit()
