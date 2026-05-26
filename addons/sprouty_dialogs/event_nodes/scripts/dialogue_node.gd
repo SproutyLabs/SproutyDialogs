@@ -45,6 +45,8 @@ var _default_text_modified: bool = false
 
 ## Previous selected portrait index (for UndoRedo)
 var _previous_portrait_index: int = 0
+## Cache of the current portrait list to avoid unnecessary updates
+var _current_portrait_list: Array = []
 
 ## Collapse/Expand icons
 var _collapse_up_icon = preload("res://addons/sprouty_dialogs/editor/icons/interactable/collapse-up.svg")
@@ -159,7 +161,24 @@ func load_portrait(portrait: String) -> void:
 		return
 	
 	var portrait_index = _find_dropdown_item(_portrait_dropdown, portrait)
-	_portrait_dropdown.select(portrait_index)
+	if portrait_index == -1:
+		_portrait_dropdown.select(0) # Select "(No one)"
+	else:
+		_portrait_dropdown.select(portrait_index)
+
+
+## Update the portrait dropdown when the character's portrait list changes
+func on_character_changed(character: SproutyDialogsCharacterData) -> void:
+	if (character == null or _character_data == null) \
+			or (character.key_name != _character_data.key_name):
+		return # Different or null character, no need to update portraits
+	
+	if _get_portrait_list(character.portraits) == _current_portrait_list:
+		return # Portrait list hasn't changed, no need to update
+	
+	var previous_portrait = get_portrait()
+	_set_portrait_dropdown(character)
+	load_portrait(previous_portrait)
 
 
 ## Set the character resource picker
@@ -249,6 +268,9 @@ func _set_portrait_dropdown(character_data: SproutyDialogsCharacterData) -> void
 	var portrait_list = _get_portrait_list(portraits)
 	for portrait in portrait_list:
 		_portrait_dropdown.add_item(portrait)
+
+	_current_portrait_list = portrait_list
+	_current_portrait_list.erase("(No one)")
 
 
 ## Get the list of portrait paths from the portrait dictionary

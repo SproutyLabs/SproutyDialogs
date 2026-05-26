@@ -19,6 +19,9 @@ signal all_dialog_files_closed
 ## Emitted when all character files have been closed
 signal all_character_files_closed
 
+## Emitted when a character has changed
+signal character_changed(character: SproutyDialogsCharacterData)
+
 ## New dialog button
 @onready var _new_dialog_button: Button = %NewDialogButton
 ## New character button
@@ -184,6 +187,7 @@ func new_dialog_file(path: String) -> void:
 ## Create a new graph instance and load the data from a resource
 func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSproutyDialogsGraphEditor:
 	var graph = _graph_scene.instantiate()
+	character_changed.connect(graph.character_changed.emit)
 	graph.modified.connect(_on_data_modified)
 	graph.undo_redo = undo_redo
 	add_child(graph)
@@ -310,6 +314,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 	elif data is SproutyDialogsCharacterData:
 		data = file_metadata["cache_node"].get_character_data()
 		file_metadata["data"] = data
+		character_changed.emit(data)
 
 		# Save character names on csv file
 		if SproutyDialogsSettingsManager.get_setting("translate_character_names") \

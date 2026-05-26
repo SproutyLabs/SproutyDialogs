@@ -24,6 +24,9 @@ signal open_text_editor(text_box: TextEdit)
 ## Emitted when change the focus to another text box while the text editor is open
 signal update_text_editor(text_box: TextEdit)
 
+## Emitted when a character is changed
+signal character_changed(character: SproutyDialogsCharacterData)
+
 ## Emitted when the locales are changed
 signal locales_changed
 ## Emitted when the translation enabled state is changed
@@ -218,6 +221,11 @@ func _connect_node_signals(node: SproutyDialogsBaseNode) -> void:
 			not is_connected("translation_enabled_changed", node.on_translation_enabled_changed):
 		translation_enabled_changed.connect(node.on_translation_enabled_changed)
 	
+	# Connect character changed signal
+	if node.has_method("on_character_changed") and \
+			not is_connected("character_changed", node.on_character_changed):
+		character_changed.connect(node.on_character_changed)
+
 	# Connect other signals
 	if node.has_signal("open_file_request"):
 		node.open_file_request.connect(open_file_request.emit)
