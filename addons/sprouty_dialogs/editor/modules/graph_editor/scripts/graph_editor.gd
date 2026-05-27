@@ -24,6 +24,8 @@ signal open_text_editor(text_box: TextEdit)
 ## Emitted when change the focus to another text box while the text editor is open
 signal update_text_editor(text_box: TextEdit)
 
+## Emitted when a dialogue has changed
+signal dialogue_changed(dialogue: SproutyDialogsDialogueData)
 ## Emitted when a character is changed
 signal character_changed(character: SproutyDialogsCharacterData)
 ## Emitted when variables are saved
@@ -213,6 +215,11 @@ func _connect_node_signals(node: SproutyDialogsBaseNode) -> void:
 			not is_connected("translation_enabled_changed", node.on_translation_enabled_changed):
 		translation_enabled_changed.connect(node.on_translation_enabled_changed)
 	
+	# Connect dialogue changed signal
+	if node.has_method("on_dialogue_changed") and \
+			not is_connected("dialogue_changed", node.on_dialogue_changed):
+		dialogue_changed.connect(node.on_dialogue_changed)
+
 	# Connect character changed signal
 	if node.has_method("on_character_changed") and \
 			not is_connected("character_changed", node.on_character_changed):
@@ -246,6 +253,10 @@ func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
 		locales_changed.disconnect(node.on_locales_changed)
 	if node.has_method("on_translation_enabled_changed"):
 		translation_enabled_changed.disconnect(node.on_translation_enabled_changed)
+	
+	# Disconnect dialogue changed signal
+	if node.has_method("on_dialogue_changed"):
+		dialogue_changed.disconnect(node.on_dialogue_changed)
 	
 	# Disconnect character changed signal
 	if node.has_method("on_character_changed"):

@@ -101,6 +101,19 @@ func set_data(dict: Dictionary) -> void:
 #endregion
 
 
+## Handle when the dialogue file is changed and update the target options.
+func on_dialogue_changed(dialogue: SproutyDialogsDialogueData) -> void:
+	if not _jump_to_dialogue_toggle.button_pressed:
+		return # Not jumping to another dialogue, no need to update start IDs
+
+	if (dialogue == null or _dialogue_data == null) \
+			or (dialogue.resource_path != _dialogue_data.resource_path):
+		return # Different or null dialogue, no need to update start IDs
+	
+	_dialogue_data = dialogue
+	_refresh_target_options()
+
+
 ## Refresh the available target IDs from the graph editor.
 func _refresh_target_options() -> void:
 	if _jump_to_dialogue_toggle.button_pressed:

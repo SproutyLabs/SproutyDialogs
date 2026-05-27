@@ -19,6 +19,8 @@ signal all_dialog_files_closed
 ## Emitted when all character files have been closed
 signal all_character_files_closed
 
+## Emitted when a dialogue has changed
+signal dialogue_changed(dialogue: SproutyDialogsDialogueData)
 ## Emitted when a character has changed
 signal character_changed(character: SproutyDialogsCharacterData)
 
@@ -187,6 +189,7 @@ func new_dialog_file(path: String) -> void:
 ## Create a new graph instance and load the data from a resource
 func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSproutyDialogsGraphEditor:
 	var graph = _graph_scene.instantiate()
+	dialogue_changed.connect(graph.dialogue_changed.emit)
 	character_changed.connect(graph.character_changed.emit)
 	graph.modified.connect(_on_data_modified)
 	graph.undo_redo = undo_redo
@@ -293,6 +296,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		data.graph_data = graph_editor_data["nodes_data"]
 		data.dialogs = graph_editor_data["dialogs"]
 		data.characters = graph_editor_data["characters"]
+		dialogue_changed.emit(data)
 
 		# Set the CSV file path if exists
 		if SproutyDialogsFileUtils.check_valid_extension(_csv_file_field.get_value(), ["*.csv"]) \
