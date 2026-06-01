@@ -38,6 +38,8 @@ var _char_icon := preload("res://addons/sprouty_dialogs/editor/icons/character.s
 var _current_file_index: int = -1
 ## Files to close queue
 var _closing_queue: Array[int] = []
+## Flag to indicate if all files are being closed
+var _is_closing_all: bool = false
 
 ## Number of dialogs in the file list
 var _dialogs_count: int = 0
@@ -191,6 +193,7 @@ func close_file(index: int = _current_file_index) -> void:
 
 	# If the file to be closed is unsaved, alert user before close
 	if metadata["modified"] and not index in _closing_queue:
+		_is_closing_all = false
 		_closing_queue.append(index)
 		_confirm_close_dialog.popup_centered()
 		return
@@ -227,6 +230,7 @@ func close_all() -> void:
 	
 	if _closing_queue.size() > 0: # Alert unsaved changes
 		_confirm_close_dialog.popup_centered()
+		_is_closing_all = true
 		return
 	
 	# Close all if none are modified
@@ -349,11 +353,17 @@ func _on_confirm_closing_action(action) -> void:
 		"save_file":
 			for index in _closing_queue:
 				request_save_file.emit(index)
-			close_all()
+			if _is_closing_all:
+				close_all()
+			else:
+				for index in _closing_queue:
+					close_file(index)
 		"discard_file":
-			for index in range(_file_list.item_count):
-				close_file(index)
-			_current_file_index = -1
+			if _is_closing_all:
+				close_all()
+			else:
+				for index in _closing_queue:
+					close_file(index)
 	_closing_queue.clear()
 
 
