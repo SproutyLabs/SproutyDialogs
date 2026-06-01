@@ -359,6 +359,8 @@ func _on_confirm_closing_action(action) -> void:
 				for index in _closing_queue:
 					close_file(index)
 		"discard_file":
+			for index in _closing_queue:
+				set_file_as_modified(index, false)
 			if _is_closing_all:
 				close_all()
 			else:
