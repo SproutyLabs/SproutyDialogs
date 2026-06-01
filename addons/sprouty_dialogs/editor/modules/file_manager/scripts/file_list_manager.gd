@@ -209,6 +209,12 @@ func close_file(index: int = _current_file_index) -> void:
 			_current_file_index = 0
 		else: # If not the first file, switch to the previous file
 			_switch_to_file(index - 1)
+
+	# All files after the closed file will have their index decremented by one
+	for i in range(index + 1, _file_list.item_count):
+		var item_metadata := _file_list.get_item_metadata(i)
+		item_metadata["cache_node"].set_meta("file_index", i - 1)
+		_file_list.set_item_metadata(i, item_metadata)
 	
 	# Free the cached graph or character panel
 	metadata["cache_node"].queue_free()
