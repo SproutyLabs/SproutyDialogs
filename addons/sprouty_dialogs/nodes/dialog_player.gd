@@ -614,6 +614,10 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 		portrait: String, dialog_data: Dictionary, next_node: String) -> void:
 	_next_node = next_node
 	_update_dialog_box(character_name)
+	if character_name.is_empty():
+		_current_dialog_box.play_dialog(translated_name, dialog_data)
+		return
+	
 	if get_character_data(character_name).portrait_on_dialog_box:
 		_current_dialog_box.play_dialog(translated_name, dialog_data)
 		await _update_portrait(character_name, portrait)
