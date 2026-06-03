@@ -22,6 +22,10 @@ static var _settings_paths: Dictionary = {
 		"path": "graph_dialogs/general/input/continue_input_action",
 		"default": "dialogs_continue_action"
 	},
+	"save_sprouty_only": {
+		"path": "graph_dialogs/general/input/save_sprouty_only",
+		"default": true
+	},
 	# Default scenes
 	"default_dialog_box": {
 		"path": "graph_dialogs/general/defaults/default_dialog_box",

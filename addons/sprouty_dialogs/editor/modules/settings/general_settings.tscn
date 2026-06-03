@@ -72,6 +72,28 @@ text = "dialogs_continue_action"
 placeholder_text = "Input action..."
 _placeholder_text = "Input action name..."
 
+[node name="SaveSproutyOnly" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=339926979]
+layout_mode = 2
+tooltip_text = "If enabled, pressing Ctrl-S/Cmd-S while the plugin editor is open will save only the Sprouty resources.
+The current scene and other open resources in Godot will not be saved.
+Otherwise, all open resources will be saved."
+
+[node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/SaveSproutyOnly" unique_id=2091553416]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Save only Sprouty's resources on Ctrl-S/Cmd-S"
+
+[node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/SaveSproutyOnly" unique_id=581636897]
+visible = false
+layout_mode = 2
+icon = ExtResource("3_og6kh")
+flat = true
+
+[node name="SaveSproutyOnlyToggle" type="CheckButton" parent="MarginContainer/ScrollContainer/VBoxContainer/SaveSproutyOnly" unique_id=1873526323]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=366730916]
 layout_mode = 2
 
@@ -147,6 +169,7 @@ flat = true
 [node name="DefaultPortraitSceneField" parent="MarginContainer/ScrollContainer/VBoxContainer/DefaultPortraitScene" unique_id=1154758004 instance=ExtResource("7_og6kh")]
 unique_name_in_owner = true
 layout_mode = 2
+scene_type = 1
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1021078704]
 layout_mode = 2
@@ -240,6 +263,7 @@ size_flags_horizontal = 3
 text = "Use custom event nodes"
 
 [node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes" unique_id=1328093936]
+visible = false
 layout_mode = 2
 icon = ExtResource("3_og6kh")
 flat = true
@@ -247,7 +271,6 @@ flat = true
 [node name="UseCustomNodesToggle" type="CheckButton" parent="MarginContainer/ScrollContainer/VBoxContainer/UseCustomNodes" unique_id=601995962]
 unique_name_in_owner = true
 layout_mode = 2
-button_pressed = true
 
 [node name="CustomNodesFolderWarning" type="RichTextLabel" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=1626517227]
 unique_name_in_owner = true

@@ -85,7 +85,10 @@ func _input(event: InputEvent) -> void:
 	if _save_shortcut.matches_event(event) and event.is_pressed() and not event.is_echo():
 		if plugin_editor.visible and plugin_editor.tab_container.current_tab == 2:
 			_save_variables()
-			get_viewport().set_input_as_handled()
+
+			# Prevent default Ctrl-S behavior in the editor when saving only sprouty files
+			if SproutyDialogsSettingsManager.get_setting("save_sprouty_only"):
+				get_viewport().set_input_as_handled()
 
 
 ## Get the variables data from the container

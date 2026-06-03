@@ -10,6 +10,8 @@ extends HSplitContainer
 
 ## Continue input action field
 @onready var _continue_input_action_field: EditorSproutyDialogsComboBox = %ContinueInputActionField
+## Save sprouty only toggle
+@onready var _save_sprouty_only_toggle: CheckButton = %SaveSproutyOnlyToggle
 
 ## Default dialog box scene field
 @onready var _default_dialog_box_field: EditorSproutyDialogsSceneField = %DefaultDialogBoxField
@@ -42,6 +44,7 @@ func _ready():
 	_dialog_box_canvas_layer_field.value_changed.connect(_on_dialog_box_canvas_layer_changed)
 	_portrait_canvas_layer_field.value_changed.connect(_on_portrait_canvas_layer_changed)
 
+	_save_sprouty_only_toggle.toggled.connect(_on_save_sprouty_only_toggled)
 	_use_custom_nodes_toggle.toggled.connect(_on_use_custom_nodes_toggled)
 	_custom_nodes_folder_field.path_changed.connect(_on_custom_nodes_folder_path_changed)
 	_custom_interpreter_field.path_changed.connect(_on_custom_interpreter_path_changed)
@@ -95,6 +98,12 @@ func _load_settings() -> void:
 		SproutyDialogsSettingsManager.get_setting("continue_input_action")
 	)
 	_set_reset_button(_continue_input_action_field, "continue_input_action")
+
+	# Load the save sprouty only toggle
+	_save_sprouty_only_toggle.set_pressed(
+		SproutyDialogsSettingsManager.get_setting("save_sprouty_only")
+	)
+	_set_reset_button(_save_sprouty_only_toggle, "save_sprouty_only")
 
 	# Load the default dialog box
 	var default_dialog_box = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
@@ -269,6 +278,11 @@ func _get_saved_setting(setting_name: String) -> Variant:
 func _on_continue_input_action_changed(new_value: String) -> void:
 	SproutyDialogsSettingsManager.set_setting("continue_input_action", new_value)
 	_show_reset_button(_continue_input_action_field, "continue_input_action")
+
+
+func _on_save_sprouty_only_toggled(toggled_on: bool) -> void:
+	SproutyDialogsSettingsManager.set_setting("save_sprouty_only", toggled_on)
+	_show_reset_button(_save_sprouty_only_toggle, "save_sprouty_only")
 
 
 ## Handle when the default dialog box path is changed
