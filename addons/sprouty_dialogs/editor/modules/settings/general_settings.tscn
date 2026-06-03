@@ -74,14 +74,14 @@ _placeholder_text = "Input action name..."
 
 [node name="SaveSproutyOnly" type="HBoxContainer" parent="MarginContainer/ScrollContainer/VBoxContainer" unique_id=339926979]
 layout_mode = 2
-tooltip_text = "If enabled, pressing Ctrl-S/Cmd-S while the plugin editor is open will save only the Sprouty resources.
+tooltip_text = "If enabled, pressing Ctrl+S/Cmd+S while the plugin editor is open will save only the Sprouty resources.
 The current scene and other open resources in Godot will not be saved.
 Otherwise, all open resources will be saved."
 
 [node name="Label" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/SaveSproutyOnly" unique_id=2091553416]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Save only Sprouty's resources on Ctrl-S/Cmd-S"
+text = "Save only Sprouty's resources on Ctrl+S/Cmd+S"
 
 [node name="ResetButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer/SaveSproutyOnly" unique_id=581636897]
 visible = false
