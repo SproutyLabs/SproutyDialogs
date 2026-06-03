@@ -156,11 +156,18 @@ static var _settings_paths: Dictionary = {
 ## Returns a setting value from the plugin settings.
 ## If the setting is not found, it returns null and prints an error message.
 static func get_setting(setting_name: String) -> Variant:
-	if has_setting(setting_name):
+	if (ProjectSettings.has_setting(_settings_paths[setting_name]["path"]) \
+			and _settings_paths.has(setting_name)) or setting_name == "testing_locale":
 		return ProjectSettings.get_setting(_settings_paths[setting_name]["path"])
 	else:
-		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found.")
-		return null
+		# Reset to default value if setting is missing, to register it in the project settings
+		if _settings_paths.has(setting_name):
+			reset_setting(setting_name)
+			return get_default_setting(setting_name) # Return default value
+		else:
+			# Setting not found in the settings paths
+			printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found.")
+			return null
 
 
 ## Sets a setting value in the plugin settings.
