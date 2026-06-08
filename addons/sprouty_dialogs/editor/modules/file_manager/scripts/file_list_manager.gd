@@ -373,6 +373,7 @@ func _on_confirm_closing_action(action) -> void:
 				for index in _closing_queue:
 					close_file(index)
 	_closing_queue.clear()
+	_is_closing_all = false
 
 
 ## Cancel the closing confirmation dialog
