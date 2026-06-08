@@ -452,10 +452,11 @@ func _load_nodes_connections() -> void:
 			if child.start_node_name != "":
 				child.start_node = get_node(child.start_node_name)
 			 # Connect each output node
-			for output_node in child.to_node:
+			for index in range(child.to_node.size()):
+				var output_node = child.to_node[index]
 				if output_node == "END":
 					continue
-				connect_node(child.name, child.to_node.find(output_node), output_node, 0)
+				connect_node(child.name, index, output_node, 0)
 				
 				var next_node = get_node_or_null(output_node)
 				if next_node != null:
