@@ -38,6 +38,8 @@ var _char_icon := preload("res://addons/sprouty_dialogs/editor/icons/character.s
 var _current_file_index: int = -1
 ## Files to close queue
 var _closing_queue: Array[int] = []
+## Flag to indicate if all files are being closed
+var _is_closing_all: bool = false
 
 ## Number of dialogs in the file list
 var _dialogs_count: int = 0
@@ -191,6 +193,7 @@ func close_file(index: int = _current_file_index) -> void:
 
 	# If the file to be closed is unsaved, alert user before close
 	if metadata["modified"] and not index in _closing_queue:
+		_is_closing_all = false
 		_closing_queue.append(index)
 		_confirm_close_dialog.popup_centered()
 		return
@@ -206,6 +209,12 @@ func close_file(index: int = _current_file_index) -> void:
 			_current_file_index = 0
 		else: # If not the first file, switch to the previous file
 			_switch_to_file(index - 1)
+
+	# All files after the closed file will have their index decremented by one
+	for i in range(index + 1, _file_list.item_count):
+		var item_metadata := _file_list.get_item_metadata(i)
+		item_metadata["cache_node"].set_meta("file_index", i - 1)
+		_file_list.set_item_metadata(i, item_metadata)
 	
 	# Free the cached graph or character panel
 	metadata["cache_node"].queue_free()
@@ -227,6 +236,7 @@ func close_all() -> void:
 	
 	if _closing_queue.size() > 0: # Alert unsaved changes
 		_confirm_close_dialog.popup_centered()
+		_is_closing_all = true
 		return
 	
 	# Close all if none are modified
@@ -349,12 +359,21 @@ func _on_confirm_closing_action(action) -> void:
 		"save_file":
 			for index in _closing_queue:
 				request_save_file.emit(index)
-			close_all()
+			if _is_closing_all:
+				close_all()
+			else:
+				for index in _closing_queue:
+					close_file(index)
 		"discard_file":
-			for index in range(_file_list.item_count):
-				close_file(index)
-			_current_file_index = -1
+			for index in _closing_queue:
+				set_file_as_modified(index, false)
+			if _is_closing_all:
+				close_all()
+			else:
+				for index in _closing_queue:
+					close_file(index)
 	_closing_queue.clear()
+	_is_closing_all = false
 
 
 ## Cancel the closing confirmation dialog
