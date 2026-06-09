@@ -160,7 +160,7 @@ static func get_setting(setting_name: String) -> Variant:
 		if ProjectSettings.has_setting(_settings_paths[setting_name]["path"]) or setting_name == "testing_locale":
 			return ProjectSettings.get_setting(_settings_paths[setting_name]["path"])
 		else: # Register the new setting if it's not in the project settings
-			add_new_setting(setting_name)
+			_register_new_setting(setting_name)
 			return get_default_setting(setting_name)
 	else:
 		# Setting not found in the settings paths
@@ -207,9 +207,17 @@ static func reset_setting(setting_name: String) -> void:
 	ProjectSettings.save()
 
 
-## Adds a new setting to the project settings if it doesn't exist.
-## This method is used to register new settings when they are added to the plugin.
-static func add_new_setting(setting_name: String, save_settings: bool = true) -> void:
+## Initializes the default settings for the plugin.
+## This method should be called when the plugin is first loaded or when the settings are reset.
+static func initialize_default_settings() -> void:
+	for setting in _settings_paths.keys():
+		_register_new_setting(setting, false)
+	ProjectSettings.save()
+
+
+## Register a new setting in the project settings if it doesn't already exist.
+## This method is used to add new settings when the plugin is updated with additional settings.
+static func _register_new_setting(setting_name: String, save_settings: bool = true) -> void:
 	if not _settings_paths.has(setting_name):
 		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found in settings paths. Cannot add new setting.")
 		return
@@ -218,7 +226,7 @@ static func add_new_setting(setting_name: String, save_settings: bool = true) ->
 			_settings_paths[setting_name]["path"],
 			_settings_paths[setting_name]["default"]
 		)
-		if setting_name != "testing_locale":
+		if setting_name.begins_with("graph_dialogs/"):
 			ProjectSettings.set_initial_value(
 				_settings_paths[setting_name]["path"],
 				_settings_paths[setting_name]["default"]
@@ -228,11 +236,3 @@ static func add_new_setting(setting_name: String, save_settings: bool = true) ->
 		
 		if save_settings:
 			ProjectSettings.save()
-
-
-## Initializes the default settings for the plugin.
-## This method should be called when the plugin is first loaded or when the settings are reset.
-static func initialize_default_settings() -> void:
-	for setting in _settings_paths.keys():
-		add_new_setting(setting, false)
-	ProjectSettings.save()
