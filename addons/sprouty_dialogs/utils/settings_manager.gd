@@ -156,18 +156,17 @@ static var _settings_paths: Dictionary = {
 ## Returns a setting value from the plugin settings.
 ## If the setting is not found, it returns null and prints an error message.
 static func get_setting(setting_name: String) -> Variant:
-	if (ProjectSettings.has_setting(_settings_paths[setting_name]["path"]) \
-			and _settings_paths.has(setting_name)) or setting_name == "testing_locale":
-		return ProjectSettings.get_setting(_settings_paths[setting_name]["path"])
-	else:
-		# Reset to default value if setting is missing, to register it in the project settings
-		if _settings_paths.has(setting_name):
+	if _settings_paths.has(setting_name):
+		if ProjectSettings.has_setting(_settings_paths[setting_name]["path"]) or setting_name == "testing_locale":
+			return ProjectSettings.get_setting(_settings_paths[setting_name]["path"])
+		else: # Reset to default value if setting is missing, to register it in the project settings
 			reset_setting(setting_name)
 			return get_default_setting(setting_name) # Return default value
-		else:
-			# Setting not found in the settings paths
-			printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found.")
-			return null
+	else:
+		# Setting not found in the settings paths
+		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found. "
+			+ "Please restart the editor to register a new setting!")
+		return null
 
 
 ## Sets a setting value in the plugin settings.
@@ -183,7 +182,6 @@ static func set_setting(setting_name: String, value: Variant) -> void:
 ## Checks if a setting exists in the plugin settings.
 static func has_setting(setting_name: String) -> bool:
 	if not _settings_paths.has(setting_name):
-		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' does not exist in the plugin.")
 		return false
 	return ProjectSettings.has_setting(_settings_paths[setting_name]["path"]) \
 			or setting_name == "testing_locale" # Special case for testing_locale
@@ -191,11 +189,17 @@ static func has_setting(setting_name: String) -> bool:
 
 ## Returns the default value of a setting.
 static func get_default_setting(setting_name: String) -> Variant:
+	if not _settings_paths.has(setting_name):
+		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found. Cannot get default value.")
+		return null
 	return _settings_paths[setting_name]["default"]
 
 
 ## Reset a setting to its default value.
 static func reset_setting(setting_name: String) -> void:
+	if not _settings_paths.has(setting_name):
+		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found. Cannot reset value.")
+		return
 	ProjectSettings.set_setting(
 			_settings_paths[setting_name]["path"],
 			_settings_paths[setting_name]["default"]
