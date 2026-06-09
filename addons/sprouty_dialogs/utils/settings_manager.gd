@@ -159,9 +159,9 @@ static func get_setting(setting_name: String) -> Variant:
 	if _settings_paths.has(setting_name):
 		if ProjectSettings.has_setting(_settings_paths[setting_name]["path"]) or setting_name == "testing_locale":
 			return ProjectSettings.get_setting(_settings_paths[setting_name]["path"])
-		else: # Reset to default value if setting is missing, to register it in the project settings
-			reset_setting(setting_name)
-			return get_default_setting(setting_name) # Return default value
+		else: # Register the new setting if it's not in the project settings
+			add_new_setting(setting_name)
+			return get_default_setting(setting_name)
 	else:
 		# Setting not found in the settings paths
 		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found. "
@@ -207,12 +207,32 @@ static func reset_setting(setting_name: String) -> void:
 	ProjectSettings.save()
 
 
+## Adds a new setting to the project settings if it doesn't exist.
+## This method is used to register new settings when they are added to the plugin.
+static func add_new_setting(setting_name: String, save_settings: bool = true) -> void:
+	if not _settings_paths.has(setting_name):
+		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found in settings paths. Cannot add new setting.")
+		return
+	if not ProjectSettings.has_setting(_settings_paths[setting_name]["path"]):
+		ProjectSettings.set_setting(
+			_settings_paths[setting_name]["path"],
+			_settings_paths[setting_name]["default"]
+		)
+		if setting_name != "testing_locale":
+			ProjectSettings.set_initial_value(
+				_settings_paths[setting_name]["path"],
+				_settings_paths[setting_name]["default"]
+			)
+			if _settings_paths[setting_name]["path"].contains("internal") or setting_name == "variables":
+				ProjectSettings.set_as_internal(_settings_paths[setting_name]["path"], true)
+		
+		if save_settings:
+			ProjectSettings.save()
+
+
 ## Initializes the default settings for the plugin.
 ## This method should be called when the plugin is first loaded or when the settings are reset.
 static func initialize_default_settings() -> void:
 	for setting in _settings_paths.keys():
-		ProjectSettings.set_setting(
-			_settings_paths[setting]["path"],
-			_settings_paths[setting]["default"]
-		)
+		add_new_setting(setting, false)
 	ProjectSettings.save()
