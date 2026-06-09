@@ -13,10 +13,13 @@ var editor: Control
 func _enable_plugin() -> void:
 	add_autoload_singleton(AUTOLOAD_NAME, PLUGIN_MANAGER_PATH)
 	add_dialogs_input_actions()
-
-	# Initialize the default settings if they don't exist.
-	if not ProjectSettings.has_setting("graph_dialogs/variables/variables"):
-		SproutyDialogsSettingsManager.initialize_default_settings()
+	
+	if not ProjectSettings.has_setting("sprouty_dialogs/internal/variables"):
+		# Migrate old settings from "graph_dialogs" to "sprouty_dialogs" if they exist.
+		if ProjectSettings.has_setting("graph_dialogs/variables/variables"):
+			SproutyDialogsSettingsManager.migrate_settings_from_graph_dialogs()
+		else: # Initialize default settings for new users.
+			SproutyDialogsSettingsManager.initialize_default_settings()
 
 
 func _disable_plugin() -> void:
