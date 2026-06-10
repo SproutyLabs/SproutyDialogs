@@ -30,19 +30,16 @@ func _init(text: String, variable_manager: SproutyDialogsVariableManager) -> voi
 
 func _scan_tags_folder() -> void:
 	var folder_path: String = "res://addons/sprouty_dialogs/utils/tags_parsing/tags"
-	var dir: DirAccess = DirAccess.open(folder_path)
-	if not dir:
+	var files: PackedStringArray = ResourceLoader.list_directory(folder_path)
+	
+	if files.is_empty():
 		push_warning("[Sprouty Dialogs] Error: Could not open tags directory. No custom tags will be registered.")
 		return
-
-	dir.list_dir_begin()
-	var file_name: String = dir.get_next()
-	while file_name != "":
-		if file_name.ends_with(".gd") and not file_name.begins_with("."):
-			var path: String = folder_path + "/" + file_name
+	
+	for file_path in files:
+		if file_path.ends_with(".gd") and not file_path.get_file().begins_with("."):
+			var path: String = folder_path + "/" + file_path.get_file()
 			_register_tag_processor(path)
-		file_name = dir.get_next()
-	dir.list_dir_end()
 
 
 func _register_tag_processor(path: String) -> void:
