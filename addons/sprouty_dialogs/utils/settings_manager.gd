@@ -19,113 +19,113 @@ const DEFAULT_PORTRAIT_PATH = "res://addons/sprouty_dialogs/nodes/defaults/defau
 static var _settings_paths: Dictionary = {
 	# --- General settings -----------------------------------------------------
 	"continue_input_action": {
-		"path": "graph_dialogs/general/input/continue_input_action",
+		"path": "sprouty_dialogs/general/input/continue_input_action",
 		"default": "dialogs_continue_action"
 	},
 	"save_sprouty_only": {
-		"path": "graph_dialogs/general/input/save_sprouty_only",
+		"path": "sprouty_dialogs/general/input/save_sprouty_only",
 		"default": true
 	},
 	# Default scenes
 	"default_dialog_box": {
-		"path": "graph_dialogs/general/defaults/default_dialog_box",
+		"path": "sprouty_dialogs/general/defaults/default_dialog_box",
 		"default": ResourceSaver.get_resource_id_for_path(DEFAULT_DIALOG_BOX_PATH, true)
 	},
 	"default_portrait_scene": {
-		"path": "graph_dialogs/general/defaults/default_portrait_scene",
+		"path": "sprouty_dialogs/general/defaults/default_portrait_scene",
 		"default": ResourceSaver.get_resource_id_for_path(DEFAULT_PORTRAIT_PATH, true)
 	},
 	# Canvas layers
 	"dialog_box_canvas_layer": {
-		"path": "graph_dialogs/general/canvas/dialog_box_canvas_layer",
+		"path": "sprouty_dialogs/general/canvas/dialog_box_canvas_layer",
 		"default": 2
 	},
 	"portraits_canvas_layer": {
-		"path": "graph_dialogs/general/canvas/portraits_canvas_layer",
+		"path": "sprouty_dialogs/general/canvas/portraits_canvas_layer",
 		"default": 1
 	},
 	# Custom event nodes
 	"use_custom_event_nodes": {
-		"path": "graph_dialogs/general/custom/use_custom_event_nodes",
+		"path": "sprouty_dialogs/general/custom/use_custom_event_nodes",
 		"default": false
 	},
 	"custom_event_nodes_folder": {
-		"path": "graph_dialogs/general/custom/custom_event_nodes_folder",
+		"path": "sprouty_dialogs/general/custom/custom_event_nodes_folder",
 		"default": ""
 	},
 	"custom_event_interpreter": {
-		"path": "graph_dialogs/general/custom/custom_event_interpreter",
+		"path": "sprouty_dialogs/general/custom/custom_event_interpreter",
 		"default": - 1
 	},
 	# --- Text settings --------------------------------------------------------
 	"default_typing_speed": {
-		"path": "graph_dialogs/text/default_typing_speed",
+		"path": "sprouty_dialogs/text/default_typing_speed",
 		"default": 0.05
 	},
 	"open_url_on_meta_tag_click": {
-		"path": "graph_dialogs/text/open_url_on_meta_tag_click",
+		"path": "sprouty_dialogs/text/open_url_on_meta_tag_click",
 		"default": true
 	},
 	# Text/Display settings
 	"new_line_as_new_dialog": {
-		"path": "graph_dialogs/text/display/new_line_as_new_dialog",
+		"path": "sprouty_dialogs/text/display/new_line_as_new_dialog",
 		"default": true
 	},
 	"split_dialog_by_max_characters": {
-		"path": "graph_dialogs/text/display/split_dialog_by_max_characters",
+		"path": "sprouty_dialogs/text/display/split_dialog_by_max_characters",
 		"default": false
 	},
 	"max_characters": {
-		"path": "graph_dialogs/text/display/max_characters",
+		"path": "sprouty_dialogs/text/display/max_characters",
 		"default": 0
 	},
 	# Text/Skip settings
 	"allow_skip_text_reveal": {
-		"path": "graph_dialogs/text/skip/allow_skip_text_reveal",
+		"path": "sprouty_dialogs/text/skip/allow_skip_text_reveal",
 		"default": true
 	},
 	"can_skip_delay": {
-		"path": "graph_dialogs/text/skip/can_skip_delay",
+		"path": "sprouty_dialogs/text/skip/can_skip_delay",
 		"default": 0.1
 	},
 	"skip_continue_delay": {
-		"path": "graph_dialogs/text/skip/continue_delay",
+		"path": "sprouty_dialogs/text/skip/continue_delay",
 		"default": 0.1
 	},
 	# -- Translation settings --------------------------------------------------
 	"enable_translations": {
-		"path": "graph_dialogs/translation/enable_translations",
+		"path": "sprouty_dialogs/translation/enable_translations",
 		"default": false
 	},
 	# Translation/CSV files settings
 	"use_csv_files": {
-		"path": "graph_dialogs/translation/csv_files/use_csv_files",
+		"path": "sprouty_dialogs/translation/csv_files/use_csv_files",
 		"default": false
 	},
 	"csv_translations_folder": {
-		"path": "graph_dialogs/translation/csv_files/csv_translations_folder",
+		"path": "sprouty_dialogs/translation/csv_files/csv_translations_folder",
 		"default": ""
 	},
 	"fallback_to_resource": {
-		"path": "graph_dialogs/translation/csv_files/fallback_to_resource",
+		"path": "sprouty_dialogs/translation/csv_files/fallback_to_resource",
 		"default": true
 	},
 	# Translation/Characters settings
 	"translate_character_names": {
-		"path": "graph_dialogs/translation/characters/translate_character_names",
+		"path": "sprouty_dialogs/translation/characters/translate_character_names",
 		"default": false
 	},
 	"use_csv_for_character_names": {
-		"path": "graph_dialogs/translation/characters/use_csv_for_character_names",
+		"path": "sprouty_dialogs/translation/characters/use_csv_for_character_names",
 		"default": false
 	},
 	"character_names_csv": {
-		"path": "graph_dialogs/translation/characters/character_names_csv",
+		"path": "sprouty_dialogs/translation/characters/character_names_csv",
 		"default": - 1
 	},
 	# Translation/Localization settings
 	"default_locale": {
-		"path": "graph_dialogs/translation/localization/default_locale",
+		"path": "sprouty_dialogs/translation/localization/default_locale",
 		"default": "en"
 	},
 	"testing_locale": {
@@ -133,21 +133,20 @@ static var _settings_paths: Dictionary = {
 		"default": ""
 	},
 	"locales": {
-		"path": "graph_dialogs/translation/localization/locales",
+		"path": "sprouty_dialogs/translation/localization/locales",
 		"default": ["en"]
 	},
-	# -- Variable settings -----------------------------------------------------
+	# -- Internal settings (not exposed in the UI) -----------------------------
 	"variables": {
-		"path": "graph_dialogs/variables/variables",
+		"path": "sprouty_dialogs/internal/variables",
 		"default": {}
 	},
-	# -- Internal settings (not exposed in the UI) -----------------------------
 	"play_dialog_path": {
-		"path": "graph_dialogs/internal/play_dialog_path",
+		"path": "sprouty_dialogs/internal/play_dialog_path",
 		"default": ""
 	},
 	"play_start_id": {
-		"path": "graph_dialogs/internal/play_start_id",
+		"path": "sprouty_dialogs/internal/play_start_id",
 		"default": ""
 	}
 }
@@ -211,28 +210,41 @@ static func reset_setting(setting_name: String) -> void:
 ## This method should be called when the plugin is first loaded or when the settings are reset.
 static func initialize_default_settings() -> void:
 	for setting in _settings_paths.keys():
-		_register_new_setting(setting, false)
+		_register_new_setting(setting, null, false)
+	ProjectSettings.save()
+
+
+## Migrates old "graph_dialogs" settings to new "sprouty_dialogs" settings.
+## This function checks if old settings exist and copies their values to the new paths.
+static func migrate_settings_from_graph_dialogs() -> void:
+	for setting_name in _settings_paths.keys():
+		var new_path = _settings_paths[setting_name]["path"]
+		if not new_path.begins_with("sprouty_dialogs/"):
+			continue # Only migrate settings that are under "sprouty_dialogs/"
+		
+		var old_path = new_path.replace("sprouty_dialogs", "graph_dialogs")
+		if setting_name == "variables": # Special case for variables setting
+			old_path = "graph_dialogs/variables/variables"
+
+		# If old setting exists and new setting doesn't exist, migrate it
+		if ProjectSettings.has_setting(old_path):
+			var value = ProjectSettings.get_setting(old_path)
+			_register_new_setting(setting_name, value, false)
+			ProjectSettings.set_setting(old_path, null) # Remove old setting after migration
+
 	ProjectSettings.save()
 
 
 ## Register a new setting in the project settings if it doesn't already exist.
 ## This method is used to add new settings when the plugin is updated with additional settings.
-static func _register_new_setting(setting_name: String, save_settings: bool = true) -> void:
+static func _register_new_setting(setting_name: String, value: Variant = null, save_settings: bool = true) -> void:
 	if not _settings_paths.has(setting_name):
 		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found in settings paths. Cannot add new setting.")
 		return
 	if not ProjectSettings.has_setting(_settings_paths[setting_name]["path"]):
 		ProjectSettings.set_setting(
 			_settings_paths[setting_name]["path"],
-			_settings_paths[setting_name]["default"]
+			_settings_paths[setting_name]["default"] if value == null else value
 		)
-		if setting_name.begins_with("graph_dialogs/"):
-			ProjectSettings.set_initial_value(
-				_settings_paths[setting_name]["path"],
-				_settings_paths[setting_name]["default"]
-			)
-			if _settings_paths[setting_name]["path"].contains("internal") or setting_name == "variables":
-				ProjectSettings.set_as_internal(_settings_paths[setting_name]["path"], true)
-		
 		if save_settings:
 			ProjectSettings.save()
