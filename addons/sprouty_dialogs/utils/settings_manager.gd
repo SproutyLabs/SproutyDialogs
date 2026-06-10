@@ -210,7 +210,7 @@ static func reset_setting(setting_name: String) -> void:
 ## This method should be called when the plugin is first loaded or when the settings are reset.
 static func initialize_default_settings() -> void:
 	for setting in _settings_paths.keys():
-		_register_new_setting(setting, false)
+		_register_new_setting(setting, null, false)
 	ProjectSettings.save()
 
 
@@ -229,10 +229,7 @@ static func migrate_settings_from_graph_dialogs() -> void:
 		# If old setting exists and new setting doesn't exist, migrate it
 		if ProjectSettings.has_setting(old_path):
 			var value = ProjectSettings.get_setting(old_path)
-			ProjectSettings.set_setting(new_path, value)
-			ProjectSettings.set_initial_value(new_path, value)
-			if new_path.contains("internal"):
-				ProjectSettings.set_as_internal(new_path, true)
+			_register_new_setting(setting_name, value, false)
 			ProjectSettings.set_setting(old_path, null) # Remove old setting after migration
 
 	ProjectSettings.save()
@@ -240,22 +237,14 @@ static func migrate_settings_from_graph_dialogs() -> void:
 
 ## Register a new setting in the project settings if it doesn't already exist.
 ## This method is used to add new settings when the plugin is updated with additional settings.
-static func _register_new_setting(setting_name: String, save_settings: bool = true) -> void:
+static func _register_new_setting(setting_name: String, value: Variant = null, save_settings: bool = true) -> void:
 	if not _settings_paths.has(setting_name):
 		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found in settings paths. Cannot add new setting.")
 		return
 	if not ProjectSettings.has_setting(_settings_paths[setting_name]["path"]):
 		ProjectSettings.set_setting(
 			_settings_paths[setting_name]["path"],
-			_settings_paths[setting_name]["default"]
+			_settings_paths[setting_name]["default"] if value == null else value
 		)
-		if _settings_paths[setting_name]["path"].begins_with("sprouty_dialogs/"):
-			ProjectSettings.set_initial_value(
-				_settings_paths[setting_name]["path"],
-				_settings_paths[setting_name]["default"]
-			)
-			if _settings_paths[setting_name]["path"].contains("internal"):
-				ProjectSettings.set_as_internal(_settings_paths[setting_name]["path"], true)
-		
 		if save_settings:
 			ProjectSettings.save()

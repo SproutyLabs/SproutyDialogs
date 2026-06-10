@@ -13,13 +13,6 @@ var editor: Control
 func _enable_plugin() -> void:
 	add_autoload_singleton(AUTOLOAD_NAME, PLUGIN_MANAGER_PATH)
 	add_dialogs_input_actions()
-	
-	if not ProjectSettings.has_setting("sprouty_dialogs/internal/variables"):
-		# Migrate old settings from "graph_dialogs" to "sprouty_dialogs" if they exist.
-		if ProjectSettings.has_setting("graph_dialogs/variables/variables"):
-			SproutyDialogsSettingsManager.migrate_settings_from_graph_dialogs()
-		else: # Initialize default settings for new users.
-			SproutyDialogsSettingsManager.initialize_default_settings()
 
 
 func _disable_plugin() -> void:
@@ -35,6 +28,14 @@ func _enter_tree():
 	# Add the main panel to the editor"s main viewport.
 	EditorInterface.get_editor_main_screen().add_child(editor)
 	_make_visible(false) # Hide the main panel initially.
+
+	# Register plugin settings in project settings
+	if not ProjectSettings.has_setting("sprouty_dialogs/general/input/continue_input_action"):
+		# Migrate old settings from "graph_dialogs" to "sprouty_dialogs" if they exist.
+		if ProjectSettings.has_setting("graph_dialogs/general/input/continue_input_action"):
+			SproutyDialogsSettingsManager.migrate_settings_from_graph_dialogs()
+		else: # Initialize default settings for new users.
+			SproutyDialogsSettingsManager.initialize_default_settings()
 
 
 func _exit_tree():
