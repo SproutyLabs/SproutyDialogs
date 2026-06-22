@@ -1,3 +1,7 @@
+.editorconfig
+project.godot/
+/test/
+
 # Project-specific ignores
 tests/
 addons/**
