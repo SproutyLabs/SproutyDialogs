@@ -35,6 +35,9 @@ signal option_selected(option_index: int)
 ## The dialogue will be split according to this limit and displayed in parts
 ## if the [param split_dialog_by_max_characters] setting is active.
 @export var max_characters: int = SproutyDialogsSettingsManager.get_setting("max_characters")
+## If true, the dialog box will block input propagation to other nodes in the scene tree.[br][br]
+## This is useful to prevent the player from interacting with other nodes while the dialog is active.[br]
+@export var block_input_propagation: bool = true
 
 @export_category("Dialog Box Components")
 ## [RichTextLabel] where dialogue will be displayed.[br][br]
@@ -105,7 +108,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 	var warnings: PackedStringArray = []
 	if not dialog_display: # Check if the node is empty or invalid
 		warnings.push_back("A dialog display component must be provided to display the dialogues. "
-			+"Please assign a RichTextLabel node as dialog display in the Inspector.")
+			+ "Please assign a RichTextLabel node as dialog display in the Inspector.")
 	return warnings
 
 
@@ -148,7 +151,7 @@ func _ready() -> void:
 		# Connect meta clicked signal to handle meta tags
 		if not dialog_display:
 			printerr("[Sprouty Dialogs] Dialog display is not set. Please set the " \
-					+"'dialog_display' property in the '" + name + "' Dialog Box on the inspector.")
+					+ "'dialog_display' property in the '" + name + "' Dialog Box on the inspector.")
 			return
 		if not dialog_display.is_connected("meta_clicked", _on_dialog_meta_clicked):
 			dialog_display.meta_clicked.connect(_on_dialog_meta_clicked)
@@ -170,18 +173,20 @@ func _input(event: InputEvent) -> void:
 		return
 	if _is_displaying_options:
 		return
-	# Skip dialog typing and show the full text
-	if not _display_completed and _can_skip and Input.is_action_just_pressed(
+	
+	if Input.is_action_just_pressed(
 			SproutyDialogsSettingsManager.get_setting("continue_input_action")):
-		_skip_dialog_typing()
-	# Continue dialog when the player press the continue button
-	elif _display_completed and Input.is_action_just_pressed(
-			SproutyDialogsSettingsManager.get_setting("continue_input_action")):
-			if _current_sentence < _sentences.size() - 1:
-				_current_sentence += 1
-				_display_new_sentence(_sentences[_current_sentence])
-			else: # Continue with the next dialog node
-				continue_dialog.emit()
+		if not _display_completed and _can_skip: # Skip dialog typing and show the full text
+			_skip_dialog_typing()
+		elif _display_completed: # Continue dialog when the text is fully displayed
+				if _current_sentence < _sentences.size() - 1:
+					_current_sentence += 1
+					_display_new_sentence(_sentences[_current_sentence])
+				else: # Continue with the next dialog node
+					continue_dialog.emit()
+
+	if block_input_propagation: # Block input propagation to other nodes in the scene tree
+		get_viewport().set_input_as_handled()
 
 
 ## Play a dialog on dialog box
