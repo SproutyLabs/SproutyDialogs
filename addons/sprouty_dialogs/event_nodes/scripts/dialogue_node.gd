@@ -415,5 +415,9 @@ func _on_default_focus_exited() -> void:
 	if _default_text_modified:
 		_default_text_modified = false
 		modified.emit(true)
-
+		
+		
+## Allow this node type to be resized vertically
+func _on_resized() -> void:
+	return
 #endregion

@@ -73,3 +73,8 @@ func _on_text_input_focus_exited() -> void:
 	if _comment_modified:
 		_comment_modified = false
 		modified.emit(true)
+		
+		
+## Allow this node type to be resized vertically
+func _on_resized() -> void:
+	return
