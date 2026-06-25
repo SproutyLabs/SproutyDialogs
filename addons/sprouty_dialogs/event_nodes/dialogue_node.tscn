@@ -145,6 +145,7 @@ layout_mode = 2
 
 [node name="DialogContainer" type="VBoxContainer" parent="." unique_id=1980537437]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="DialogHeader" type="HBoxContainer" parent="DialogContainer" unique_id=608982801]
 layout_mode = 2
