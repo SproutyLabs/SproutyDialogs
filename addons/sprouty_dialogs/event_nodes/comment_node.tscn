@@ -57,3 +57,4 @@ custom_minimum_size = Vector2(150, 100)
 layout_mode = 2
 size_flags_vertical = 3
 placeholder_text = "Write a comment..."
+wrap_mode = 1
