@@ -46,7 +46,7 @@ var _dialogs_count: int = 0
 ## Number of characters in the file list
 var _characters_count: int = 0
 ## Item that was right clicked
-var _right_clicked_item: int = -1
+var _last_clicked_item: int = -1
 
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
@@ -57,11 +57,9 @@ func _ready():
 	_file_search.text_changed.connect(_on_file_search_text_changed)
 	_file_list.item_selected.connect(_on_file_selected)
 	_file_list.item_clicked.connect(_on_item_clicked)
-	_file_list.empty_clicked.connect(_on_empty_clicked)
 
 	_filtered_list.item_selected.connect(_on_file_selected)
 	_filtered_list.item_clicked.connect(_on_item_clicked)
-	_filtered_list.empty_clicked.connect(_on_empty_clicked)
 
 	_file_popup_menu.id_pressed.connect(_on_file_menu_pressed)
 	_confirm_close_dialog.custom_action.connect(_on_confirm_closing_action)
@@ -321,17 +319,19 @@ func _on_file_selected(index: int) -> void:
 	# ----------------------------------------------------------------------
 
 
-## When the file list is right clicked, show file menu options
-func _on_empty_clicked(at_pos: Vector2, mouse_button_index: int) -> void:
-	if mouse_button_index == MOUSE_BUTTON_RIGHT and _file_list.item_count > 0:
-		var pos := at_pos + _file_list.global_position + Vector2(get_window().position)
-		_file_popup_menu.popup(Rect2(pos, _file_popup_menu.size))
+## Display a contextual popup menu at click position
+func _display_item_contextual_menu(at_pos: Vector2, mouse_button_index: int) -> void:
+	var pos := at_pos + _file_list.global_position + Vector2(get_window().position)
+	_file_popup_menu.popup(Rect2(pos, _file_popup_menu.size))
 
 
-## When a file is right clicked, show the file menu options
+## When a file is right clicked, show the file menu options and select the file
 func _on_item_clicked(index: int, at_pos: Vector2, mouse_button_index: int) -> void:
-	_right_clicked_item = index
-	_on_empty_clicked(at_pos, mouse_button_index)
+	_last_clicked_item = index
+	_on_file_selected(index)
+
+	if mouse_button_index == MOUSE_BUTTON_RIGHT:
+		_display_item_contextual_menu(at_pos, mouse_button_index)
 
 
 ## Set the file menu options
@@ -340,14 +340,14 @@ func _on_file_menu_pressed(id: int) -> void:
 		0:
 			request_save_file.emit(get_current_index()) # Save current file
 		1:
-			request_save_file_as.emit(_right_clicked_item) # Save file as
+			request_save_file_as.emit(_last_clicked_item) # Save file as
 		2:
 			close_file() # Close current file
 		3:
 			close_all() # Close all files
 	
-	_right_clicked_item = -1
 
+	_last_clicked_item = -1
 
 ## Set the confirm closing dialog actions
 func _on_confirm_closing_action(action) -> void:
