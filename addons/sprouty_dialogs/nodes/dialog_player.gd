@@ -532,8 +532,9 @@ func stop() -> void:
 		for portrait in _portraits_instances[char].values():
 			if portrait: # Remove the character node with the portraits
 				var portrait_parent = portrait.get_parent()
-				portrait_parent.get_parent().remove_child(portrait_parent)
-				portrait_parent.queue_free()
+				if portrait_parent and portrait_parent.get_parent():
+					portrait_parent.get_parent().remove_child(portrait_parent)
+					portrait_parent.queue_free()
 	
 	# Free all dialog boxes displayed
 	for dialog_box in _dialog_box_instances.values():
