@@ -17,7 +17,7 @@ var _comment_modified: bool = false
 
 
 func _ready():
-	super ()
+	super()
 	# Connect text input signals
 	_text_input.text_changed.connect(_on_text_input_changed)
 	_text_input.focus_exited.connect(_on_text_input_focus_exited)
@@ -32,8 +32,8 @@ func get_data() -> Dictionary:
 		"node_type": node_type,
 		"node_index": node_index,
 		"comment_text": _comment_text,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	return dict
 
