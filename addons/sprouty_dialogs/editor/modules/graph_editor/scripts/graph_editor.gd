@@ -41,6 +41,9 @@ signal nodes_selection_changed(has_selection: bool)
 ## Emitted when the selection of nodes to paste change
 signal paste_selection_changed(has_selection: bool)
 
+## Emitted when the graph zoom or scroll offset changes
+signal view_state_changed(view_state: Dictionary)
+
 ## Emitted when the toolbar is expanded
 signal toolbar_expanded
 
@@ -82,6 +85,10 @@ var _modified_counter: int = 0
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
 
+## Last known graph view state
+var _last_zoom: float = 1.0
+var _last_scroll_offset: Vector2 = Vector2.ZERO
+
 
 func _init() -> void:
 	node_selected.connect(_on_node_selected)
@@ -113,11 +120,25 @@ func _ready():
 	_set_node_actions_menu()
 	_set_add_node_menu()
 
+	_last_zoom = zoom
+	_last_scroll_offset = scroll_offset
+	set_process(true)
+
 
 func _input(_event):
 	if (not _add_node_menu.visible) and _request_port > -1:
 		_request_node = ""
 		_request_port = -1
+
+
+func _process(_delta: float) -> void:
+	if zoom != _last_zoom or scroll_offset != _last_scroll_offset:
+		_last_zoom = zoom
+		_last_scroll_offset = scroll_offset
+		view_state_changed.emit({
+			"zoom": zoom,
+			"scroll_offset": scroll_offset
+		})
 
 
 ## Returns all the start ids in the graph
