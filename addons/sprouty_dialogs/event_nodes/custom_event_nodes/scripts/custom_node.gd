@@ -17,7 +17,7 @@ var _text_modified: bool = false
 
 
 func _ready():
-	super () # Required to initialize the node
+	super() # Required to initialize the node
 
 	# Connect text input signals
 	_text_input.text_changed.connect(_on_text_input_changed)
@@ -36,8 +36,8 @@ func get_data() -> Dictionary:
 		# Required node data
 		"node_type": node_type,
 		"node_index": node_index,
-		"offset": position_offset,
-		"size": size,
+		"offset": position_offset.round(),
+		"size": size.round(),
 		
 		# Get the node output connections
 		"to_node": get_output_connections(),

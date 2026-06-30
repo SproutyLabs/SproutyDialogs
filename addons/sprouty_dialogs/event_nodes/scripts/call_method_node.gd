@@ -31,7 +31,7 @@ var _previous_params: Array = []
 
 
 func _ready():
-	super ()
+	super()
 	_autoloads_dropdown.mouse_entered.connect(_on_autoload_mouse_entered)
 	_autoloads_dropdown.item_selected.connect(_on_autoload_selected)
 	_method_combo_box.editing_toggled.connect(_on_method_editing_toggled)
@@ -59,8 +59,8 @@ func get_data() -> Dictionary:
 		"parameters": _parameters_field.get_array(),
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	return dict
 

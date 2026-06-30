@@ -27,7 +27,7 @@ var _previous_args: Array = []
 
 
 func _ready():
-	super ()
+	super()
 	# Connect signals
 	_identifier_input.text_changed.connect(_on_identifier_input_changed)
 	_identifier_input.focus_exited.connect(_on_identifier_input_focus_exited)
@@ -51,8 +51,8 @@ func get_data() -> Dictionary:
 		"extra_args": _args_array.get_array(),
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	return dict
 

@@ -29,7 +29,7 @@ var _id_modified: bool = false
 
 
 func _ready():
-	super ()
+	super()
 	# Connect signals
 	_id_input_text.text_changed.connect(_on_id_input_changed)
 	_id_input_text.focus_exited.connect(_on_id_input_focus_exited)
@@ -50,8 +50,8 @@ func get_data() -> Dictionary:
 		"start_id": _start_id.to_upper(),
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	return dict
 
