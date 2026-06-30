@@ -454,6 +454,8 @@ func switch_to_selected_file(file_metadata: Dictionary) -> void:
 	elif file_metadata.data is SproutyDialogsCharacterData:
 		request_to_switch_character.emit(file_metadata["cache_node"])
 		request_to_switch_tab.emit(1)
+	
+	_save_opened_files()
 
 
 ## Switch to the file on the current tab
@@ -565,12 +567,17 @@ func _save_opened_files() -> void:
 		# Save an entry with both uid and path (path as fallback)
 		opened_files.append({"uid": uid, "path": path})
 
+	# Save the currently selected file index
+	var current_index = _file_list.get_current_index()
 	SproutyDialogsSettingsManager.set_setting("last_opened_files", opened_files)
+	SproutyDialogsSettingsManager.set_setting("last_selected_file_index", current_index)
 
 
 ## Load the list of last opened files from the project settings
 func _load_opened_files() -> void:
 	var last_opened_files = SproutyDialogsSettingsManager.get_setting("last_opened_files")
+	var last_selected_index = SproutyDialogsSettingsManager.get_setting("last_selected_file_index")
+	last_selected_index = last_selected_index if last_selected_index != null else -1
 	
 	if not (last_opened_files is Array and last_opened_files.size() > 0):
 		return
@@ -583,7 +590,12 @@ func _load_opened_files() -> void:
 		if SproutyDialogsFileUtils.check_valid_uid_path(uid):
 			var uid_path = ResourceUID.get_id_path(uid)
 			load_file(uid_path, false)
+		# If UID is not valid, try to use the path
 		elif path != "" and FileAccess.file_exists(path):
 			load_file(path, false)
 		else:
 			push_warning("[Sprouty Dialogs] File with path '" + path + "' not found. Skipping.")
+
+	# Restore the previously selected file
+	if last_selected_index >= 0 and last_selected_index < _file_list.get_item_count():
+		switch_to_selected_file(_file_list.get_item_metadata(last_selected_index))
