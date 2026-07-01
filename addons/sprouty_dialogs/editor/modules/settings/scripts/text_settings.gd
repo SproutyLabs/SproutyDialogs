@@ -27,6 +27,11 @@ extends HSplitContainer
 ## Skip continue delay field
 @onready var _skip_continue_delay_field: SpinBox = %SkipContinueDelayField
 
+## Auto-advance enabled at start toggle
+@onready var _auto_advance_enabled_toggle: CheckButton = %AutoAdvanceEnabledAtStartToggle
+## Auto-advance delay field
+@onready var _auto_advance_delay_field: SpinBox = %AutoAdvanceDelayField
+
 
 func _ready():
 	_typing_speed_field.value_changed.connect(_on_typing_speed_changed)
@@ -39,6 +44,9 @@ func _ready():
 	_allow_skip_reveal_toggle.toggled.connect(_on_allow_skip_reveal_toggled)
 	_can_skip_delay_field.value_changed.connect(_on_can_skip_delay_changed)
 	_skip_continue_delay_field.value_changed.connect(_on_skip_continue_delay_changed)
+
+	_auto_advance_enabled_toggle.toggled.connect(_on_auto_advance_enabled_toggled)
+	_auto_advance_delay_field.value_changed.connect(_on_auto_advance_delay_changed)
 
 	await get_tree().process_frame # Wait a frame to ensure settings are loaded
 	_load_settings()
@@ -67,6 +75,10 @@ func _load_settings() -> void:
 			SproutyDialogsSettingsManager.get_setting("can_skip_delay")
 	_skip_continue_delay_field.value = \
 			SproutyDialogsSettingsManager.get_setting("skip_continue_delay")
+	_auto_advance_enabled_toggle.button_pressed = \
+		SproutyDialogsSettingsManager.get_setting("auto_advance_enabled_at_start")
+	_auto_advance_delay_field.value = \
+		SproutyDialogsSettingsManager.get_setting("auto_advance_delay")
 	
 	_set_reset_button(_typing_speed_field, "default_typing_speed")
 	_set_reset_button(_open_url_on_meta_toggle, "open_url_on_meta_tag_click")
@@ -76,7 +88,9 @@ func _load_settings() -> void:
 	_set_reset_button(_allow_skip_reveal_toggle, "allow_skip_text_reveal")
 	_set_reset_button(_can_skip_delay_field, "can_skip_delay")
 	_set_reset_button(_skip_continue_delay_field, "skip_continue_delay")
-
+	_set_reset_button(_auto_advance_enabled_toggle, "auto_advance_enabled_at_start")
+	_set_reset_button(_auto_advance_delay_field, "auto_advance_delay")
+	
 
 ## Setup the reset button of a field
 func _set_reset_button(field: Control, setting_name: String) -> void:
@@ -157,3 +171,15 @@ func _on_can_skip_delay_changed(value: float) -> void:
 func _on_skip_continue_delay_changed(value: float) -> void:
 	SproutyDialogsSettingsManager.set_setting("skip_continue_delay", value)
 	_show_reset_button(_skip_continue_delay_field, "skip_continue_delay")
+
+
+## Handle when the auto-advance enabled toggle is changed
+func _on_auto_advance_enabled_toggled(pressed: bool) -> void:
+	SproutyDialogsSettingsManager.set_setting("auto_advance_enabled_at_start", pressed)
+	_show_reset_button(_auto_advance_enabled_toggle, "auto_advance_enabled_at_start")
+
+
+## Handle when the auto-advance delay is changed
+func _on_auto_advance_delay_changed(value: float) -> void:
+	SproutyDialogsSettingsManager.set_setting("auto_advance_delay", value)
+	_show_reset_button(_auto_advance_delay_field, "auto_advance_delay")
