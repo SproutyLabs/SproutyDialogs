@@ -77,6 +77,11 @@ var _can_skip_timer: Timer
 ## Flag to control if the dialog can be skipped.
 var _can_skip: bool = true
 
+## If true, the dialog will automatically progress after a delay.
+var _auto_advance_enabled: bool = false
+## Delay in seconds before advance to the next sentence or node.
+var _auto_advance_delay: float = 0.1
+
 ## Array to store the typing speed intervals for different parts of the dialog.
 var _typing_speed_intervals: Array = []
 
@@ -130,6 +135,13 @@ func _enter_tree() -> void:
 		add_child(_can_skip_timer)
 		_can_skip_timer.wait_time = SproutyDialogsSettingsManager.get_setting("can_skip_delay")
 		_can_skip_timer.timeout.connect(func(): _can_skip = true)
+
+		# Initialize auto-advance from settings
+		var auto_advance_enabled = SproutyDialogsSettingsManager.get_setting("auto_advance_enabled_at_start")
+		if auto_advance_enabled != null: _auto_advance_enabled = auto_advance_enabled
+		var auto_advance_delay = SproutyDialogsSettingsManager.get_setting("auto_advance_delay")
+		if auto_advance_delay != null: _auto_advance_delay = auto_advance_delay
+		
 		hide()
 
 
@@ -171,7 +183,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if not _is_running:
 		return
-	if _is_displaying_options:
+	if _is_displaying_options or _auto_advance_enabled:
 		return
 	
 	if Input.is_action_just_pressed(
@@ -179,11 +191,7 @@ func _input(event: InputEvent) -> void:
 		if not _display_completed and _can_skip: # Skip dialog typing and show the full text
 			_skip_dialog_typing()
 		elif _display_completed: # Continue dialog when the text is fully displayed
-				if _current_sentence < _sentences.size() - 1:
-					_current_sentence += 1
-					_display_new_sentence(_sentences[_current_sentence])
-				else: # Continue with the next dialog node
-					continue_dialog.emit()
+			_continue_dialogue()
 
 	if block_input_propagation: # Block input propagation to other nodes in the scene tree
 		get_viewport().set_input_as_handled()
@@ -255,6 +263,12 @@ func stop_dialog(close_dialog: bool = false) -> void:
 		hide()
 
 
+## Set auto-advance option
+func set_auto_advance(enabled: bool, delay: float) -> void:
+	_auto_advance_enabled = enabled
+	_auto_advance_delay = delay
+
+
 ## Skip the dialog typing and show the full text
 func _skip_dialog_typing() -> void:
 	dialog_display.visible_characters = dialog_display.text.length()
@@ -266,6 +280,15 @@ func _skip_dialog_typing() -> void:
 	_can_skip = false # Prevent skipping too fast
 	_can_skip_timer.start()
 	_on_display_completed()
+
+
+## Continue playing the dialogue
+func _continue_dialogue() -> void:
+	if _current_sentence < _sentences.size() - 1:
+		_current_sentence += 1
+		_display_new_sentence(_sentences[_current_sentence])
+	else: # Continue with the next dialog node
+		continue_dialog.emit()
 
 
 #region === Virtual methods ====================================================
@@ -537,6 +560,14 @@ func _on_display_completed() -> void:
 		continue_indicator.show()
 	_display_completed = true
 	dialog_typing_ends.emit()
+
+	# If autoplay is enabled, automatically progress after the configured delay
+	if _auto_advance_enabled and not _is_displaying_options and _is_running:
+		# Wait the autoplay delay then progress if still appropriate
+		await get_tree().create_timer(_auto_advance_delay).timeout
+		if not _auto_advance_enabled or not _is_running or _is_displaying_options:
+			return
+		_continue_dialogue()
 
 
 ## When the dialog ends, close the dialog box
