@@ -199,7 +199,7 @@ func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSpr
 	dialogue_changed.connect(graph.dialogue_changed.emit)
 	character_changed.connect(graph.character_changed.emit)
 	graph.modified.connect(_on_data_modified)
-	graph.view_state_changed.connect(_on_graph_view_state_changed)
+	graph.view_state_changed.connect(_on_editor_view_state_changed)
 	graph.undo_redo = undo_redo
 	add_child(graph)
 	var dialogs = resource.dialogs if resource.dialogs else {}
@@ -236,6 +236,7 @@ func new_character_file(path: String) -> void:
 func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Control:
 	var char_editor = _char_scene.instantiate()
 	char_editor.modified.connect(_on_data_modified)
+	char_editor.view_state_changed.connect(_on_editor_view_state_changed)
 	char_editor.undo_redo = undo_redo
 	add_child(char_editor)
 	var name_data = resource.display_name if resource.display_name else {}
@@ -284,6 +285,8 @@ func load_file(path: String, check_resources: bool = true, view_state: Dictionar
 		elif resource is SproutyDialogsCharacterData:
 			SproutyDialogsFileUtils.set_recent_file_path("character_files", path)
 			var char_editor = _new_character_from_resource(resource)
+			if not view_state.is_empty():
+				char_editor.load_editor_state(view_state)
 			_file_list.new_file_item(path, resource, char_editor)
 			request_to_switch_tab.emit(1)
 			_save_file_button.disabled = false
@@ -575,6 +578,8 @@ func _save_opened_files() -> void:
 					"zoom": metadata["cache_node"].zoom,
 					"scroll_offset": metadata["cache_node"].scroll_offset
 				}
+			elif metadata.data is SproutyDialogsCharacterData:
+				view_state = metadata["cache_node"].get_editor_state()
 		# Save an entry with both uid and path (path as fallback) and view state
 		opened_files.append({"uid": uid, "path": path, "view_state": view_state})
 
@@ -613,8 +618,8 @@ func _load_opened_files() -> void:
 		switch_to_selected_file(_file_list.get_item_metadata(last_selected_index))
 
 
-## Handle graph view state changes and save them to the settings
-func _on_graph_view_state_changed(view_state: Dictionary) -> void:
+## Handle editor view state changes and save them to the settings
+func _on_editor_view_state_changed(view_state: Dictionary) -> void:
 	var current_index = _file_list.get_current_index()
 	if current_index < 0:
 		return
