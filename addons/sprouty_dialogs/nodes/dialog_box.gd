@@ -183,7 +183,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if not _is_running:
 		return
-	if _is_displaying_options:
+	if _is_displaying_options or _auto_advance_enabled:
 		return
 	
 	if Input.is_action_just_pressed(
