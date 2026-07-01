@@ -19,6 +19,8 @@ signal show_portrait_editor_panel(show: bool)
 signal portrait_list_changed
 ## Emitted when the path of a portrait is changed
 signal portrait_path_changed(new_path: String, prev_path: String)
+## Emitted when the portrait tree UI state changes (selection/expanded state)
+signal portrait_tree_state_changed
 
 ## Portrait tree popup menu
 @onready var _popup_menu: PopupMenu = $PortraitPopupMenu
@@ -262,6 +264,75 @@ func filter_branch(parent: TreeItem, filter: String) -> bool:
 	return match_found
 
 
+## Returns the currently selected item's tree path, or an empty string if nothing is selected.
+func get_selected_path() -> String:
+	var selected_item := get_selected()
+	if selected_item == null:
+		return ""
+	return get_item_path(selected_item)
+
+
+## Finds a tree item by its path string, recursively searching groups.
+func find_item_by_path(path: String, from: TreeItem = get_root()) -> TreeItem:
+	for item in from.get_children():
+		if get_item_path(item) == path:
+			return item
+		if item.get_metadata(0).has("group"):
+			var found := find_item_by_path(path, item)
+			if found:
+				return found
+	return null
+
+
+## Selects a tree item by its path and emits tree-state change.
+func select_item_path(path: String) -> void:
+	if path == "":
+		return
+	var item := find_item_by_path(path)
+	if item == null:
+		return
+	deselect_all()
+	set_selected(item, 0)
+	portrait_tree_state_changed.emit()
+
+
+## Returns the current portrait tree UI state, including collapsed groups and selection.
+func get_state() -> Dictionary:
+	var state := {}
+	for item in get_root().get_children():
+		_save_item_state(item, state)
+	return {
+		"tree_items": state,
+		"selected_path": get_selected_path()
+	}
+
+
+## Restores collapse state for every item in the tree from saved state data.
+func restore_state(state: Dictionary) -> void:
+	if not state.has("tree_items"):
+		return
+	for item in get_root().get_children():
+		_restore_item_state(item, state["tree_items"])
+
+
+## Recursively saves collapse state for an item and its children.
+func _save_item_state(item: TreeItem, state: Dictionary) -> void:
+	state[get_item_path(item)] = {
+		"collapsed": item.collapsed
+	}
+	for child in item.get_children():
+		_save_item_state(child, state)
+
+
+## Recursively applies saved collapse state to tree items.
+func _restore_item_state(item: TreeItem, tree_items: Dictionary) -> void:
+	var path := get_item_path(item)
+	if tree_items.has(path):
+		item.collapsed = tree_items[path]["collapsed"]
+	for child in item.get_children():
+		_restore_item_state(child, tree_items)
+
+
 ## Update the preview of all portraits
 func update_portraits_transform(parent_transform: Dictionary, from: TreeItem = get_root()) -> void:
 	for item in from.get_children():
@@ -405,6 +476,7 @@ func _on_item_mouse_selected(mouse_position: Vector2, mouse_button_index: int) -
 ## Called when the user selects a portrait item
 func _on_item_selected() -> void:
 	portrait_item_selected.emit(get_selected())
+	portrait_tree_state_changed.emit()
 
 
 ## Called when the user double-clicks on a portrait item

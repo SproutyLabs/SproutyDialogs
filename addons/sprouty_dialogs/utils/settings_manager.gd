@@ -148,6 +148,14 @@ static var _settings_paths: Dictionary = {
 	"play_start_id": {
 		"path": "sprouty_dialogs/internal/play_start_id",
 		"default": ""
+	},
+	"last_opened_files": {
+		"path": "sprouty_dialogs/internal/last_opened_files",
+		"default": []
+	},
+	"last_selected_file_index": {
+		"path": "sprouty_dialogs/internal/last_selected_file_index",
+		"default": - 1
 	}
 }
 
