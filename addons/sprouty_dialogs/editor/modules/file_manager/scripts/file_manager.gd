@@ -268,9 +268,8 @@ func load_file(path: String, check_resources: bool = true, view_state: Dictionar
 		if resource is SproutyDialogsDialogueData:
 			SproutyDialogsFileUtils.set_recent_file_path("dialogue_files", path)
 			var graph = _new_graph_from_resource(resource)
-			if view_state.has("zoom") and view_state.has("scroll_offset"):
-					graph.zoom = view_state["zoom"]
-					graph.scroll_offset = view_state["scroll_offset"]
+			if not view_state.is_empty():
+				graph.load_editor_state(view_state)
 			var csv_path_uid = resource.csv_file_uid
 			var csv_path = ""
 			if SproutyDialogsFileUtils.check_valid_uid_path(csv_path_uid):
@@ -573,13 +572,7 @@ func _save_opened_files() -> void:
 		var uid = ResourceSaver.get_resource_id_for_path(path, true)
 		var view_state: Dictionary = {}
 		if metadata.has("cache_node") and metadata["cache_node"] != null:
-			if metadata.data is SproutyDialogsDialogueData:
-				view_state = {
-					"zoom": metadata["cache_node"].zoom,
-					"scroll_offset": metadata["cache_node"].scroll_offset
-				}
-			elif metadata.data is SproutyDialogsCharacterData:
-				view_state = metadata["cache_node"].get_editor_state()
+			view_state = metadata["cache_node"].get_editor_state()
 		# Save an entry with both uid and path (path as fallback) and view state
 		opened_files.append({"uid": uid, "path": path, "view_state": view_state})
 

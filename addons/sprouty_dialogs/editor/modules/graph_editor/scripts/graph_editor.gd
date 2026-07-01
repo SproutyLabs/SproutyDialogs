@@ -135,10 +135,27 @@ func _process(_delta: float) -> void:
 	if zoom != _last_zoom or scroll_offset != _last_scroll_offset:
 		_last_zoom = zoom
 		_last_scroll_offset = scroll_offset
-		view_state_changed.emit({
-			"zoom": zoom,
-			"scroll_offset": scroll_offset
-		})
+		view_state_changed.emit(get_editor_state())
+
+
+#region === Editor State =======================================================
+
+## Returns the current editor state as a dictionary
+func get_editor_state() -> Dictionary:
+	return {
+		"zoom": zoom,
+		"scroll_offset": scroll_offset
+	}
+
+
+## Load the editor state from a dictionary
+func load_editor_state(editor_state: Dictionary) -> void:
+	if editor_state.has("zoom"):
+		zoom = editor_state["zoom"]
+	if editor_state.has("scroll_offset"):
+		scroll_offset = editor_state["scroll_offset"]
+
+#endregion
 
 
 ## Returns all the start ids in the graph
