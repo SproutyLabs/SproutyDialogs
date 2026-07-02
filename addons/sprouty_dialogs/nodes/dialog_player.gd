@@ -35,6 +35,8 @@ signal dialog_player_stop()
 ## Name of the dialogue data file being played.
 @export_storage var _dialog_file_name: String = ""
 
+#region === Editor Properties ================================================== 
+
 ## Dialogue data resource to play.
 var _dialog_data: SproutyDialogsDialogueData:
 	set(value):
@@ -94,8 +96,9 @@ var _destroy_on_end: bool = true
 ## This is used to debug the dialog processing flow while is running.
 var print_debug: bool = false
 
-## Array to store the start IDs of the dialogues.
-var _starts_ids: Array[String] = []
+#endregion
+
+#region === Dictionaries =======================================================
 
 ## Dictionary to store the portrait parent nodes by character.
 ## The keys are character names and the values are the parent nodes where
@@ -147,6 +150,11 @@ var _dialog_box_instances: Dictionary = {}
 ## }[/codeblock]
 var _portraits_instances: Dictionary = {}
 
+#endregion
+
+## Array to store the start IDs of the dialogues.
+var _starts_ids: Array[String] = []
+
 ## Dialog interpreter instance to process the dialog nodes.
 var _dialog_interpreter: SproutyDialogsEventInterpreter
 ## Resource manager instance used to load resources for the dialogs.
@@ -159,6 +167,7 @@ var _current_portrait: DialogPortrait
 
 ## Next nodes options to process when a dialog option is selected.
 var _next_options: Array = []
+## Current dialog option keys
 var _current_option_keys: Array = []
 ## Next node to process in the dialog tree after a dialogue node.
 var _next_node: String = ""
@@ -177,7 +186,7 @@ var _current_node: String = ""
 var _is_running: bool = false
 
 
-#region === Editor properties ==================================================
+#region === Handle Editor Properties ===========================================
 
 ## Handle editor warnings
 func _get_configuration_warnings() -> PackedStringArray:
