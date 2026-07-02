@@ -64,15 +64,35 @@ var _start_id: String:
 			notify_property_list_changed()
 			update_configuration_warnings()
 
-## Play the dialog when the node is ready.
+## If [code]true[/code], dialog plays when the node is ready.
+## [br][br]It's the same as [member _play_on_ready], but it can be set directly on code.[br][br]
+## [i](This was added to follow the Godot conventions, without breaking existing API)
+var autoplay: bool = false:
+	set(value):
+		autoplay = value
+		_play_on_ready = value
+	get:
+		return _play_on_ready
+
+## Flag to play the dialog when the node is ready.
 var _play_on_ready: bool = false
+
+## If [code]true[/code], the [DialogPlayer] will be freed from the scene tree when the dialog ends.
+## [br] If [code]false[/code], the [DialogPlayer] will remain in the scene tree to be reused later.
+## [br][br]It's the same as [member _destroy_on_end], but it can be set directly on code.[br][br]
+## [i](This was added to follow the Godot conventions, without breaking existing API)
+var free_on_end: bool = true:
+	set(value):
+		free_on_end = value
+		_destroy_on_end = value
+	get:
+		return _destroy_on_end
 ## Flag to destroy the dialog player when the dialog ends.
-## If true, the player will be freed from the scene tree when the dialog ends.
-## If false, the player will remain in the scene tree to be reused later.
 var _destroy_on_end: bool = true
-## If true, will print debug messages to the console.
+
+## If [code]true[/code], the [DialogPlayer] will print debug messages to the console.
 ## This is used to debug the dialog processing flow while is running.
-var _print_debug: bool = false
+var print_debug: bool = false
 
 ## Array to store the start IDs of the dialogues.
 var _starts_ids: Array[String] = []
@@ -197,19 +217,19 @@ func _get_property_list():
 				"hint_string": id_list
 			})
 			props.append({
-				"name": &"_play_on_ready",
+				"name": &"autoplay",
 				"type": TYPE_BOOL,
 				"hint": PROPERTY_HINT_NONE,
 				"usage": PROPERTY_USAGE_DEFAULT
 			})
 			props.append({
-				"name": &"_destroy_on_end",
+				"name": &"free_on_end",
 				"type": TYPE_BOOL,
 				"hint": PROPERTY_HINT_NONE,
 				"usage": PROPERTY_USAGE_DEFAULT
 			})
 			props.append({
-				"name": &"_print_debug",
+				"name": &"print_debug",
 				"type": TYPE_BOOL,
 				"hint": PROPERTY_HINT_NONE,
 				"usage": PROPERTY_USAGE_DEFAULT
@@ -291,7 +311,7 @@ func _enter_tree() -> void:
 		_dialog_interpreter.dialogue_processed.connect(_on_dialogue_processed)
 		_dialog_interpreter.options_processed.connect(_on_options_processed)
 		_dialog_interpreter.jump_to_node.connect(_on_jump_to_node)
-		_dialog_interpreter.print_debug = _print_debug
+		_dialog_interpreter.print_debug = print_debug
 		add_child(_dialog_interpreter)
 
 		var sprouty_dialogs_manager = get_node("/root/SproutyDialogs")
@@ -342,17 +362,18 @@ func _ready() -> void:
 			return
 
 
-## Set play on ready flag to play the dialog when the node is ready.
-## If true, the dialog will start processing when the dialog player node is ready.
-func play_on_ready(play_on_ready: bool) -> void:
-	_play_on_ready = play_on_ready
+## If enabled, dialog plays when the node is ready.
+## @deprecated: Use [member autoplay] instead.
+func play_on_ready(enabled: bool) -> void:
+	_play_on_ready = enabled
+	autoplay = enabled
 
 
-## Set the flag to destroy the dialog player when the dialog ends.
-## If true, the player will be freed from the scene tree when the dialog ends.
-## If false, the player will remain in the scene tree to be reused later.
-func destroy_on_end(destroy: bool) -> void:
-	_destroy_on_end = destroy
+## If enabled, the [DialogPlayer] will be freed from the scene tree when the dialog ends.
+## [br]Otherwise, the [DialogPlayer] will remain in the scene tree to be reused later.
+## @deprecated: Use [member free_on_end] instead.
+func destroy_on_end(enabled: bool) -> void:
+	_destroy_on_end = enabled
 
 
 ## Returns the dialogue data resource being processed
@@ -365,41 +386,6 @@ func get_start_id() -> String:
 	if _start_id == "(Select a dialog)":
 		return ""
 	return _start_id
-
-
-## Returns the name of the start node for a given dialog branch.
-func _get_start_node_name(dialog_id: String) -> String:
-	if not _dialog_data or not _dialog_data.graph_data.has(dialog_id):
-		return ""
-	for node_name in _dialog_data.graph_data[dialog_id].keys():
-		if _dialog_data.graph_data[dialog_id][node_name]["node_type"] == "start_node":
-			return node_name
-	return ""
-
-
-## Load the resources for a given dialog branch.
-func _load_dialog_resources(dialog_id: String) -> void:
-	if not _dialog_data or not _starts_ids.has(dialog_id):
-		return
-	_resource_manager.load_resources(_dialog_data, dialog_id)
-	_loaded_dialog_ids.append(dialog_id)
-	for node in _dialog_data.graph_data[dialog_id].keys():
-		if _dialog_data.graph_data[dialog_id][node].has("to_dialog"):
-			# If the node has a reference to another dialog, load its resources too
-			var to_dialog = _dialog_data.graph_data[dialog_id][node]["to_dialog"]
-			if to_dialog != "" and to_dialog != dialog_id:
-				_resource_manager.load_resources(_dialog_data, to_dialog)
-				_loaded_dialog_ids.append(to_dialog)
-
-
-## Release all resources that were loaded for the active dialog branches.
-func _release_dialog_resources() -> void:
-	if not _resource_manager or not _dialog_data:
-		_loaded_dialog_ids.clear()
-		return
-	for dialog_id in _loaded_dialog_ids:
-		_resource_manager.release_resources(_dialog_data, dialog_id)
-	_loaded_dialog_ids.clear()
 
 
 ## Returns character data for a given character key name
@@ -449,9 +435,51 @@ func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
 	_load_dialog_resources(_start_id)
 
 
+## Returns the name of the start node for a given dialog branch.
+func _get_start_node_name(dialog_id: String) -> String:
+	if not _dialog_data or not _dialog_data.graph_data.has(dialog_id):
+		return ""
+	for node_name in _dialog_data.graph_data[dialog_id].keys():
+		if _dialog_data.graph_data[dialog_id][node_name]["node_type"] == "start_node":
+			return node_name
+	return ""
+
+
+## Load the resources for a given dialog branch.
+func _load_dialog_resources(dialog_id: String) -> void:
+	if not _dialog_data or not _starts_ids.has(dialog_id):
+		return
+	_resource_manager.load_resources(_dialog_data, dialog_id)
+	_loaded_dialog_ids.append(dialog_id)
+	for node in _dialog_data.graph_data[dialog_id].keys():
+		if _dialog_data.graph_data[dialog_id][node].has("to_dialog"):
+			# If the node has a reference to another dialog, load its resources too
+			var to_dialog = _dialog_data.graph_data[dialog_id][node]["to_dialog"]
+			if to_dialog != "" and to_dialog != dialog_id:
+				_resource_manager.load_resources(_dialog_data, to_dialog)
+				_loaded_dialog_ids.append(to_dialog)
+
+
+## Release all resources that were loaded for the active dialog branches.
+func _release_dialog_resources() -> void:
+	if not _resource_manager or not _dialog_data:
+		_loaded_dialog_ids.clear()
+		return
+	for dialog_id in _loaded_dialog_ids:
+		_resource_manager.release_resources(_dialog_data, dialog_id)
+	_loaded_dialog_ids.clear()
+
+
 #region === Run dialog =========================================================
 
-## Start processing a dialog tree
+## Plays the dialog tree.
+## [br][br]It's the same as calling the [method start()] method.[br][br]
+## [i](This was added to follow the Godot conventions, without breaking existing API).
+func play() -> void:
+	start()
+
+
+## Start processing the dialog tree.
 ## Need to set the [member _dialog_data] and [member _start_id] 
 ## before calling this method. The resources are loaded on the [method _ready()] method,
 func start() -> void:
@@ -466,7 +494,7 @@ func start() -> void:
 	# Search for start node and start processing from there
 	for node in _dialog_data.graph_data[_start_id]:
 		if node.contains("start_node"):
-			if _print_debug:
+			if print_debug:
 				print("[Sprouty Dialogs] Starting dialog with ID: " + _start_id)
 			_is_running = true
 			_process_node(node)
@@ -476,7 +504,7 @@ func start() -> void:
 
 ## Pause processing the dialog tree
 func pause() -> void:
-	if _print_debug: print("[Sprouty Dialogs] Dialog paused.")
+	if print_debug: print("[Sprouty Dialogs] Dialog paused.")
 	_is_running = false
 	# If there is a current dialog box, pause it
 	if _current_dialog_box:
@@ -491,7 +519,7 @@ func pause() -> void:
 
 ## Resume processing the dialog tree
 func resume() -> void:
-	if _print_debug: print("[Sprouty Dialogs] Dialog resumed.")
+	if print_debug: print("[Sprouty Dialogs] Dialog resumed.")
 	_is_running = true
 	# If there is a current dialog box, resume it
 	if _current_dialog_box:
@@ -507,7 +535,7 @@ func resume() -> void:
 
 ## Stop processing the dialog tree
 func stop() -> void:
-	if _print_debug: print("[Sprouty Dialogs] Dialog ended.")
+	if print_debug: print("[Sprouty Dialogs] Dialog ended.")
 	_is_running = false
 	_jump_stack.clear()
 	_current_portrait = null
