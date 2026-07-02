@@ -24,7 +24,7 @@ var _options_conditions: Array = []
 
 
 func _ready():
-	super ()
+	super()
 	$AddOptionButton.icon = get_theme_icon("Add", "EditorIcons")
 	if not get_child(0) is EditorSproutyDialogsOptionContainer:
 		_first_option = _add_new_option() # Add the first option
@@ -46,8 +46,8 @@ func get_data() -> Dictionary:
 		"options_conditions": [],
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	var data = dict[name.to_snake_case()]
 	

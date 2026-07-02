@@ -19,7 +19,7 @@ var _time_modified: bool = false
 
 
 func _ready():
-	super ()
+	super()
 	_time_input.value_changed.connect(_on_time_value_changed)
 	_time_input.focus_exited.connect(_on_time_input_focus_exited)
 	_close_dialog_check.toggled.connect(_on_close_dialog_toggled)
@@ -37,8 +37,8 @@ func get_data() -> Dictionary:
 		"close_dialog": _close_dialog_check.button_pressed,
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	return dict
 

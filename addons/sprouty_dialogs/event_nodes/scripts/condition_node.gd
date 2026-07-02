@@ -32,7 +32,7 @@ var _values_modified: Array[bool] = [false, false]
 
 
 func _ready():
-	super ()
+	super()
 	_set_type_dropdown($Container/FirstVar/TypeField, 0)
 	_set_type_dropdown($Container/SecondVar/TypeField, 1)
 	
@@ -65,8 +65,8 @@ func get_data() -> Dictionary:
 		"operator": operator_dropdown.get_item_id(operator_dropdown.selected),
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	return dict
 

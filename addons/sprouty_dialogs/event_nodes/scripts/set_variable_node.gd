@@ -38,7 +38,7 @@ var _value_modified: bool = false
 
 
 func _ready():
-	super ()
+	super()
 	_operator_dropdown.item_selected.connect(_on_operator_selected)
 	_name_input.input_changed.connect(_on_name_input_changed)
 	_name_input.focus_exited.connect(_on_name_input_focus_exited)
@@ -70,8 +70,8 @@ func get_data() -> Dictionary:
 		"new_value": _var_value,
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	return dict
 

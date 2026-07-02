@@ -16,9 +16,10 @@ func get_data() -> Dictionary:
 	var dict := {}
 
 	# Update the position and connections
-	_node_data["offset"] = position_offset
 	_node_data["to_node"] = get_output_connections()
 	_node_data["to_dialog"] = to_dialog
+	_node_data["offset"] = position_offset.round()
+	_node_data["size"] = size.round()
 
 	dict[name.to_snake_case()] = _node_data
 	return dict # Return the updated node data

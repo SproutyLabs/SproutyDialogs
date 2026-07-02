@@ -54,7 +54,7 @@ var _collapse_down_icon = preload("res://addons/sprouty_dialogs/editor/icons/int
 
 
 func _ready():
-	super ()
+	super()
 	# Connect signals to open and update text editor
 	_translation_boxes.open_text_editor.connect(open_text_editor.emit)
 	_default_text_box.open_text_editor.connect(open_text_editor.emit)
@@ -89,8 +89,8 @@ func get_data() -> Dictionary:
 		"char_expand": _character_expand_button.button_pressed,
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	return dict
 

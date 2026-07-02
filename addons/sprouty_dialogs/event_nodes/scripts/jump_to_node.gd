@@ -38,7 +38,7 @@ var _id_modified: bool = false
 
 
 func _ready():
-	super ()
+	super()
 	_target_input.input_changed.connect(_on_target_input_changed)
 	_target_input.input_focus_exited.connect(_on_target_input_focus_exited)
 	node_deselected.connect(_on_node_deselected)
@@ -70,8 +70,8 @@ func get_data() -> Dictionary:
 		"to_dialogue_path": _dialogue_data.resource_path if _dialogue_data else "",
 		"to_node": get_output_connections(),
 		"to_dialog": to_dialog,
-		"offset": position_offset,
-		"size": size
+		"offset": position_offset.round(),
+		"size": size.round()
 	}
 	return dict
 
