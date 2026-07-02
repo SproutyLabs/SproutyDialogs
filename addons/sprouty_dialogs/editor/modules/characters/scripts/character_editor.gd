@@ -12,6 +12,8 @@ extends HSplitContainer
 
 ## Triggered when something is modified
 signal modified(modified: bool)
+## Emitted when the character editor UI state changes
+signal view_state_changed(editor_state: Dictionary)
 
 ## Label with the key name of the character
 @onready var _key_name_label: Label = %KeyNameLabel
@@ -114,6 +116,7 @@ func _ready() -> void:
 
 	_portrait_tree.show_portrait_editor_panel.connect(_show_portrait_editor_panel)
 	_portrait_tree.portrait_item_selected.connect(_on_portrait_selected)
+	_portrait_tree.portrait_tree_state_changed.connect(_on_portrait_tree_state_changed)
 	_portrait_tree.modified.connect(_on_modified)
 	_portrait_tree.undo_redo = undo_redo
 
@@ -152,8 +155,8 @@ func _on_description_text_changed() -> void:
 		undo_redo.create_action("Change Character Description", 1)
 		undo_redo.add_do_property(_description_field, "text", _description_text)
 		undo_redo.add_undo_property(_description_field, "text", temp)
-		undo_redo.add_do_method(self , "_on_modified", true)
-		undo_redo.add_undo_method(self , "_on_modified", false)
+		undo_redo.add_do_method(self, "_on_modified", true)
+		undo_redo.add_undo_method(self, "_on_modified", false)
 		undo_redo.commit_action(false)
 		# ------------------------------------------------------------------
 
@@ -165,23 +168,65 @@ func _on_description_focus_exited() -> void:
 		_on_modified(true)
 
 
+#region === Editor State =======================================================
+
+## Returns the current editor state as a dictionary
+func get_editor_state() -> Dictionary:
+	return {
+		"section_visibility": {
+			"dialog_box_settings": %DialogBoxSettings.visible,
+			"portrait_settings": %PortraitSettings.visible,
+			"portrait_list": %Portraits.visible
+		},
+		"portrait_search": _portrait_search_bar.text,
+		"portrait_tree_state": _portrait_tree.get_state(),
+		"selected_portrait_path": _portrait_tree.get_selected_path()
+	}
+
+
+## Load the editor state from a dictionary
+func load_editor_state(editor_state: Dictionary) -> void:
+	if editor_state.has("section_visibility"):
+		var sections = editor_state["section_visibility"]
+		if sections.has("dialog_box_settings"):
+			_on_expand_dialog_box_button_toggled(sections["dialog_box_settings"])
+		if sections.has("portrait_settings"):
+			_on_expand_portraits_settings_button_toggled(sections["portrait_settings"])
+		if sections.has("portrait_list"):
+			_on_expand_portraits_button_toggled(sections["portrait_list"])
+
+	if editor_state.has("portrait_search"):
+		_portrait_search_bar.text = editor_state["portrait_search"]
+		_portrait_tree.filter_branch(_portrait_tree.get_root(), _portrait_search_bar.text)
+
+	if editor_state.has("portrait_tree_state"):
+		_portrait_tree.restore_state(editor_state["portrait_tree_state"])
+
+	if editor_state.has("selected_portrait_path"):
+		_portrait_tree.select_item_path(editor_state["selected_portrait_path"])
+
+
 ## Expand/hide the dialog box settings
 func _on_expand_dialog_box_button_toggled(toggled_on: bool) -> void:
 	%DialogBoxSettings.visible = toggled_on
 	%ExpandDialogBoxButton.icon = collapse_up_icon if toggled_on else collapse_down_icon
+	view_state_changed.emit(get_editor_state())
 
 
 ## Expand/hide the portrait settings
 func _on_expand_portraits_settings_button_toggled(toggled_on: bool) -> void:
 	%PortraitSettings.visible = toggled_on
 	%ExpandPortraitsSettingsButton.icon = collapse_up_icon if toggled_on else collapse_down_icon
+	view_state_changed.emit(get_editor_state())
 
 
 ## Expand/hide the portraits list
 func _on_expand_portraits_button_toggled(toggled_on: bool) -> void:
 	%Portraits.visible = toggled_on
 	%ExpandPortraitsButton.icon = collapse_up_icon if toggled_on else collapse_down_icon
+	view_state_changed.emit(get_editor_state())
 
+#endregion
 
 #region === Character Data =====================================================
 
@@ -206,7 +251,7 @@ func get_character_data() -> SproutyDialogsCharacterData:
 ## Load the character data into the editor.
 ## If name_data is provided, it will be used to load the name translations.
 ## Otherwise, the name translations will be loaded from the character data.
-func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) -> void:
+func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary, editor_state: Dictionary = {}) -> void:
 	_key_name = data.key_name
 	_key_name_label.text = _key_name.to_pascal_case()
 	_description_field.text = data.description
@@ -241,6 +286,9 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary) ->
 	_portrait_tree.load_portraits_data(data.portraits, _portrait_editor_scene)
 	_portrait_tree.update_portraits_transform(data.main_transform_settings)
 	_update_default_portrait_dropdown(data.default_portrait)
+
+	if editor_state and not editor_state.is_empty():
+		load_editor_state(editor_state)
 
 	_modified_counter = 0
 
@@ -347,8 +395,8 @@ func _on_default_display_name_changed(new_text: String) -> void:
 		undo_redo.create_action("Change Display Name", 1)
 		undo_redo.add_do_property(_name_default_locale_field, "text", new_text)
 		undo_redo.add_undo_property(_name_default_locale_field, "text", temp)
-		undo_redo.add_do_method(self , "_on_modified", true)
-		undo_redo.add_undo_method(self , "_on_modified", false)
+		undo_redo.add_do_method(self, "_on_modified", true)
+		undo_redo.add_undo_method(self, "_on_modified", false)
 		undo_redo.commit_action(false)
 		# ------------------------------------------------------------------
 
@@ -373,11 +421,11 @@ func _on_dialog_box_scene_path_changed(path: String) -> void:
 	undo_redo.create_action("Change Dialog Box Scene")
 	undo_redo.add_do_method(_dialog_box_scene_field, "set_scene_path", path)
 	undo_redo.add_undo_method(_dialog_box_scene_field, "set_scene_path", temp)
-	undo_redo.add_do_property(self , "_dialog_box_path", path)
-	undo_redo.add_undo_property(self , "_dialog_box_path", temp)
+	undo_redo.add_do_property(self, "_dialog_box_path", path)
+	undo_redo.add_undo_property(self, "_dialog_box_path", temp)
 	
-	undo_redo.add_do_method(self , "_on_modified", true)
-	undo_redo.add_undo_method(self , "_on_modified", false)
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -392,8 +440,8 @@ func _on_portrait_dialog_box_toggled(toggled_on: bool) -> void:
 	undo_redo.create_action("Toggle Portrait on Dialog Box")
 	undo_redo.add_do_property(%PortraitOnDialogBoxToggle, "button_pressed", toggled_on)
 	undo_redo.add_undo_property(%PortraitOnDialogBoxToggle, "button_pressed", temp)
-	undo_redo.add_do_method(self , "_on_modified", true)
-	undo_redo.add_undo_method(self , "_on_modified", false)
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 
@@ -446,11 +494,11 @@ func _on_default_portrait_selected(index: int) -> void:
 	undo_redo.create_action("Select Default Portrait")
 	undo_redo.add_do_property(_default_portrait_dropdown, "selected", index)
 	undo_redo.add_undo_property(_default_portrait_dropdown, "selected", _previous_portrait_index)
-	undo_redo.add_do_property(self , "_previous_portrait_index", index)
-	undo_redo.add_undo_property(self , "_previous_portrait_index", _previous_portrait_index)
+	undo_redo.add_do_property(self, "_previous_portrait_index", index)
+	undo_redo.add_undo_property(self, "_previous_portrait_index", _previous_portrait_index)
 
-	undo_redo.add_do_method(self , "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action()
 	# -----------------------------------------------------------------------
 
@@ -512,18 +560,18 @@ func _on_add_portrait_button_pressed() -> void:
 	undo_redo.create_action("Add New Portrait")
 	undo_redo.add_do_reference(item)
 	undo_redo.add_do_method(parent, "add_child", item)
-	undo_redo.add_do_property(self , "_current_portrait", item)
-	undo_redo.add_do_method(self , "_select_item_on_tree", item)
+	undo_redo.add_do_property(self, "_current_portrait", item)
+	undo_redo.add_do_method(self, "_select_item_on_tree", item)
 	
 	undo_redo.add_undo_method(parent, "remove_child", item)
-	undo_redo.add_undo_property(self , "_current_portrait", temp)
-	undo_redo.add_undo_method(self , "_select_item_on_tree", temp)
+	undo_redo.add_undo_property(self, "_current_portrait", temp)
+	undo_redo.add_undo_method(self, "_select_item_on_tree", temp)
 
-	undo_redo.add_do_method(self , "_update_default_portrait_dropdown")
-	undo_redo.add_undo_method(self , "_update_default_portrait_dropdown")
+	undo_redo.add_do_method(self, "_update_default_portrait_dropdown")
+	undo_redo.add_undo_method(self, "_update_default_portrait_dropdown")
 	
-	undo_redo.add_do_method(self , "_on_modified", true)
-	undo_redo.add_undo_method(self , "_on_modified", false)
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ------------------------------------------------------------------
 
@@ -554,8 +602,8 @@ func _on_add_portrait_group_button_pressed() -> void:
 	undo_redo.add_do_reference(item)
 	undo_redo.add_do_method(parent, "add_child", item)
 	undo_redo.add_undo_method(parent, "remove_child", item)
-	undo_redo.add_do_method(self , "_on_modified", true)
-	undo_redo.add_undo_method(self , "_on_modified", false)
+	undo_redo.add_do_method(self, "_on_modified", true)
+	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
 	# ------------------------------------------------------------------
 
@@ -563,6 +611,12 @@ func _on_add_portrait_group_button_pressed() -> void:
 ## Filter the portrait tree items
 func _on_portrait_search_bar_text_changed(new_text: String) -> void:
 	_portrait_tree.filter_branch(_portrait_tree.get_root(), new_text)
+	view_state_changed.emit(get_editor_state())
+
+
+## Handle the portrait tree state change
+func _on_portrait_tree_state_changed() -> void:
+	view_state_changed.emit(get_editor_state())
 
 
 ## Update the portrait settings when a portrait is selected
@@ -584,10 +638,12 @@ func _on_portrait_selected(item: TreeItem) -> void:
 	if _previous_portrait == item:
 		return # No register undoredo action
 
+	view_state_changed.emit(get_editor_state())
+
 	# --- UndoRedo ---------------------------------------------------------
 	undo_redo.create_action("Select Portrait: " + item.get_text(0))
-	undo_redo.add_do_method(self , "_select_item_on_tree", item)
-	undo_redo.add_undo_method(self , "_select_item_on_tree", _previous_portrait)
+	undo_redo.add_do_method(self, "_select_item_on_tree", item)
+	undo_redo.add_undo_method(self, "_select_item_on_tree", _previous_portrait)
 	undo_redo.commit_action(false)
 	# ----------------------------------------------------------------------
 

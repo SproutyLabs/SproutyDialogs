@@ -127,6 +127,9 @@ func _ready() -> void:
 
 	await get_tree().process_frame # Wait a frame to ensure undo_redo is ready
 	_file_list.undo_redo = undo_redo
+	
+	# Load the last opened files
+	_load_opened_files()
 
 
 func _input(event: InputEvent) -> void:
@@ -186,6 +189,7 @@ func new_dialog_file(path: String) -> void:
 	request_to_switch_tab.emit(0)
 	_save_file_button.disabled = false
 	SproutyDialogsFileUtils.set_recent_file_path("dialog_files", path)
+	_save_opened_files()
 	print("[Sprouty Dialogs] Dialog file '" + path.get_file() + "' created.")
 
 
@@ -195,6 +199,7 @@ func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSpr
 	dialogue_changed.connect(graph.dialogue_changed.emit)
 	character_changed.connect(graph.character_changed.emit)
 	graph.modified.connect(_on_data_modified)
+	graph.view_state_changed.connect(_on_editor_view_state_changed)
 	graph.undo_redo = undo_redo
 	add_child(graph)
 	var dialogs = resource.dialogs if resource.dialogs else {}
@@ -223,6 +228,7 @@ func new_character_file(path: String) -> void:
 
 	_save_file_button.disabled = false
 	SproutyDialogsFileUtils.set_recent_file_path("character_files", path)
+	_save_opened_files()
 	print("[Sprouty Dialogs] Character file '" + path.get_file() + "' created.")
 
 
@@ -230,6 +236,7 @@ func new_character_file(path: String) -> void:
 func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Control:
 	var char_editor = _char_scene.instantiate()
 	char_editor.modified.connect(_on_data_modified)
+	char_editor.view_state_changed.connect(_on_editor_view_state_changed)
 	char_editor.undo_redo = undo_redo
 	add_child(char_editor)
 	var name_data = resource.display_name if resource.display_name else {}
@@ -248,9 +255,10 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 #region === Save and Load ======================================================
 
 ## Load data from a dialog or character resource file
-func load_file(path: String, check_resources: bool = true) -> void:
+func load_file(path: String, check_resources: bool = true, view_state: Dictionary = {}) -> void:
 	if _file_list.is_file_loaded(path):
 		_file_list.switch_to_file_path(path)
+		_save_opened_files()
 		return
 	
 	if FileAccess.file_exists(path):
@@ -260,6 +268,8 @@ func load_file(path: String, check_resources: bool = true) -> void:
 		if resource is SproutyDialogsDialogueData:
 			SproutyDialogsFileUtils.set_recent_file_path("dialogue_files", path)
 			var graph = _new_graph_from_resource(resource)
+			if not view_state.is_empty():
+				graph.load_editor_state(view_state)
 			var csv_path_uid = resource.csv_file_uid
 			var csv_path = ""
 			if SproutyDialogsFileUtils.check_valid_uid_path(csv_path_uid):
@@ -267,15 +277,19 @@ func load_file(path: String, check_resources: bool = true) -> void:
 			_file_list.new_file_item(path, resource, graph, csv_path)
 			request_to_switch_tab.emit(0)
 			_save_file_button.disabled = false
+			_save_opened_files()
 			if check_resources:
 				_check_missing_characters(resource)
 		
 		elif resource is SproutyDialogsCharacterData:
 			SproutyDialogsFileUtils.set_recent_file_path("character_files", path)
 			var char_editor = _new_character_from_resource(resource)
+			if not view_state.is_empty():
+				char_editor.load_editor_state(view_state)
 			_file_list.new_file_item(path, resource, char_editor)
 			request_to_switch_tab.emit(1)
 			_save_file_button.disabled = false
+			_save_opened_files()
 		
 		else:
 			printerr("[Sprouty Dialogs] File " + path + " is not a valid dialogue or character resource.")
@@ -446,6 +460,8 @@ func switch_to_selected_file(file_metadata: Dictionary) -> void:
 	elif file_metadata.data is SproutyDialogsCharacterData:
 		request_to_switch_character.emit(file_metadata["cache_node"])
 		request_to_switch_tab.emit(1)
+	
+	_save_opened_files()
 
 
 ## Switch to the file on the current tab
@@ -477,6 +493,9 @@ func _on_file_closed(metadata: Dictionary) -> void:
 	# Disable save button if there are no files open
 	if _file_list.get_dialogs_count() == 0 and _file_list.get_characters_count() == 0:
 		_save_file_button.disabled = true
+	
+	# Save the updated list of opened files
+	_save_opened_files()
 
 
 ## Set the current file as modified
@@ -538,3 +557,69 @@ func _on_confirm_closing_editor_action(action) -> void:
 				save_file(index)
 		"discard_files":
 			get_tree().quit()
+
+
+## Save the list of currently opened files to the project settings
+func _save_opened_files() -> void:
+	var opened_files: Array = []
+
+	for index in range(_file_list.get_item_count()):
+		var metadata = _file_list.get_item_metadata(index)
+		if not metadata.has("file_path"):
+			continue
+		var path: String = metadata["file_path"]
+		# Try to get a stable UID for the resource
+		var uid = ResourceSaver.get_resource_id_for_path(path, true)
+		var view_state: Dictionary = {}
+		if metadata.has("cache_node") and metadata["cache_node"] != null:
+			view_state = metadata["cache_node"].get_editor_state()
+		# Save an entry with both uid and path (path as fallback) and view state
+		opened_files.append({"uid": uid, "path": path, "view_state": view_state})
+
+	# Save the currently selected file index
+	var current_index = _file_list.get_current_index()
+	SproutyDialogsSettingsManager.set_setting("last_opened_files", opened_files)
+	SproutyDialogsSettingsManager.set_setting("last_selected_file_index", current_index)
+
+
+## Load the list of last opened files from the project settings
+func _load_opened_files() -> void:
+	var last_opened_files = SproutyDialogsSettingsManager.get_setting("last_opened_files")
+	var last_selected_index = SproutyDialogsSettingsManager.get_setting("last_selected_file_index")
+	last_selected_index = last_selected_index if last_selected_index != null else -1
+	
+	if not (last_opened_files is Array and last_opened_files.size() > 0):
+		return
+
+	for entry in last_opened_files:
+		var uid = entry["uid"] if entry.has("uid") else -1
+		var path = entry["path"] if entry.has("path") else ""
+		var view_state = entry["view_state"] if entry.has("view_state") else {}
+
+		# Try to use UID first
+		if SproutyDialogsFileUtils.check_valid_uid_path(uid):
+			var uid_path = ResourceUID.get_id_path(uid)
+			load_file(uid_path, false, view_state)
+		# If UID is not valid, try to use the path
+		elif path != "" and FileAccess.file_exists(path):
+			load_file(path, false, view_state)
+		else:
+			push_warning("[Sprouty Dialogs] File with path '" + path + "' not found. Skipping.")
+
+	# Restore the previously selected file
+	if last_selected_index >= 0 and last_selected_index < _file_list.get_item_count():
+		switch_to_selected_file(_file_list.get_item_metadata(last_selected_index))
+
+
+## Handle editor view state changes and save them to the settings
+func _on_editor_view_state_changed(view_state: Dictionary) -> void:
+	var current_index = _file_list.get_current_index()
+	if current_index < 0:
+		return
+	var file_metadata = _file_list.get_item_metadata(current_index)
+	if file_metadata == null:
+		return
+	if file_metadata.has("cache_node") and file_metadata["cache_node"] != null:
+		var file_list = SproutyDialogsSettingsManager.get_setting("last_opened_files")
+		file_list[current_index]["view_state"] = view_state
+		SproutyDialogsSettingsManager.set_setting("last_opened_files", file_list)
