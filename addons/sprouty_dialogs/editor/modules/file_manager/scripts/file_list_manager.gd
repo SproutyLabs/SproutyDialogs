@@ -220,6 +220,12 @@ func close_file(index: int = _current_file_index) -> void:
 	_characters_count -= 1 if metadata.data is SproutyDialogsCharacterData else 0
 	
 	_file_list.remove_item(index)
+	if _filtered_list.visible:
+		if _file_search.text.is_empty():
+			_filtered_list.hide()
+			_file_list.show()
+		else:
+			_filter_file_list(_file_search.text)
 	file_closed.emit(metadata)
 
 
@@ -269,12 +275,22 @@ func _filter_file_list(search_text: String) -> void:
 	
 	for item in _file_list.item_count:
 		if _file_list.get_item_text(item).contains(search_text):
-			_filtered_list.add_item(
+			var filtered_index := _filtered_list.add_item(
 				_file_list.get_item_text(item),
 				_file_list.get_item_icon(item)
 			)
+			_filtered_list.set_item_metadata(filtered_index, item)
 	_file_list.hide()
 	_filtered_list.show()
+
+
+## Resolve visible list item indexes back to the backing file list.
+func _get_file_index_from_visible_item(index: int) -> int:
+	if _filtered_list.visible:
+		if index < 0 or index >= _filtered_list.item_count:
+			return -1
+		return int(_filtered_list.get_item_metadata(index))
+	return index
 
 
 ## Update metadata for a file in the file list
@@ -308,6 +324,9 @@ func _switch_to_file(index: int) -> void:
 
 ## Handle file selection from the file list
 func _on_file_selected(index: int) -> void:
+	index = _get_file_index_from_visible_item(index)
+	if index < 0:
+		return
 	var temp = _current_file_index
 	_switch_to_file(index)
 
@@ -325,13 +344,19 @@ func _display_item_contextual_menu(at_pos: Vector2, mouse_button_index: int) -> 
 	_file_popup_menu.popup(Rect2(pos, _file_popup_menu.size))
 
 
-## When a file is right clicked, show the file menu options and select the file
+## When a file is clicked, handle file mouse shortcuts.
 func _on_item_clicked(index: int, at_pos: Vector2, mouse_button_index: int) -> void:
-	_last_clicked_item = index
-	_on_file_selected(index)
+	var file_index := _get_file_index_from_visible_item(index)
+	if file_index < 0:
+		return
 
-	if mouse_button_index == MOUSE_BUTTON_RIGHT:
-		_display_item_contextual_menu(at_pos, mouse_button_index)
+	match mouse_button_index:
+		MOUSE_BUTTON_MIDDLE:
+			close_file(file_index)
+		MOUSE_BUTTON_RIGHT:
+			_last_clicked_item = file_index
+			_on_file_selected(index)
+			_display_item_contextual_menu(at_pos, mouse_button_index)
 
 
 ## Set the file menu options
