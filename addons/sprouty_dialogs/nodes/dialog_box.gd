@@ -395,7 +395,7 @@ func _split_dialog_by_lines(dialog: String) -> Array:
 ## multiple sentences, preserving the continuity of the bbcode tags.
 func _split_dialog_by_characters(dialog: String) -> Array:
 	if not SproutyDialogsSettingsManager.get_setting("split_dialog_by_max_characters") \
-			or max_characters > dialog.length():
+			or max_characters >= dialog.length():
 		return [dialog]
 	
 	var words: Array = dialog.split(" ")
@@ -412,22 +412,40 @@ func _split_dialog_by_characters(dialog: String) -> Array:
 	while i < words.size():
 		var word = words[i]
 		var clean_word = regex.sub(word, "", true)
-		var aux_sentence = clean_sentence + " " + clean_word
-		# If the sentence is short than the limit, add the word to the sentence
-		if aux_sentence.length() < max_characters:
-			sentence += " " + word
-			clean_sentence += "" + clean_word
+		var aux_sentence = clean_sentence
+		if aux_sentence != "":
+			aux_sentence += " " + clean_word
+		else:
+			aux_sentence = clean_word
+
+		# If the sentence is shorter than the limit, add the word to the sentence
+		if aux_sentence.length() <= max_characters:
+			if sentence != "":
+				sentence += " " + word
+			else:
+				sentence = word
+			if clean_sentence != "":
+				clean_sentence += " " + clean_word
+			else:
+				clean_sentence = clean_word
 			opened_tags = _get_opened_tags_from_sentence(word, opened_tags, regex)
 			i += 1
-		else: # If the sentence is longer, cut it and add to the sentences list
-			sentence = _add_tags_to_sentence(sentence, next_sentence_tags)
-			next_sentence_tags = opened_tags.duplicate()
-			sentence = sentence.strip_edges()
+		else:
+			# If the sentence is empty, force the current word into the sentence
+			# to avoid an infinite loop on a single long word.
+			if sentence.strip_edges() == "":
+				sentence = word
+				clean_sentence = clean_word
+				opened_tags = _get_opened_tags_from_sentence(word, opened_tags, regex)
+				i += 1
+			
+			sentence = _add_tags_to_sentence(sentence, next_sentence_tags).strip_edges()
 			if sentence != "":
 				sentences.append(sentence)
 			clean_sentence = ""
 			sentence = ""
-	
+			next_sentence_tags = opened_tags.duplicate()
+
 	if sentence != "": # Add the last sentence to the list
 		sentence = _add_tags_to_sentence(sentence, next_sentence_tags)
 		sentences.append(sentence)
