@@ -67,7 +67,8 @@ var _start_id: String:
 			update_configuration_warnings()
 
 ## If [code]true[/code], dialog plays when the node is ready.
-## [br][br]It's the same as [member _play_on_ready], but it can be set directly on code.[br][br]
+##
+## [br][br]It's the same as [method play_on_ready].[br][br]
 ## [i](This was added to follow the Godot conventions, without breaking existing API)
 var autoplay: bool = false:
 	set(value):
@@ -81,7 +82,8 @@ var _play_on_ready: bool = false
 
 ## If [code]true[/code], the [DialogPlayer] will be freed from the scene tree when the dialog ends.
 ## [br] If [code]false[/code], the [DialogPlayer] will remain in the scene tree to be reused later.
-## [br][br]It's the same as [member _destroy_on_end], but it can be set directly on code.[br][br]
+##
+## [br][br]It's the same as [method destroy_on_end].[br][br]
 ## [i](This was added to follow the Godot conventions, without breaking existing API)
 var free_on_end: bool = true:
 	set(value):
@@ -365,7 +367,7 @@ func _ready() -> void:
 			_load_dialog_resources(_start_id)
 			# Start processing the dialog tree if the play on ready is enabled
 			if _play_on_ready:
-				start()
+				play()
 		elif _start_id == "(Select a dialog)":
 			printerr("[Sprouty Dialogs] No dialog ID selected to play.")
 			return
@@ -418,7 +420,7 @@ func get_current_dialog_box() -> DialogBox:
 
 ## Set the dialogue data and start ID to play a dialog tree.
 ## This method loads the dialog resources and prepares the player to process
-## the dialog tree before calling the [method start()] method.
+## the dialog tree before calling the [method start] method.
 func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
 		portrait_parents: Dictionary = {}, dialog_box_parents: Dictionary = {}) -> void:
 	if not data:
@@ -482,15 +484,20 @@ func _release_dialog_resources() -> void:
 #region === Run dialog =========================================================
 
 ## Plays the dialog tree.
-## [br][br]It's the same as calling the [method start()] method.[br][br]
+## [br][br]Need to set the [member _dialog_data] and [member _start_id] before calling this method. 
+## The resources are loaded on the [method _ready] method.
+##
+## [br][br]It's the same as [method start].[br][br]
 ## [i](This was added to follow the Godot conventions, without breaking existing API).
 func play() -> void:
 	start()
 
 
 ## Start processing the dialog tree.
-## Need to set the [member _dialog_data] and [member _start_id] 
-## before calling this method. The resources are loaded on the [method _ready()] method,
+## [br][br]Need to set the [member _dialog_data] and [member _start_id] before calling this method.
+## The resources are loaded on the [method _ready] method.[br][br]
+##
+## @deprecated: Use [method play] instead.
 func start() -> void:
 	if not _dialog_data: # Check if dialogue data is set
 		printerr("[Sprouty Dialogs] No dialogue data set to play.")
