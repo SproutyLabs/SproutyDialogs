@@ -58,7 +58,7 @@ func _ready():
 	_file_list.item_selected.connect(_on_file_selected)
 	_file_list.item_clicked.connect(_on_item_clicked)
 
-	_filtered_list.item_selected.connect(_on_file_selected)
+	_filtered_list.item_selected.connect(_on_filtered_item_selected)
 	_filtered_list.item_clicked.connect(_on_item_clicked)
 
 	_file_popup_menu.id_pressed.connect(_on_file_menu_pressed)
@@ -221,11 +221,11 @@ func close_file(index: int = _current_file_index) -> void:
 	
 	_file_list.remove_item(index)
 	if _filtered_list.visible:
-		if _file_search.text.is_empty():
-			_filtered_list.hide()
-			_file_list.show()
-		else:
-			_filter_file_list(_file_search.text)
+		_filter_file_list(_file_search.text)
+		for item in _filtered_list.item_count:
+			if int(_filtered_list.get_item_metadata(item)) == _current_file_index:
+				_filtered_list.select(item)
+				break
 	file_closed.emit(metadata)
 
 
@@ -322,9 +322,13 @@ func _switch_to_file(index: int) -> void:
 	file_selected.emit(_file_list.get_item_metadata(index))
 
 
+## Handle selection of a filtered list item
+func _on_filtered_item_selected(index: int) -> void:
+	_on_file_selected(_get_file_index_from_visible_item(index))
+
+
 ## Handle file selection from the file list
 func _on_file_selected(index: int) -> void:
-	index = _get_file_index_from_visible_item(index)
 	if index < 0:
 		return
 	var temp = _current_file_index
@@ -355,7 +359,7 @@ func _on_item_clicked(index: int, at_pos: Vector2, mouse_button_index: int) -> v
 			close_file(file_index)
 		MOUSE_BUTTON_RIGHT:
 			_last_clicked_item = file_index
-			_on_file_selected(index)
+			_on_file_selected(file_index)
 			_display_item_contextual_menu(at_pos, mouse_button_index)
 
 
