@@ -135,10 +135,7 @@ func _enter_tree() -> void:
 		add_child(_can_skip_timer)
 		_can_skip_timer.wait_time = SproutyDialogsSettingsManager.get_setting("can_skip_delay")
 		_can_skip_timer.timeout.connect(func(): _can_skip = true)
-
-		# Initialize auto-advance from settings
-		var auto_advance_enabled = SproutyDialogsSettingsManager.get_setting("auto_advance_enabled_at_start")
-		if auto_advance_enabled != null: _auto_advance_enabled = auto_advance_enabled
+		
 		var auto_advance_delay = SproutyDialogsSettingsManager.get_setting("auto_advance_delay")
 		if auto_advance_delay != null: _auto_advance_delay = auto_advance_delay
 		
@@ -264,9 +261,14 @@ func stop_dialog(close_dialog: bool = false) -> void:
 
 
 ## Set auto-advance option
-func set_auto_advance(enabled: bool, delay: float) -> void:
+func set_auto_advance(enabled: bool, delay: float = _auto_advance_delay) -> void:
 	_auto_advance_enabled = enabled
 	_auto_advance_delay = delay
+
+
+## Set text reveal skippable option
+func set_text_reveal_skippable(enabled: bool) -> void:
+	_can_skip = enabled
 
 
 ## Skip the dialog typing and show the full text
