@@ -700,6 +700,8 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 		portrait: String, dialog_data: Dictionary, next_node: String) -> void:
 	_next_node = next_node
 	_update_dialog_box(character_name)
+	_set_auto_advance_from_tag_data(_current_dialog_box, dialog_data.get("auto", {}))
+
 	if character_name.is_empty():
 		_current_dialog_box.play_dialog(translated_name, dialog_data)
 		return
@@ -814,6 +816,19 @@ func _update_dialog_box(character_name: String) -> void:
 		dialog_box.option_selected.connect(_on_option_selected)
 	
 	_current_dialog_box = dialog_box
+
+
+## Set auto-advance settings in dialog box from tag data
+func _set_auto_advance_from_tag_data(dialog_box: DialogBox, auto_data: Dictionary) -> void:
+	if not auto_data.is_empty():
+		auto_advance = auto_data.get("enabled", true)
+		var delay = auto_data.get("delay", null)
+		if delay == null:
+			dialog_box.set_auto_advance(auto_advance)
+		else:
+			dialog_box.set_auto_advance(auto_advance, delay)
+	else:
+		dialog_box.set_auto_advance(auto_advance)
 
 
 ## Update the portrait for the current character
