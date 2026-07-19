@@ -97,6 +97,7 @@ func _ready() -> void:
 			save_file_dialog.popup_centered()
 			)
 		)
+	_file_list.request_reload_file.connect(reload_file)
 
 	_close_editor_warning.custom_action.connect(_on_confirm_closing_editor_action)
 	_close_editor_warning.canceled.connect(func(): return null)
@@ -296,6 +297,50 @@ func load_file(path: String, check_resources: bool = true, view_state: Dictionar
 			return
 	else:
 		printerr("[Sprouty Dialogs] File " + path + "does not exist.")
+
+
+## Reload a file from disk, discarding any unsaved changes
+func reload_file(index: int) -> void:
+	var file_metadata = _file_list.get_item_metadata(index)
+	var path: String = file_metadata["file_path"]
+
+	if not FileAccess.file_exists(path):
+		printerr("[Sprouty Dialogs] File " + path + " does not exist.")
+		return
+
+	# Load the resource again from disk to discard the cached changes
+	var resource = ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_REPLACE)
+	var view_state: Dictionary = file_metadata["cache_node"].get_editor_state()
+	var cache_node: Node = null
+	var csv_path := ""
+
+	if resource is SproutyDialogsDialogueData:
+		cache_node = _new_graph_from_resource(resource)
+		if SproutyDialogsFileUtils.check_valid_uid_path(resource.csv_file_uid):
+			csv_path = ResourceUID.get_id_path(resource.csv_file_uid)
+	elif resource is SproutyDialogsCharacterData:
+		cache_node = _new_character_from_resource(resource)
+	else:
+		printerr("[Sprouty Dialogs] File " + path + " is not a valid dialogue or character resource.")
+		return
+
+	if not view_state.is_empty():
+		cache_node.load_editor_state(view_state)
+	cache_node.set_meta("file_index", index)
+
+	# Replace the cached editor node and update the file metadata
+	file_metadata["cache_node"].queue_free()
+	file_metadata["cache_node"] = cache_node
+	file_metadata["data"] = resource
+	file_metadata["csv_file"] = csv_path
+	_file_list.set_item_metadata(index, file_metadata)
+	_file_list.set_file_as_modified(index, false)
+
+	# Refresh the editor if the reloaded file is the current one
+	if index == _file_list.get_current_index():
+		switch_to_selected_file(file_metadata)
+
+	print("[Sprouty Dialogs] File '" + file_metadata.file_name + "' reloaded.")
 
 
 ## Save data to resource file

@@ -17,6 +17,11 @@ signal file_closed(metadata: Dictionary)
 signal request_save_file(index: int)
 ## Emitted when requesting to save a file as.
 signal request_save_file_as(index: int)
+## Emitted when requesting to reload a file from disk.
+signal request_reload_file(index: int)
+
+## Confirmation dialog text shown when reloading files with unsaved changes
+const RELOAD_DIALOG_TEXT := "The file/s contains unsaved changes.\nAre you sure you want to reload this file/s?"
 
 ## File search input
 @onready var _file_search: LineEdit = $FileSearch
@@ -40,6 +45,12 @@ var _current_file_index: int = -1
 var _closing_queue: Array[int] = []
 ## Flag to indicate if all files are being closed
 var _is_closing_all: bool = false
+## Flag to indicate if files are being reloaded instead of closed
+var _is_reloading: bool = false
+## Save button of the confirm dialog, hidden when reloading files
+var _confirm_save_button: Button
+## Confirm dialog text used when closing files
+var _close_dialog_text: String
 
 ## Number of dialogs in the file list
 var _dialogs_count: int = 0
@@ -68,15 +79,18 @@ func _ready():
 	# Set icons for buttons
 	_file_popup_menu.set_item_icon(0, get_theme_icon("Save", "EditorIcons"))
 	_file_popup_menu.set_item_icon(1, get_theme_icon("Save", "EditorIcons"))
-	_file_popup_menu.set_item_icon(3, get_theme_icon("Close", "EditorIcons"))
-	_file_popup_menu.set_item_icon(4, get_theme_icon("Close", "EditorIcons"))
+	_file_popup_menu.set_item_icon(3, get_theme_icon("Reload", "EditorIcons"))
+	_file_popup_menu.set_item_icon(4, get_theme_icon("Reload", "EditorIcons"))
+	_file_popup_menu.set_item_icon(6, get_theme_icon("Close", "EditorIcons"))
+	_file_popup_menu.set_item_icon(7, get_theme_icon("Close", "EditorIcons"))
 	_file_search.right_icon = get_theme_icon("Search", "EditorIcons")
 
 	# Set confirm closing dialog actions
 	_confirm_close_dialog.get_ok_button().hide()
-	_confirm_close_dialog.add_button('Save', true, 'save_file')
+	_confirm_save_button = _confirm_close_dialog.add_button('Save', true, 'save_file')
 	_confirm_close_dialog.add_button('Discard', true, 'discard_file')
 	_confirm_close_dialog.add_cancel_button('Cancel')
+	_close_dialog_text = _confirm_close_dialog.dialog_text
 
 
 ## Returns the current file index
@@ -193,7 +207,7 @@ func close_file(index: int = _current_file_index) -> void:
 	if metadata["modified"] and not index in _closing_queue:
 		_is_closing_all = false
 		_closing_queue.append(index)
-		_confirm_close_dialog.popup_centered()
+		_popup_unsaved_files_dialog(false)
 		return
 
 	# If the file to be closed is being edited
@@ -239,14 +253,50 @@ func close_all() -> void:
 			_closing_queue.append(index)
 	
 	if _closing_queue.size() > 0: # Alert unsaved changes
-		_confirm_close_dialog.popup_centered()
+		_popup_unsaved_files_dialog(false)
 		_is_closing_all = true
 		return
-	
+
 	# Close all if none are modified
 	for index in range(_file_list.item_count):
 		close_file(index)
 	_current_file_index = -1
+
+
+## Reload an open file from disk, discarding any unsaved changes
+func reload_file(index: int = _current_file_index) -> void:
+	if _file_list.item_count == 0: return
+
+	index = wrapi(index, 0, _file_list.item_count)
+	var metadata := _file_list.get_item_metadata(index)
+
+	# If the file to be reloaded is unsaved, alert user before reload
+	if metadata["modified"] and not index in _closing_queue:
+		_is_closing_all = false
+		_closing_queue.append(index)
+		_popup_unsaved_files_dialog(true)
+		return
+
+	request_reload_file.emit(index)
+
+
+## Reload all open files from disk, discarding any unsaved changes
+func reload_all() -> void:
+	_closing_queue.clear()
+
+	# Add unsaved files to queue to wait for reload confirmation
+	for index in range(_file_list.item_count):
+		if _file_list.get_item_metadata(index)["modified"]:
+			_closing_queue.append(index)
+
+	if _closing_queue.size() > 0: # Alert unsaved changes
+		_popup_unsaved_files_dialog(true)
+		_is_closing_all = true
+		return
+
+	# Reload all if none are modified
+	for index in range(_file_list.item_count):
+		request_reload_file.emit(index)
 
 
 ## Set a file as modified or unsaved
@@ -374,9 +424,22 @@ func _on_file_menu_pressed(id: int) -> void:
 			close_file() # Close current file
 		3:
 			close_all() # Close all files
+		5:
+			reload_file() # Reload current file
+		6:
+			reload_all() # Reload all files
 	
 
 	_last_clicked_item = -1
+
+
+## Show the unsaved changes confirmation dialog for closing or reloading files
+func _popup_unsaved_files_dialog(reloading: bool) -> void:
+	_is_reloading = reloading
+	_confirm_close_dialog.dialog_text = RELOAD_DIALOG_TEXT if reloading else _close_dialog_text
+	_confirm_save_button.visible = not reloading
+	_confirm_close_dialog.popup_centered()
+
 
 ## Set the confirm closing dialog actions
 func _on_confirm_closing_action(action) -> void:
@@ -396,18 +459,26 @@ func _on_confirm_closing_action(action) -> void:
 		"discard_file":
 			for index in _closing_queue:
 				set_file_as_modified(index, false)
-			if _is_closing_all:
+			if _is_reloading:
+				if _is_closing_all:
+					reload_all()
+				else:
+					for index in _closing_queue:
+						reload_file(index)
+			elif _is_closing_all:
 				close_all()
 			else:
 				for index in _closing_queue:
 					close_file(index)
 	_closing_queue.clear()
 	_is_closing_all = false
+	_is_reloading = false
 
 
 ## Cancel the closing confirmation dialog
 func _on_confirm_closing_canceled() -> void:
 	_closing_queue.clear()
+	_is_reloading = false
 
 
 ## Filter the file list by the input search text
