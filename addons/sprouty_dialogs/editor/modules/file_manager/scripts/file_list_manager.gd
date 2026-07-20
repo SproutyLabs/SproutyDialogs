@@ -17,6 +17,8 @@ signal file_closed(metadata: Dictionary)
 signal request_save_file(index: int)
 ## Emitted when requesting to save a file as.
 signal request_save_file_as(index: int)
+## Emitted when requesting to reload a file from disk.
+signal request_reload_file(index: int)
 
 ## File search input
 @onready var _file_search: LineEdit = $FileSearch
@@ -38,8 +40,15 @@ var _char_icon := preload("res://addons/sprouty_dialogs/editor/icons/character.s
 var _current_file_index: int = -1
 ## Files to close queue
 var _closing_queue: Array[int] = []
-## Flag to indicate if all files are being closed
-var _is_closing_all: bool = false
+## Pending file operation awaiting confirmation in the unsaved-changes dialog
+enum PendingAction { NONE, CLOSE, CLOSE_ALL, RELOAD, RELOAD_ALL }
+var _pending_action: PendingAction = PendingAction.NONE
+## Save button of the confirm dialog, hidden when reloading files
+var _confirm_save_button: Button
+## Confirm dialog text used when closing files
+var _close_dialog_text: String
+## Confirm dialog text used when reloading files
+var _reload_dialog_text: String
 
 ## Number of dialogs in the file list
 var _dialogs_count: int = 0
@@ -68,15 +77,19 @@ func _ready():
 	# Set icons for buttons
 	_file_popup_menu.set_item_icon(0, get_theme_icon("Save", "EditorIcons"))
 	_file_popup_menu.set_item_icon(1, get_theme_icon("Save", "EditorIcons"))
-	_file_popup_menu.set_item_icon(3, get_theme_icon("Close", "EditorIcons"))
-	_file_popup_menu.set_item_icon(4, get_theme_icon("Close", "EditorIcons"))
+	_file_popup_menu.set_item_icon(3, get_theme_icon("Reload", "EditorIcons"))
+	_file_popup_menu.set_item_icon(4, get_theme_icon("Reload", "EditorIcons"))
+	_file_popup_menu.set_item_icon(6, get_theme_icon("Close", "EditorIcons"))
+	_file_popup_menu.set_item_icon(7, get_theme_icon("Close", "EditorIcons"))
 	_file_search.right_icon = get_theme_icon("Search", "EditorIcons")
 
 	# Set confirm closing dialog actions
 	_confirm_close_dialog.get_ok_button().hide()
-	_confirm_close_dialog.add_button('Save', true, 'save_file')
+	_confirm_save_button = _confirm_close_dialog.add_button('Save', true, 'save_file')
 	_confirm_close_dialog.add_button('Discard', true, 'discard_file')
 	_confirm_close_dialog.add_cancel_button('Cancel')
+	_close_dialog_text = _confirm_close_dialog.dialog_text
+	_reload_dialog_text = %ReloadDialogText.text
 
 
 ## Returns the current file index
@@ -191,9 +204,8 @@ func close_file(index: int = _current_file_index) -> void:
 
 	# If the file to be closed is unsaved, alert user before close
 	if metadata["modified"] and not index in _closing_queue:
-		_is_closing_all = false
 		_closing_queue.append(index)
-		_confirm_close_dialog.popup_centered()
+		_popup_unsaved_files_dialog(PendingAction.CLOSE)
 		return
 
 	# If the file to be closed is being edited
@@ -239,14 +251,47 @@ func close_all() -> void:
 			_closing_queue.append(index)
 	
 	if _closing_queue.size() > 0: # Alert unsaved changes
-		_confirm_close_dialog.popup_centered()
-		_is_closing_all = true
+		_popup_unsaved_files_dialog(PendingAction.CLOSE_ALL)
 		return
-	
+
 	# Close all if none are modified
 	for index in range(_file_list.item_count):
 		close_file(index)
 	_current_file_index = -1
+
+
+## Reload an open file from disk, discarding any unsaved changes
+func reload_file(index: int = _current_file_index) -> void:
+	if _file_list.item_count == 0: return
+
+	index = wrapi(index, 0, _file_list.item_count)
+	var metadata := _file_list.get_item_metadata(index)
+
+	# If the file to be reloaded is unsaved, alert user before reload
+	if metadata["modified"] and not index in _closing_queue:
+		_closing_queue.append(index)
+		_popup_unsaved_files_dialog(PendingAction.RELOAD)
+		return
+
+	request_reload_file.emit(index)
+
+
+## Reload all open files from disk, discarding any unsaved changes
+func reload_all() -> void:
+	_closing_queue.clear()
+
+	# Add unsaved files to queue to wait for reload confirmation
+	for index in range(_file_list.item_count):
+		if _file_list.get_item_metadata(index)["modified"]:
+			_closing_queue.append(index)
+
+	if _closing_queue.size() > 0: # Alert unsaved changes
+		_popup_unsaved_files_dialog(PendingAction.RELOAD_ALL)
+		return
+
+	# Reload all if none are modified
+	for index in range(_file_list.item_count):
+		request_reload_file.emit(index)
 
 
 ## Set a file as modified or unsaved
@@ -374,21 +419,35 @@ func _on_file_menu_pressed(id: int) -> void:
 			close_file() # Close current file
 		3:
 			close_all() # Close all files
+		5:
+			reload_file() # Reload current file
+		6:
+			reload_all() # Reload all files
 	
 
 	_last_clicked_item = -1
 
+
+## Show the unsaved changes confirmation dialog for closing or reloading files
+func _popup_unsaved_files_dialog(action: PendingAction) -> void:
+	_pending_action = action
+	var reloading := action in [PendingAction.RELOAD, PendingAction.RELOAD_ALL]
+	_confirm_close_dialog.dialog_text = _reload_dialog_text if reloading else _close_dialog_text
+	_confirm_save_button.visible = not reloading
+	_confirm_close_dialog.popup_centered()
+
+
 ## Set the confirm closing dialog actions
-func _on_confirm_closing_action(action) -> void:
+func _on_confirm_closing_action(dialog_action) -> void:
 	_confirm_close_dialog.hide()
 	if _closing_queue.size() == 0:
 		return
 	
-	match action:
+	match dialog_action:
 		"save_file":
 			for index in _closing_queue:
 				request_save_file.emit(index)
-			if _is_closing_all:
+			if _pending_action == PendingAction.CLOSE_ALL:
 				close_all()
 			else:
 				for index in _closing_queue:
@@ -396,18 +455,27 @@ func _on_confirm_closing_action(action) -> void:
 		"discard_file":
 			for index in _closing_queue:
 				set_file_as_modified(index, false)
-			if _is_closing_all:
-				close_all()
-			else:
-				for index in _closing_queue:
-					close_file(index)
+			match _pending_action:
+				PendingAction.RELOAD_ALL:
+					reload_all()
+				PendingAction.RELOAD:
+					for index in _closing_queue:
+						reload_file(index)
+				PendingAction.CLOSE_ALL:
+					close_all()
+				PendingAction.CLOSE:
+					for index in _closing_queue:
+						close_file(index)
+				_:
+					printerr("[Sprouty Dialogs] Discard action not implemented for pending action: " + str(_pending_action))
 	_closing_queue.clear()
-	_is_closing_all = false
+	_pending_action = PendingAction.NONE
 
 
 ## Cancel the closing confirmation dialog
 func _on_confirm_closing_canceled() -> void:
 	_closing_queue.clear()
+	_pending_action = PendingAction.NONE
 
 
 ## Filter the file list by the input search text

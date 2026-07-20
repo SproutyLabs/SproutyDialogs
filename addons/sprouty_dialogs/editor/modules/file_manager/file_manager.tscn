@@ -144,7 +144,7 @@ file_filters = PackedStringArray("*.csv")
 [node name="FileMenu" type="PopupMenu" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1188413652]
 unique_name_in_owner = true
 size = Vector2i(108, 120)
-item_count = 5
+item_count = 8
 item_0/text = "Save"
 item_0/icon = SubResource("DPITexture_lvb0l")
 item_0/id = 0
@@ -153,12 +153,20 @@ item_1/icon = SubResource("DPITexture_lvb0l")
 item_1/id = 1
 item_2/id = 4
 item_2/separator = true
-item_3/text = "Close"
+item_3/text = "Reload"
 item_3/icon = SubResource("DPITexture_lvb0l")
-item_3/id = 2
-item_4/text = "Close All"
+item_3/id = 5
+item_4/text = "Reload All"
 item_4/icon = SubResource("DPITexture_lvb0l")
-item_4/id = 3
+item_4/id = 6
+item_5/id = 7
+item_5/separator = true
+item_6/text = "Close"
+item_6/icon = SubResource("DPITexture_lvb0l")
+item_6/id = 2
+item_7/text = "Close All"
+item_7/icon = SubResource("DPITexture_lvb0l")
+item_7/id = 3
 
 [node name="ConfirmCloseFiles" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=1858451831]
 unique_name_in_owner = true
@@ -168,6 +176,12 @@ initial_position = 4
 size = Vector2i(336, 106)
 dialog_text = "The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?"
+
+[node name="ReloadDialogText" type="Label" parent="ContentContainer/Container/FileManager/PopupDialogs"]
+unique_name_in_owner = true
+visible = false
+text = "The file/s contains unsaved changes.
+Are you sure you want to reload this file/s?"
 
 [node name="CloseEditorWarning" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=913469440]
 unique_name_in_owner = true

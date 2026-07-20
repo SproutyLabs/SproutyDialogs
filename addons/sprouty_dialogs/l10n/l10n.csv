@@ -13,6 +13,8 @@ Save As...,Editor -> Side Bar,Save As...,另存为...
 Save a File,Editor -> Side Bar,Save a File,保存文件
 Close,Editor -> Side Bar,Close,关闭
 Close All,Editor -> Side Bar,Close All,全部关闭
+Reload,Editor -> Side Bar,Reload,重新加载
+Reload All,Editor -> Side Bar,Reload All,全部重新加载
 Emoji & Symbols,Editor -> Side Bar,Emoji & Symbols,表情和符号
 Cut,Editor -> Side Bar,Cut,剪切
 Copy,Editor -> Side Bar,Copy,复制
@@ -223,6 +225,10 @@ Add a repeat tag in the selected text. Repeats the content inside the tag a spec
 Are you sure you want to close this file/s?",Editor -> Dialogue Panel -> Confirmation Dialog,"The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?","文件包含未保存的更改。
 确定要关闭这些文件吗？"
+"The file/s contains unsaved changes.
+Are you sure you want to reload this file/s?",Editor -> Dialogue Panel -> Confirmation Dialog,"The file/s contains unsaved changes.
+Are you sure you want to reload this file/s?","文件包含未保存的更改。
+确定要重新加载这些文件吗？"
 Discard,Editor -> Dialogue Panel -> Confirmation Dialog,Discard,放弃
 "[center][wave]Create or open a [color=orange]character[/color] to start!
 [center]\( ^-^)/
