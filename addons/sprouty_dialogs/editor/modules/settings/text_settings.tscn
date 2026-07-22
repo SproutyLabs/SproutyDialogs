@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://chd4ylouli7dj" path="res://addons/sprouty_dialogs/editor/icons/Reload.svg" id="3_dhe4y"]
 [ext_resource type="Texture2D" uid="uid://b7nifwp3mwmc3" path="res://addons/sprouty_dialogs/editor/icons/nodes/dialog_box.svg" id="3_kpwi1"]
 [ext_resource type="Texture2D" uid="uid://co8x6yovoum6i" path="res://addons/sprouty_dialogs/editor/icons/fast-forward.svg" id="4_kpwi1"]
+[ext_resource type="Texture2D" uid="uid://ddpe44uasgvno" path="res://addons/sprouty_dialogs/editor/icons/auto-advance.svg" id="6_dhe4y"]
 
 [node name="TextSettings" type="HSplitContainer" unique_id=2123766608]
 anchors_preset = 15
@@ -245,6 +246,68 @@ icon = ExtResource("3_dhe4y")
 flat = true
 
 [node name="SkipContinueDelayField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/SkipContinueDelay" unique_id=842088987]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+step = 0.001
+value = 0.1
+allow_greater = true
+suffix = "s"
+
+[node name="-----" type="HSeparator" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=1836102244]
+layout_mode = 2
+
+[node name="AutoAdvanceTitle" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=1026882957]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleIcon" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/AutoAdvanceTitle" unique_id=2083307627]
+layout_mode = 2
+icon = ExtResource("6_dhe4y")
+flat = true
+
+[node name="AutoAdvanceLabel" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/AutoAdvanceTitle" unique_id=322152635]
+layout_mode = 2
+size_flags_vertical = 1
+theme_type_variation = &"HeaderSmall"
+text = "Auto-Advance"
+
+[node name="AutoAdvanceEnabledAtStart" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=1107107865]
+layout_mode = 2
+tooltip_text = "Enable auto-advance at the game start.
+This allows to automatically progress the dialogue without wait for user input."
+
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/AutoAdvanceEnabledAtStart" unique_id=1613098293]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Enabled at the start"
+
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/AutoAdvanceEnabledAtStart" unique_id=1820224046]
+layout_mode = 2
+icon = ExtResource("3_dhe4y")
+flat = true
+
+[node name="AutoAdvanceEnabledAtStartToggle" type="CheckButton" parent="TextSettings/ScrollContainer/VBoxContainer/AutoAdvanceEnabledAtStart" unique_id=2127883440]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+
+[node name="AutoAdvanceDelay" type="HBoxContainer" parent="TextSettings/ScrollContainer/VBoxContainer" unique_id=783912525]
+layout_mode = 2
+tooltip_text = "Time in seconds to wait before advance to the next dialog/event."
+
+[node name="Label" type="Label" parent="TextSettings/ScrollContainer/VBoxContainer/AutoAdvanceDelay" unique_id=877636921]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Default advance delay"
+
+[node name="ResetButton" type="Button" parent="TextSettings/ScrollContainer/VBoxContainer/AutoAdvanceDelay" unique_id=963694788]
+visible = false
+layout_mode = 2
+icon = ExtResource("3_dhe4y")
+flat = true
+
+[node name="AutoAdvanceDelayField" type="SpinBox" parent="TextSettings/ScrollContainer/VBoxContainer/AutoAdvanceDelay" unique_id=1982198044]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3

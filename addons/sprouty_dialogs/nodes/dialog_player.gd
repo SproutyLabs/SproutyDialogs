@@ -94,9 +94,24 @@ var free_on_end: bool = true:
 ## Flag to destroy the dialog player when the dialog ends.
 var _destroy_on_end: bool = true
 
+#region === Advanced Settings ==================================================
+
+## If [code]true[/code], the [DialogPlayer] will automatically continue to the next node after a dialog is displayed.
+## [br][br]If [code]false[/code], the player will wait for the user to press the continue button to display the next dialog.
+##
+## [br][br]If the setting [code]Enabled at start[/code] is enabled, the [DialogPlayer] will start with auto-advance enabled
+## ignoring the [member auto_advance] value set in the inspector.
+var auto_advance: bool = false
+## If [code]true[/code], the [DialogPlayer] will allow skipping the text reveal animation by pressing the continue button.
+## [br][br]If [code]false[/code], the player will wait for the text reveal animation to finish before continue.
+##
+## [br][br]The setting [code]Allow Skip Text Reveal[/code] must be enabled to allow skipping the text reveal animation. 
+var text_reveal_skippable: bool = true
 ## If [code]true[/code], the [DialogPlayer] will print debug messages to the console.
 ## This is used to debug the dialog processing flow while is running.
 var print_debug: bool = false
+
+#endregion
 
 #endregion
 
@@ -154,6 +169,8 @@ var _portraits_instances: Dictionary = {}
 
 #endregion
 
+#region === Internal Variables =================================================
+
 ## Array to store the start IDs of the dialogues.
 var _starts_ids: Array[String] = []
 
@@ -187,6 +204,7 @@ var _current_node: String = ""
 ## Flag to control if the dialog is running.
 var _is_running: bool = false
 
+#endregion
 
 #region === Handle Editor Properties ===========================================
 
@@ -208,14 +226,14 @@ func _get_configuration_warnings() -> PackedStringArray:
 func _get_property_list():
 	var props: Array[Dictionary] = []
 	if Engine.is_editor_hint():
+		# Main properties group ------------------------------------------------
 		props.append({
 			"name": &"_dialog_data",
 			"type": TYPE_OBJECT,
 			"hint": PROPERTY_HINT_RESOURCE_TYPE,
 			"hint_string": "SproutyDialogsDialogueData"
 		})
-		# Set available start IDs to select
-		if _dialog_data:
+		if _dialog_data: # Set available start IDs to select
 			var id_list = ""
 			for id in _starts_ids:
 				id_list += id
@@ -239,13 +257,28 @@ func _get_property_list():
 				"hint": PROPERTY_HINT_NONE,
 				"usage": PROPERTY_USAGE_DEFAULT
 			})
+			# Advanced settings group ------------------------------------------
+			props.append({
+				"name": "Advanced Settings",
+				"type": TYPE_STRING,
+				"usage": PROPERTY_USAGE_GROUP
+			})
+			props.append({
+				"name": &"auto_advance",
+				"type": TYPE_BOOL,
+				"usage": PROPERTY_USAGE_DEFAULT
+			})
+			props.append({
+				"name": &"text_reveal_skippable",
+				"type": TYPE_BOOL,
+				"usage": PROPERTY_USAGE_DEFAULT
+			})
 			props.append({
 				"name": &"print_debug",
 				"type": TYPE_BOOL,
-				"hint": PROPERTY_HINT_NONE,
 				"usage": PROPERTY_USAGE_DEFAULT
 			})
-			# Set characters options by dialog
+			# Characters options by dialog -------------------------------------
 			if not _start_id.is_empty() and _start_id in _dialog_data.characters:
 				props.append({
 				"name": "Override Display Parents",
@@ -339,6 +372,14 @@ func _enter_tree() -> void:
 		dialog_ended.connect(sprouty_dialogs_manager.dialog_ended.emit)
 		option_selected.connect(sprouty_dialogs_manager.option_selected.emit)
 		signal_event.connect(sprouty_dialogs_manager.signal_event.emit)
+
+		# Load settings from the Sprouty Dialogs Settings Manager
+		var auto_advance_enabled = SproutyDialogsSettingsManager.get_setting("auto_advance_enabled_at_start")
+		if auto_advance_enabled != null:
+			auto_advance = auto_advance_enabled or auto_advance
+		var text_reveal_skippable_enabled = SproutyDialogsSettingsManager.get_setting("allow_skip_text_reveal")
+		if text_reveal_skippable_enabled != null:
+			text_reveal_skippable = text_reveal_skippable_enabled and text_reveal_skippable
 
 
 func _exit_tree() -> void:
@@ -659,6 +700,8 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 		portrait: String, dialog_data: Dictionary, next_node: String) -> void:
 	_next_node = next_node
 	_update_dialog_box(character_name)
+	_set_dialog_box_from_tag_data(_current_dialog_box, dialog_data)
+
 	if character_name.is_empty():
 		_current_dialog_box.play_dialog(translated_name, dialog_data)
 		return
@@ -756,6 +799,8 @@ func _update_dialog_box(character_name: String) -> void:
 	else: # If the dialog box is not loaded, instantiate it
 		dialog_box = _resource_manager.instantiate_dialog_box(
 				character_name, _dialog_box_parents.get(character_name, null))
+		dialog_box.set_auto_advance(auto_advance)
+		dialog_box.text_reveal_skippable = text_reveal_skippable
 		_dialog_box_instances[character_name] = dialog_box
 	
 	# Check if the dialog box is already playing a dialog
@@ -771,6 +816,32 @@ func _update_dialog_box(character_name: String) -> void:
 		dialog_box.option_selected.connect(_on_option_selected)
 	
 	_current_dialog_box = dialog_box
+
+
+## Set dialog box settings from tag data
+func _set_dialog_box_from_tag_data(dialog_box: DialogBox, dialog_data: Dictionary) -> void:
+	var auto_delay = null
+	if not dialog_data.is_empty():
+		# Auto-advance settings
+		if dialog_data.has("auto"):
+			var auto_data = dialog_data["auto"]
+			auto_advance = auto_data.get("enabled", true)
+			auto_delay = auto_data.get("delay", null)
+		# No skip text reveal settings
+		if dialog_data.has("noskip"):
+			if dialog_data["noskip"] == false: # If the dialog data allows skipping, check the global setting
+				var text_reveal_skippable_enabled = SproutyDialogsSettingsManager.get_setting("allow_skip_text_reveal")
+				if text_reveal_skippable_enabled != null:
+					text_reveal_skippable = text_reveal_skippable_enabled
+			else:
+				text_reveal_skippable = not dialog_data["noskip"]
+	
+	# Update the dialog box settings
+	if auto_delay == null:
+		dialog_box.set_auto_advance(auto_advance)
+	else:
+		dialog_box.set_auto_advance(auto_advance, auto_delay)
+	dialog_box.text_reveal_skippable = text_reveal_skippable
 
 
 ## Update the portrait for the current character

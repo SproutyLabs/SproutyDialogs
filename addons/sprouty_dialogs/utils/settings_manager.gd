@@ -92,6 +92,15 @@ static var _settings_paths: Dictionary = {
 		"path": "sprouty_dialogs/text/skip/continue_delay",
 		"default": 0.1
 	},
+	# Text/Auto-advance settings
+	"auto_advance_enabled_at_start": {
+		"path": "sprouty_dialogs/text/auto_advance/auto_advance_enabled_at_start",
+		"default": false
+	},
+	"auto_advance_delay": {
+		"path": "sprouty_dialogs/text/auto_advance/auto_advance_delay",
+		"default": 0.1
+	},
 	# -- Translation settings --------------------------------------------------
 	"enable_translations": {
 		"path": "sprouty_dialogs/translation/enable_translations",
