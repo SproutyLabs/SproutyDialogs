@@ -1311,7 +1311,7 @@ layout_mode = 2
 [node name="Label" type="Button" parent="Container/OptionMenus/TagsBar/TagsContainer/AutoAdvanceBar" unique_id=1940832109]
 layout_mode = 2
 tooltip_text = "Enable/disable the auto-advance feature, which automatically advances the 
-dialogue after a specified delay time (in seconds), without requiring user input. "
+dialogue after a specified delay time (in seconds), without requiring user input."
 text = "Auto-Advance"
 icon = ExtResource("41_svq50")
 flat = true

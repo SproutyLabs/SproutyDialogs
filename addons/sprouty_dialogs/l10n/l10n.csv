@@ -219,6 +219,21 @@ Repeat,Editor -> Dialogue Panel -> Text Edit,Repeat,重复
 Count,Editor -> Dialogue Panel -> Text Edit,Count,次数
 Add Repeat Tag,Editor -> Dialogue Panel -> Text Edit,Add Repeat Tag,添加重复标签
 Add a repeat tag in the selected text. Repeats the content inside the tag a specified number of times.,Editor -> Dialogue Panel -> Text Edit,Add a repeat tag in the selected text. Repeats the content inside the tag a specified number of times.,为所选文本添加 repeat 标签。将标签内的内容重复指定次数。
+Add Auto Tag,Editor -> Dialogue Panel -> Text Edit,Add Auto Tag,添加自动标签
+Auto-Advance,Editor -> Dialogue Panel -> Text Edit,Auto-Advance,自动进页
+"Enable/disable the auto-advance feature, which automatically advances the 
+dialogue after a specified delay time (in seconds), without requiring user input.",Editor -> Dialogue Panel -> Text Edit,"Enable/disable the auto-advance feature, which automatically advances the 
+dialogue after a specified delay time (in seconds), without requiring user input.",启用/禁用自动跳转功能，该功能会在指定的延迟时间（以秒为单位）后自动跳转至下一对话框，无需用户操作。
+Enabled,Editor -> Dialogue Panel -> Text Edit,Enabled,已启用
+Enable/disable the auto-advance,Editor -> Dialogue Panel -> Text Edit,Enable/disable the auto-advance,启用/禁用自动翻页
+Delay,Editor -> Dialogue Panel -> Text Edit,Delay,延迟
+Auto-advance delay,Editor -> Dialogue Panel -> Text Edit,Auto-advance delay,自动进纸延迟
+Add No-Skip Tag,Editor -> Dialogue Panel -> Text Edit,Add No-Skip Tag,添加“禁止跳过”标签
+No-Skip,Editor -> Dialogue Panel -> Text Edit,No-Skip,不跳过
+"Disable the text reveal skip feature, which allows the player to 
+skip the text reveal animation and instantly display the full text.",Editor -> Dialogue Panel -> Text Edit,"Disable the text reveal skip feature, which allows the player to 
+skip the text reveal animation and instantly display the full text.",禁用“跳过文本显示”功能，该功能允许玩家跳过文本显示动画，直接显示完整文本。
+Enable/disable no-skip,Editor -> Dialogue Panel -> Text Edit,Enable/disable no-skip,启用/禁用“不跳过”功能
 "The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?",Editor -> Dialogue Panel -> Confirmation Dialog,"The file/s contains unsaved changes. 
 Are you sure you want to close this file/s?","文件包含未保存的更改。
