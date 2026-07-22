@@ -70,6 +70,8 @@ signal option_selected(option_index: int)
 ## [br][br][color=tomato]This component is required to display the dialog options. [/color]
 @export var option_template: DialogOption
 
+## Flag to control if text reveal skipping is enabled.
+var text_reveal_skippable: bool = true
 ## Timer to control the typing speed of the dialog.
 var _type_timer: Timer
 ## Timer to control if the dialog can be skipped.
@@ -134,7 +136,7 @@ func _enter_tree() -> void:
 		_can_skip_timer = Timer.new()
 		add_child(_can_skip_timer)
 		_can_skip_timer.wait_time = SproutyDialogsSettingsManager.get_setting("can_skip_delay")
-		_can_skip_timer.timeout.connect(func(): _can_skip = true)
+		_can_skip_timer.timeout.connect(func(): _can_skip = text_reveal_skippable)
 		
 		var auto_advance_delay = SproutyDialogsSettingsManager.get_setting("auto_advance_delay")
 		if auto_advance_delay != null: _auto_advance_delay = auto_advance_delay
@@ -185,7 +187,7 @@ func _input(event: InputEvent) -> void:
 	
 	if Input.is_action_just_pressed(
 			SproutyDialogsSettingsManager.get_setting("continue_input_action")):
-		if not _display_completed and _can_skip: # Skip dialog typing and show the full text
+		if not _display_completed and text_reveal_skippable and _can_skip: # Skip dialog typing and show the full text
 			_skip_dialog_typing()
 		elif _display_completed: # Continue dialog when the text is fully displayed
 			_continue_dialogue()
@@ -264,11 +266,6 @@ func stop_dialog(close_dialog: bool = false) -> void:
 func set_auto_advance(enabled: bool, delay: float = _auto_advance_delay) -> void:
 	_auto_advance_enabled = enabled
 	_auto_advance_delay = delay
-
-
-## Set text reveal skippable option
-func set_text_reveal_skippable(enabled: bool) -> void:
-	_can_skip = enabled
 
 
 ## Skip the dialog typing and show the full text

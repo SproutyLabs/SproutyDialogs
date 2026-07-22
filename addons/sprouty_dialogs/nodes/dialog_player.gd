@@ -700,7 +700,7 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 		portrait: String, dialog_data: Dictionary, next_node: String) -> void:
 	_next_node = next_node
 	_update_dialog_box(character_name)
-	_set_auto_advance_from_tag_data(_current_dialog_box, dialog_data.get("auto", {}))
+	_set_dialog_box_from_tag_data(_current_dialog_box, dialog_data)
 
 	if character_name.is_empty():
 		_current_dialog_box.play_dialog(translated_name, dialog_data)
@@ -800,7 +800,7 @@ func _update_dialog_box(character_name: String) -> void:
 		dialog_box = _resource_manager.instantiate_dialog_box(
 				character_name, _dialog_box_parents.get(character_name, null))
 		dialog_box.set_auto_advance(auto_advance)
-		dialog_box.set_text_reveal_skippable(text_reveal_skippable)
+		dialog_box.text_reveal_skippable = text_reveal_skippable
 		_dialog_box_instances[character_name] = dialog_box
 	
 	# Check if the dialog box is already playing a dialog
@@ -818,17 +818,25 @@ func _update_dialog_box(character_name: String) -> void:
 	_current_dialog_box = dialog_box
 
 
-## Set auto-advance settings in dialog box from tag data
-func _set_auto_advance_from_tag_data(dialog_box: DialogBox, auto_data: Dictionary) -> void:
-	if not auto_data.is_empty():
-		auto_advance = auto_data.get("enabled", true)
-		var delay = auto_data.get("delay", null)
-		if delay == null:
-			dialog_box.set_auto_advance(auto_advance)
-		else:
-			dialog_box.set_auto_advance(auto_advance, delay)
-	else:
+## Set dialog box settings from tag data
+func _set_dialog_box_from_tag_data(dialog_box: DialogBox, dialog_data: Dictionary) -> void:
+	var auto_delay = null
+	if not dialog_data.is_empty():
+		# Auto-advance settings
+		if dialog_data.has("auto"):
+			var auto_data = dialog_data["auto"]
+			auto_advance = auto_data.get("enabled", true)
+			auto_delay = auto_data.get("delay", null)
+		# No skip text reveal settings
+		if dialog_data.has("noskip"):
+			text_reveal_skippable = not dialog_data["noskip"]
+	
+	# Update the dialog box settings
+	if auto_delay == null:
 		dialog_box.set_auto_advance(auto_advance)
+	else:
+		dialog_box.set_auto_advance(auto_advance, auto_delay)
+	dialog_box.text_reveal_skippable = text_reveal_skippable
 
 
 ## Update the portrait for the current character

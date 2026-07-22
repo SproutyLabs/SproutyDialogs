@@ -19,7 +19,8 @@ extends SproutyDialogsTagProcessor
 ##   - delay (float): [auto delay=0.5] 
 ##      Specify a custom time in seconds for the auto-advance delay.
 ##
-## (It's an inline tag)
+## (It's an inline tag, you can use it to enable/disable auto-advance
+## across different dialogue node events)
 ##
 ## Example:
 ##	  Hello...[auto delay=0.5] how are you?
