@@ -16,8 +16,15 @@ extends VBoxContainer
 @onready var _speed_type_dropdown = %SpeedTypeDropdown
 @onready var _speed_input: SpinBox = %SpeedInput
 
-## Wait tag fields
+## Wait tag field
 @onready var _wait_input: SpinBox = %WaitInput
+
+## Auto tag fields
+@onready var _auto_enabled_toggle: Button = %AutoEnabledToggle
+@onready var _auto_delay_input: SpinBox = %AutoDelayInput
+
+# No-skip tag field
+@onready var _noskip_enabled_toggle: Button = %NoSkipEnabledToggle
 
 ## Current tag bar shown in the text editor
 var _current_tag_bar: Control = null
@@ -55,6 +62,10 @@ func _on_tags_menu_id_pressed(id: int) -> void:
 			_on_if_tag_pressed()
 		3:
 			_on_repeat_tag_pressed()
+		4:
+			_on_auto_tag_pressed()
+		5:
+			_on_noskip_tag_pressed()
 
 
 #region === Speed tag handling =================================================
@@ -126,5 +137,46 @@ func _on_repeat_tag_pressed() -> void:
 ## Update the repeat value
 func _on_repeat_input_value_changed(value: float) -> void:
 	text_editor.update_code_tags("[repeat=" + str(int(value)) + "]", "[/repeat]", "", true)
+
+#endregion
+
+#region === Auto-Advance tag handling ==========================================
+
+## Add auto tag to the selected text
+func _on_auto_tag_pressed() -> void:
+	var default_delay: float = SproutyDialogsSettingsManager.get_setting("auto_advance_delay")
+	_auto_delay_input.set_value_no_signal(default_delay if default_delay != null else 0.1)
+	_auto_enabled_toggle.set_pressed_no_signal(true)
+	_change_tag_bar(4)
+	_on_auto_advance_toggled(true)
+
+## Update the auto-advance toggle
+func _on_auto_advance_toggled(pressed: bool) -> void:
+	if pressed:
+		text_editor.update_code_tags("[auto]", "", "", true)
+	else:
+		text_editor.update_code_tags("[auto=false]", "", "delay", true)
+
+## Update the auto-advance delay value
+func _on_auto_advance_delay_value_changed(value: float) -> void:
+	text_editor.update_code_tags("[auto]", "", "", true)
+	text_editor.add_attribute_to_tag("auto", "delay", value, 0.0)
+
+#endregion
+
+#region === No-Skip tag handling ===============================================
+
+## Add noskip tag to the selected text
+func _on_noskip_tag_pressed() -> void:
+	_noskip_enabled_toggle.set_pressed_no_signal(true)
+	_change_tag_bar(5)
+	_on_noskip_toggled(true)
+
+## Update the no-skip toggle
+func _on_noskip_toggled(pressed: bool) -> void:
+	if pressed:
+		text_editor.update_code_tags("[noskip]", "", "", true)
+	else:
+		text_editor.update_code_tags("[noskip=false]", "", "", true)
 
 #endregion

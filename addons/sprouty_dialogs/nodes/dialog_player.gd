@@ -829,7 +829,12 @@ func _set_dialog_box_from_tag_data(dialog_box: DialogBox, dialog_data: Dictionar
 			auto_delay = auto_data.get("delay", null)
 		# No skip text reveal settings
 		if dialog_data.has("noskip"):
-			text_reveal_skippable = not dialog_data["noskip"]
+			if dialog_data["noskip"] == false: # If the dialog data allows skipping, check the global setting
+				var text_reveal_skippable_enabled = SproutyDialogsSettingsManager.get_setting("allow_skip_text_reveal")
+				if text_reveal_skippable_enabled != null:
+					text_reveal_skippable = text_reveal_skippable_enabled
+			else:
+				text_reveal_skippable = not dialog_data["noskip"]
 	
 	# Update the dialog box settings
 	if auto_delay == null:
