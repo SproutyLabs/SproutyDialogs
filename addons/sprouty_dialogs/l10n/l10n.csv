@@ -226,9 +226,9 @@ Are you sure you want to close this file/s?",Editor -> Dialogue Panel -> Confirm
 Are you sure you want to close this file/s?","文件包含未保存的更改。
 确定要关闭这些文件吗？"
 "The file/s contains unsaved changes.
-Are you sure you want to reload this file/s?",Editor -> Dialogue Panel -> Confirmation Dialog,"The file/s contains unsaved changes.
-Are you sure you want to reload this file/s?","文件包含未保存的更改。
-确定要重新加载这些文件吗？"
+Are you sure you want to reload this file/s from disk?",Editor -> Dialogue Panel -> Confirmation Dialog,"The file/s contains unsaved changes.
+Are you sure you want to reload this file/s from disk?","文件包含未保存的更改。
+确定要从磁盘重新加载这些文件吗？"
 Discard,Editor -> Dialogue Panel -> Confirmation Dialog,Discard,放弃
 "[center][wave]Create or open a [color=orange]character[/color] to start!
 [center]\( ^-^)/

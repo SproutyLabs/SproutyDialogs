@@ -181,7 +181,7 @@ Are you sure you want to close this file/s?"
 unique_name_in_owner = true
 visible = false
 text = "The file/s contains unsaved changes.
-Are you sure you want to reload this file/s?"
+Are you sure you want to reload this file/s from disk?"
 
 [node name="CloseEditorWarning" type="AcceptDialog" parent="ContentContainer/Container/FileManager/PopupDialogs" unique_id=913469440]
 unique_name_in_owner = true

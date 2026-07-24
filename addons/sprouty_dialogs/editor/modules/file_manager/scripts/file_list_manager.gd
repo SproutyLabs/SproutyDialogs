@@ -20,6 +20,9 @@ signal request_save_file_as(index: int)
 ## Emitted when requesting to reload a file from disk.
 signal request_reload_file(index: int)
 
+## Pending file operation awaiting confirmation in the unsaved-changes dialog
+enum PendingAction { NONE, CLOSE, CLOSE_ALL, RELOAD, RELOAD_ALL }
+
 ## File search input
 @onready var _file_search: LineEdit = $FileSearch
 ## File list on side bar
@@ -40,8 +43,7 @@ var _char_icon := preload("res://addons/sprouty_dialogs/editor/icons/character.s
 var _current_file_index: int = -1
 ## Files to close queue
 var _closing_queue: Array[int] = []
-## Pending file operation awaiting confirmation in the unsaved-changes dialog
-enum PendingAction { NONE, CLOSE, CLOSE_ALL, RELOAD, RELOAD_ALL }
+## Current pending action awaiting user confirmation
 var _pending_action: PendingAction = PendingAction.NONE
 ## Save button of the confirm dialog, hidden when reloading files
 var _confirm_save_button: Button
