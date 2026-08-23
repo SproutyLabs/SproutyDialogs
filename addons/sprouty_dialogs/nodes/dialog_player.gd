@@ -566,7 +566,7 @@ func pause() -> void:
 	# If there is a current dialog box, pause it
 	if _current_dialog_box:
 		_current_dialog_box.pause_dialog()
-		if _current_portrait:
+		if _current_portrait and _current_portrait.get_parent():
 			_current_portrait.on_portrait_stop_talking()
 	# If not, save the current node to resume later
 	elif _current_node != "":
@@ -581,7 +581,7 @@ func resume() -> void:
 	# If there is a current dialog box, resume it
 	if _current_dialog_box:
 		_current_dialog_box.resume_dialog()
-		if _current_portrait:
+		if _current_portrait and _current_portrait.get_parent():
 			_current_portrait.on_portrait_talk()
 	# If there is no dialog box, but there is a paused node, continue the flow
 	elif _paused_node != "":
@@ -604,7 +604,7 @@ func stop() -> void:
 	# Exit all active portraits
 	for char in _portraits_instances.keys():
 		for portrait in _portraits_instances[char].values():
-			if portrait and portrait.is_visible():
+			if portrait and portrait.is_visible() and portrait.get_parent():
 				await portrait.on_portrait_exit()
 	
 	# If there is a visible dialog box, stop it
@@ -877,25 +877,26 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 		else:
 			portrait.show()
 	
-	if is_joining and _current_portrait: # Entry action if the character is joining the dialog
+	# Entry action if the character is joining the dialog
+	if is_joining and _current_portrait and _current_portrait.get_parent():
 		await _current_portrait.on_portrait_enter()
 
 
 ## Handle when the dialog display starts for a character.
 func _on_dialog_display_starts() -> void:
-	if _current_portrait:
+	if _current_portrait and _current_portrait.get_parent():
 		_current_portrait.on_portrait_talk()
 
 
 ## Handle when the dialog display ends for a character.
 func _on_dialog_display_ends() -> void:
-	if _current_portrait:
+	if _current_portrait and _current_portrait.get_parent():
 		_current_portrait.unhighlight_portrait()
 
 
 ## Handle when the dialog typing ends for a character.
 func _on_dialog_typing_ends() -> void:
-	if _current_portrait:
+	if _current_portrait and _current_portrait.get_parent():
 		_current_portrait.on_portrait_stop_talking()
 
 #endregion

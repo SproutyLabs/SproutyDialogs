@@ -330,6 +330,7 @@ func is_displaying_portrait() -> bool:
 func display_portrait(character_parent: Node, portrait_node: Node) -> void:
 	if not portrait_display:
 		printerr("[Sprouty Dialogs] Cannot display the portrait in the dialog box. The dialog box doesn't have a portrait display.")
+		return
 	
 	if not portrait_display.has_node(NodePath(character_parent.name)):
 		character_parent.add_child(portrait_node)
