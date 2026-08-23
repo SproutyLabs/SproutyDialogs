@@ -364,9 +364,7 @@ func get_graph_data() -> Dictionary:
 			
 			# Get option dialogs from options nodes
 			if child.node_type == "options_node":
-				var options = child.get_options_text()
-				for option in options:
-					dict.dialogs.merge(option)
+				dict.dialogs.merge(child.get_options_text())
 			
 			# Start nodes define dialogs trees
 			if child.node_type == "start_node":
@@ -626,7 +624,6 @@ func _copy_node(node: GraphNode) -> GraphNode:
 		false # Do not add to count here, it will be added later
 	)
 	new_node.set_data(node.get_data()[node.name.to_snake_case()])
-	remove_child(new_node)
 
 	_copied_connections[new_node.name] = get_node_connections(node.name)
 	_copied_nodes[new_node.name] = node # Store the copied node reference
@@ -640,6 +637,7 @@ func _copy_node(node: GraphNode) -> GraphNode:
 		"options_node":
 			new_node.load_options_text(node.get_options_text())
 	
+	remove_child(new_node)
 	return new_node
 
 

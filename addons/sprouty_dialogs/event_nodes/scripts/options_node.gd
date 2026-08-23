@@ -73,13 +73,11 @@ func set_data(dict: Dictionary) -> void:
 
 
 ## Returns options text and its translations
-func get_options_text() -> Array:
-	var options_text = []
+func get_options_text() -> Dictionary:
+	var options_text = {}
 	for child in get_children():
 		if child is EditorSproutyDialogsOptionContainer:
-			options_text.append({
-				child.get_dialog_key(): child.get_dialogs_text()
-			})
+			options_text[child.get_dialog_key()] = child.get_dialogs_text().duplicate()
 	return options_text
 
 
