@@ -936,7 +936,7 @@ func disconnect_node_on_port(node: String, port: int, as_action: bool = false) -
 		if data["has_other_input"]:
 			if data["remaining_start_node"] != next_node.start_node:
 				next_node.start_node = data["remaining_start_node"]
-				_update_connections_start_node(next_node)
+			_update_connections_start_node(next_node)
 		elif data["same_start_node"]:
 			next_node.start_node = null
 			_update_connections_start_node(next_node)
@@ -1093,16 +1093,41 @@ func _on_connection_request(from_node: String, from_port: int, to_node: String, 
 	# --------------------------------------------------------------------------
 
 
+## Follow incoming connections backwards to find the actual start node for this branch.
+func _find_start_node_from_inputs(node: SproutyDialogsBaseNode, visited: Dictionary = {}) -> SproutyDialogsBaseNode:
+	if node == null or visited.has(node.name):
+		return null
+	visited[node.name] = true
+	
+	if node.node_type == "start_node":
+		return node
+	
+	for connection in get_node_connections(node.name, false, false):
+		var prev_node = get_node_or_null(NodePath(connection["from_node"]))
+		if prev_node == null:
+			continue
+		var start_node = _find_start_node_from_inputs(prev_node, visited)
+		if start_node != null:
+			return start_node
+	
+	return null
+
+
 ## Update connected nodes with the new start node
 func _update_connections_start_node(node: SproutyDialogsBaseNode, visited: Dictionary = {}) -> void:
-	if visited.has(node.name):
+	if node == null or visited.has(node.name):
 		return
 	visited[node.name] = true
+	
+	if node.node_type == "start_node":
+		node.start_node = node
+	else:
+		node.start_node = _find_start_node_from_inputs(node, {})
+	
 	var connections = node.get_output_connections()
 	for node_name in connections:
 		var next_node = get_node_or_null(node_name)
 		if next_node != null and not visited.has(next_node.name):
-			next_node.start_node = node.start_node
 			_update_connections_start_node(next_node, visited)
 
 
