@@ -60,8 +60,8 @@ var _start_id: String:
 		_start_id = value
 		if _dialog_data and _dialog_data.characters.has(value):
 			for char in _dialog_data.characters[value]:
-				_portrait_parents[char] = null
-				_dialog_box_parents[char] = null
+				_portraits_display_per_character[char] = null
+				_dialog_box_display_per_character[char] = null
 		if Engine.is_editor_hint():
 			notify_property_list_changed()
 			update_configuration_warnings()
@@ -115,9 +115,21 @@ var print_debug: bool = false
 
 #endregion
 
-#region === Dictionaries =======================================================
+#region === Display Overrides ==================================================
 
-## Dictionary to store the portrait parent nodes by character.
+## [Node] to override the default portraits display parent node.[br][br]
+## This is used if you want to display portraits in some scene node
+## instead of the default canvas layer to portraits (override parent node).[br][br]
+## [i]You can also set the parent node for each character individually below.
+var _portraits_display_override: Node = null
+## [Node] to override the default dialog box display parent node.[br][br]
+## This is used if you want to display dialog boxes in some scene node
+## instead of the default canvas layer to dialog boxes (override parent node).[br][br]
+## [i]You can also set the parent node for each character individually below.
+var _dialog_box_display_override: Node = null
+## Dictionary to store the portrait display parent nodes by character.
+## This is used if you want to display dialog boxes in some scene node
+## instead of the default canvas layer to dialog boxes (override parent node).
 ## The keys are character names and the values are the parent nodes where
 ## the portraits will be displayed.
 ## The dictionary structure is:
@@ -127,8 +139,8 @@ var print_debug: bool = false
 ##   "character_name_2": Node reference,
 ##   ...
 ## }[/codeblock]
-var _portrait_parents: Dictionary = {}
-## Dictionary to store the dialog box parent nodes by character.
+var _portraits_display_per_character: Dictionary = {}
+## Dictionary to store the dialog box display parent nodes by character.
 ## This is used if you want to display dialog boxes in some scene node
 ## instead of the default canvas layer to dialog boxes (override parent node).
 ## The keys are character names and the values are the parent nodes where
@@ -140,7 +152,9 @@ var _portrait_parents: Dictionary = {}
 ##   "character_name_2": Node reference,
 ##   ...
 ## }[/codeblock]
-var _dialog_box_parents: Dictionary = {}
+var _dialog_box_display_per_character: Dictionary = {}
+
+#region === Internal Variables =================================================
 
 ## Dictionary to store the dialog boxes displayed by character.
 ## The keys are character names and the values are the [DialogBox] instances.
@@ -166,10 +180,6 @@ var _dialog_box_instances: Dictionary = {}
 ##   ...
 ## }[/codeblock]
 var _portraits_instances: Dictionary = {}
-
-#endregion
-
-#region === Internal Variables =================================================
 
 ## Array to store the start IDs of the dialogues.
 var _starts_ids: Array[String] = []
@@ -281,10 +291,23 @@ func _get_property_list():
 			# Characters options by dialog -------------------------------------
 			if not _start_id.is_empty() and _start_id in _dialog_data.characters:
 				props.append({
-				"name": "Override Display Parents",
+				"name": "Display Overrides",
 				"type": TYPE_STRING,
 				"usage": PROPERTY_USAGE_GROUP,
-				"hint_string": "char_",
+				})
+				props.append({ # Set portrait display parent node (general)
+					"name": &"_portraits_display_override",
+					"type": TYPE_OBJECT,
+					"usage": PROPERTY_USAGE_DEFAULT,
+					"hint": PROPERTY_HINT_NODE_TYPE,
+					"hint_string": "Node",
+				})
+				props.append({ # Set dialogue box display parent node (general)
+					"name": &"_dialog_box_display_override",
+					"type": TYPE_OBJECT,
+					"usage": PROPERTY_USAGE_DEFAULT,
+					"hint": PROPERTY_HINT_NODE_TYPE,
+					"hint_string": "Node",
 				})
 				for char in _dialog_data.characters[_start_id]:
 					props.append({ # Set a group by character name
@@ -294,14 +317,14 @@ func _get_property_list():
 						"hint_string": char,
 					})
 					props.append({ # Set portrait parent node path by character
-						"name": char + "_portraits_parent",
+						"name": char + "_portraits_display",
 						"type": TYPE_OBJECT,
 						"usage": PROPERTY_USAGE_DEFAULT,
 						"hint": PROPERTY_HINT_NODE_TYPE,
 						"hint_string": "Node",
 					})
 					props.append({ # Set dialogue box node path by character
-						"name": char + "_dialog_box_parent",
+						"name": char + "_dialog_box_display",
 						"type": TYPE_OBJECT,
 						"usage": PROPERTY_USAGE_DEFAULT,
 						"hint": PROPERTY_HINT_NODE_TYPE,
@@ -312,28 +335,32 @@ func _get_property_list():
 
 func _get(property: StringName):
 	# Show the portrait parent node path by character
-	if property.ends_with("_portraits_parent"):
+	if property.ends_with("_portraits_display") \
+			or property.ends_with("_portraits_parent"):
 		var char_name = property.get_slice("_portraits_", 0)
-		return _portrait_parents[char_name]
+		return _portraits_display_per_character[char_name]
 
 	# Show the dialogue box node path by character
-	if property.ends_with("_dialog_box_parent"):
+	if property.ends_with("_dialog_box_display") \
+			or property.ends_with("_dialog_box_parent"):
 		var char_name = property.get_slice("_dialog_", 0)
-		return _dialog_box_parents[char_name]
+		return _dialog_box_display_per_character[char_name]
 	return null
 
 
 func _set(property: StringName, value: Variant) -> bool:
 	# Storing the portrait parent node path by character
-	if property.ends_with("_portraits_parent"):
+	if property.ends_with("_portraits_display") \
+			or property.ends_with("_portraits_parent"):
 		var char_name = property.get_slice("_portraits_", 0)
-		_portrait_parents[char_name] = value
+		_portraits_display_per_character[char_name] = value
 		return true
 	
 	# Storing the dialogue box node path by character
-	if property.ends_with("_dialog_box_parent"):
+	if property.ends_with("_dialog_box_display") \
+			or property.ends_with("_dialog_box_parent"):
 		var char_name = property.get_slice("_dialog_", 0)
-		_dialog_box_parents[char_name] = value
+		_dialog_box_display_per_character[char_name] = value
 		return true
 	return false
 
@@ -459,6 +486,44 @@ func get_current_dialog_box() -> DialogBox:
 	return _current_dialog_box
 
 
+## Returns the parent node where the portraits will be displayed for a given character.
+## If no character name is provided, it returns the default parent node for all characters.
+func get_portraits_display_override(character_name: String = "") -> Node:
+	if character_name == "":
+		return _portraits_display_override
+	if _portraits_display_per_character.has(character_name):
+		return _portraits_display_per_character[character_name]
+	return null
+
+
+## Returns the parent node where the dialog box will be displayed for a given character.
+## If no character name is provided, it returns the default parent node for all characters.
+func get_dialog_box_display_override(character_name: String = "") -> Node:
+	if character_name == "":
+		return _dialog_box_display_override
+	if _dialog_box_display_per_character.has(character_name):
+		return _dialog_box_display_per_character[character_name]
+	return null
+
+
+## Set the parent node where the portraits will be displayed for a given character.
+## If no character name is provided, it sets the default parent node for all characters.
+func set_portraits_display_override(portrait_parent: Node, character_name: String = "") -> void:
+	if character_name == "":
+		_portraits_display_override = portrait_parent
+	else:
+		_portraits_display_per_character[character_name] = portrait_parent
+
+
+## Set the parent node where the dialog box will be displayed for a given character.
+## If no character name is provided, it sets the default parent node for all characters.
+func set_dialog_box_display_override(dialog_box_parent: Node, character_name: String = "") -> void:
+	if character_name == "":
+		_dialog_box_display_override = dialog_box_parent
+	else:
+		_dialog_box_display_per_character[character_name] = dialog_box_parent
+
+
 ## Set the dialogue data and start ID to play a dialog tree.
 ## This method loads the dialog resources and prepares the player to process
 ## the dialog tree before calling the [method start] method.
@@ -479,9 +544,9 @@ func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
 		return
 	
 	if not portrait_parents.is_empty():
-		_portrait_parents = portrait_parents
+		_portraits_display_per_character = portrait_parents
 	if not dialog_box_parents.is_empty():
-		_dialog_box_parents = dialog_box_parents
+		_dialog_box_display_per_character = dialog_box_parents
 	
 	# Load the resources
 	_load_dialog_resources(_start_id)
@@ -797,8 +862,9 @@ func _update_dialog_box(character_name: String) -> void:
 	if _dialog_box_instances.has(character_name):
 		dialog_box = _dialog_box_instances[character_name]
 	else: # If the dialog box is not loaded, instantiate it
-		dialog_box = _resource_manager.instantiate_dialog_box(
-				character_name, _dialog_box_parents.get(character_name, null))
+		var display_parent = _dialog_box_display_per_character.get(character_name, null)
+		if not display_parent: display_parent = _dialog_box_display_override
+		dialog_box = _resource_manager.instantiate_dialog_box(character_name, display_parent)
 		dialog_box.set_auto_advance(auto_advance)
 		dialog_box.text_reveal_skippable = text_reveal_skippable
 		_dialog_box_instances[character_name] = dialog_box
@@ -861,8 +927,10 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 		_current_portrait = _portraits_instances[character_name][portrait_name]
 
 	else: # Instantiate the portrait scene if not already loaded
-		_current_portrait = _resource_manager.instantiate_portrait(character_name,
-		portrait_name, _portrait_parents.get(character_name, null), _current_dialog_box)
+		var display_parent = _portraits_display_per_character.get(character_name, null)
+		if not display_parent: display_parent = _portraits_display_override
+		_current_portrait = _resource_manager.instantiate_portrait(
+			character_name, portrait_name, display_parent, _current_dialog_box)
 		_portraits_instances[character_name][portrait_name] = _current_portrait
 	
 	if _current_portrait:
