@@ -487,7 +487,8 @@ func get_current_dialog_box() -> DialogBox:
 
 
 ## Returns the parent node where the portraits will be displayed for a given character.
-## If no character name is provided, it returns the default parent node for all characters.
+## If no character name is provided, it returns the default overrided parent node 
+## for all characters (If is set, otherwise it returns null).
 func get_portraits_display_override(character_name: String = "") -> Node:
 	if character_name == "":
 		return _portraits_display_override
@@ -497,7 +498,8 @@ func get_portraits_display_override(character_name: String = "") -> Node:
 
 
 ## Returns the parent node where the dialog box will be displayed for a given character.
-## If no character name is provided, it returns the default parent node for all characters.
+## If no character name is provided, it returns the default overrided parent node
+## for all characters (If is set, otherwise it returns null).
 func get_dialog_box_display_override(character_name: String = "") -> Node:
 	if character_name == "":
 		return _dialog_box_display_override
@@ -507,7 +509,8 @@ func get_dialog_box_display_override(character_name: String = "") -> Node:
 
 
 ## Set the parent node where the portraits will be displayed for a given character.
-## If no character name is provided, it sets the default parent node for all characters.
+## If no character name is provided, it sets the default overrided parent node
+## for all characters (If is set, otherwise it returns null).
 func set_portraits_display_override(portrait_parent: Node, character_name: String = "") -> void:
 	if character_name == "":
 		_portraits_display_override = portrait_parent
@@ -516,7 +519,8 @@ func set_portraits_display_override(portrait_parent: Node, character_name: Strin
 
 
 ## Set the parent node where the dialog box will be displayed for a given character.
-## If no character name is provided, it sets the default parent node for all characters.
+## If no character name is provided, it sets the default overrided parent node
+## for all characters (If is set, otherwise it returns null).
 func set_dialog_box_display_override(dialog_box_parent: Node, character_name: String = "") -> void:
 	if character_name == "":
 		_dialog_box_display_override = dialog_box_parent
