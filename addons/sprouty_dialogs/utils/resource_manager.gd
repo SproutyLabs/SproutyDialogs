@@ -265,17 +265,24 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 ## the specified parent node.
 ##
 ## If the character has a dialog box override, it will be used instead of the 
-## default dialog box. Otherwise, the default dialog box will be instantiated
-## from the loaded dialog boxes for the dialogs in the current scene.
+## setted in the character data resource. Otherwise, the dialog box will be 
+## instantiated from the loaded dialog boxes for the dialogs in the current scene,
+## in case the character has a dialog box set in the character data resource.
+## In other case, the default override or the default dialog box from settings will be used.
 ##
 ## Cannot instantiate a dialog box that was not previously loaded.
 func instantiate_dialog_box(
 		character_name: String,
 		dialog_box_parent: Node = null,
 		dialog_box_override: DialogBox = null,
-		dialog_box_char_override: DialogBox = null,
+		ignore_display_override: bool = false,
+		dialog_box_char_override: Dictionary = {
+			"dialog_box": null,
+			"ignore_display_override": false
+		},
 	) -> DialogBox:
-	var dialog_box = dialog_box_char_override
+	var dialog_box = dialog_box_char_override["dialog_box"]
+	var using_default_override = false
 	if not dialog_box:
 		# If there is no override for the character, instantiate it from the character data
 		var dialog_box_uid = ""
@@ -287,6 +294,7 @@ func instantiate_dialog_box(
 			if dialog_box_override:
 				# If there is a dialog box default override, use it
 				dialog_box = dialog_box_override
+				using_default_override = true
 			else: # If no override, use the default dialog box from settings
 				dialog_box_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
 
@@ -300,12 +308,22 @@ func instantiate_dialog_box(
 				return null
 			dialog_box = _dialog_boxes[dialog_box_path].instantiate()
 
-	if not dialog_box.get_parent():
-		if dialog_box_parent:
-			# Add the dialog box to the specified parent
+	if dialog_box_parent:
+		# If there is a parent override, and no ignore display override, add it to the parent
+		if using_default_override and not ignore_display_override:
+			if dialog_box.get_parent():
+				dialog_box.get_parent().remove_child(dialog_box)
 			dialog_box_parent.add_child(dialog_box)
-		else: # If not, add the dialog box to the default canvas
-			_dialog_boxes_canvas.add_child(dialog_box)
+		if not using_default_override and not dialog_box_char_override["ignore_display_override"]:
+			if dialog_box.get_parent():
+				dialog_box.get_parent().remove_child(dialog_box)
+			dialog_box_parent.add_child(dialog_box)
+		# If does not have a parent, but there is a parent override, add to it
+		elif not dialog_box.get_parent():
+			dialog_box_parent.add_child(dialog_box)
+	# If there is no parent override, add it to the default canvas 
+	elif not dialog_box.get_parent(): # (If does not have a parent yet)
+		_dialog_boxes_canvas.add_child(dialog_box)
 
 	return dialog_box
 
