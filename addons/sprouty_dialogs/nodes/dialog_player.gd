@@ -58,10 +58,7 @@ var _dialog_data: SproutyDialogsDialogueData:
 var _start_id: String:
 	set(value):
 		_start_id = value
-		if _dialog_data and _dialog_data.characters.has(value):
-			for char in _dialog_data.characters[value]:
-				_portraits_display_per_character[char] = null
-				_dialog_box_display_per_character[char] = null
+		_set_overrides_dictionaries()
 		if Engine.is_editor_hint():
 			notify_property_list_changed()
 			update_configuration_warnings()
@@ -117,16 +114,39 @@ var print_debug: bool = false
 
 #region === Display Overrides ==================================================
 
-## [Node] to override the default portraits display parent node.[br][br]
-## This is used if you want to display portraits in some scene node
-## instead of the default canvas layer to portraits (override parent node).[br][br]
-## [i]You can also set the parent node for each character individually below.
+## [Node] to override the default portraits display parent node.
+##
+## [br][br]This is used if you want to display portraits in some scene node
+## instead of the default canvas layer to portraits (override parent node).
+## 
+## [br][br][i]You can also set the parent node for each character individually below.
 var _portraits_display_override: Node = null
-## [Node] to override the default dialog box display parent node.[br][br]
-## This is used if you want to display dialog boxes in some scene node
-## instead of the default canvas layer to dialog boxes (override parent node).[br][br]
-## [i]You can also set the parent node for each character individually below.
+## [Node] to override the default dialog box display parent node.
+## 
+## [br][br]This is used if you want to display dialog boxes in some scene node
+## instead of the default canvas layer to dialog boxes (override parent node).
+## 
+## [br][br][i]You can also set the parent node for each character individually below.
 var _dialog_box_display_override: Node = null
+## [DialogBox] to override the default dialog box node used to display the dialog.
+##
+## [br][br]This is used if you want to use a custom dialog box node instead of the default one.[br]
+## You can change the default dialog box in [b]Sprouty Dialogs Tab > Settings > Defaults[/b].
+## 
+## [br][br][i]You can also set the dialog box node for each character individually below.
+## [br][br]Note: If you set a dialog box override for a character, it will override the 
+## dialog box assigned in the character data resource for that character.
+var _dialog_box_override: DialogBox = null
+## If [code]true[/code], the [DialogPlayer] will ignore the display override 
+## parent node for the overridden dialog box node.
+## 
+## [br][br]This is used if you want to use a custom dialog box node that is already
+## placed in the scene tree and you don't want to change its parent node.
+## 
+## [br][br][i]Note: This only applies to the [member _dialog_box_override] node, 
+## not the default dialog box, or the dialog boxes overridden for each character.
+## [br][br][i]You can set the ignore display override flag for each character individually below.
+var _ignore_dialog_box_display_override: bool = false
 ## Dictionary to store the portrait display parent nodes by character.
 ## This is used if you want to display dialog boxes in some scene node
 ## instead of the default canvas layer to dialog boxes (override parent node).
@@ -153,6 +173,22 @@ var _portraits_display_per_character: Dictionary = {}
 ##   ...
 ## }[/codeblock]
 var _dialog_box_display_per_character: Dictionary = {}
+## Dictionary to store the dialog box override nodes by character.
+## This is used if you want to use a custom dialog box node instead of the default one.
+## The keys are character names and the values follow the following structure:
+## [codeblock]
+## {
+##   "character_name_1": {
+##	    "dialog_box": DialogBox instance,
+##		"ignore_display_override": bool,
+##	},
+##   "character_name_2": {
+##	    "dialog_box": DialogBox instance,
+##		"ignore_display_override": bool,
+##	},
+##   ...
+## }[/codeblock]
+var _dialog_box_override_per_character: Dictionary = {}
 
 #region === Internal Variables =================================================
 
@@ -269,7 +305,7 @@ func _get_property_list():
 			})
 			# Advanced settings group ------------------------------------------
 			props.append({
-				"name": "Advanced Settings",
+				"name": "Auto Advance Settings",
 				"type": TYPE_STRING,
 				"usage": PROPERTY_USAGE_GROUP
 			})
@@ -288,27 +324,65 @@ func _get_property_list():
 				"type": TYPE_BOOL,
 				"usage": PROPERTY_USAGE_DEFAULT
 			})
-			# Characters options by dialog -------------------------------------
+			# Dialog box overrides group ---------------------------------------
+			props.append({
+			"name": "Dialog Box Overrides",
+			"type": TYPE_STRING,
+			"usage": PROPERTY_USAGE_GROUP,
+			})
+			props.append({ # Set custom dialog box (general)
+				"name": &"_dialog_box_override",
+				"type": TYPE_OBJECT,
+				"usage": PROPERTY_USAGE_DEFAULT,
+				"hint": PROPERTY_HINT_NODE_TYPE,
+				"hint_string": "DialogBox",
+			})
+			props.append({ # Set dialog box ignore display override flag (general)
+				"name": &"_ignore_dialog_box_display_override",
+				"type": TYPE_BOOL,
+				"usage": PROPERTY_USAGE_DEFAULT
+			})
 			if not _start_id.is_empty() and _start_id in _dialog_data.characters:
-				props.append({
-				"name": "Display Overrides",
-				"type": TYPE_STRING,
-				"usage": PROPERTY_USAGE_GROUP,
-				})
-				props.append({ # Set portrait display parent node (general)
-					"name": &"_portraits_display_override",
-					"type": TYPE_OBJECT,
-					"usage": PROPERTY_USAGE_DEFAULT,
-					"hint": PROPERTY_HINT_NODE_TYPE,
-					"hint_string": "Node",
-				})
-				props.append({ # Set dialogue box display parent node (general)
-					"name": &"_dialog_box_display_override",
-					"type": TYPE_OBJECT,
-					"usage": PROPERTY_USAGE_DEFAULT,
-					"hint": PROPERTY_HINT_NODE_TYPE,
-					"hint_string": "Node",
-				})
+				for char in _dialog_data.characters[_start_id]:
+					props.append({ # Set a group by character name
+						"name": char.capitalize(),
+						"type": TYPE_STRING,
+						"usage": PROPERTY_USAGE_SUBGROUP,
+						"hint_string": char,
+					})
+					props.append({ # Set dialog box node path by character
+						"name": char + "_dialog_box_override",
+						"type": TYPE_OBJECT,
+						"usage": PROPERTY_USAGE_DEFAULT,
+						"hint": PROPERTY_HINT_NODE_TYPE,
+						"hint_string": "DialogBox",
+					})
+					props.append({ # Set ignore override flag by character
+						"name": char + "_ignore_display_override",
+						"type": TYPE_BOOL,
+						"usage": PROPERTY_USAGE_DEFAULT
+					})
+			# Display overrides group ------------------------------------------
+			props.append({
+			"name": "Display Overrides",
+			"type": TYPE_STRING,
+			"usage": PROPERTY_USAGE_GROUP,
+			})
+			props.append({ # Set portrait display parent node (general)
+				"name": &"_portraits_display_override",
+				"type": TYPE_OBJECT,
+				"usage": PROPERTY_USAGE_DEFAULT,
+				"hint": PROPERTY_HINT_NODE_TYPE,
+				"hint_string": "Node",
+			})
+			props.append({ # Set dialog box display parent node (general)
+				"name": &"_dialog_box_display_override",
+				"type": TYPE_OBJECT,
+				"usage": PROPERTY_USAGE_DEFAULT,
+				"hint": PROPERTY_HINT_NODE_TYPE,
+				"hint_string": "Node",
+			})
+			if not _start_id.is_empty() and _start_id in _dialog_data.characters:
 				for char in _dialog_data.characters[_start_id]:
 					props.append({ # Set a group by character name
 						"name": char.capitalize(),
@@ -323,7 +397,7 @@ func _get_property_list():
 						"hint": PROPERTY_HINT_NODE_TYPE,
 						"hint_string": "Node",
 					})
-					props.append({ # Set dialogue box node path by character
+					props.append({ # Set dialog box parent node path by character
 						"name": char + "_dialog_box_display",
 						"type": TYPE_OBJECT,
 						"usage": PROPERTY_USAGE_DEFAULT,
@@ -340,11 +414,22 @@ func _get(property: StringName):
 		var char_name = property.get_slice("_portraits_", 0)
 		return _portraits_display_per_character[char_name]
 
-	# Show the dialogue box node path by character
+	# Show the dialog box parent node path by character
 	if property.ends_with("_dialog_box_display") \
 			or property.ends_with("_dialog_box_parent"):
 		var char_name = property.get_slice("_dialog_", 0)
 		return _dialog_box_display_per_character[char_name]
+	
+	# Show the dialog box node path by character
+	if property.ends_with("_dialog_box_override"):
+		var char_name = property.get_slice("_dialog_box_", 0)
+		return _dialog_box_override_per_character[char_name]["dialog_box"]
+	
+	# Show the ignore parent override flag by character
+	if property.ends_with("_ignore_display_override"):
+		var char_name = property.get_slice("_ignore_display_override", 0)
+		return _dialog_box_override_per_character[char_name]["ignore_display_override"]
+
 	return null
 
 
@@ -356,11 +441,23 @@ func _set(property: StringName, value: Variant) -> bool:
 		_portraits_display_per_character[char_name] = value
 		return true
 	
-	# Storing the dialogue box node path by character
+	# Storing the dialog box parent node path by character
 	if property.ends_with("_dialog_box_display") \
 			or property.ends_with("_dialog_box_parent"):
 		var char_name = property.get_slice("_dialog_", 0)
 		_dialog_box_display_per_character[char_name] = value
+		return true
+
+	# Storing the dialog box node path by character
+	if property.ends_with("_dialog_box_override"):
+		var char_name = property.get_slice("_dialog_box_", 0)
+		_dialog_box_override_per_character[char_name]["dialog_box"] = value
+		return true
+
+	# Storing the ignore parent override flag by character
+	if property.ends_with("_ignore_display_override"):
+		var char_name = property.get_slice("_ignore_display_override", 0)
+		_dialog_box_override_per_character[char_name]["ignore_display_override"] = value
 		return true
 	return false
 
@@ -508,6 +605,17 @@ func get_dialog_box_display_override(character_name: String = "") -> Node:
 	return null
 
 
+## Returns the dialog box node to be used for a given character.
+## If no character name is provided, it returns the default overrided dialog box
+## node for all characters (If is set, otherwise it returns null).
+func get_dialog_box_override(character_name: String = "") -> DialogBox:
+	if character_name == "":
+		return _dialog_box_override
+	if _dialog_box_override_per_character.has(character_name):
+		return _dialog_box_override_per_character[character_name]["dialog_box"]
+	return null
+
+
 ## Set the parent node where the portraits will be displayed for a given character.
 ## If no character name is provided, it sets the default overrided parent node
 ## for all characters (If is set, otherwise it returns null).
@@ -526,6 +634,24 @@ func set_dialog_box_display_override(dialog_box_parent: Node, character_name: St
 		_dialog_box_display_override = dialog_box_parent
 	else:
 		_dialog_box_display_per_character[character_name] = dialog_box_parent
+
+
+## Set the dialog box node to be used for a given character.
+## If no character name is provided, it sets the default overrided dialog box
+## node for all characters (If is set, otherwise it returns null).
+## [br][br]If the [code]ignore_display_override[/code] flag is set to [code]true[/code], 
+## the dialog box will be used as is, without changing its parent node.
+func set_dialog_box_override(
+		dialog_box: DialogBox,
+		ignore_display_override: bool = false,
+		character_name: String = "",
+	) -> void:
+	if character_name == "":
+		_dialog_box_override = dialog_box
+		_ignore_dialog_box_display_override = ignore_display_override
+	else:
+		_dialog_box_override_per_character[character_name]["dialog_box"] = dialog_box
+		_dialog_box_override_per_character[character_name]["ignore_display_override"] = ignore_display_override
 
 
 ## Set the dialogue data and start ID to play a dialog tree.
@@ -554,6 +680,19 @@ func set_dialog(data: SproutyDialogsDialogueData, start_id: String,
 	
 	# Load the resources
 	_load_dialog_resources(_start_id)
+
+
+## Set the override dictionaries for portraits and dialog boxes per character.
+func _set_overrides_dictionaries() -> void:
+	if not _dialog_data or not _starts_ids.has(_start_id):
+		return
+	for char in _dialog_data.characters[_start_id]:
+		_portraits_display_per_character[char] = null
+		_dialog_box_display_per_character[char] = null
+		_dialog_box_override_per_character[char] = {
+			"dialog_box": null,
+			"ignore_display_override": false
+		}
 
 
 ## Returns the name of the start node for a given dialog branch.
@@ -862,13 +1001,20 @@ func _on_continue_dialog() -> void:
 func _update_dialog_box(character_name: String) -> void:
 	var dialog_box = null
 
-	# Check if the dialog box is already loaded
+	# If the character already has a dialog box instance, use it
 	if _dialog_box_instances.has(character_name):
 		dialog_box = _dialog_box_instances[character_name]
-	else: # If the dialog box is not loaded, instantiate it
+	else:
+		# If the character has a display parent override, use it
 		var display_parent = _dialog_box_display_per_character.get(character_name, null)
 		if not display_parent: display_parent = _dialog_box_display_override
-		dialog_box = _resource_manager.instantiate_dialog_box(character_name, display_parent)
+
+		# Instantiate the dialog box if it is not already loaded
+		dialog_box = _resource_manager.instantiate_dialog_box(
+			character_name, display_parent, _dialog_box_override,
+			_ignore_dialog_box_display_override,
+			_dialog_box_override_per_character[character_name]
+			)
 		dialog_box.set_auto_advance(auto_advance)
 		dialog_box.text_reveal_skippable = text_reveal_skippable
 		_dialog_box_instances[character_name] = dialog_box
