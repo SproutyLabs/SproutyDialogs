@@ -261,30 +261,51 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 #region === Instantiate Resources ==============================================
 
 ## Instantiate a dialog box for a character in the scene.
-## Instantiate from the loaded dialog boxes for the dialogs in the current scene.
+## This will instantiate the dialog box scene for the character and add it to 
+## the specified parent node.
+##
+## If the character has a dialog box override, it will be used instead of the 
+## default dialog box. Otherwise, the default dialog box will be instantiated
+## from the loaded dialog boxes for the dialogs in the current scene.
+##
 ## Cannot instantiate a dialog box that was not previously loaded.
-func instantiate_dialog_box(character_name: String, dialog_box_parent: Node) -> DialogBox:
-	var dialog_box_uid = ""
-	if not character_name.is_empty():
-		dialog_box_uid = _characters_data[character_name].dialog_box_uid
-	
-	# If no character or the character has no dialog box, use the default dialog box
-	if character_name.is_empty() or not SproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
-		dialog_box_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
+func instantiate_dialog_box(
+		character_name: String,
+		dialog_box_parent: Node = null,
+		dialog_box_override: DialogBox = null,
+		dialog_box_char_override: DialogBox = null,
+	) -> DialogBox:
+	var dialog_box = dialog_box_char_override
+	if not dialog_box:
+		# If there is no override for the character, instantiate it from the character data
+		var dialog_box_uid = ""
+		if not character_name.is_empty():
+			dialog_box_uid = _characters_data[character_name].dialog_box_uid
+		
+		# If no character or the character has no dialog box, use the default override or dialog box from settings
+		if character_name.is_empty() or not SproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
+			if dialog_box_override:
+				# If there is a dialog box default override, use it
+				dialog_box = dialog_box_override
+			else: # If no override, use the default dialog box from settings
+				dialog_box_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
 
-	var dialog_box_path = ResourceUID.get_id_path(dialog_box_uid)
-	
-	if not _dialog_boxes.has(dialog_box_path):
-		printerr("[Sprouty Dialogs] Cannot instantiate dialog box. No dialog box" \
-				+ " scene is loaded for the character " + character_name \
-				+ ". Check if the character is in a dialog of the current scene.")
-		return null
-	var dialog_box = _dialog_boxes[dialog_box_path].instantiate()
+		if not dialog_box: # If no dialog box yet, instantiate it from the loaded dialog boxes
+			var dialog_box_path = ResourceUID.get_id_path(dialog_box_uid)
+			
+			if not _dialog_boxes.has(dialog_box_path):
+				printerr("[Sprouty Dialogs] Cannot instantiate dialog box. No dialog box" \
+						+ " scene is loaded for the character " + character_name \
+						+ ". Check if the character is in a dialog of the current scene.")
+				return null
+			dialog_box = _dialog_boxes[dialog_box_path].instantiate()
 
-	if dialog_box_parent: # Add the dialog box to the specified parent
+	if not dialog_box.get_parent():
+		if dialog_box_parent:
+			# Add the dialog box to the specified parent
 			dialog_box_parent.add_child(dialog_box)
-	else: # If not, add the dialog box to the default canvas
-		_dialog_boxes_canvas.add_child(dialog_box)
+		else: # If not, add the dialog box to the default canvas
+			_dialog_boxes_canvas.add_child(dialog_box)
 
 	return dialog_box
 
