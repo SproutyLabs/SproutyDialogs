@@ -310,18 +310,15 @@ func instantiate_dialog_box(
 
 	if dialog_box_parent:
 		# If there is a parent override, and no ignore display override, add it to the parent
-		if using_default_override and not ignore_display_override:
-			if dialog_box.get_parent():
-				dialog_box.get_parent().remove_child(dialog_box)
-			dialog_box_parent.add_child(dialog_box)
-		if not using_default_override and not dialog_box_char_override["ignore_display_override"]:
+		if using_default_override and not ignore_display_override \
+			or not using_default_override and not dialog_box_char_override["ignore_display_override"]:
 			if dialog_box.get_parent():
 				dialog_box.get_parent().remove_child(dialog_box)
 			dialog_box_parent.add_child(dialog_box)
 		# If does not have a parent, but there is a parent override, add to it
 		elif not dialog_box.get_parent():
 			dialog_box_parent.add_child(dialog_box)
-	# If there is no parent override, add it to the default canvas 
+	# If there is no parent or parent override, add it to the default canvas 
 	elif not dialog_box.get_parent(): # (If does not have a parent yet)
 		_dialog_boxes_canvas.add_child(dialog_box)
 

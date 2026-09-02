@@ -143,9 +143,9 @@ var _dialog_box_override: DialogBox = null
 ## [br][br]This is used if you want to use a custom dialog box node that is already
 ## placed in the scene tree and you don't want to change its parent node.
 ## 
-## [br][br][i]You can also set the ignore display override flag for each character individually below.
 ## [br][br][i]Note: This only applies to the [member _dialog_box_override] node, 
 ## not the default dialog box, or the dialog boxes overridden for each character.
+## [br][br][i]You can set the ignore display override flag for each character individually below.
 var _ignore_dialog_box_display_override: bool = false
 ## Dictionary to store the portrait display parent nodes by character.
 ## This is used if you want to display dialog boxes in some scene node
