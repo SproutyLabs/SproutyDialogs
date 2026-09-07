@@ -775,11 +775,12 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 		_current_dialog_box.play_dialog(translated_name, dialog_data)
 		return
 	
+	var is_joining = _change_current_portrait(character_name, portrait)
 	if get_character_data(character_name).portrait_on_dialog_box:
 		_current_dialog_box.play_dialog(translated_name, dialog_data)
-		await _update_portrait(character_name, portrait)
+		await _update_portrait(character_name, is_joining)
 	else:
-		await _update_portrait(character_name, portrait)
+		await _update_portrait(character_name, is_joining)
 		_current_dialog_box.play_dialog(translated_name, dialog_data)
 
 
@@ -914,11 +915,11 @@ func _set_dialog_box_from_tag_data(dialog_box: DialogBox, dialog_data: Dictionar
 	dialog_box.text_reveal_skippable = text_reveal_skippable
 
 
-## Update the portrait for the current character
-func _update_portrait(character_name: String, portrait_name: String) -> void:
+## Change the current portrait for the character.
+func _change_current_portrait(character_name: String, portrait_name: String) -> bool:
 	if character_name.is_empty() or portrait_name.is_empty():
 		_current_portrait = null
-		return
+		return false
 
 	var is_joining = false
 	# Check if the character is joining the dialog
@@ -940,6 +941,11 @@ func _update_portrait(character_name: String, portrait_name: String) -> void:
 	if _current_portrait:
 		_current_portrait.set_portrait()
 	
+	return is_joining
+
+
+## Update the portrait visibility and play entry animation (if needed).
+func _update_portrait(character_name: String, is_joining: bool) -> void:
 	# Hide all other portraits of the character
 	for portrait in _portraits_instances[character_name].values():
 		if not portrait:
