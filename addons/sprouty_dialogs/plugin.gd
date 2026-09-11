@@ -36,6 +36,10 @@ func _enter_tree():
 			SproutyDialogsSettingsManager.migrate_settings_from_graph_dialogs()
 		else: # Initialize default settings for new users.
 			SproutyDialogsSettingsManager.initialize_default_settings()
+	
+	# Migrate editor state from project settings to the cache file if it exists.
+	if ProjectSettings.has_setting("sprouty_dialogs/internal/last_opened_files"):
+		SproutyDialogsEditorStateManager.migrate_editor_state_from_project_settings()
 
 
 func _exit_tree():

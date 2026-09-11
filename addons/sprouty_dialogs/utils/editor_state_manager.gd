@@ -69,3 +69,22 @@ static func set_value(section: String, key: String, value: Variant) -> void:
 
 	_editor_state_file.set_value(section, key, value)
 	_editor_state_file.save(EDITOR_STATE_FILE_PATH)
+
+
+## Migrates editor state from project settings to the cache file.
+## This function is called when the plugin is first loaded, and it checks if there are any
+## editor state values stored in the project settings. If there are, it migrates them to
+## the cache file and removes them from the project settings.
+static func migrate_editor_state_from_project_settings() -> void:
+	var settings := [
+		"sprouty_dialogs/internal/play_dialog_path",
+		"sprouty_dialogs/internal/play_start_id",
+		"sprouty_dialogs/internal/last_opened_files",
+		"sprouty_dialogs/internal/last_selected_file_index"
+	]
+	for setting in settings:
+		if ProjectSettings.has_setting(setting):
+			var value := ProjectSettings.get_setting(setting)
+			var key = setting.split("/")[-1]
+			set_value("window_state", key, value)
+			ProjectSettings.set_setting(setting, null)
