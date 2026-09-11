@@ -10,7 +10,7 @@ extends RefCounted
 # -----------------------------------------------------------------------------
 
 ## Path in which the cache file that stores editor state will be saved.
-const EDITOR_STATE_FILE_PATH := "res//.godot/sprouty_dialogs_cache.cfg"
+const EDITOR_STATE_FILE_PATH := "res://.godot/sprouty_dialogs_cache.cfg"
 
 ## Temporary editor state parameters.
 ## This cache file stores settings which should not be versioned.
