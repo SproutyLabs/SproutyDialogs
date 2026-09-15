@@ -190,6 +190,8 @@ var _dialog_box_display_per_character: Dictionary = {}
 ## }[/codeblock]
 var _dialog_box_override_per_character: Dictionary = {}
 
+#endregion
+
 #region === Internal Variables =================================================
 
 ## Dictionary to store the dialog boxes displayed by character.
@@ -837,7 +839,8 @@ func stop() -> void:
 		var dialog_box = _dialog_box_instances[char]
 		if _dialog_box_override == dialog_box:
 			continue # If dialog box is an override, don't free it
-		if _dialog_box_override_per_character[char]["dialog_box"] == dialog_box:
+		if _dialog_box_override_per_character.has(char) and \
+				_dialog_box_override_per_character[char]["dialog_box"] == dialog_box:
 			continue # If dialog box is an override, don't free it
 		dialog_box.queue_free()
 	
@@ -1022,7 +1025,10 @@ func _update_dialog_box(character_name: String) -> void:
 		dialog_box = _resource_manager.instantiate_dialog_box(
 			character_name, display_parent, _dialog_box_override,
 			_ignore_dialog_box_display_override,
-			_dialog_box_override_per_character[character_name]
+			_dialog_box_override_per_character.get(character_name, {
+					"dialog_box": null,
+					"ignore_display_override": false
+				})
 			)
 		dialog_box.set_auto_advance(auto_advance)
 		dialog_box.text_reveal_skippable = text_reveal_skippable
