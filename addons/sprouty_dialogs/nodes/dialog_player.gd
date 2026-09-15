@@ -422,7 +422,7 @@ func _get(property: StringName):
 	
 	# Show the dialog box node path by character
 	if property.ends_with("_dialog_box_override"):
-		var char_name = property.get_slice("_dialog_box_", 0)
+		var char_name = property.get_slice("_dialog_box_override", 0)
 		return _dialog_box_override_per_character[char_name]["dialog_box"]
 	
 	# Show the ignore parent override flag by character
@@ -450,7 +450,7 @@ func _set(property: StringName, value: Variant) -> bool:
 
 	# Storing the dialog box node path by character
 	if property.ends_with("_dialog_box_override"):
-		var char_name = property.get_slice("_dialog_box_", 0)
+		var char_name = property.get_slice("_dialog_box_override", 0)
 		_dialog_box_override_per_character[char_name]["dialog_box"] = value
 		return true
 
@@ -687,12 +687,15 @@ func _set_overrides_dictionaries() -> void:
 	if not _dialog_data or not _starts_ids.has(_start_id):
 		return
 	for char in _dialog_data.characters[_start_id]:
-		_portraits_display_per_character[char] = null
-		_dialog_box_display_per_character[char] = null
-		_dialog_box_override_per_character[char] = {
-			"dialog_box": null,
-			"ignore_display_override": false
-		}
+		if not _portraits_display_per_character.has(char):
+			_portraits_display_per_character[char] = null
+		if not _dialog_box_display_per_character.has(char):
+			_dialog_box_display_per_character[char] = null
+		if not _dialog_box_override_per_character.has(char):
+			_dialog_box_override_per_character[char] = {
+				"dialog_box": null,
+				"ignore_display_override": false
+			}
 
 
 ## Returns the name of the start node for a given dialog branch.
@@ -830,7 +833,12 @@ func stop() -> void:
 					portrait_parent.queue_free()
 	
 	# Free all dialog boxes displayed
-	for dialog_box in _dialog_box_instances.values():
+	for char in _dialog_box_instances.keys():
+		var dialog_box = _dialog_box_instances[char]
+		if _dialog_box_override == dialog_box:
+			continue # If dialog box is an override, don't free it
+		if _dialog_box_override_per_character[char]["dialog_box"] == dialog_box:
+			continue # If dialog box is an override, don't free it
 		dialog_box.queue_free()
 	
 	_portraits_instances.clear()
