@@ -414,23 +414,25 @@ func _get(property: StringName):
 	if property.ends_with("_portraits_display") \
 			or property.ends_with("_portraits_parent"):
 		var char_name = property.get_slice("_portraits_", 0)
-		return _portraits_display_per_character[char_name]
+		return _portraits_display_per_character.get(char_name, null)
 
 	# Show the dialog box parent node path by character
 	if property.ends_with("_dialog_box_display") \
 			or property.ends_with("_dialog_box_parent"):
 		var char_name = property.get_slice("_dialog_", 0)
-		return _dialog_box_display_per_character[char_name]
+		return _dialog_box_display_per_character.get(char_name, null)
 	
 	# Show the dialog box node path by character
 	if property.ends_with("_dialog_box_override"):
 		var char_name = property.get_slice("_dialog_box_override", 0)
-		return _dialog_box_override_per_character[char_name]["dialog_box"]
+		return _dialog_box_override_per_character.get(char_name,
+				{"dialog_box": null})["dialog_box"]
 	
 	# Show the ignore parent override flag by character
 	if property.ends_with("_ignore_display_override"):
 		var char_name = property.get_slice("_ignore_display_override", 0)
-		return _dialog_box_override_per_character[char_name]["ignore_display_override"]
+		return _dialog_box_override_per_character.get(char_name,
+				{"ignore_display_override": null})["ignore_display_override"]
 
 	return null
 
@@ -453,12 +455,22 @@ func _set(property: StringName, value: Variant) -> bool:
 	# Storing the dialog box node path by character
 	if property.ends_with("_dialog_box_override"):
 		var char_name = property.get_slice("_dialog_box_override", 0)
+		if not _dialog_box_override_per_character.has(char_name):
+			_dialog_box_override_per_character[char_name] = {
+				"dialog_box": null,
+				"ignore_display_override": false
+			}
 		_dialog_box_override_per_character[char_name]["dialog_box"] = value
 		return true
 
 	# Storing the ignore parent override flag by character
 	if property.ends_with("_ignore_display_override"):
 		var char_name = property.get_slice("_ignore_display_override", 0)
+		if not _dialog_box_override_per_character.has(char_name):
+			_dialog_box_override_per_character[char_name] = {
+				"dialog_box": null,
+				"ignore_display_override": false
+			}
 		_dialog_box_override_per_character[char_name]["ignore_display_override"] = value
 		return true
 	return false
