@@ -1041,6 +1041,7 @@ func _update_dialog_box(character_name: String) -> void:
 	# Connect the dialog box signals
 	if not dialog_box.is_connected("continue_dialog", _on_continue_dialog):
 		dialog_box.continue_dialog.connect(_on_continue_dialog)
+		dialog_box.dialog_typing_starts.connect(_on_dialog_typing_starts)
 		dialog_box.dialog_typing_ends.connect(_on_dialog_typing_ends)
 		dialog_box.dialog_starts.connect(_on_dialog_display_starts)
 		dialog_box.dialog_ends.connect(_on_dialog_display_ends)
@@ -1122,6 +1123,11 @@ func _update_portrait(character_name: String, is_joining: bool) -> void:
 
 ## Handle when the dialog display starts for a character.
 func _on_dialog_display_starts() -> void:
+	pass
+
+
+## Handle when the dialog typing starts for a character.
+func _on_dialog_typing_starts() -> void:
 	if _current_portrait and _current_portrait.get_parent():
 		_current_portrait.on_portrait_talk()
 

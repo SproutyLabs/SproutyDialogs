@@ -16,6 +16,8 @@ extends Control
 
 ## Emitted when the dialog is started.
 signal dialog_starts
+## Emitted when the dialog starts typing.
+signal dialog_typing_starts
 ## Emitted when the dialog ends typing.
 signal dialog_typing_ends
 ## Emitted when the dialog is ended.
@@ -536,6 +538,7 @@ func _display_new_sentence(sentence: String) -> void:
 		_type_timer.start()
 		_type_timer.wait_time = _get_typing_speed_at(_current_sentence_start_index)
 		_type_timer.start()
+		dialog_typing_starts.emit()
 
 
 ## Timer to type the dialog characters
