@@ -83,6 +83,8 @@ var _can_skip: bool = true
 var _auto_advance_enabled: bool = false
 ## Delay in seconds before advance to the next sentence or node.
 var _auto_advance_delay: float = 0.1
+## Timer to control the auto advance.
+var _auto_advance_timer: Timer
 
 ## Array to store the typing speed intervals for different parts of the dialog.
 var _typing_speed_intervals: Array = []
@@ -140,7 +142,12 @@ func _enter_tree() -> void:
 		
 		var auto_advance_delay = SproutyDialogsSettingsManager.get_setting("auto_advance_delay")
 		if auto_advance_delay != null: _auto_advance_delay = auto_advance_delay
-		
+		_auto_advance_timer = Timer.new()
+		add_child(_auto_advance_timer)
+		_auto_advance_timer.one_shot = true
+		_auto_advance_timer.wait_time = _auto_advance_delay
+		_auto_advance_timer.timeout.connect(_on_auto_advance_timer_timeout)
+
 		hide()
 
 
@@ -198,6 +205,9 @@ func _input(event: InputEvent) -> void:
 
 ## Play a dialog on dialog box
 func play_dialog(character_name: String, dialog_data: Dictionary) -> void:
+	_auto_advance_timer.stop()
+	_type_timer.stop()
+
 	if not _is_started: # First time the dialog is started
 		await _on_dialog_box_open()
 	hide_options()
@@ -283,6 +293,7 @@ func _skip_dialog_typing() -> void:
 
 ## Continue playing the dialogue
 func _continue_dialogue() -> void:
+	_auto_advance_timer.stop()
 	if _current_sentence < _sentences.size() - 1:
 		_current_sentence += 1
 		_display_new_sentence(_sentences[_current_sentence])
@@ -563,11 +574,15 @@ func _on_display_completed() -> void:
 
 	# If autoplay is enabled, automatically progress after the configured delay
 	if _auto_advance_enabled and not _is_displaying_options and _is_running:
-		# Wait the autoplay delay then progress if still appropriate
-		await get_tree().create_timer(_auto_advance_delay).timeout
-		if not _auto_advance_enabled or not _is_running or _is_displaying_options:
-			return
-		_continue_dialogue()
+		_auto_advance_timer.wait_time = _auto_advance_delay
+		_auto_advance_timer.start()
+
+
+## Continue the auto advance after delay timeout
+func _on_auto_advance_timer_timeout() -> void:
+	if not _auto_advance_enabled or not _is_running or _is_displaying_options:
+		return
+	_continue_dialogue()
 
 
 ## When the dialog ends, close the dialog box
