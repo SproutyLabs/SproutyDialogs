@@ -87,7 +87,11 @@ var undo_redo: EditorUndoRedoManager
 
 ## Last known graph view state
 var _last_zoom: float = 1.0
+var _last_show_grid: bool = true
 var _last_scroll_offset: Vector2 = Vector2.ZERO
+var _last_snapping_enabled: bool = true
+var _last_snapping_distance: int = 20
+var _last_minimap_enabled: bool = true
 
 
 func _init() -> void:
@@ -120,8 +124,7 @@ func _ready():
 	_set_node_actions_menu()
 	_set_add_node_menu()
 
-	_last_zoom = zoom
-	_last_scroll_offset = scroll_offset
+	_update_last_editor_state()
 	set_process(true)
 
 
@@ -132,9 +135,12 @@ func _input(_event):
 
 
 func _process(_delta: float) -> void:
-	if zoom != _last_zoom or scroll_offset != _last_scroll_offset:
-		_last_zoom = zoom
-		_last_scroll_offset = scroll_offset
+	if zoom != _last_zoom or show_grid != _last_show_grid \
+			or scroll_offset != _last_scroll_offset \
+			or snapping_enabled != _last_snapping_enabled \
+			or snapping_distance != _last_snapping_distance \
+			or minimap_enabled != _last_minimap_enabled:
+		_update_last_editor_state()
 		view_state_changed.emit(get_editor_state())
 
 
@@ -144,7 +150,11 @@ func _process(_delta: float) -> void:
 func get_editor_state() -> Dictionary:
 	return {
 		"zoom": zoom,
-		"scroll_offset": scroll_offset
+		"show_grid": show_grid,
+		"scroll_offset": scroll_offset,
+		"snapping_enabled": snapping_enabled,
+		"snapping_distance": snapping_distance,
+		"minimap_enabled": minimap_enabled,
 	}
 
 
@@ -152,8 +162,26 @@ func get_editor_state() -> Dictionary:
 func load_editor_state(editor_state: Dictionary) -> void:
 	if editor_state.has("zoom"):
 		zoom = editor_state["zoom"]
+	if editor_state.has("show_grid"):
+		show_grid = editor_state["show_grid"]
 	if editor_state.has("scroll_offset"):
 		scroll_offset = editor_state["scroll_offset"]
+	if editor_state.has("snapping_enabled"):
+		snapping_enabled = editor_state["snapping_enabled"]
+	if editor_state.has("snapping_distance"):
+		snapping_distance = editor_state["snapping_distance"]
+	if editor_state.has("minimap_enabled"):
+		minimap_enabled = editor_state["minimap_enabled"]
+
+
+## Update the last editor state
+func _update_last_editor_state() -> void:
+	_last_zoom = zoom
+	_last_show_grid = show_grid
+	_last_scroll_offset = scroll_offset
+	_last_snapping_enabled = snapping_enabled
+	_last_snapping_distance = snapping_distance
+	_last_minimap_enabled = minimap_enabled
 
 #endregion
 
