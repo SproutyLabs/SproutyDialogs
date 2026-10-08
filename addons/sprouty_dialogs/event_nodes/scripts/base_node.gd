@@ -69,7 +69,6 @@ func get_start_id() -> String:
 
 ## Returns an array with the node's output connections
 func get_output_connections() -> Array:
-	var connections: Array = get_parent().get_node_connections(name)
 	var output_connections: Array = []
 
 	# Add a item for each active slot
@@ -77,8 +76,11 @@ func get_output_connections() -> Array:
 		if is_slot_enabled_right(index):
 			output_connections.append("END")
 	
-	for connection in connections: # Set the connected nodes
-		output_connections.set(connection["from_port"], connection["to_node"].to_snake_case())
+	var parent = get_parent()
+	if parent and parent.has_method("get_node_connections"):
+		var connections: Array = parent.get_node_connections(name)
+		for connection in connections: # Set the connected nodes
+			output_connections.set(connection["from_port"], connection["to_node"].to_snake_case())
 	
 	return output_connections
 
