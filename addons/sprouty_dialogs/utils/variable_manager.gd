@@ -147,7 +147,7 @@ func set_variable(name: String, value: Variant) -> void:
 		var autoloads = _get_autoloads()
 		if autoloads.has(from):
 			var variable_name = name.get_slice(".", 1)
-			if autoloads[from].get(variable_name):
+			if has_variable(name):
 				autoloads[from].set(variable_name, value)
 				return
 			else:
