@@ -75,12 +75,21 @@ func get_start_id() -> String:
 	return _start_id.to_upper()
 
 
+## Set the start ID
+func set_start_id(new_id: String) -> void:
+	_start_id = new_id.to_upper()
+	if _id_input_text != null:
+		_id_input_text.text = _start_id
+
+
 ## Update the dialog ID and become it to uppercase
 func _on_id_input_changed(new_text: String) -> void:
 	if _displaying_error:
 		# Remove error style and hide alert when input is changed
 		_id_input_text.remove_theme_stylebox_override("normal")
-		get_parent().alerts.hide_alert(_id_error_alert)
+		var parent = get_parent()
+		if parent != null and "alerts" in parent and parent.alerts != null and _id_error_alert:
+			parent.alerts.hide_alert(_id_error_alert)
 		_id_error_alert = null
 		_displaying_error = false
 	
@@ -114,28 +123,42 @@ func _on_id_input_focus_exited() -> void:
 		_id_modified = false
 		modified.emit(true)
 	
+	var parent = get_parent()
+	if parent == null:
+		return
+
 	# Show error if the ID input is empty
 	if _id_input_text.text.is_empty():
 		_id_input_text.add_theme_stylebox_override("normal", _input_error_style)
-		if _id_error_alert == null:
-			_id_error_alert = get_parent().alerts.show_alert(
-				"Start Node #" + str(node_index) + " needs an ID", 0)
-		else: get_parent().alerts.focus_alert(_id_error_alert)
+		if "alerts" in parent and parent.alerts != null:
+			if _id_error_alert == null:
+				_id_error_alert = parent.alerts.show_alert(
+					"Start Node #" + str(node_index) + " needs an ID", 0)
+			else: parent.alerts.focus_alert(_id_error_alert)
 		_displaying_error = true
 	else:
 		# Show error if the ID already exists in another node
-		var nodes: Array = get_parent().get_children()
+		var has_duplicate := false
+		var nodes: Array = parent.get_children()
 		for node in nodes:
 			if node is SproutyDialogsBaseNode and node.node_type == "start_node" \
 					and node != self and node.get_start_id() == _id_input_text.text:
+				has_duplicate = true
 				_id_input_text.add_theme_stylebox_override("normal", _input_error_style)
-				if _id_error_alert == null:
-					_id_error_alert = get_parent().alerts.show_alert(
-						"Start Node #" + str(node.node_index) + " already has the ID '" \
-						+ _id_input_text.text + "'", 0)
-				else: get_parent().alerts.focus_alert(_id_error_alert)
+				if "alerts" in parent and parent.alerts != null:
+					if _id_error_alert == null:
+						_id_error_alert = parent.alerts.show_alert(
+							"Start Node #" + str(node.node_index) + " already has the ID '" \
+							+ _id_input_text.text + "'", 0)
+					else: parent.alerts.focus_alert(_id_error_alert)
 				_displaying_error = true
 				break
+		if not has_duplicate and _displaying_error:
+			_id_input_text.remove_theme_stylebox_override("normal")
+			if "alerts" in parent and parent.alerts != null and _id_error_alert:
+				parent.alerts.hide_alert(_id_error_alert)
+			_id_error_alert = null
+			_displaying_error = false
 
 
 ## Active error alert when ID input is empty on node deselected
@@ -145,7 +168,9 @@ func _on_node_deselected() -> void:
 
 ## Hide active error alert on node destroy
 func _on_tree_exiting() -> void:
-	get_parent().alerts.hide_alert(_id_error_alert)
+	var parent = get_parent()
+	if parent != null and "alerts" in parent and parent.alerts != null and _id_error_alert:
+		parent.alerts.hide_alert(_id_error_alert)
 
 
 ## Play the dialog from the current graph starting from the given ID

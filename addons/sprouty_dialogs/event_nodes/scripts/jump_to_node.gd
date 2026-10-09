@@ -185,14 +185,16 @@ func _on_target_input_focus_exited() -> void:
 
 	if _target_input.text.is_empty() or not _is_valid_target_id(_target_input.text):
 		_target_input.add_theme_stylebox_override("normal", _input_error_style)
-		if _target_error_alert == null:
-			var message = "Jump To Node #" + str(node_index) + " needs a valid Start ID"
-			if not _target_input.text.is_empty():
-				message = "Jump To Node #" + str(node_index) + " cannot find the Start ID '" \
-					+ _target_input.text + "'"
-			_target_error_alert = get_parent().alerts.show_alert(message, 0)
-		else:
-			get_parent().alerts.focus_alert(_target_error_alert)
+		var parent = get_parent()
+		if parent != null and "alerts" in parent and parent.alerts != null:
+			if _target_error_alert == null:
+				var message = "Jump To Node #" + str(node_index) + " needs a valid Start ID"
+				if not _target_input.text.is_empty():
+					message = "Jump To Node #" + str(node_index) + " cannot find the Start ID '" \
+						+ _target_input.text + "'"
+				_target_error_alert = parent.alerts.show_alert(message, 0)
+			else:
+				parent.alerts.focus_alert(_target_error_alert)
 		_displaying_error = true
 	else:
 		_hide_alerts()
@@ -201,8 +203,9 @@ func _on_target_input_focus_exited() -> void:
 # Hide the displayed alerts
 func _hide_alerts() -> void:
 	_target_input.remove_theme_stylebox_override("normal")
-	if _target_error_alert:
-		get_parent().alerts.hide_alert(_target_error_alert)
+	var parent = get_parent()
+	if parent != null and "alerts" in parent and parent.alerts != null and _target_error_alert:
+		parent.alerts.hide_alert(_target_error_alert)
 	_target_error_alert = null
 	_displaying_error = false
 
@@ -214,8 +217,12 @@ func _on_node_deselected() -> void:
 
 ## Hide active error alert on node destroy.
 func _on_tree_exiting() -> void:
-	if get_parent() and _target_error_alert:
-		get_parent().alerts.hide_alert(_target_error_alert)
+	var parent = get_parent()
+	if parent != null:
+		if "alerts" in parent and parent.alerts != null and _target_error_alert:
+			parent.alerts.hide_alert(_target_error_alert)
+		if parent.has_signal("modified") and parent.modified.is_connected(_on_graph_modified):
+			parent.modified.disconnect(_on_graph_modified)
 
 
 #region === Handle Dialogue Selection ==========================================

@@ -37,7 +37,7 @@ func _ready():
 
 func get_data() -> Dictionary:
 	var dict := {}
-	var connections: Array = get_parent().get_node_connections(name)
+	var connections: Array = get_parent().get_node_connections(name) if get_parent() and get_parent().has_method("get_node_connections") else []
 
 	dict[name.to_snake_case()] = {
 		"node_type": node_type,
@@ -151,31 +151,35 @@ func _add_option(index: int, new_option: EditorSproutyDialogsOptionContainer) ->
 	# Update the following options to the new one, by moving them downwards
 	var options = get_children().filter(func(c): return c is EditorSproutyDialogsOptionContainer)
 	options.reverse()
+	var parent = get_parent()
 	for option in options:
 		if option.get_index() > index:
 			option.update_option_index(option.get_index())
-			# Get the connections on previous port and move them to current port
-			var prev_connections = get_parent().get_node_output_connections(name, option.get_index() - 1)
-			get_parent().disconnect_node_on_port(name, option.get_index() - 1) # Remove old connections
-			for connection in prev_connections: # Update to new connections
-				get_parent().connect_node(name, option.get_index(),
-					connection["to_node"], connection["to_port"])
+			if parent and parent.has_method("get_node_output_connections"):
+				# Get the connections on previous port and move them to current port
+				var prev_connections = parent.get_node_output_connections(name, option.get_index() - 1)
+				parent.disconnect_node_on_port(name, option.get_index() - 1) # Remove old connections
+				for connection in prev_connections: # Update to new connections
+					parent.connect_node(name, option.get_index(),
+						connection["to_node"], connection["to_port"])
 
 	_on_resized() # Resize container vertically
 
 
 ## Remove an option at a given index
 func _remove_option(index: int) -> void:
+	var parent = get_parent()
 	for child in get_children():
 		# Update the following options to the removed one, by moving them upwards
 		if child is EditorSproutyDialogsOptionContainer and child.get_index() >= index:
 			child.update_option_index(child.get_index() - 1)
-			# Get the connections on next port and move them to current port
-			var next_connections = get_parent().get_node_output_connections(name, child.get_index() + 1)
-			get_parent().disconnect_node_on_port(name, child.get_index()) # Remove old connections
-			for connection in next_connections: # Update to new connections
-				get_parent().connect_node(name, child.get_index(),
-					connection["to_node"], connection["to_port"])
+			if parent and parent.has_method("get_node_output_connections"):
+				# Get the connections on next port and move them to current port
+				var next_connections = parent.get_node_output_connections(name, child.get_index() + 1)
+				parent.disconnect_node_on_port(name, child.get_index()) # Remove old connections
+				for connection in next_connections: # Update to new connections
+					parent.connect_node(name, child.get_index(),
+						connection["to_node"], connection["to_port"])
 	
 	remove_child(get_child(index))
 
@@ -201,7 +205,8 @@ func _on_add_option_button_pressed() -> void:
 
 ## Handle when an option is removed
 func _on_option_removed(index: int) -> void:
-	var temp_connections = get_parent().get_node_output_connections(name, index)
+	var parent = get_parent()
+	var temp_connections = parent.get_node_output_connections(name, index) if parent and parent.has_method("get_node_output_connections") else []
 	var temp_node = get_child(index)
 	_remove_option(index)
 	modified.emit(true)
@@ -210,8 +215,8 @@ func _on_option_removed(index: int) -> void:
 	undo_redo.create_action("Remove Option")
 	undo_redo.add_do_method(self, "_remove_option", index)
 	undo_redo.add_undo_method(self, "_add_option", index, temp_node)
-	if temp_connections.size() > 0: # Restore connections if there were any
-		undo_redo.add_undo_method(get_parent(), "connect_node", name, index,
+	if temp_connections.size() > 0 and parent != null: # Restore connections if there were any
+		undo_redo.add_undo_method(parent, "connect_node", name, index,
 				temp_connections[0]["to_node"], temp_connections[0]["to_port"])
 	
 	undo_redo.add_do_method(self, "emit_signal", "modified", true)

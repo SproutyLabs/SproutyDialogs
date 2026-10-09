@@ -71,6 +71,9 @@ var _copied_names: Dictionary = {}
 ## Copied connections references
 var _copied_connections: Dictionary = {}
 
+## Reference to parent dialogue panel
+var dialogue_panel: Control
+
 ## Requested connection node
 var _request_node: String = ""
 ## Requested connection port
@@ -138,6 +141,19 @@ func _process(_delta: float) -> void:
 		view_state_changed.emit(get_editor_state())
 
 
+## Returns the parent dialogue panel reference
+func _get_dialogue_panel() -> Control:
+	if dialogue_panel != null:
+		return dialogue_panel
+	var p = get_parent()
+	while p != null:
+		if p.has_method("has_copied_nodes"):
+			dialogue_panel = p
+			return p
+		p = p.get_parent()
+	return null
+
+
 #region === Editor State =======================================================
 
 ## Returns the current editor state as a dictionary
@@ -167,6 +183,31 @@ func get_start_ids() -> Array:
 			if start_id != "" and not ids.has(start_id):
 				ids.append(start_id)
 	return ids
+
+
+## Returns the next available unique start_id in the graph
+func _get_next_available_start_id(base_id: String) -> String:
+	if base_id.is_empty():
+		base_id = "START"
+	var existing_ids = get_start_ids()
+	if not existing_ids.has(base_id):
+		return base_id
+	
+	var regex = RegEx.new()
+	regex.compile("^(.*)_(\\d+)$")
+	var match_res = regex.search(base_id)
+	var prefix = base_id
+	var counter = 1
+	if match_res:
+		prefix = match_res.get_string(1)
+		counter = match_res.get_string(2).to_int() + 1
+	
+	var new_id = prefix + "_" + str(counter)
+	while existing_ids.has(new_id):
+		counter += 1
+		new_id = prefix + "_" + str(counter)
+	
+	return new_id
 
 
 ## Increment the modified counter and emit the modified signal
@@ -236,79 +277,90 @@ func _new_node(node_type: String, node_index: int, node_offset: Vector2, add_to_
 
 ## Connect node signals
 func _connect_node_signals(node: SproutyDialogsBaseNode) -> void:
-	node.modified.connect(_on_modified)
-	node.dragged.connect(_on_node_dragged.bind(node))
+	if not node.modified.is_connected(_on_modified):
+		node.modified.connect(_on_modified)
+	
+	var dragged_callable = _on_node_dragged.bind(node)
+	if not node.dragged.is_connected(dragged_callable):
+		node.dragged.connect(dragged_callable)
 
 	# Connect text editor signals
-	if node.has_signal("open_text_editor"):
+	if node.has_signal("open_text_editor") and not node.open_text_editor.is_connected(open_text_editor.emit):
 		node.open_text_editor.connect(open_text_editor.emit)
-	if node.has_signal("update_text_editor"):
+	if node.has_signal("update_text_editor") and not node.update_text_editor.is_connected(update_text_editor.emit):
 		node.update_text_editor.connect(update_text_editor.emit)
 	
 	# Connect translation signals
 	if node.has_method("on_locales_changed") and \
-			not is_connected("locales_changed", node.on_locales_changed):
+			not locales_changed.is_connected(node.on_locales_changed):
 		locales_changed.connect(node.on_locales_changed)
 	if node.has_method("on_translation_enabled_changed") and \
-			not is_connected("translation_enabled_changed", node.on_translation_enabled_changed):
+			not translation_enabled_changed.is_connected(node.on_translation_enabled_changed):
 		translation_enabled_changed.connect(node.on_translation_enabled_changed)
 	
 	# Connect dialogue changed signal
 	if node.has_method("on_dialogue_changed") and \
-			not is_connected("dialogue_changed", node.on_dialogue_changed):
+			not dialogue_changed.is_connected(node.on_dialogue_changed):
 		dialogue_changed.connect(node.on_dialogue_changed)
 
 	# Connect character changed signal
 	if node.has_method("on_character_changed") and \
-			not is_connected("character_changed", node.on_character_changed):
+			not character_changed.is_connected(node.on_character_changed):
 		character_changed.connect(node.on_character_changed)
 
 	# Connect variables changed signal
 	if node.has_method("on_variables_changed") and \
-			not is_connected("variables_changed", node.on_variables_changed):
+			not variables_changed.is_connected(node.on_variables_changed):
 		variables_changed.connect(node.on_variables_changed)
 	
 	# Connect other signals
-	if node.has_signal("open_file_request"):
+	if node.has_signal("open_file_request") and not node.open_file_request.is_connected(open_file_request.emit):
 		node.open_file_request.connect(open_file_request.emit)
-	if node.has_signal("play_dialog_request"):
+	if node.has_signal("play_dialog_request") and not node.play_dialog_request.is_connected(play_dialog_request.emit):
 		node.play_dialog_request.connect(play_dialog_request.emit)
 
 
 ## Disconnect node signals
 func _disconnect_node_signals(node: SproutyDialogsBaseNode) -> void:
-	node.modified.disconnect(_on_modified)
-	node.dragged.disconnect(_on_node_dragged.bind(node))
+	for conn in node.modified.get_connections():
+		node.modified.disconnect(conn["callable"])
+	
+	for conn in node.dragged.get_connections():
+		node.dragged.disconnect(conn["callable"])
 
 	# Disconnect text editor signals
 	if node.has_signal("open_text_editor"):
-		node.open_text_editor.disconnect(open_text_editor.emit)
+		for conn in node.open_text_editor.get_connections():
+			node.open_text_editor.disconnect(conn["callable"])
 	if node.has_signal("update_text_editor"):
-		node.update_text_editor.disconnect(update_text_editor.emit)
+		for conn in node.update_text_editor.get_connections():
+			node.update_text_editor.disconnect(conn["callable"])
 	
 	# Disconnect translation signals
-	if node.has_method("on_locales_changed"):
+	if node.has_method("on_locales_changed") and locales_changed.is_connected(node.on_locales_changed):
 		locales_changed.disconnect(node.on_locales_changed)
-	if node.has_method("on_translation_enabled_changed"):
+	if node.has_method("on_translation_enabled_changed") and translation_enabled_changed.is_connected(node.on_translation_enabled_changed):
 		translation_enabled_changed.disconnect(node.on_translation_enabled_changed)
 	
 	# Disconnect dialogue changed signal
-	if node.has_method("on_dialogue_changed"):
+	if node.has_method("on_dialogue_changed") and dialogue_changed.is_connected(node.on_dialogue_changed):
 		dialogue_changed.disconnect(node.on_dialogue_changed)
 	
 	# Disconnect character changed signal
-	if node.has_method("on_character_changed"):
+	if node.has_method("on_character_changed") and character_changed.is_connected(node.on_character_changed):
 		character_changed.disconnect(node.on_character_changed)
 
 	# Disconnect variables changed signal
-	if node.has_method("on_variables_changed"):
+	if node.has_method("on_variables_changed") and variables_changed.is_connected(node.on_variables_changed):
 		variables_changed.disconnect(node.on_variables_changed)
 
 	# Disconnect other signals
 	if node.has_signal("open_file_request"):
-		node.open_file_request.disconnect(open_file_request.emit)
+		for conn in node.open_file_request.get_connections():
+			node.open_file_request.disconnect(conn["callable"])
 	if node.has_signal("play_dialog_request"):
-		node.play_dialog_request.disconnect(play_dialog_request.emit)
+		for conn in node.play_dialog_request.get_connections():
+			node.play_dialog_request.disconnect(conn["callable"])
 
 #endregion
 
@@ -562,6 +614,8 @@ func _add_new_node(node_type: String) -> void:
 
 ## Delete a node from graph
 func delete_node(node: GraphNode, from_request: bool = false) -> void:
+	if node == null or node.get_parent() != self:
+		return
 	var node_connections = get_node_connections(node.name, true)
 	for connection in node_connections: # Disconnect all connections
 		disconnect_node(connection["from_node"], connection["from_port"],
@@ -616,7 +670,7 @@ func _on_delete_nodes_request(nodes: Array) -> void:
 
 
 ## Create a copy of a node from the graph
-func _copy_node(node: GraphNode) -> GraphNode:
+func _copy_node(node: GraphNode, target_connections: Dictionary, target_nodes: Dictionary, target_names: Dictionary) -> GraphNode:
 	var new_node = _new_node(
 		node.node_type,
 		_get_next_available_index(node.node_type),
@@ -624,10 +678,12 @@ func _copy_node(node: GraphNode) -> GraphNode:
 		false # Do not add to count here, it will be added later
 	)
 	new_node.set_data(node.get_data()[node.name.to_snake_case()])
+	new_node.set_meta("is_clipboard_copy", true)
+	new_node.set_meta("original_name", node.name)
 
-	_copied_connections[new_node.name] = get_node_connections(node.name)
-	_copied_nodes[new_node.name] = node # Store the copied node reference
-	_copied_names[node.name] = new_node.name # Store the copied name reference
+	target_connections[node.name] = get_node_connections(node.name)
+	target_nodes[node.name] = node # Store the copied node reference
+	target_names[node.name] = node.name # Store the copied name reference
 	
 	match node.node_type:
 		"dialogue_node":
@@ -637,6 +693,7 @@ func _copy_node(node: GraphNode) -> GraphNode:
 		"options_node":
 			new_node.load_options_text(node.get_options_text())
 	
+	_disconnect_node_signals(new_node)
 	remove_child(new_node)
 	return new_node
 
@@ -646,17 +703,42 @@ func _on_duplicate_nodes() -> void:
 	if _selected_nodes.size() == 0:
 		return
 	var _duplicate_nodes = _selected_nodes.duplicate()
+	var local_connections := {}
+	var local_nodes := {}
+	var local_names := {}
+
 	undo_redo.create_action("Duplicate Node(s)")
 
+	var new_nodes: Array[GraphNode] = []
+
 	for node in _duplicate_nodes:
-		var new_index = _get_next_available_index(node.node_type)
-		var new_node = _copy_node(node)
+		var new_node = _copy_node(node, local_connections, local_nodes, local_names)
+		
+		var orig_name = new_node.get_meta("original_name", node.name)
+		var new_index = _get_next_available_index(new_node.node_type)
 		new_node.node_index = new_index
-		new_node.name = node.node_type + "_" + str(new_index)
+		new_node.name = new_node.node_type + "_" + str(new_index)
 		new_node.title = new_node.title.split("#")[0] + "#" + str(new_index)
 		_rename_if_exists(new_node)
 		new_node.position_offset += Vector2(20, 20)
+
+		local_names[orig_name] = new_node.name
+
+		if new_node.has_meta("is_clipboard_copy"):
+			new_node.remove_meta("is_clipboard_copy")
+
+		if new_node.node_type == "start_node":
+			var unique_id = _get_next_available_start_id(new_node.get_start_id())
+			if new_node.has_method("set_start_id"):
+				new_node.set_start_id(unique_id)
+
+		_disconnect_node_signals(new_node)
+		_connect_node_signals(new_node)
+		new_node.undo_redo = undo_redo
+
 		add_child(new_node, true)
+		new_nodes.append(new_node)
+
 		new_node.selected = true
 		node.selected = false
 
@@ -664,15 +746,20 @@ func _on_duplicate_nodes() -> void:
 		undo_redo.add_do_method(self, "add_child", new_node)
 		undo_redo.add_do_reference(new_node)
 		undo_redo.add_undo_method(self, "remove_child", new_node)
-		undo_redo.add_undo_method(self, "_deselect_all_nodes")
 		# ---------------------------------------------------------------
 	
-	_reconnect_nodes_copy()
-	_copied_nodes.clear()
-	_nodes_copy.clear()
+	_reconnect_nodes_copy(local_connections, local_names)
+
+	for node in _duplicate_nodes:
+		_update_connections_start_node(node)
+
+	for node in new_nodes:
+		_update_connections_start_node(node)
+
 	_on_modified(true)
 
 	# --- UndoRedo ------------------------------------------------------
+	undo_redo.add_undo_method(self, "_deselect_all_nodes")
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
@@ -681,26 +768,47 @@ func _on_duplicate_nodes() -> void:
 
 ## Copy selected nodes
 func _on_copy_nodes() -> void:
-	_copied_connections.clear()
-	_copied_names.clear()
-	_copied_nodes.clear()
-	_nodes_copy.clear()
+	var dp = _get_dialogue_panel()
+	var target_connections: Dictionary
+	var target_nodes: Dictionary
+	var target_names: Dictionary
+	if dp != null:
+		dp.clear_clipboard()
+		target_connections = dp._copied_connections
+		target_nodes = dp._copied_nodes
+		target_names = dp._copied_names
+	else:
+		_copied_connections.clear()
+		_copied_names.clear()
+		_copied_nodes.clear()
+		_nodes_copy.clear()
+		target_connections = _copied_connections
+		target_nodes = _copied_nodes
+		target_names = _copied_names
 
 	if _selected_nodes.size() == 0:
 		return
 	for node in _selected_nodes:
-		var new_node = _copy_node(node)
-		_nodes_copy.append(new_node)
+		var new_node = _copy_node(node, target_connections, target_nodes, target_names)
+		if dp != null:
+			dp._nodes_copy.append(new_node)
+		else:
+			_nodes_copy.append(new_node)
 	
-	paste_selection_changed.emit(_nodes_copy.size() > 0)
+	var has_copy = (dp._nodes_copy.size() > 0) if dp != null else (_nodes_copy.size() > 0)
+	paste_selection_changed.emit(has_copy)
 
 
 ## Cut selected nodes
 func _on_cut_nodes() -> void:
-	_copied_connections.clear()
-	_copied_names.clear()
-	_copied_nodes.clear()
-	_nodes_copy.clear()
+	var dp = _get_dialogue_panel()
+	if dp != null:
+		dp.clear_clipboard()
+	else:
+		_copied_connections.clear()
+		_copied_names.clear()
+		_copied_nodes.clear()
+		_nodes_copy.clear()
 	
 	if _selected_nodes.size() == 0:
 		return
@@ -708,10 +816,18 @@ func _on_cut_nodes() -> void:
 	undo_redo.create_action("Cut Node(s)")
 
 	for node in _selected_nodes:
-		_copied_connections[node.name] = get_node_connections(node.name)
-		_copied_names[node.name] = node.name
-		_copied_nodes[node.name] = node
-		_nodes_copy.append(node)
+		node.set_meta("original_name", node.name)
+		if dp != null:
+			dp._copied_connections[node.name] = get_node_connections(node.name)
+			dp._copied_names[node.name] = node.name
+			dp._copied_nodes[node.name] = node
+			dp._nodes_copy.append(node)
+		else:
+			_copied_connections[node.name] = get_node_connections(node.name)
+			_copied_names[node.name] = node.name
+			_copied_nodes[node.name] = node
+			_nodes_copy.append(node)
+		
 		remove_child(node)
 
 		# --- UndoRedo -------------------------------------------------
@@ -723,7 +839,8 @@ func _on_cut_nodes() -> void:
 	_selected_nodes.clear()
 	_on_modified(true)
 
-	paste_selection_changed.emit(_nodes_copy.size() > 0)
+	var has_copy = (dp._nodes_copy.size() > 0) if dp != null else (_nodes_copy.size() > 0)
+	paste_selection_changed.emit(has_copy)
 
 	# --- UndoRedo ------------------------------------------------------
 	undo_redo.add_do_method(self, "_on_modified", true)
@@ -734,30 +851,52 @@ func _on_cut_nodes() -> void:
 
 ## Paste copied nodes
 func _on_paste_nodes() -> void:
-	if _nodes_copy.size() == 0:
+	var dp = _get_dialogue_panel()
+	var nodes_copy: Array[GraphNode] = dp._nodes_copy if dp != null else _nodes_copy
+	var copied_connections: Dictionary = dp._copied_connections if dp != null else _copied_connections
+	var copied_nodes: Dictionary = dp._copied_nodes if dp != null else _copied_nodes
+	var copied_names: Dictionary = dp._copied_names if dp != null else _copied_names
+
+	if nodes_copy.size() == 0:
 		return
 	
 	# Get the center point of the nodes
 	var center_pos = Vector2.ZERO
-	for node in _nodes_copy:
+	for node in nodes_copy:
 		center_pos += node.position_offset
-	center_pos /= _nodes_copy.size()
+	center_pos /= nodes_copy.size()
 	
 	undo_redo.create_action("Paste Node(s)")
 
-	for node in _nodes_copy:
+	for node in nodes_copy:
 		node.position_offset -= Vector2(node.size.x / 2, node.size.y / 2)
 		node.position_offset -= center_pos # Center the nodes
 		node.position_offset += ((get_local_mouse_position() + scroll_offset) / zoom)
 
-		if _copied_nodes[node.name]: # Deselect original nodes
-			_copied_nodes[node.name].selected = false
+		var orig_name = node.get_meta("original_name", node.name)
+		if copied_nodes.has(orig_name) and is_instance_valid(copied_nodes[orig_name]): # Deselect original nodes
+			copied_nodes[orig_name].selected = false
 		
 		var new_index = _get_next_available_index(node.node_type)
 		node.node_index = new_index
 		node.name = node.node_type + "_" + str(new_index)
 		node.title = node.title.split("#")[0] + "#" + str(new_index)
 		_rename_if_exists(node)
+
+		copied_names[orig_name] = node.name
+
+		if node.has_meta("is_clipboard_copy"):
+			node.remove_meta("is_clipboard_copy")
+
+		if node.node_type == "start_node":
+			var unique_id = _get_next_available_start_id(node.get_start_id())
+			if node.has_method("set_start_id"):
+				node.set_start_id(unique_id)
+
+		_disconnect_node_signals(node)
+		_connect_node_signals(node)
+		node.undo_redo = undo_redo
+
 		add_child(node, true)
 		node.selected = true
 
@@ -765,19 +904,27 @@ func _on_paste_nodes() -> void:
 		undo_redo.add_do_method(self, "add_child", node)
 		undo_redo.add_do_reference(node)
 		undo_redo.add_undo_method(self, "remove_child", node)
-		undo_redo.add_undo_method(self, "_deselect_all_nodes")
 		# ---------------------------------------------------------------
 	
-	_reconnect_nodes_copy()
-	_copied_connections.clear()
-	_copied_names.clear()
-	_copied_nodes.clear()
-	_nodes_copy.clear()
+	_reconnect_nodes_copy(copied_connections, copied_names)
+
+	for node in nodes_copy:
+		_update_connections_start_node(node)
+
+	if dp != null:
+		dp.clear_clipboard()
+	else:
+		_copied_connections.clear()
+		_copied_names.clear()
+		_copied_nodes.clear()
+		_nodes_copy.clear()
+
 	_on_modified(true)
 
 	paste_selection_changed.emit(false)
 
 	# --- UndoRedo ------------------------------------------------------
+	undo_redo.add_undo_method(self, "_deselect_all_nodes")
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
@@ -794,13 +941,19 @@ func _rename_if_exists(node: GraphNode) -> void:
 
 
 ## Reconnect nodes after a paste operation
-func _reconnect_nodes_copy() -> void:
-	for node in _copied_connections:
-		for connection in _copied_connections[node]:
-			if _copied_names.has(connection["to_node"]):
-				connect_node(_copied_names[connection["from_node"]], connection["from_port"],
-					_copied_names[connection["to_node"]], connection["to_port"])
-	_copied_connections.clear()
+func _reconnect_nodes_copy(connections_dict: Dictionary, names_dict: Dictionary) -> void:
+	for orig_node_name in connections_dict:
+		for connection in connections_dict[orig_node_name]:
+			var from_orig = connection["from_node"]
+			var to_orig = connection["to_node"]
+			if names_dict.has(from_orig) and names_dict.has(to_orig):
+				var from_new = names_dict[from_orig]
+				var to_new = names_dict[to_orig]
+				connect_node(from_new, connection["from_port"], to_new, connection["to_port"])
+				if undo_redo != null:
+					undo_redo.add_do_method(self, "connect_node", from_new, connection["from_port"], to_new, connection["to_port"])
+					undo_redo.add_undo_method(self, "disconnect_node", from_new, connection["from_port"], to_new, connection["to_port"])
+	connections_dict.clear()
 
 
 ## Called when a node is dragged or moved in the graph
@@ -1211,16 +1364,19 @@ func _on_add_node_menu_selected(id: int) -> void:
 
 ## Show add node pop-up menu on right click
 func _on_right_click(pos: Vector2) -> void:
+	var dp = _get_dialogue_panel()
+	var has_copy = dp.has_copied_nodes() if dp != null else (_nodes_copy.size() > 0)
+
 	# Show node actions menu if nodes are selected
 	if _selected_nodes.size() > 0:
-		if _nodes_copy.size() > 0:
+		if has_copy:
 			_set_node_actions_menu(true, true)
 			_show_popup_menu(_node_actions_menu, pos)
 		else:
 			_set_node_actions_menu(true, false)
 			_show_popup_menu(_node_actions_menu, pos)
 	# Show only paste option if nodes are copied but no nodes are selected
-	elif _nodes_copy.size() > 0:
+	elif has_copy:
 		_set_node_actions_menu(false, true)
 		_show_popup_menu(_node_actions_menu, pos)
 	else: # Show add node menu if no nodes are selected
