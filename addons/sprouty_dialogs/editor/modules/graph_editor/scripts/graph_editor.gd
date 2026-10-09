@@ -185,6 +185,31 @@ func get_start_ids() -> Array:
 	return ids
 
 
+## Returns the next available unique start_id in the graph
+func _get_next_available_start_id(base_id: String) -> String:
+	if base_id.is_empty():
+		base_id = "START"
+	var existing_ids = get_start_ids()
+	if not existing_ids.has(base_id):
+		return base_id
+	
+	var regex = RegEx.new()
+	regex.compile("^(.*)_(\\d+)$")
+	var match_res = regex.search(base_id)
+	var prefix = base_id
+	var counter = 1
+	if match_res:
+		prefix = match_res.get_string(1)
+		counter = match_res.get_string(2).to_int() + 1
+	
+	var new_id = prefix + "_" + str(counter)
+	while existing_ids.has(new_id):
+		counter += 1
+		new_id = prefix + "_" + str(counter)
+	
+	return new_id
+
+
 ## Increment the modified counter and emit the modified signal
 func _on_modified(mark_as_modified: bool) -> void:
 	if mark_as_modified:
@@ -645,20 +670,7 @@ func _on_delete_nodes_request(nodes: Array) -> void:
 
 
 ## Create a copy of a node from the graph
-func _copy_node(node: GraphNode, target_connections: Dictionary = {}, target_nodes: Dictionary = {}, target_names: Dictionary = {}) -> GraphNode:
-	var dp = _get_dialogue_panel()
-	var use_dp_defaults = target_connections.is_empty() and target_nodes.is_empty() and target_names.is_empty()
-	
-	if use_dp_defaults:
-		if dp != null:
-			target_connections = dp._copied_connections
-			target_nodes = dp._copied_nodes
-			target_names = dp._copied_names
-		else:
-			target_connections = _copied_connections
-			target_nodes = _copied_nodes
-			target_names = _copied_names
-
+func _copy_node(node: GraphNode, target_connections: Dictionary, target_nodes: Dictionary, target_names: Dictionary) -> GraphNode:
 	var new_node = _new_node(
 		node.node_type,
 		_get_next_available_index(node.node_type),
@@ -681,6 +693,7 @@ func _copy_node(node: GraphNode, target_connections: Dictionary = {}, target_nod
 		"options_node":
 			new_node.load_options_text(node.get_options_text())
 	
+	_disconnect_node_signals(new_node)
 	remove_child(new_node)
 	return new_node
 
@@ -695,6 +708,8 @@ func _on_duplicate_nodes() -> void:
 	var local_names := {}
 
 	undo_redo.create_action("Duplicate Node(s)")
+
+	var new_nodes: Array[GraphNode] = []
 
 	for node in _duplicate_nodes:
 		var new_node = _copy_node(node, local_connections, local_nodes, local_names)
@@ -712,11 +727,18 @@ func _on_duplicate_nodes() -> void:
 		if new_node.has_meta("is_clipboard_copy"):
 			new_node.remove_meta("is_clipboard_copy")
 
+		if new_node.node_type == "start_node":
+			var unique_id = _get_next_available_start_id(new_node.get_start_id())
+			if new_node.has_method("set_start_id"):
+				new_node.set_start_id(unique_id)
+
 		_disconnect_node_signals(new_node)
 		_connect_node_signals(new_node)
 		new_node.undo_redo = undo_redo
 
 		add_child(new_node, true)
+		new_nodes.append(new_node)
+
 		new_node.selected = true
 		node.selected = false
 
@@ -724,7 +746,6 @@ func _on_duplicate_nodes() -> void:
 		undo_redo.add_do_method(self, "add_child", new_node)
 		undo_redo.add_do_reference(new_node)
 		undo_redo.add_undo_method(self, "remove_child", new_node)
-		undo_redo.add_undo_method(self, "_deselect_all_nodes")
 		# ---------------------------------------------------------------
 	
 	_reconnect_nodes_copy(local_connections, local_names)
@@ -732,9 +753,13 @@ func _on_duplicate_nodes() -> void:
 	for node in _duplicate_nodes:
 		_update_connections_start_node(node)
 
+	for node in new_nodes:
+		_update_connections_start_node(node)
+
 	_on_modified(true)
 
 	# --- UndoRedo ------------------------------------------------------
+	undo_redo.add_undo_method(self, "_deselect_all_nodes")
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
@@ -744,18 +769,27 @@ func _on_duplicate_nodes() -> void:
 ## Copy selected nodes
 func _on_copy_nodes() -> void:
 	var dp = _get_dialogue_panel()
+	var target_connections: Dictionary
+	var target_nodes: Dictionary
+	var target_names: Dictionary
 	if dp != null:
 		dp.clear_clipboard()
+		target_connections = dp._copied_connections
+		target_nodes = dp._copied_nodes
+		target_names = dp._copied_names
 	else:
 		_copied_connections.clear()
 		_copied_names.clear()
 		_copied_nodes.clear()
 		_nodes_copy.clear()
+		target_connections = _copied_connections
+		target_nodes = _copied_nodes
+		target_names = _copied_names
 
 	if _selected_nodes.size() == 0:
 		return
 	for node in _selected_nodes:
-		var new_node = _copy_node(node)
+		var new_node = _copy_node(node, target_connections, target_nodes, target_names)
 		if dp != null:
 			dp._nodes_copy.append(new_node)
 		else:
@@ -819,6 +853,7 @@ func _on_cut_nodes() -> void:
 func _on_paste_nodes() -> void:
 	var dp = _get_dialogue_panel()
 	var nodes_copy: Array[GraphNode] = dp._nodes_copy if dp != null else _nodes_copy
+	var copied_connections: Dictionary = dp._copied_connections if dp != null else _copied_connections
 	var copied_nodes: Dictionary = dp._copied_nodes if dp != null else _copied_nodes
 	var copied_names: Dictionary = dp._copied_names if dp != null else _copied_names
 
@@ -853,6 +888,11 @@ func _on_paste_nodes() -> void:
 		if node.has_meta("is_clipboard_copy"):
 			node.remove_meta("is_clipboard_copy")
 
+		if node.node_type == "start_node":
+			var unique_id = _get_next_available_start_id(node.get_start_id())
+			if node.has_method("set_start_id"):
+				node.set_start_id(unique_id)
+
 		_disconnect_node_signals(node)
 		_connect_node_signals(node)
 		node.undo_redo = undo_redo
@@ -864,10 +904,9 @@ func _on_paste_nodes() -> void:
 		undo_redo.add_do_method(self, "add_child", node)
 		undo_redo.add_do_reference(node)
 		undo_redo.add_undo_method(self, "remove_child", node)
-		undo_redo.add_undo_method(self, "_deselect_all_nodes")
 		# ---------------------------------------------------------------
 	
-	_reconnect_nodes_copy()
+	_reconnect_nodes_copy(copied_connections, copied_names)
 
 	for node in nodes_copy:
 		_update_connections_start_node(node)
@@ -885,6 +924,7 @@ func _on_paste_nodes() -> void:
 	paste_selection_changed.emit(false)
 
 	# --- UndoRedo ------------------------------------------------------
+	undo_redo.add_undo_method(self, "_deselect_all_nodes")
 	undo_redo.add_do_method(self, "_on_modified", true)
 	undo_redo.add_undo_method(self, "_on_modified", false)
 	undo_redo.commit_action(false)
@@ -901,12 +941,7 @@ func _rename_if_exists(node: GraphNode) -> void:
 
 
 ## Reconnect nodes after a paste operation
-func _reconnect_nodes_copy(connections_dict: Dictionary = {}, names_dict: Dictionary = {}) -> void:
-	if connections_dict.is_empty():
-		var dp = _get_dialogue_panel()
-		connections_dict = dp._copied_connections if dp != null else _copied_connections
-		names_dict = dp._copied_names if dp != null else _copied_names
-
+func _reconnect_nodes_copy(connections_dict: Dictionary, names_dict: Dictionary) -> void:
 	for orig_node_name in connections_dict:
 		for connection in connections_dict[orig_node_name]:
 			var from_orig = connection["from_node"]

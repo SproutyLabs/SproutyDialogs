@@ -218,8 +218,11 @@ func _on_node_deselected() -> void:
 ## Hide active error alert on node destroy.
 func _on_tree_exiting() -> void:
 	var parent = get_parent()
-	if parent != null and "alerts" in parent and parent.alerts != null and _target_error_alert:
-		parent.alerts.hide_alert(_target_error_alert)
+	if parent != null:
+		if "alerts" in parent and parent.alerts != null and _target_error_alert:
+			parent.alerts.hide_alert(_target_error_alert)
+		if parent.has_signal("modified") and parent.modified.is_connected(_on_graph_modified):
+			parent.modified.disconnect(_on_graph_modified)
 
 
 #region === Handle Dialogue Selection ==========================================
