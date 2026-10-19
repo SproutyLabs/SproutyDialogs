@@ -45,6 +45,15 @@ signal variables_changed
 ## UndoRedo manager
 var undo_redo: EditorUndoRedoManager
 
+## Nodes copied to clipboard
+var _nodes_copy: Array[GraphNode] = []
+## Copied nodes references
+var _copied_nodes: Dictionary = {}
+## Copied names references
+var _copied_names: Dictionary = {}
+## Copied connections references
+var _copied_connections: Dictionary = {}
+
 
 func _ready() -> void:
 	_new_dialog_button.pressed.connect(new_dialog_file_pressed.emit)
@@ -71,12 +80,35 @@ func get_current_graph() -> EditorSproutyDialogsGraphEditor:
 	else: return null
 
 
+## Returns true if there are nodes copied in the clipboard
+func has_copied_nodes() -> bool:
+	return _nodes_copy.size() > 0
+
+
+## Clears the clipboard, freeing unparented copied nodes if necessary
+func clear_clipboard() -> void:
+	for node in _nodes_copy:
+		if is_instance_valid(node) and node.get_parent() == null and node.has_meta("is_clipboard_copy"):
+			node.queue_free()
+	_nodes_copy.clear()
+	_copied_nodes.clear()
+	_copied_names.clear()
+	_copied_connections.clear()
+	if _graph_toolbar:
+		_graph_toolbar.update_paste_button(false)
+
+
 ## Switch the current graph on editor
 func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 	# Remove old graph and switch to the new one
 	if _graph_panel.get_child_count() > 1:
-		_graph_panel.remove_child(_graph_panel.get_child(1))
+		var old_graph = _graph_panel.get_child(1)
+		if _graph_toolbar.node_option_pressed.is_connected(old_graph.on_node_option_selected):
+			_graph_toolbar.node_option_pressed.disconnect(old_graph.on_node_option_selected)
+		_graph_panel.remove_child(old_graph)
 	
+	new_graph.dialogue_panel = self
+
 	# Connect signals to the new graph
 	if not new_graph.is_connected("open_text_editor", _show_text_editor):
 		new_graph.open_text_editor.connect(_show_text_editor)
@@ -87,21 +119,26 @@ func switch_current_graph(new_graph: EditorSproutyDialogsGraphEditor) -> void:
 		new_graph.nodes_selection_changed.connect(_graph_toolbar.update_node_options)
 		new_graph.paste_selection_changed.connect(_graph_toolbar.update_paste_button)
 
-		_graph_toolbar.node_option_pressed.connect(new_graph.on_node_option_selected)
 		translation_enabled_changed.connect(new_graph.translation_enabled_changed.emit)
 		locales_changed.connect(new_graph.locales_changed.emit)
 		variables_changed.connect(new_graph.variables_changed.emit)
 	
+	if not _graph_toolbar.node_option_pressed.is_connected(new_graph.on_node_option_selected):
+		_graph_toolbar.node_option_pressed.connect(new_graph.on_node_option_selected)
+
 	new_graph.undo_redo = undo_redo
 	_graph_panel.add_child(new_graph)
 	show_graph_editor()
 	
 	new_graph.show_expand_toolbar_button(not _graph_toolbar.visible)
 	_graph_toolbar.set_add_node_menu(new_graph.get_node("AddNodeMenu"))
+	_graph_toolbar.update_paste_button(has_copied_nodes())
+	_graph_toolbar.update_node_options(new_graph._selected_nodes.size() > 0)
 
 
 ## Show the start panel instead of graph editor
 func show_start_panel() -> void:
+	clear_clipboard()
 	_graph_panel.visible = false
 	_text_editor.visible = false
 	_start_panel.visible = true
