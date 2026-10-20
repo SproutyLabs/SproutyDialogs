@@ -19,9 +19,11 @@ signal request_save_file(index: int)
 signal request_save_file_as(index: int)
 ## Emitted when requesting to reload a file from disk.
 signal request_reload_file(index: int)
+## Emitted when requesting to rename a file.
+signal request_rename_file(index: int)
 
 ## Pending file operation awaiting confirmation in the unsaved-changes dialog
-enum PendingAction { NONE, CLOSE, CLOSE_ALL, RELOAD, RELOAD_ALL }
+enum PendingAction {NONE, CLOSE, CLOSE_ALL, RELOAD, RELOAD_ALL}
 
 ## File search input
 @onready var _file_search: LineEdit = $FileSearch
@@ -79,10 +81,11 @@ func _ready():
 	# Set icons for buttons
 	_file_popup_menu.set_item_icon(0, get_theme_icon("Save", "EditorIcons"))
 	_file_popup_menu.set_item_icon(1, get_theme_icon("Save", "EditorIcons"))
-	_file_popup_menu.set_item_icon(3, get_theme_icon("Reload", "EditorIcons"))
-	_file_popup_menu.set_item_icon(4, get_theme_icon("Reload", "EditorIcons"))
-	_file_popup_menu.set_item_icon(6, get_theme_icon("Close", "EditorIcons"))
-	_file_popup_menu.set_item_icon(7, get_theme_icon("Close", "EditorIcons"))
+	_file_popup_menu.set_item_icon(3, get_theme_icon("Rename", "EditorIcons"))
+	_file_popup_menu.set_item_icon(5, get_theme_icon("Reload", "EditorIcons"))
+	_file_popup_menu.set_item_icon(6, get_theme_icon("Reload", "EditorIcons"))
+	_file_popup_menu.set_item_icon(8, get_theme_icon("Close", "EditorIcons"))
+	_file_popup_menu.set_item_icon(9, get_theme_icon("Close", "EditorIcons"))
 	_file_search.right_icon = get_theme_icon("Search", "EditorIcons")
 
 	# Set confirm closing dialog actions
@@ -382,6 +385,8 @@ func _on_file_selected(index: int) -> void:
 	_switch_to_file(index)
 
 	# --- UndoRedo ---------------------------------------------------------
+	if undo_redo == null:
+		return # UndoRedo is not ready yet (e.g. while opening files at startup)
 	undo_redo.create_action("Select File: " + str(_file_list.get_item_text(index)))
 	undo_redo.add_do_method(self, "_switch_to_file", index)
 	undo_redo.add_undo_method(self, "_switch_to_file", temp)
@@ -417,16 +422,18 @@ func _on_file_menu_pressed(id: int) -> void:
 			request_save_file.emit(get_current_index()) # Save current file
 		1:
 			request_save_file_as.emit(_last_clicked_item) # Save file as
-		2:
-			close_file() # Close current file
 		3:
+			request_rename_file.emit(_last_clicked_item) # Rename file
+		8:
+			close_file() # Close current file
+		9:
 			close_all() # Close all files
 		5:
 			reload_file() # Reload current file
 		6:
 			reload_all() # Reload all files
 	
-
+	
 	_last_clicked_item = -1
 
 

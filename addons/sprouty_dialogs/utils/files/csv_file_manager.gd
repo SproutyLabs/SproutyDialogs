@@ -201,7 +201,9 @@ static func load_dialogs_from_csv(path: String) -> Dictionary:
 #region === Character names translations =======================================
 
 ## Save character name translations on the CSV file.
-static func save_character_names_on_csv(key_name: String, name_data: Dictionary) -> void:
+## The translation key is the value of the character csv_name_key property,
+## with the format "KEYNAME_CHAR", that should always match the character file.
+static func save_character_names_on_csv(csv_name_key: String, name_data: Dictionary) -> void:
 	var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
 	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
 		printerr("[Sprouty Dialogs] Cannot save character name translations, no CSV file set."
@@ -214,7 +216,7 @@ static func save_character_names_on_csv(key_name: String, name_data: Dictionary)
 	var header = csv_file[0]
 
 	# Parse name data to an array and sort by header locales
-	var row = [key_name.to_upper() + "_CHAR"]
+	var row = [csv_name_key]
 	for i in range(header.size()):
 		if header[i] == "keys":
 			continue
@@ -233,6 +235,8 @@ static func save_character_names_on_csv(key_name: String, name_data: Dictionary)
 
 
 ## Load character name translations from a CSV file to a dictionary.
+## The translations are loaded using the translation key from the character
+## csv_name_key property, with the format "KEYNAME_CHAR".
 ## Returns a dictionary with the character names as:
 ## [codeblock]
 ## { 
@@ -240,7 +244,7 @@ static func save_character_names_on_csv(key_name: String, name_data: Dictionary)
 ##    "locale_code_2": "Translated name in locale 2",
 ##    ...
 ## }[/codeblock]
-static func load_character_names_from_csv(key_name: String) -> Dictionary:
+static func load_character_names_from_csv(csv_name_key: String) -> Dictionary:
 	var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
 	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
 		printerr("[Sprouty Dialogs] Cannot load character names translations, no CSV file set."
@@ -254,10 +258,10 @@ static func load_character_names_from_csv(key_name: String) -> Dictionary:
 		printerr("[Sprouty Dialogs] Cannot load character names from CSV file.")
 		return {}
 	
-	# Get the row with the key name
+	# Get the row with the translation key
 	var row = data.filter(
 		func(item: Array) -> bool:
-			return item[0] == key_name.to_upper() + "_CHAR"
+			return item[0] == csv_name_key
 	)
 	
 	if row.is_empty():
@@ -274,5 +278,58 @@ static func load_character_names_from_csv(key_name: String) -> Dictionary:
 		dict[data[0][i + 1]] = names[i]
 	
 	return dict
+
+
+## Rename the translation key of a character name row on the CSV file,
+## keeping all its translations. Used when a character key name is renamed,
+## so the character translations are preserved on the new key.
+static func rename_character_key(old_name_key: String, new_name_key: String) -> void:
+	if old_name_key.is_empty() or new_name_key.is_empty() \
+			or old_name_key == new_name_key:
+		return
+	
+	var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
+	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
+		printerr("[Sprouty Dialogs] Cannot rename character names translations key,"
+				+" no CSV file set. Please set 'Character names CSV' in Settings > Characters.")
+		return
+	
+	var path: String = ResourceUID.get_id_path(char_names_csv)
+	var csv_data := load_file(path)
+	if csv_data.is_empty():
+		return
+	
+	var header = csv_data[0]
+	var content = csv_data.slice(1, csv_data.size())
+	
+	# Find the row with the old translation key
+	var old_row = null
+	for row in content:
+		if row[0] == old_name_key:
+			old_row = row
+			break
+	if old_row == null:
+		return
+	
+	old_row[0] = new_name_key
+	
+	# Rebuild the content keeping the renamed row with its translations,
+	# removing the old key row and any duplicated or stale row with the new key
+	var row_replaced := false
+	var new_content = []
+	for row in content:
+		if row[0] == old_name_key:
+			continue
+		if row[0] == new_name_key:
+			if not row_replaced:
+				new_content.append(old_row)
+				row_replaced = true
+			continue
+		new_content.append(row)
+	if not row_replaced:
+		new_content.append(old_row)
+	
+	new_content = new_content.filter(func(x): return x != [""])
+	save_file(header, new_content, path)
 
 #endregion

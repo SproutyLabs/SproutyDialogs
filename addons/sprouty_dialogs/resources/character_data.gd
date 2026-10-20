@@ -15,6 +15,10 @@ extends Resource
 ## Character identifier.
 ## Corresponds to the file name of the character's resource.
 @export var key_name: String = ""
+## Translation key used on the CSV file to translate the character display name.
+## It is kept in sync with the key_name when the character file is saved,
+## so the name translations still can be found if the key_name changes.
+@export var csv_name_key: String = ""
 ## Name of the character that will be displayed in the dialogue.
 ## The display name can be localized to different languages, so it is stored
 ## as a dictionary where each key is a locale code (e.g., "en", "fr")
@@ -116,3 +120,34 @@ func get_portrait_from_path_name(path_name: String, group: Dictionary = {"data":
 		if group.data.has(parts[0]):
 			return get_portrait_from_path_name("/".join(parts.slice(1, parts.size())), group.data[parts[0]])
 	return null
+
+
+## Returns the translation key used on the CSV file for this character display
+## name. Characters created before the csv_name_key property existed may have
+## it empty, in that case it falls back to the key derived from the key_name.
+func get_csv_name_key() -> String:
+	if not csv_name_key.is_empty():
+		return csv_name_key
+	return key_name.to_upper() + "_CHAR"
+
+
+## Updates the key_name to match the current file name of this character
+## resource. It should be called every time the character file is loaded so
+## the key_name is always the current file name.
+## Returns true if any property was updated (the key name or the CSV name key),
+## so the caller can save the changes to the file.
+func sync_key_name() -> bool:
+	var updated := false
+	
+	if csv_name_key.is_empty() and not key_name.is_empty():
+		csv_name_key = key_name.to_upper() + "_CHAR"
+		updated = true
+	
+	if resource_path.is_empty():
+		return updated
+	
+	var file_name = resource_path.get_file().get_basename()
+	if not file_name.is_empty() and file_name != key_name:
+		key_name = file_name
+		updated = true
+	return updated

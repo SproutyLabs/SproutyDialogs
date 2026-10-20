@@ -138,11 +138,14 @@ func load_character(path: String) -> void:
 		_clear_character_field()
 		return
 	
-	var character = ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
+	var character: Resource = ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
 	if not character is SproutyDialogsCharacterData:
 		printerr("[Sprouty Dialogs] Invalid character resource: " + path)
 		_clear_character_field()
 		return
+	
+	# Ensure the key name is always the current file name of the character
+	character.sync_key_name()
 	
 	# Show the character's display name and set the portrait dropdown
 	_character_button.disabled = false

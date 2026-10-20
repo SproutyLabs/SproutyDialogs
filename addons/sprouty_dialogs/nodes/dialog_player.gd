@@ -42,6 +42,7 @@ var _dialog_data: SproutyDialogsDialogueData:
 	set(value):
 		_dialog_data = value
 		if value:
+			value.sync_character_references()
 			_dialog_data_uid = ResourceLoader.get_resource_uid(value.resource_path)
 			_dialog_file_name = value.resource_path.get_file().get_basename()
 			_starts_ids = value.get_start_ids()
@@ -938,7 +939,8 @@ func _on_dialogue_processed(character_name: String, translated_name: String,
 		return
 	
 	var is_joining = _change_current_portrait(character_name, portrait)
-	if get_character_data(character_name).portrait_on_dialog_box:
+	var character_data = get_character_data(character_name)
+	if character_data and character_data.portrait_on_dialog_box:
 		_current_dialog_box.play_dialog(translated_name, dialog_data)
 		await _update_portrait(character_name, is_joining)
 	else:
@@ -1119,14 +1121,17 @@ func _change_current_portrait(character_name: String, portrait_name: String) -> 
 
 ## Update the portrait visibility and play entry animation (if needed).
 func _update_portrait(character_name: String, is_joining: bool) -> void:
-	# Hide all other portraits of the character
-	for portrait in _portraits_instances[character_name].values():
-		if not portrait:
-			continue
-		if portrait != _current_portrait:
-			portrait.hide()
-		else:
-			portrait.show()
+	# The character may have no portraits loaded when it has no portrait
+	# (or no default portrait) set on its dialogue nodes
+	if _portraits_instances.has(character_name):
+		# Hide all other portraits of the character
+		for portrait in _portraits_instances[character_name].values():
+			if not portrait:
+				continue
+			if portrait != _current_portrait:
+				portrait.hide()
+			else:
+				portrait.show()
 	
 	# Entry action if the character is joining the dialog
 	if is_joining and _current_portrait and _current_portrait.get_parent():

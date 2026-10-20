@@ -44,6 +44,14 @@ signal character_changed(character: SproutyDialogsCharacterData)
 ## Missing character references dialog
 @onready var _missing_chars_dialog: ConfirmationDialog = $PopupDialogs/MissingCharacters
 
+## Rename file dialog and its name input field
+@onready var _rename_file_dialog: ConfirmationDialog = $PopupDialogs/RenameFile
+@onready var _rename_file_field: LineEdit = $PopupDialogs/RenameFile/MarginContainer/Content/LineEdit
+@onready var _rename_error_label: RichTextLabel = $PopupDialogs/RenameFile/MarginContainer/Content/ErrorLabel
+
+## Index of the file to rename in the file list
+var _rename_file_index: int = -1
+
 ## File list manager
 @onready var _file_list: Control = $FileList
 ## CSV file path field
@@ -98,6 +106,7 @@ func _ready() -> void:
 			)
 		)
 	_file_list.request_reload_file.connect(reload_file)
+	_file_list.request_rename_file.connect(_popup_rename_file)
 
 	_close_editor_warning.custom_action.connect(_on_confirm_closing_editor_action)
 	_close_editor_warning.canceled.connect(func(): return null)
@@ -110,6 +119,12 @@ func _ready() -> void:
 	_close_editor_warning.add_button("Don't Save & Quit", true, "discard_files")
 	_close_editor_warning.add_cancel_button("Cancel")
 	_close_editor_warning.exclusive = false
+
+	# Setup the rename file dialog
+	_rename_file_dialog.confirmed.connect(_on_rename_file_confirmed)
+	_rename_file_field.text_submitted.connect(func(_text):
+			_rename_file_dialog.hide()
+			_on_rename_file_confirmed())
 
 	# Set icons for buttons
 	_save_file_button.icon = get_theme_icon("Save", "EditorIcons")
@@ -221,6 +236,7 @@ func new_character_file(path: String) -> void:
 	# Create a new character data resource
 	var resource = SproutyDialogsCharacterData.new()
 	resource.key_name = path.get_file().get_basename()
+	resource.csv_name_key = resource.key_name.to_upper() + "_CHAR"
 	ResourceSaver.save(resource, path)
 
 	var char_editor = _new_character_from_resource(resource)
@@ -245,7 +261,8 @@ func _new_character_from_resource(resource: SproutyDialogsCharacterData) -> Cont
 		and SproutyDialogsSettingsManager.get_setting("translate_character_names") \
 		and SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
 		and SproutyDialogsSettingsManager.get_setting("use_csv_files"): # Load character names from CSV file
-		name_data = SproutyDialogsCSVFileManager.load_character_names_from_csv(resource.key_name)
+		name_data = SproutyDialogsCSVFileManager.load_character_names_from_csv(
+				resource.get_csv_name_key())
 		name_data["default"] = resource.display_name["default"] if resource.display_name.has("default") else ""
 	char_editor.load_character(resource, name_data)
 	char_editor.name = "CharacterEditor"
@@ -268,6 +285,7 @@ func load_file(path: String, check_resources: bool = true, view_state: Dictionar
 
 		if resource is SproutyDialogsDialogueData:
 			SproutyDialogsFileUtils.set_recent_file_path("dialogue_files", path)
+			_sync_dialogue_file(resource)
 			var graph = _new_graph_from_resource(resource)
 			if not view_state.is_empty():
 				graph.load_editor_state(view_state)
@@ -284,6 +302,7 @@ func load_file(path: String, check_resources: bool = true, view_state: Dictionar
 		
 		elif resource is SproutyDialogsCharacterData:
 			SproutyDialogsFileUtils.set_recent_file_path("character_files", path)
+			_sync_character_file(resource)
 			var char_editor = _new_character_from_resource(resource)
 			if not view_state.is_empty():
 				char_editor.load_editor_state(view_state)
@@ -315,10 +334,12 @@ func reload_file(index: int) -> void:
 	var csv_path := ""
 
 	if resource is SproutyDialogsDialogueData:
+		_sync_dialogue_file(resource)
 		cache_node = _new_graph_from_resource(resource)
 		if SproutyDialogsFileUtils.check_valid_uid_path(resource.csv_file_uid):
 			csv_path = ResourceUID.get_id_path(resource.csv_file_uid)
 	elif resource is SproutyDialogsCharacterData:
+		_sync_character_file(resource)
 		cache_node = _new_character_from_resource(resource)
 	else:
 		printerr("[Sprouty Dialogs] File " + path + " is not a valid dialogue or character resource.")
@@ -387,7 +408,14 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 			and SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
 			and SproutyDialogsSettingsManager.get_setting("enable_translations") \
 			and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
-			SproutyDialogsCSVFileManager.save_character_names_on_csv(data.key_name, data.display_name)
+			var new_name_key: String = data.key_name.to_upper() + "_CHAR"
+			var old_name_key: String = data.csv_name_key
+			data.csv_name_key = new_name_key
+			# Keep the name translations available if the character key changed
+			if not old_name_key.is_empty() and old_name_key != new_name_key:
+				SproutyDialogsCSVFileManager.rename_character_key(old_name_key, new_name_key)
+			SproutyDialogsCSVFileManager.save_character_names_on_csv(
+					new_name_key, data.display_name)
 	
 	# Save file on the given path
 	if file_metadata["data"] is SproutyDialogsCharacterData:
@@ -409,6 +437,37 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 	_file_list.set_file_as_modified(index, false)
 
 	print("[Sprouty Dialogs] File '" + file_metadata.file_name + "' saved.")
+
+#endregion
+
+#region === Character references sync ==========================================
+
+## Update the character references of a dialogue file with the current key
+## name of each character file (UID to file name) and save the file again.
+func _sync_dialogue_file(dialogue: SproutyDialogsDialogueData) -> void:
+	if dialogue.resource_path.is_empty():
+		return
+	if dialogue.sync_character_references():
+		if ResourceSaver.save(dialogue, dialogue.resource_path) == OK:
+			print("[Sprouty Dialogs] Character references of '"
+					+ dialogue.resource_path.get_file() + "' updated.")
+		else:
+			print("[Sprouty Dialogs] File '" + dialogue.resource_path.get_file()
+					+ "' could not be saved.")
+
+
+## Update the key name of a character file to its current file name and save
+## the file again.
+func _sync_character_file(character: SproutyDialogsCharacterData) -> void:
+	if character.resource_path.is_empty():
+		return
+	if character.sync_key_name():
+		if ResourceSaver.save(character, character.resource_path) == OK:
+			print("[Sprouty Dialogs] Character file '"
+					+ character.resource_path.get_file() + "' key name updated.")
+		else:
+			print("[Sprouty Dialogs] File '" + character.resource_path.get_file()
+					+ "' could not be saved.")
 
 #endregion
 
@@ -445,6 +504,8 @@ func _reassign_missing_characters(dialog_data: SproutyDialogsDialogueData) -> vo
 	for res in character_resources:
 		var uid = ResourceSaver.get_resource_id_for_path(res.resource_path, true)
 		characters[res.key_name] = uid
+		# Match also by file name so renamed characters can be reassigned
+		characters[res.resource_path.get_file().get_basename()] = uid
 	
 	# Reassign missing characters
 	var chars_not_found = []
@@ -490,6 +551,197 @@ func on_new_dialog_pressed() -> void:
 func on_new_character_pressed() -> void:
 	new_char_file_dialog.set_current_dir(SproutyDialogsFileUtils.get_recent_file_path("character_files"))
 	new_char_file_dialog.popup_centered()
+
+#endregion
+
+#region === Rename files =======================================================
+
+## Show the rename file dialog for the file at the given index
+func _popup_rename_file(index: int) -> void:
+	if index < 0 or index >= _file_list.get_item_count():
+		return
+	_rename_file_index = index
+	var metadata = _file_list.get_item_metadata(index)
+	_rename_file_field.text = metadata["file_path"].get_file().get_basename()
+	_rename_error_label.text = "" # Clear the error messages of previous attempts
+	_rename_file_dialog.reset_size()
+	_rename_file_dialog.popup_centered()
+	_rename_file_field.grab_focus()
+	_rename_file_field.select_all()
+
+
+## Display the given message on the rename dialog error label.
+## When [param reset_message] is false the message is appended to the messages
+## of the current attempt (if any). When [param show_dialog] is false the dialog
+## is not opened, so the message is shown only if the dialog is opened later.
+func _show_rename_message(message: String, reset_message: bool = true,
+		show_dialog: bool = true) -> void:
+	if reset_message or _rename_error_label.text.is_empty():
+		_rename_error_label.text = message
+	else:
+		_rename_error_label.text += "\n" + message
+	if show_dialog:
+		_rename_file_dialog.show()
+		_rename_file_field.grab_focus()
+		_rename_file_field.select_all()
+
+
+## Handle the rename file dialog confirmation
+func _on_rename_file_confirmed() -> void:
+	_rename_error_label.text = "" # Clear the error messages of previous attempts
+	var new_name := _rename_file_field.text.strip_edges()
+	if new_name.is_empty() or not _is_valid_file_name(new_name):
+		_show_rename_message("[color=tomato]Cannot rename the file. The file name can not be "
+				+ "empty and can not include any of the following characters: / \\ : * ? \" < > |")
+		printerr("[Sprouty Dialogs] Invalid name to rename the file: '" + new_name + "'.")
+		return
+	var metadata = _file_list.get_item_metadata(_rename_file_index)
+	if not metadata:
+		return
+	var current_name: String = metadata["file_path"].get_file().get_basename()
+	if new_name == current_name:
+		_show_rename_message("[color=yellow]The file already has this name. "
+				+ "Write a different name to rename the file.")
+		return
+	if not _rename_file(_rename_file_index, new_name):
+		# The error messages were displayed on the rename dialog error label
+		return
+	
+	# The rename was successful, close the rename dialog
+	_rename_file_dialog.hide()
+	_rename_error_label.text = ""
+
+
+## Returns true if the given name can be used as a resource file name
+func _is_valid_file_name(name: String) -> bool:
+	for invalid_char in ["/", "\\", ":", "*", "?", "\"", "<", ">", "|"]:
+		if name.contains(invalid_char):
+			return false
+	return not name.begins_with(".")
+
+
+## Rename a file from the file list on disk and update all its references
+func _rename_file(index: int, new_name: String) -> bool:
+	var metadata = _file_list.get_item_metadata(index)
+	if not metadata:
+		return false
+	var file_name: String = new_name + ".tres"
+	var old_path: String = metadata["file_path"]
+	if not FileAccess.file_exists(old_path):
+		_show_rename_message("[color=tomato]Cannot rename the file to '" + file_name
+				+ "'. The file no longer exists on the projects folder.")
+		printerr("[Sprouty Dialogs] File " + old_path + " does not exist.")
+		return false
+	
+	var new_path: String = old_path.get_base_dir().path_join(file_name)
+	if FileAccess.file_exists(new_path) or DirAccess.dir_exists_absolute(new_path):
+		var file_type := "character file" if metadata["data"] is SproutyDialogsCharacterData \
+				else "dialogue file"
+		_show_rename_message("[color=tomato]Cannot rename the file to '" + file_name
+				+ "'. There is already a " + file_type + " with this name on the folder.")
+		printerr("[Sprouty Dialogs] Cannot rename '" + old_path + "'. The file '"
+				+ new_path + "' already exists.")
+		return false
+
+	if metadata["modified"]: # Save unsaved changes before renaming
+		save_file(index)
+		metadata = _file_list.get_item_metadata(index)
+		_show_rename_message("[color=yellow]The file had unsaved changes that were "
+				+ "saved before renaming it.", false, false)
+	
+	var old_uid = ResourceLoader.get_resource_uid(old_path)
+	var rename_error = DirAccess.rename_absolute(old_path, new_path)
+	if rename_error != OK:
+		_show_rename_message("[color=tomato]Cannot rename the file. Please check that the "
+				+ "file is not in use and that the project folder has write permissions.", false)
+		printerr("[Sprouty Dialogs] Cannot rename '" + old_path + "': "
+				+ str(error_string(rename_error)))
+		return false
+	
+	var old_resource = metadata["data"]
+	metadata["file_path"] = new_path
+	metadata["file_name"] = file_name
+	
+	if old_resource is SproutyDialogsCharacterData:
+		_keep_character_uid(old_uid, new_path)
+		_rename_character_file(index, metadata["cache_node"], new_name, new_path)
+		# Update the open dialogue files that use the renamed character
+		var updated_dialogs := _update_character_on_graphs(old_path, new_path)
+		if updated_dialogs > 0:
+			_show_rename_message("[color=yellow]The references to this character were "
+					+ "updated on " + str(updated_dialogs) + " opened dialogue file(s). "
+					+ "Remember to save those dialogue files.", false, false)
+	
+	_file_list.set_item_metadata(index, metadata)
+	_file_list.set_file_as_modified(index, false)
+	_save_opened_files()
+	print("[Sprouty Dialogs] File '" + file_name + "' renamed.")
+	return true
+
+
+## Keep the UID resource mapping pointing to the renamed file
+func _keep_character_uid(old_uid: int, new_path: String) -> void:
+	if old_uid != -1 and ResourceUID.has_id(old_uid):
+		ResourceUID.set_id(old_uid, new_path)
+
+
+## Update the character in its open editor, set its key name and CSV
+## translation key to the new file name and save the renamed file
+func _rename_character_file(index: int, char_editor: Control,
+		new_name: String, new_path: String) -> void:
+	var metadata = _file_list.get_item_metadata(index)
+	var old_resource: SproutyDialogsCharacterData = metadata["data"]
+	
+	char_editor.update_key_name(new_name)
+	var char_data: SproutyDialogsCharacterData = char_editor.get_character_data()
+	char_data.csv_name_key = char_data.key_name.to_upper() + "_CHAR"
+	char_data.take_over_path(new_path)
+	metadata["data"] = char_data
+	
+	var result = ResourceSaver.save(char_data, new_path)
+	if result != OK:
+		_show_rename_message("[color=tomato]The renamed file could not be saved. "
+				+ "Check that the project folder has write permissions.", false, false)
+		print("[Sprouty Dialogs] File '" + new_path.get_file() + "' could not be saved.")
+		return
+	
+	# Rename the character name translations key on the CSV file if it changed,
+	# so the character name translations are kept on the renamed key
+	if SproutyDialogsSettingsManager.get_setting("translate_character_names") \
+			and SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
+			and SproutyDialogsSettingsManager.get_setting("enable_translations") \
+			and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
+		var old_name_key: String = old_resource.get_csv_name_key()
+		if old_name_key != char_data.csv_name_key:
+			SproutyDialogsCSVFileManager.rename_character_key(
+					old_name_key, char_data.csv_name_key)
+		SproutyDialogsCSVFileManager.save_character_names_on_csv(
+				char_data.csv_name_key, char_data.display_name)
+		SproutyDialogsTranslationManager.collect_translations()
+
+
+## Update the character file references on the open dialogue files, reloading
+## the character from its new path on every dialogue node that used it.
+## Returns the amount of dialogue files that referenced the renamed character.
+func _update_character_on_graphs(old_path: String, new_path: String) -> int:
+	var updated_dialogs := 0
+	for i in range(_file_list.get_item_count()):
+		var metadata = _file_list.get_item_metadata(i)
+		if not metadata or not metadata["data"] is SproutyDialogsDialogueData:
+			continue
+		var graph: EditorSproutyDialogsGraphEditor = metadata["cache_node"]
+		var character_updated := false
+		for child in graph.get_children():
+			if child is SproutyDialogsBaseNode and child.node_type == "dialogue_node" \
+					and child.get_character_path() == old_path:
+				var previous_portrait: String = child.get_portrait()
+				child.load_character(new_path)
+				child.load_portrait(previous_portrait)
+				character_updated = true
+		if character_updated:
+			updated_dialogs += 1
+			_file_list.set_file_as_modified(i, true)
+	return updated_dialogs
 
 #endregion
 

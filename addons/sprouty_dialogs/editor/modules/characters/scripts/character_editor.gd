@@ -56,6 +56,8 @@ var _previous_portrait: TreeItem = null
 
 ## Key name of the character (file name)
 var _key_name: String = ""
+## Translation key used on the CSV file for the display name
+var _csv_name_key: String = ""
 ## Default locale for dialog text
 var _default_locale: String = ""
 ## Flag to indicate if translations are enabled
@@ -234,6 +236,7 @@ func _on_expand_portraits_button_toggled(toggled_on: bool) -> void:
 func get_character_data() -> SproutyDialogsCharacterData:
 	var data = SproutyDialogsCharacterData.new()
 	data.key_name = _key_name
+	data.csv_name_key = _csv_name_key
 	data.display_name = _get_name_translations()
 	data.description = _description_field.text
 
@@ -253,7 +256,8 @@ func get_character_data() -> SproutyDialogsCharacterData:
 ## Otherwise, the name translations will be loaded from the character data.
 func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary, editor_state: Dictionary = {}) -> void:
 	_key_name = data.key_name
-	_key_name_label.text = _key_name.to_pascal_case()
+	_csv_name_key = data.csv_name_key
+	_key_name_label.text = _key_name.capitalize()
 	_description_field.text = data.description
 
 	# Character name and its translations
@@ -291,6 +295,16 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary, ed
 		load_editor_state(editor_state)
 
 	_modified_counter = 0
+
+#endregion
+
+#region === Key Name ===========================================================
+
+## Update the character key name and its CSV translation key to the given name
+func update_key_name(key_name: String) -> void:
+	_key_name = key_name
+	_csv_name_key = key_name.to_upper() + "_CHAR"
+	_key_name_label.text = _key_name.capitalize()
 
 #endregion
 

@@ -189,7 +189,15 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 						+ " or reassign the character in the dialogue nodes.")
 				return
 			else: # Load the character data resource
-				_characters_data[char] = load(ResourceUID.get_id_path(char_uid))
+				var char_data = load(ResourceUID.get_id_path(char_uid))
+				if not char_data is SproutyDialogsCharacterData:
+					printerr("[Sprouty Dialogs] The resource found for '" + char \
+							+ "' character in dialog: " + dialog_data.resource_path \
+							+ " is not a valid character resource.")
+					return
+				# Ensure the key name is always the current file name
+				char_data.sync_key_name()
+				_characters_data[char] = char_data
 				_characters_count[char] = 1
 		else:
 			_characters_count[char] += 1
