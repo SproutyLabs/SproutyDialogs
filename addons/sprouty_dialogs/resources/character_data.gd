@@ -14,12 +14,11 @@ extends Resource
 
 ## Character identifier.
 ## Corresponds to the file name of the character's resource.
-var key_name: String = ""
+@export_storage var key_name: String = ""
 ## Translation key used on the CSV file to translate the character display name.
-## It is kept in sync with the key_name when the character file is saved,
-## so the name translations still can be found if the key_name changes.
-var csv_name_key: String = ""
-
+## It is kept in sync with the [member key_name] when the character file is saved,
+## so the name translations still can be found if the [member key_name] changes.
+@export_storage var csv_name_key: String = ""
 ## Name of the character that will be displayed in the dialogue.
 ## The display name can be localized to different languages, so it is stored
 ## as a dictionary where each key is a locale code (e.g., "en", "fr")
@@ -36,18 +35,18 @@ var csv_name_key: String = ""
 @export var description: String = ""
 
 ## Reference to the dialog box scene used by this character.
-## This is the UID of a scene that contains a [class DialogBox] node
+## This is the UID of a scene that contains a [DialogBox] node
 ## which will be used to display the character's dialogue.
-var dialog_box_uid: int = -1
+@export_storage var dialog_box_uid: int = -1
 ## Path to the dialog box scene to display the character's dialogue.
 ##[br][br]
-## [b]This is for reference only[/b], the dialog box is setted in [param dialog_box_uid].
+## [b]This is for reference only[/b], the dialog box is setted in [member dialog_box_uid].
 ## You need to set the dialog box scene on the [b]character editor[/b] to change it.
 @export var dialog_box_path: String = ""
 
 ## Flag to indicate if the character's portrait should be displayed on the dialog box.
-## If true, the character's portrait scene will be shown in the [param portrait_display]
-## node of the [DialogBox]. For this you need to set the [param portrait_display]
+## If true, the character's portrait scene will be shown in the [member DialogBox.portrait_display]
+## node of the [DialogBox]. For this you need to set the [member DialogBox.portrait_display]
 ## node that will hold the portrait as a parent of the portrait scene.
 @export var portrait_on_dialog_box: bool = false
 

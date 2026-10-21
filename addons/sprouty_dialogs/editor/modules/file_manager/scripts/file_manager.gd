@@ -79,6 +79,9 @@ var undo_redo: EditorUndoRedoManager
 
 
 func _ready() -> void:
+	# Check character files renamed from the Godot file system (outside the plugin)
+	EditorInterface.get_file_system_dock().files_moved.connect(_on_file_system_file_moved)
+
 	# Set save shortcut
 	var key_event = InputEventKey.new()
 	key_event.keycode = KEY_S
@@ -746,7 +749,97 @@ func _update_character_on_graphs(old_path: String, new_path: String) -> int:
 			_file_list.set_file_as_modified(i, true)
 	return updated_dialogs
 
-#endregion
+
+## Returns the file list index of the file opened at the given path
+## (-1 if the file is not open on the editor)
+func _find_file_index_by_path(path: String) -> int:
+	for i in range(_file_list.get_item_count()):
+		var metadata = _file_list.get_item_metadata(i)
+		if metadata and metadata["file_path"] == path:
+			return i
+	return -1
+
+
+## Handle files renamed from the Godot file system dock (outside the plugin
+## editor): if a character resource is renamed there, its key name is synced
+## with the new file name and the character references on the opened dialogue
+## files are updated with the new file path.
+func _on_file_system_file_moved(old_file: String, new_file: String) -> void:
+	if old_file == new_file or not ["tres", "res"].has(new_file.get_extension()):
+		return
+	
+	var index := _find_file_index_by_path(old_file)
+	var metadata = _file_list.get_item_metadata(index) if index != -1 else null
+	
+	if metadata and metadata["data"] is SproutyDialogsCharacterData:
+		_rename_open_character_file(index, old_file, new_file)
+	elif metadata == null and FileAccess.file_exists(new_file):
+		_rename_closed_character_file(old_file, new_file)
+
+
+## Sync a character file currently opened on the editor after being renamed
+## from the Godot file system dock
+func _rename_open_character_file(index: int, old_path: String, new_path: String) -> void:
+	var metadata = _file_list.get_item_metadata(index)
+	var new_name := new_path.get_file().get_basename()
+	
+	metadata["file_path"] = new_path
+	metadata["file_name"] = new_path.get_file()
+	_file_list.set_item_metadata(index, metadata)
+	if metadata["modified"]: # Save unsaved changes on the renamed file
+		save_file(index)
+		metadata = _file_list.get_item_metadata(index)
+		print("[Sprouty Dialogs] The file '" + old_path.get_file()
+				+ "' had unsaved changes that were saved after renaming it.")
+	
+	_keep_character_uid(ResourceLoader.get_resource_uid(old_path), new_path)
+	_rename_character_file(index, metadata["cache_node"], new_name, new_path)
+	_file_list.set_file_as_modified(index, false)
+	
+	var updated_dialogs := _update_character_on_graphs(old_path, new_path)
+	if updated_dialogs > 0:
+		print("[Sprouty Dialogs] References to character '" + new_name + "' were updated on "
+				+ str(updated_dialogs) + " opened dialogue file(s). Remember to save those files.")
+	
+	_save_opened_files()
+	print("[Sprouty Dialogs] Character file '" + new_path.get_file() + "' renamed.")
+
+
+## Sync a character file not currently opened on the editor after being renamed
+## from the Godot file system dock
+func _rename_closed_character_file(old_path: String, new_path: String) -> void:
+	var char_resource = load(new_path)
+	if not char_resource is SproutyDialogsCharacterData:
+		return
+	
+	_keep_character_uid(ResourceLoader.get_resource_uid(old_path), new_path)
+	var old_name_key: String = char_resource.get_csv_name_key()
+	if char_resource.sync_key_name():
+		char_resource.csv_name_key = char_resource.key_name.to_upper() + "_CHAR"
+		if ResourceSaver.save(char_resource, new_path) == OK:
+			print("[Sprouty Dialogs] Character file '" + new_path.get_file()
+					+ "' key name updated.")
+		else:
+			printerr("[Sprouty Dialogs] File '" + new_path.get_file()
+					+ "' could not be saved.")
+		
+		# Rename the character name translations key on the CSV file if it
+		# changed, so the character name translations are kept on the new key
+		if SproutyDialogsSettingsManager.get_setting("translate_character_names") \
+				and SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names") \
+				and SproutyDialogsSettingsManager.get_setting("enable_translations") \
+				and SproutyDialogsSettingsManager.get_setting("use_csv_files") \
+				and old_name_key != char_resource.csv_name_key:
+			SproutyDialogsCSVFileManager.rename_character_key(
+					old_name_key, char_resource.csv_name_key)
+			SproutyDialogsCSVFileManager.save_character_names_on_csv(
+					char_resource.csv_name_key, char_resource.display_name)
+			SproutyDialogsTranslationManager.collect_translations()
+	
+	var updated_dialogs := _update_character_on_graphs(old_path, new_path)
+	if updated_dialogs > 0:
+		print("[Sprouty Dialogs] References to character '" + char_resource.key_name + "' were updated on "
+				+ str(updated_dialogs) + " opened dialogue file(s). Remember to save those files.")
 
 
 ## Switch to a selected file
