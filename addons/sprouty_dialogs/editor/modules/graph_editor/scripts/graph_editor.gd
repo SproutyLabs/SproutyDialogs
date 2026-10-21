@@ -528,6 +528,14 @@ func _load_dialogue_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 		if SproutyDialogsFileUtils.check_valid_uid_path(character_uid):
 			node.load_character(ResourceUID.get_id_path(character_uid))
 			node.load_portrait(node_data["portrait"])
+		else:
+			# The character file was renamed or moved outside of the editor,
+			# so find it by its current file name / key name and load it
+			var char_resource = SproutyDialogsFileUtils.find_character_resource_by_key(
+					character_name)
+			if char_resource:
+				node.load_character(char_resource.resource_path)
+				node.load_portrait(node_data["portrait"])
 
 
 ## Load the data of a options node

@@ -14,11 +14,12 @@ extends Resource
 
 ## Character identifier.
 ## Corresponds to the file name of the character's resource.
-@export var key_name: String = ""
+var key_name: String = ""
 ## Translation key used on the CSV file to translate the character display name.
 ## It is kept in sync with the key_name when the character file is saved,
 ## so the name translations still can be found if the key_name changes.
-@export var csv_name_key: String = ""
+var csv_name_key: String = ""
+
 ## Name of the character that will be displayed in the dialogue.
 ## The display name can be localized to different languages, so it is stored
 ## as a dictionary where each key is a locale code (e.g., "en", "fr")
@@ -33,28 +34,34 @@ extends Resource
 ## Character description.
 ## This does nothing, its only for your reference.
 @export var description: String = ""
+
 ## Reference to the dialog box scene used by this character.
 ## This is the UID of a scene that contains a [class DialogBox] node
 ## which will be used to display the character's dialogue.
-@export var dialog_box_uid: int = -1
+var dialog_box_uid: int = -1
 ## Path to the dialog box scene to display the character's dialogue.
-## This is for reference only, use [param dialog_box_uid] to set the dialog box
+##[br][br]
+## [b]This is for reference only[/b], the dialog box is setted in [param dialog_box_uid].
+## You need to set the dialog box scene on the [b]character editor[/b] to change it.
 @export var dialog_box_path: String = ""
+
 ## Flag to indicate if the character's portrait should be displayed on the dialog box.
-## If true, the character's portrait scene will be shown in the [param display portrait]
-## node of the [class DialogBox]. For this you need to set the [param display portrait]
+## If true, the character's portrait scene will be shown in the [param portrait_display]
+## node of the [DialogBox]. For this you need to set the [param portrait_display]
 ## node that will hold the portrait as a parent of the portrait scene.
 @export var portrait_on_dialog_box: bool = false
+
 ## Name of the default portrait to use for this character. 
 ## If set, this portrait will be used when no specific portrait is specified in the dialogue.
 @export var default_portrait: String = ""
+
 ## Transform settings for all character portraits.
 ## This is a dictionary with the following keys:
-##  - "scale": the scale of the portrait.
-##  - "scale_lock_ratio": whether to lock the aspect ratio of the scale.
-##  - "offset": the offset of the portrait.
-##  - "rotation": the rotation of the portrait in degrees.
-##  - "mirror": whether to mirror the portrait.
+## [br] - [b]scale[/b]: the scale of the portrait.
+## [br] - [b]scale_lock_ratio[/b]: whether to lock the aspect ratio of the scale.
+## [br] - [b]offset[/b]: the offset of the portrait.
+## [br] - [b]rotation[/b]: the rotation of the portrait in degrees.
+## [br] - [b]mirror[/b]: whether to mirror the portrait.
 @export var main_transform_settings: Dictionary = {
 	"scale": Vector2.ONE,
 	"scale_lock_ratio": true,

@@ -56,9 +56,10 @@ extends Resource
 ##   ...
 ## }[/codeblock]
 @export var characters: Dictionary = {}
+
 ## Reference to CSV file with the translations for the dialogues.
 ## This is the UID of the CSV file resource.
-@export var csv_file_uid: int = -1
+var csv_file_uid: int = -1
 
 
 ## Returns a list of the start IDs from the graph data.
@@ -108,50 +109,83 @@ func get_all_character_references() -> Dictionary:
 ## character file. The characters dictionary (key name to UID) and the
 ## 'character' reference on the dialogue nodes data are updated to the current
 ## file name of every character file referenced by UID.
+## References with an invalid UID (e.g. when the character file was renamed
+## or moved outside of the plugin editor) are recovered by the current key
+## name of the character files, replacing the outdated key name and UID.
 ## Call it every time the dialogue file is loaded, and save the dialogue file
 ## again if this returns true, so the file is saved with the updated names.
 ## Returns true if any character reference was renamed.
 func sync_character_references() -> bool:
-	var renamed := {}
+	var renames: Dictionary = { # old key name -> old UID -> {key: new key, uid: new uid}
+	}
+	var recovered_cache: Dictionary = {} # Old key -> found character resource info
+	var add_rename := func(old_key: String, old_uid: int, new_key: String,
+			new_uid: int = old_uid) -> void:
+		if not renames.has(old_key):
+			renames[old_key] = {}
+		renames[old_key][old_uid] = {"key": new_key, "uid": new_uid}
 	
 	for start_id in characters.keys():
 		for key_name in characters[start_id].keys():
 			var char_uid: int = characters[start_id][key_name]
-			if not SproutyDialogsFileUtils.check_valid_uid_path(char_uid):
-				continue
-			var file_name = ResourceUID.get_id_path(char_uid).get_file().get_basename()
-			if file_name.is_empty() or file_name == key_name:
-				continue
-			if not renamed.has(key_name):
-				renamed[key_name] = {}
-			renamed[key_name][char_uid] = file_name
+			if renames.has(key_name) and renames[key_name].has(char_uid):
+				continue # Character already processed
+			if SproutyDialogsFileUtils.check_valid_uid_path(char_uid):
+				# The character file still exists, use its current file name
+				var file_name = ResourceUID.get_id_path(char_uid).get_file().get_basename()
+				if file_name.is_empty() or file_name == key_name:
+					continue
+				add_rename.call(key_name, char_uid, file_name)
+			else:
+				# The UID is not valid anymore: the character file was renamed
+				# or moved outside of the editor, so recover the reference by
+				# the current file name / key name of the character file
+				if not recovered_cache.has(key_name):
+					var char_resource = SproutyDialogsFileUtils.find_character_resource_by_key(
+							key_name)
+					recovered_cache[key_name] = null
+					if char_resource:
+						var recovered_uid = ResourceSaver.get_resource_id_for_path(
+								char_resource.resource_path, true)
+						if recovered_uid != -1:
+							recovered_cache[key_name] = [
+								recovered_uid,
+								char_resource.resource_path.get_file().get_basename()
+							]
+				if recovered_cache[key_name] == null:
+					continue # The character reference cannot be healed by its UID
+				add_rename.call(key_name, char_uid,
+						recovered_cache[key_name][1], recovered_cache[key_name][0])
 	
-	if renamed.is_empty():
+	if renames.is_empty():
 		return false
 	
 	for start_id in characters.keys():
 		var char_uids: Dictionary = characters[start_id]
-		var renames: Dictionary = {}
-		
-		for old_key in renamed.keys():
-			if not char_uids.has(old_key):
-				continue
-			var uid: int = char_uids[old_key]
-			var new_key: String = renamed[old_key].get(uid, "")
-			if new_key.is_empty() or char_uids.has(new_key):
-				continue
-			renames[old_key] = new_key
+		var renames_on_id: Dictionary = {}
 		
 		for old_key in renames.keys():
+			if not char_uids.has(old_key):
+				continue
+			var old_uid: int = char_uids[old_key]
+			if not renames[old_key].has(old_uid):
+				continue
+			var new_key: String = renames[old_key][old_uid]["key"]
+			if new_key.is_empty() or (char_uids.has(new_key) and new_key != old_key):
+				continue
+			renames_on_id[old_key] = new_key
+			char_uids[old_key] = renames[old_key][old_uid]["uid"]
+		
+		for old_key in renames_on_id.keys():
 			var uid: int = char_uids[old_key]
 			char_uids.erase(old_key)
-			char_uids[renames[old_key]] = uid
+			char_uids[renames_on_id[old_key]] = uid
 		
 		if not graph_data.has(start_id):
 			continue
 		for node_name in graph_data[start_id].keys():
 			var node: Dictionary = graph_data[start_id][node_name]
-			if node.has("character") and renames.has(node["character"]):
-				node["character"] = renames[node["character"]]
+			if node.has("character") and renames_on_id.has(node["character"]):
+				node["character"] = renames_on_id[node["character"]]
 	
 	return true

@@ -1044,6 +1044,15 @@ func _update_dialog_box(character_name: String) -> void:
 					"ignore_display_override": false
 				})
 			)
+		if not dialog_box:
+			# Try to use the default dialog box if the one of the character
+			# could not be instantiated (e.g. invalid character reference)
+			dialog_box = _resource_manager.instantiate_dialog_box(
+					"", display_parent, _dialog_box_override,
+					_ignore_dialog_box_display_override, {})
+		if not dialog_box:
+			printerr("[Sprouty Dialogs] Cannot create a dialog box to run the dialogue.")
+			return
 		dialog_box.set_auto_advance(auto_advance)
 		dialog_box.text_reveal_skippable = text_reveal_skippable
 		_dialog_box_instances[character_name] = dialog_box

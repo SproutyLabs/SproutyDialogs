@@ -182,23 +182,29 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 		# Load the character data resource if not already loaded
 		if not _characters_data.has(char):
 			var char_uid = dialog_data.characters[start_id][char]
-			if not SproutyDialogsFileUtils.check_valid_uid_path(char_uid):
+			var char_data: SproutyDialogsCharacterData = null
+			
+			if SproutyDialogsFileUtils.check_valid_uid_path(char_uid):
+				# Load the character data resource by its UID path
+				char_data = load(ResourceUID.get_id_path(char_uid))
+			else:
+				# The UID is no longer valid (e.g. the character file was
+				# renamed or moved outside of the editor), so find the
+				# character resource by its file name or key name
+				var char_resource = SproutyDialogsFileUtils.find_character_resource_by_key(char)
+				if char_resource:
+					char_data = load(char_resource.resource_path)
+			
+			if not char_data is SproutyDialogsCharacterData:
 				printerr("[Sprouty Dialogs] No character resource found for '" + char \
 						+ "' character in dialog: " + dialog_data.resource_path + \
-						". Check that the '" + char + ".tres' character file exists"
+						". Check that the '" + char + ".tres' character file exists" \
 						+ " or reassign the character in the dialogue nodes.")
 				return
-			else: # Load the character data resource
-				var char_data = load(ResourceUID.get_id_path(char_uid))
-				if not char_data is SproutyDialogsCharacterData:
-					printerr("[Sprouty Dialogs] The resource found for '" + char \
-							+ "' character in dialog: " + dialog_data.resource_path \
-							+ " is not a valid character resource.")
-					return
-				# Ensure the key name is always the current file name
-				char_data.sync_key_name()
-				_characters_data[char] = char_data
-				_characters_count[char] = 1
+			# Ensure the key name is always the current file name
+			char_data.sync_key_name()
+			_characters_data[char] = char_data
+			_characters_count[char] = 1
 		else:
 			_characters_count[char] += 1
 		
@@ -289,12 +295,18 @@ func instantiate_dialog_box(
 			"ignore_display_override": false
 		},
 	) -> DialogBox:
-	var dialog_box = dialog_box_char_override["dialog_box"]
+	var dialog_box = dialog_box_char_override.get("dialog_box")
 	var using_default_override = false
 	if not dialog_box:
 		# If there is no override for the character, instantiate it from the character data
 		var dialog_box_uid = ""
 		if not character_name.is_empty():
+			if not _characters_data.has(character_name):
+				printerr("[Sprouty Dialogs] Cannot instantiate dialog box. No character data "
+						+ "is loaded for the character '" + character_name
+						+ "'. Check that the character file exists and is referenced in the "
+						+ "dialogue nodes of the current dialogue.")
+				return null
 			dialog_box_uid = _characters_data[character_name].dialog_box_uid
 		
 		# If no character or the character has no dialog box, use the default override or dialog box from settings

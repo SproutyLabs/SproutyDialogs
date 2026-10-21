@@ -482,9 +482,12 @@ func _check_missing_characters(dialog_data: SproutyDialogsDialogueData) -> void:
 	for id in dialog_data.characters.keys():
 		for char in dialog_data.characters[id].keys():
 			if not SproutyDialogsFileUtils.check_valid_uid_path(dialog_data.characters[id][char]):
-				if not missing_chars.has(char):
-					missing_chars.append(char)
-					char_list += "\n - " + char.capitalize() + " (References: " + str(char_references[char]) + ")"
+				# References that can be recovered by the character file name
+				# are not reported as missing (they are healed on load)
+				if SproutyDialogsFileUtils.find_character_resource_by_key(char) == null:
+					if not missing_chars.has(char):
+						missing_chars.append(char)
+						char_list += "\n - " + char.capitalize() + " (References: " + str(char_references[char]) + ")"
 	
 	if not missing_chars.is_empty():
 		if _missing_chars_dialog.confirmed.is_connected(_reassign_missing_characters.bind(dialog_data)):
