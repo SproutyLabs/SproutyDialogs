@@ -41,8 +41,11 @@ static func get_translated_character_name(key_name: String,
 	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
 			and SproutyDialogsSettingsManager.get_setting("translate_character_names"):
 		# If translation is enabled and using CSV, use the translation server
+		# with the translation key of the character (csv_name_key property)
 		if SproutyDialogsSettingsManager.get_setting("use_csv_for_character_names"):
-			return TranslationServer.translate(key_name.to_upper() + "_CHAR")
+			return TranslationServer.translate(
+					character_data.get_csv_name_key() if character_data
+					else key_name.to_upper() + "_CHAR")
 		else:
 			var locale = TranslationServer.get_locale()
 			if not character_data:

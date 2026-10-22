@@ -168,3 +168,63 @@ static func get_resources_of_type(type: String = "dialogue", path: String = "res
 		file_name = dir.get_next()
 	
 	return dialogue_resources
+
+
+## Loads a character resource from a character reference of the dialogue data.
+## The reference is tried, in this order: by its stored UID, by its stored
+## file path, and by searching the project for a character whose current file
+## name / key name matches [param character_key].
+## Returns the loaded character resource, or null when it is not found.
+static func load_character_reference(character_key: String,
+		reference: Variant) -> SproutyDialogsCharacterData:
+	var char_uid: int = reference.uid
+	var char_path: String = reference.path
+	var char_resource = null
+	
+	if check_valid_uid_path(char_uid):
+		char_resource = load(ResourceUID.get_id_path(char_uid))
+	
+	if char_resource == null and not char_path.is_empty() \
+			and FileAccess.file_exists(char_path):
+		# The UID no longer resolves (e.g. the character file was renamed or
+		# moved outside of the editor), so load the character by path
+		char_resource = load(char_path)
+	
+	if char_resource == null:
+		# The stored path is not valid either, so search the project for a
+		# character whose current file name / key name matches the key
+		var found = find_character_resource_by_key(character_key)
+		if found:
+			char_resource = load(found.resource_path)
+	
+	if not char_resource is SproutyDialogsCharacterData:
+		return null
+	return char_resource
+
+
+## Search for a character resource by its file name or its key name in the
+## whole project. Used to recover character references when the character file
+## was renamed or moved outside of the plugin editor, so its reference UID is
+## no longer valid. Returns the character resource or null if it is not found.
+static func find_character_resource_by_key(
+		character_key: String, path: String = "res://") -> SproutyDialogsCharacterData:
+	var resources = get_resources_of_type("character", path)
+	
+	# First, prefer the character file named exactly as the reference key
+	# (the file name is the current key name of the character), since the
+	# key_name stored on its file may not be updated to the new file name yet
+	for character in resources:
+		if character.resource_path.get_file().get_basename() == character_key:
+			return character
+	
+	# Otherwise, use the character whose current key_name matches the reference
+	# key, only when it is unambiguous (there is no more than one match)
+	var key_matches: Array = resources.filter(
+			func(character) -> bool: return character.key_name == character_key)
+	if key_matches.size() == 1:
+		return key_matches[0]
+	if key_matches.size() > 1:
+		push_warning("[Sprouty Dialogs] Several character files match the key name '"
+				+ character_key + "'. Update the character references on the dialogue"
+				+ " nodes to fix this ambiguity.")
+	return null
