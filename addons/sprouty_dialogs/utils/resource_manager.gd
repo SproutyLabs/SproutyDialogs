@@ -181,20 +181,8 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 	for char in dialog_data.characters[start_id]:
 		# Load the character data resource if not already loaded
 		if not _characters_data.has(char):
-			var char_uid = dialog_data.characters[start_id][char]
-			var char_data: SproutyDialogsCharacterData = null
-			
-			if SproutyDialogsFileUtils.check_valid_uid_path(char_uid):
-				# Load the character data resource by its UID path
-				char_data = load(ResourceUID.get_id_path(char_uid))
-			else:
-				# The UID is no longer valid (e.g. the character file was
-				# renamed or moved outside of the editor), so find the
-				# character resource by its file name or key name
-				var char_resource = SproutyDialogsFileUtils.find_character_resource_by_key(char)
-				if char_resource:
-					char_data = load(char_resource.resource_path)
-			
+			var char_data = SproutyDialogsFileUtils.load_character_reference(
+					char, dialog_data.characters[start_id][char])
 			if not char_data is SproutyDialogsCharacterData:
 				printerr("[Sprouty Dialogs] No character resource found for '" + char \
 						+ "' character in dialog: " + dialog_data.resource_path + \

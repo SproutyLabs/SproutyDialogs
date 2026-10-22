@@ -439,8 +439,11 @@ func get_graph_data() -> Dictionary:
 				
 				# Add character to the reference dictionary
 				if character != "" and not dict.characters[start_id].has(character):
-						dict.characters[start_id][character] = \
-							ResourceSaver.get_resource_id_for_path(child.get_character_path(), true)
+					var char_path: String = child.get_character_path()
+					dict.characters[start_id][character] = {
+						"uid": ResourceSaver.get_resource_id_for_path(char_path, true),
+						"path": char_path
+					}
 			
 			# Get option dialogs from options nodes
 			if child.node_type == "options_node":
@@ -523,19 +526,13 @@ func _load_dialogue_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 	
 	# Load character if exists
 	var character_name = node_data["character"]
-	if character_name != "" and data.characters.has(dialogue_id):
-		var character_uid = data.characters[dialogue_id][character_name]
-		if SproutyDialogsFileUtils.check_valid_uid_path(character_uid):
-			node.load_character(ResourceUID.get_id_path(character_uid))
+	if character_name != "" and data.characters.has(dialogue_id) \
+			and data.characters[dialogue_id].has(character_name):
+		var char_resource = SproutyDialogsFileUtils.load_character_reference(
+				character_name, data.characters[dialogue_id][character_name])
+		if char_resource:
+			node.load_character(char_resource.resource_path)
 			node.load_portrait(node_data["portrait"])
-		else:
-			# The character file was renamed or moved outside of the editor,
-			# so find it by its current file name / key name and load it
-			var char_resource = SproutyDialogsFileUtils.find_character_resource_by_key(
-					character_name)
-			if char_resource:
-				node.load_character(char_resource.resource_path)
-				node.load_portrait(node_data["portrait"])
 
 
 ## Load the data of a options node

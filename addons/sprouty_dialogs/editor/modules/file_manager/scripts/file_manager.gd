@@ -484,13 +484,13 @@ func _check_missing_characters(dialog_data: SproutyDialogsDialogueData) -> void:
 
 	for id in dialog_data.characters.keys():
 		for char in dialog_data.characters[id].keys():
-			if not SproutyDialogsFileUtils.check_valid_uid_path(dialog_data.characters[id][char]):
-				# References that can be recovered by the character file name
-				# are not reported as missing (they are healed on load)
-				if SproutyDialogsFileUtils.find_character_resource_by_key(char) == null:
-					if not missing_chars.has(char):
-						missing_chars.append(char)
-						char_list += "\n - " + char.capitalize() + " (References: " + str(char_references[char]) + ")"
+			# References that cannot be loaded anymore (and cannot be
+			# recovered by the character file name) are reported as missing
+			if SproutyDialogsFileUtils.load_character_reference(char,
+					dialog_data.characters[id][char]) == null:
+				if not missing_chars.has(char):
+					missing_chars.append(char)
+					char_list += "\n - " + char.capitalize() + " (References: " + str(char_references[char]) + ")"
 	
 	if not missing_chars.is_empty():
 		if _missing_chars_dialog.confirmed.is_connected(_reassign_missing_characters.bind(dialog_data)):
@@ -503,21 +503,25 @@ func _check_missing_characters(dialog_data: SproutyDialogsDialogueData) -> void:
 
 ## Search and reassign missing characters in a dialogue resource
 func _reassign_missing_characters(dialog_data: SproutyDialogsDialogueData) -> void:
-	# Get all character resources
+	# Get all character resources with their resolvable reference
 	var characters: Dictionary = {}
 	var character_resources = SproutyDialogsFileUtils.get_resources_of_type("character")
 
 	for res in character_resources:
-		var uid = ResourceSaver.get_resource_id_for_path(res.resource_path, true)
-		characters[res.key_name] = uid
+		var reference = {
+			"uid": ResourceSaver.get_resource_id_for_path(res.resource_path, true),
+			"path": res.resource_path
+		}
+		characters[res.key_name] = reference
 		# Match also by file name so renamed characters can be reassigned
-		characters[res.resource_path.get_file().get_basename()] = uid
+		characters[res.resource_path.get_file().get_basename()] = reference
 	
 	# Reassign missing characters
 	var chars_not_found = []
 	for id in dialog_data.characters.keys():
 		for char in dialog_data.characters[id].keys():
-			if not SproutyDialogsFileUtils.check_valid_uid_path(dialog_data.characters[id][char]):
+			if SproutyDialogsFileUtils.load_character_reference(char,
+					dialog_data.characters[id][char]) == null:
 				if characters.has(char):
 					dialog_data.characters[id][char] = characters[char]
 				else:

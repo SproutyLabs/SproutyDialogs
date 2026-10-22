@@ -43,14 +43,19 @@ extends Resource
 ## }[/codeblock]
 @export var dialogs: Dictionary = {}
 ## A dictionary containing the characters for each dialogue ID.
-## This is a dictionary where each key is the dialogue ID 
-## and its value is the characters associated with its UID.
-## This dictionary is structured as follows:
+## This is a dictionary where each key is the dialogue ID
+## and its value is a dictionary with each character key name and its
+## reference, stored as a subdictionary with the UID and the file path of the
+## character resource, so the character can still be loaded by its path when
+## the UID is no longer valid. This dictionary is structured as follows:
 ## [codeblock]
 ## {
 ##   "dialogue_id_1": {
-##     "character_key_name_1": UID of the character resource,
-##     "character_key_name_2": UID of the character resource,
+##     "character_key_name_1": {
+##       "uid": UID of the character resource,
+##       "path": "res://path_to_the/character_file.tres",
+##     },
+##     "character_key_name_2": { ... },
 ##     ...
 ##   },
 ##   ...
@@ -106,80 +111,133 @@ func get_all_character_references() -> Dictionary:
 
 
 ## Synchronizes the character references with the current key_name of each
-## character file. The characters dictionary (key name to UID) and the
-## 'character' reference on the dialogue nodes data are updated to the current
-## file name of every character file referenced by UID.
-## References with an invalid UID (e.g. when the character file was renamed
-## or moved outside of the plugin editor) are recovered by the current key
-## name of the character files, replacing the outdated key name and UID.
+## character file. This updates:
+## [br]- The legacy references that stored the character UID only, migrating them
+##   to the current reference format (a subdictionary with "uid" and "path").
+## [br]- The stored UID and file path of every reference with its current values
+##   (e.g. when the stored file path is no longer the current location).
+## [br]- The characters dictionary keys and the 'character' reference on the
+##   dialogue nodes data with the current file name of every character file
+##   referenced by UID or by path (key name to file name renaming).
+## [br]
+## References that cannot be resolved by UID or path are recovered by the
+## current key name of the character files, replacing the outdated values.
+## [br]
+## Only character references with a resolvable file path (and UID, when
+## possible) are rewritten, so dialogue files loaded in game runs (which
+## cannot manage resource UIDs) are immune to bad rewrites.
+## [br]
 ## Call it every time the dialogue file is loaded, and save the dialogue file
-## again if this returns true, so the file is saved with the updated names.
-## Returns true if any character reference was renamed.
+## again if this returns true, so the file is saved with the updated values.
+## Returns true if any character reference was renamed or updated.
 func sync_character_references() -> bool:
-	var renames: Dictionary = { # old key name -> old UID -> {key: new key, uid: new uid}
+	var renames: Dictionary = { # old key name -> old UID -> renamed reference
 	}
-	var recovered_cache: Dictionary = {} # Old key -> found character resource info
+	var recovered_cache: Dictionary = {} # Old key -> found character reference
+	var updated := false # References updated without any rename (e.g. normalized)
 	var add_rename := func(old_key: String, old_uid: int, new_key: String,
-			new_uid: int = old_uid) -> void:
+			new_uid: int, new_path: String) -> void:
 		if not renames.has(old_key):
 			renames[old_key] = {}
-		renames[old_key][old_uid] = {"key": new_key, "uid": new_uid}
+		renames[old_key][old_uid] = {"uid": new_uid, "path": new_path}
+		renames[old_key][old_uid]["key"] = new_key
 	
 	for start_id in characters.keys():
 		for key_name in characters[start_id].keys():
-			var char_uid: int = characters[start_id][key_name]
+			var reference = characters[start_id][key_name]
+			if not reference is Dictionary:
+				# Migrate legacy references storing only the character UID
+				characters[start_id][key_name] = {
+					"uid": reference if reference is int else -1,
+					"path": "",
+				}
+				reference = characters[start_id][key_name]
+				updated = true
+			var char_uid: int = reference.get("uid", -1)
+			var char_path: String = reference.get("path", "")
+			
 			if renames.has(key_name) and renames[key_name].has(char_uid):
 				continue # Character already processed
+			
 			if SproutyDialogsFileUtils.check_valid_uid_path(char_uid):
-				# The character file still exists, use its current file name
-				var file_name = ResourceUID.get_id_path(char_uid).get_file().get_basename()
+				# The character file still exists on the UID path, so keep the
+				# reference matched with its current path and file name
+				var current_path: String = ResourceUID.get_id_path(char_uid)
+				if char_path != current_path:
+					reference["path"] = current_path
+					updated = true
+				var file_name = current_path.get_file().get_basename()
 				if file_name.is_empty() or file_name == key_name:
 					continue
-				add_rename.call(key_name, char_uid, file_name)
-			else:
-				# The UID is not valid anymore: the character file was renamed
-				# or moved outside of the editor, so recover the reference by
-				# the current file name / key name of the character file
-				if not recovered_cache.has(key_name):
-					var char_resource = SproutyDialogsFileUtils.find_character_resource_by_key(
-							key_name)
-					recovered_cache[key_name] = null
-					if char_resource:
-						var recovered_uid = ResourceSaver.get_resource_id_for_path(
-								char_resource.resource_path, true)
-						if recovered_uid != -1:
-							recovered_cache[key_name] = [
-								recovered_uid,
-								char_resource.resource_path.get_file().get_basename()
-							]
-				if recovered_cache[key_name] == null:
-					continue # The character reference cannot be healed by its UID
-				add_rename.call(key_name, char_uid,
-						recovered_cache[key_name][1], recovered_cache[key_name][0])
+				add_rename.call(key_name, char_uid, file_name, char_uid, current_path)
+				continue
+			
+			if not char_path.is_empty() and FileAccess.file_exists(char_path):
+				# The UID is no longer valid (e.g. the character file was
+				# renamed or moved outside of the editor), but the stored file
+				# path still points to the character file
+				var file_name = char_path.get_file().get_basename()
+				if file_name == key_name:
+					# Only the reference needs to be updated, the key name is
+					# already the current file name
+					reference["uid"] = ResourceSaver.get_resource_id_for_path(
+							char_path, true)
+					updated = true
+					continue
+				var new_uid: int = ResourceSaver.get_resource_id_for_path(char_path, true)
+				if new_uid != -1:
+					add_rename.call(key_name, char_uid, file_name, new_uid, char_path)
+				continue
+			
+			# The UID and the stored path are not valid anymore, so recover
+			# the reference by the current file name / key name of the
+			# project character files
+			if not recovered_cache.has(key_name):
+				var found = SproutyDialogsFileUtils.find_character_resource_by_key(
+						key_name)
+				recovered_cache[key_name] = null
+				if found:
+					var found_uid: int = ResourceSaver.get_resource_id_for_path(
+							found.resource_path, true)
+					# References with no resolvable UID (e.g. dialogs loaded
+					# in game runs) are not rewritten, they keep the stored
+					# values and are resolved by the resource loading fallbacks
+					if found_uid != -1:
+						recovered_cache[key_name] = {
+							"key": found.resource_path.get_file().get_basename(),
+							"uid": found_uid,
+							"path": found.resource_path,
+						}
+			if recovered_cache[key_name] == null:
+				continue # The character reference cannot be recovered
+			var recovered: Dictionary = recovered_cache[key_name]
+			add_rename.call(key_name, char_uid, recovered["key"],
+					recovered["uid"], recovered["path"])
 	
 	if renames.is_empty():
-		return false
+		return updated
 	
 	for start_id in characters.keys():
-		var char_uids: Dictionary = characters[start_id]
+		var char_refs: Dictionary = characters[start_id]
 		var renames_on_id: Dictionary = {}
 		
 		for old_key in renames.keys():
-			if not char_uids.has(old_key):
+			if not char_refs.has(old_key):
 				continue
-			var old_uid: int = char_uids[old_key]
+			var old_uid: int = char_refs[old_key].uid
 			if not renames[old_key].has(old_uid):
 				continue
-			var new_key: String = renames[old_key][old_uid]["key"]
-			if new_key.is_empty() or (char_uids.has(new_key) and new_key != old_key):
+			var rename: Dictionary = renames[old_key][old_uid]
+			var new_key: String = rename["key"]
+			if new_key.is_empty() or (char_refs.has(new_key) and new_key != old_key):
 				continue
 			renames_on_id[old_key] = new_key
-			char_uids[old_key] = renames[old_key][old_uid]["uid"]
+			char_refs[old_key] = {"uid": rename["uid"], "path": rename["path"]}
 		
 		for old_key in renames_on_id.keys():
-			var uid: int = char_uids[old_key]
-			char_uids.erase(old_key)
-			char_uids[renames_on_id[old_key]] = uid
+			var new_reference = char_refs[old_key]
+			char_refs.erase(old_key)
+			char_refs[renames_on_id[old_key]] = new_reference
 		
 		if not graph_data.has(start_id):
 			continue
