@@ -428,6 +428,13 @@ func get_graph_data() -> Dictionary:
 		if child is SproutyDialogsBaseNode:
 			var start_id = child.get_start_id()
 
+			# Recompute the start node from incoming wires when the cached reference is stale
+			var resolved_start_node = child.start_node
+			if child.node_type != "start_node" and resolved_start_node == null:
+				resolved_start_node = _find_start_node_from_inputs(child)
+				if resolved_start_node != null:
+					start_id = resolved_start_node.get_start_id()
+
 			# Get dialogs and characters from dialogue nodes
 			if child.node_type == "dialogue_node":
 				dict.dialogs[child.get_dialog_translation_key()] = child.get_dialogs_text()
@@ -455,7 +462,7 @@ func get_graph_data() -> Dictionary:
 					dict.nodes_data[start_id] = {}
 				dict.nodes_data[start_id].merge(child.get_data())
 			# Nodes without connection do not have a dialog tree associated
-			elif child.start_node == null:
+			elif resolved_start_node == null:
 				if not dict.nodes_data.has("unplugged_nodes"):
 					dict.nodes_data["unplugged_nodes"] = {}
 				dict.nodes_data["unplugged_nodes"].merge(child.get_data())
