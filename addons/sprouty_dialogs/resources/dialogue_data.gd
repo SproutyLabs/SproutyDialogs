@@ -120,13 +120,6 @@ func get_all_character_references() -> Dictionary:
 ##   dialogue nodes data with the current file name of every character file
 ##   referenced by UID or by path (key name to file name renaming).
 ## [br]
-## References that cannot be resolved by UID or path are recovered by the
-## current key name of the character files, replacing the outdated values.
-## [br]
-## Only character references with a resolvable file path (and UID, when
-## possible) are rewritten, so dialogue files loaded in game runs (which
-## cannot manage resource UIDs) are immune to bad rewrites.
-## [br]
 ## Call it every time the dialogue file is loaded, and save the dialogue file
 ## again if this returns true, so the file is saved with the updated values.
 ## Returns true if any character reference was renamed or updated.

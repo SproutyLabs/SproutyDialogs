@@ -716,9 +716,7 @@ func _rename_character_file(index: int, char_editor: Control,
 	
 	var result = ResourceSaver.save(char_data, new_path)
 	if result != OK:
-		# Restore the previous character data on the list and the key name on
-		# its editor, so the key name and its CSV translation reference are
-		# kept as they were before the failed rename
+		# Restore the previous data before the failed rename
 		metadata["data"] = old_resource
 		char_editor.update_key_name(old_resource.key_name)
 		_show_rename_message("[color=tomato]The renamed file could not be saved. "
