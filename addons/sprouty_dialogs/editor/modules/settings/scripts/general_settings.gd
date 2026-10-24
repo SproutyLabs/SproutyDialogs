@@ -106,8 +106,9 @@ func _load_settings() -> void:
 	_set_reset_button(_save_sprouty_only_toggle, "save_sprouty_only")
 
 	# Load the default dialog box
-	var default_dialog_box = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
-	if not SproutyDialogsFileUtils.check_valid_uid_path(default_dialog_box):
+	var default_dialog_box = SproutyDialogsSettingsManager.get_reference_setting("default_dialog_box")
+	var default_dialog_box_path = SproutyDialogsFileUtils.reference_path(default_dialog_box)
+	if default_dialog_box_path.is_empty():
 		printerr("[Sprouty Dialogs] Default dialog box scene not found." \
 				+ " Check that the default dialog box is set in Settings > General" \
 				+ " plugin tab, and that the scene resource exists.")
@@ -115,13 +116,18 @@ func _load_settings() -> void:
 		_default_dialog_box_field.set_scene_path("")
 	else:
 		_default_dialog_box_warning.hide()
-		_default_dialog_box_field.set_scene_path(ResourceUID.get_id_path(default_dialog_box))
+		# Keep the stored reference updated when its UID is no longer valid
+		if not SproutyDialogsFileUtils.check_valid_uid_path(default_dialog_box.get("uid", -1)):
+			SproutyDialogsSettingsManager.set_reference_setting(
+					"default_dialog_box", default_dialog_box_path)
+		_default_dialog_box_field.set_scene_path(default_dialog_box_path)
 	_set_reset_button(_default_dialog_box_field, "default_dialog_box")
 	_show_reset_button(_default_dialog_box_field, "default_dialog_box")
 	
 	# Load the default portrait scene
-	var default_portrait = SproutyDialogsSettingsManager.get_setting("default_portrait_scene")
-	if not SproutyDialogsFileUtils.check_valid_uid_path(default_portrait):
+	var default_portrait = SproutyDialogsSettingsManager.get_reference_setting("default_portrait_scene")
+	var default_portrait_path = SproutyDialogsFileUtils.reference_path(default_portrait)
+	if default_portrait_path.is_empty():
 		printerr("[Sprouty Dialogs] Default portrait scene not found." \
 				+ " Check that the default portrait scene is set in Settings > General" \
 				+ " plugin tab, and that the scene resource exists.")
@@ -129,7 +135,11 @@ func _load_settings() -> void:
 		_default_portrait_scene_field.set_scene_path("")
 	else:
 		_default_portrait_warning.hide()
-		_default_portrait_scene_field.set_scene_path(ResourceUID.get_id_path(default_portrait))
+		# Keep the stored reference updated when its UID is no longer valid
+		if not SproutyDialogsFileUtils.check_valid_uid_path(default_portrait.get("uid", -1)):
+			SproutyDialogsSettingsManager.set_reference_setting(
+					"default_portrait_scene", default_portrait_path)
+		_default_portrait_scene_field.set_scene_path(default_portrait_path)
 	_set_reset_button(_default_portrait_scene_field, "default_portrait_scene")
 	_show_reset_button(_default_portrait_scene_field, "default_portrait_scene")
 	
@@ -162,9 +172,11 @@ func _load_settings() -> void:
 	_set_reset_button(_custom_nodes_folder_field, "custom_event_nodes_folder")
 
 	# Load custom event nodes interpreter
-	var custom_interpreter = SproutyDialogsSettingsManager.get_setting("custom_event_interpreter")
-	if not SproutyDialogsFileUtils.check_valid_uid_path(custom_interpreter):
-		if _use_custom_nodes_toggle.button_pressed:
+	var custom_interpreter = SproutyDialogsSettingsManager.get_reference_setting("custom_event_interpreter")
+	var interpreter_path = SproutyDialogsFileUtils.reference_path(custom_interpreter)
+	if interpreter_path.is_empty():
+		if _use_custom_nodes_toggle.button_pressed \
+				and not SproutyDialogsFileUtils.reference_is_empty(custom_interpreter):
 			printerr("[Sprouty Dialogs] Custom event nodes interpreter not found." \
 				+ " Check that the script is set in Settings > General" \
 				+ " plugin tab, and that the file exists.")
@@ -172,7 +184,11 @@ func _load_settings() -> void:
 		_custom_interpreter_field.set_value("")
 	else:
 		_custom_interpreter_warning.hide()
-		_custom_interpreter_field.set_value(ResourceUID.get_id_path(custom_interpreter))
+		# Keep the stored reference updated when its UID is no longer valid
+		if not SproutyDialogsFileUtils.check_valid_uid_path(custom_interpreter.get("uid", -1)):
+			SproutyDialogsSettingsManager.set_reference_setting("custom_event_interpreter",
+					interpreter_path)
+		_custom_interpreter_field.set_value(interpreter_path)
 	_set_reset_button(_custom_interpreter_field, "custom_event_interpreter")
 
 
@@ -196,12 +212,12 @@ func _set_reset_button(field: Control, setting_name: String) -> void:
 			# Hide fields warnings and handle scene buttons
 			if setting_name.contains("dialog_box"):
 				SproutyDialogsSettingsManager.reset_setting(setting_name)
-				field.set_scene_path(ResourceUID.get_id_path(default_value))
+				field.set_scene_path(SproutyDialogsFileUtils.reference_path(default_value))
 				_default_dialog_box_warning.hide()
 			
 			if setting_name.contains("portrait_scene"):
 				SproutyDialogsSettingsManager.reset_setting(setting_name)
-				field.set_scene_path(ResourceUID.get_id_path(default_value))
+				field.set_scene_path(SproutyDialogsFileUtils.reference_path(default_value))
 				_default_portrait_warning.hide()
 		)
 		reset_button.visible = field.get_scene_path() != _get_saved_setting(setting_name)
@@ -250,7 +266,7 @@ func _show_reset_button(field: Control, setting_name: String) -> void:
 		reset_button.visible = field.get_value() != default_value
 	
 	elif field is EditorSproutyDialogsSceneField:
-		reset_button.visible = field.get_scene_path() != ResourceUID.get_id_path(default_value)
+		reset_button.visible = field.get_scene_path() != SproutyDialogsFileUtils.reference_path(default_value)
 
 	elif field is EditorSproutyDialogsFileField:
 		reset_button.visible = field.get_value() != _get_saved_setting(setting_name)
@@ -262,16 +278,15 @@ func _show_reset_button(field: Control, setting_name: String) -> void:
 		reset_button.visible = field.button_pressed != default_value
 
 
-## Get the previous saved setting value
+## Get the previous saved setting value. Settings that store a resource
+## reference ("uid"/"path" dictionary) are returned as their resolved file
+## path (the UID is resolved first, using the stored path as fallback).
 func _get_saved_setting(setting_name: String) -> Variant:
 	var setting_value = SproutyDialogsSettingsManager.get_setting(setting_name)
-	if setting_value is int:
-		if ResourceUID.has_id(setting_value):
-			return ResourceUID.get_id_path(setting_value)
-		else:
-			return ""
-	else:
-		return setting_value
+	if setting_value is Dictionary or setting_value is int:
+		return SproutyDialogsFileUtils.reference_path(
+				SproutyDialogsFileUtils.normalize_reference(setting_value))
+	return setting_value
 
 
 ## Handle when the continue input action is changed
@@ -294,8 +309,7 @@ func _on_default_dialog_box_path_changed(new_path: String) -> void:
 		return # Ignore empty or invalid paths
 	
 	_default_dialog_box_warning.hide()
-	SproutyDialogsSettingsManager.set_setting("default_dialog_box",
-			ResourceSaver.get_resource_id_for_path(new_path, true))
+	SproutyDialogsSettingsManager.set_reference_setting("default_dialog_box", new_path)
 
 
 ## Handle when the default portrait scene path is changed
@@ -307,8 +321,7 @@ func _on_default_portrait_scene_path_changed(new_path: String) -> void:
 		return # Ignore empty or invalid paths
 	
 	_default_dialog_box_warning.hide()
-	SproutyDialogsSettingsManager.set_setting("default_portrait_scene",
-			ResourceSaver.get_resource_id_for_path(new_path, true))
+	SproutyDialogsSettingsManager.set_reference_setting("default_portrait_scene", new_path)
 
 
 ## Handle when the dialog box canvas layer is changed
@@ -356,5 +369,4 @@ func _on_custom_interpreter_path_changed(new_path: String) -> void:
 		_custom_interpreter_warning.visible = _use_custom_nodes_toggle.button_pressed
 		return
 	_custom_interpreter_warning.hide()
-	SproutyDialogsSettingsManager.set_setting("custom_event_interpreter",
-			ResourceSaver.get_resource_id_for_path(new_path, true))
+	SproutyDialogsSettingsManager.set_reference_setting("custom_event_interpreter", new_path)

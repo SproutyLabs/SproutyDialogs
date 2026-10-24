@@ -26,14 +26,20 @@ static var _settings_paths: Dictionary = {
 		"path": "sprouty_dialogs/general/input/save_sprouty_only",
 		"default": true
 	},
-	# Default scenes
+	# Default scenes (stored as "uid"/"path" resource references)
 	"default_dialog_box": {
 		"path": "sprouty_dialogs/general/defaults/default_dialog_box",
-		"default": ResourceSaver.get_resource_id_for_path(DEFAULT_DIALOG_BOX_PATH, true)
+		"default": {
+			"uid": ResourceSaver.get_resource_id_for_path(DEFAULT_DIALOG_BOX_PATH, true),
+			"path": DEFAULT_DIALOG_BOX_PATH,
+		}
 	},
 	"default_portrait_scene": {
 		"path": "sprouty_dialogs/general/defaults/default_portrait_scene",
-		"default": ResourceSaver.get_resource_id_for_path(DEFAULT_PORTRAIT_PATH, true)
+		"default": {
+			"uid": ResourceSaver.get_resource_id_for_path(DEFAULT_PORTRAIT_PATH, true),
+			"path": DEFAULT_PORTRAIT_PATH,
+		}
 	},
 	# Canvas layers
 	"dialog_box_canvas_layer": {
@@ -55,7 +61,7 @@ static var _settings_paths: Dictionary = {
 	},
 	"custom_event_interpreter": {
 		"path": "sprouty_dialogs/general/custom/custom_event_interpreter",
-		"default": - 1
+		"default": {"uid": -1, "path": ""}
 	},
 	# --- Text settings --------------------------------------------------------
 	"default_typing_speed": {
@@ -130,7 +136,7 @@ static var _settings_paths: Dictionary = {
 	},
 	"character_names_csv": {
 		"path": "sprouty_dialogs/translation/characters/character_names_csv",
-		"default": - 1
+		"default": {"uid": -1, "path": ""}
 	},
 	# Translation/Localization settings
 	"default_locale": {
@@ -177,6 +183,25 @@ static func set_setting(setting_name: String, value: Variant) -> void:
 		ProjectSettings.save()
 	else:
 		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found. Cannot set value.")
+
+
+## Returns a setting that stores a resource reference from the plugin settings.
+## Resource reference settings are stored as a dictionary with the resource
+## UID and its file path, so the resource can still be loaded by its path when
+## the UID is no longer valid. Old settings storing only the resource UID as an
+## int are normalized to the current dictionary format.
+static func get_reference_setting(setting_name: String) -> Dictionary:
+	if not _settings_paths.has(setting_name):
+		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found. "
+			+ "Please restart the editor to register a new setting!")
+		return SproutyDialogsFileUtils.make_reference()
+	return SproutyDialogsFileUtils.normalize_reference(get_setting(setting_name))
+
+
+## Sets a setting that stores a resource reference from the resource file path,
+## storing both the UID and the path to load it as a fallback.
+static func set_reference_setting(setting_name: String, path: String) -> void:
+	set_setting(setting_name, SproutyDialogsFileUtils.build_reference(path))
 
 
 ## Checks if a setting exists in the plugin settings.

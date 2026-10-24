@@ -114,15 +114,20 @@ func _load_settings() -> void:
 	csv_folder_field.set_value(
 		SproutyDialogsSettingsManager.get_setting("csv_translations_folder")
 	)
-	var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
-	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
-		if char_names_csv != -1:
+	var char_names_csv = SproutyDialogsSettingsManager.get_reference_setting("character_names_csv")
+	var char_names_csv_path = SproutyDialogsFileUtils.reference_path(char_names_csv)
+	if char_names_csv_path.is_empty():
+		if not SproutyDialogsFileUtils.reference_is_empty(char_names_csv):
 			printerr("[Sprouty Dialogs] Character names CSV file not found." \
 					+ " Check that the character names CSV is set in Settings > Translation" \
 					+ " plugin tab, and that the CSV file exists.")
 		char_names_csv_field.set_value("") # No CSV set
 	else:
-		char_names_csv_field.set_value(ResourceUID.get_id_path(char_names_csv))
+		# Keep the stored reference updated when its UID is no longer valid
+		if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv.get("uid", -1)):
+			SproutyDialogsSettingsManager.set_reference_setting(
+					"character_names_csv", char_names_csv_path)
+		char_names_csv_field.set_value(char_names_csv_path)
 	
 	_set_reset_button(csv_folder_field, "csv_translations_folder")
 	_set_reset_button(_fallback_to_resource_toggle, "fallback_to_resource")
@@ -189,16 +194,15 @@ func _show_reset_button(field: Control, setting_name: String) -> void:
 		reset_button.visible = field.selected != 0
 
 
-## Get the previous saved setting value
+## Get the previous saved setting value. Settings that store a resource
+## reference ("uid"/"path" dictionary) are returned as their resolved file
+## path (the UID is resolved first, using the stored path as fallback).
 func _get_saved_setting(setting_name: String) -> Variant:
 	var setting_value = SproutyDialogsSettingsManager.get_setting(setting_name)
-	if setting_value is int:
-		if ResourceUID.has_id(setting_value):
-			return ResourceUID.get_id_path(setting_value)
-		else:
-			return ""
-	else:
-		return setting_value
+	if setting_value is Dictionary or setting_value is int:
+		return SproutyDialogsFileUtils.reference_path(
+				SproutyDialogsFileUtils.normalize_reference(setting_value))
+	return setting_value
 
 
 #region === Locales ============================================================
@@ -397,8 +401,7 @@ func _on_char_names_csv_path_changed(path: String) -> void:
 		_char_csv_warning.visible = true
 		return
 	_char_csv_warning.visible = false
-	SproutyDialogsSettingsManager.set_setting("character_names_csv",
-			ResourceSaver.get_resource_id_for_path(path, true))
+	SproutyDialogsSettingsManager.set_reference_setting("character_names_csv", path)
 	
 	SproutyDialogsTranslationManager.collect_translations()
 	# Refresh the filesystem to ensure the translations are imported
@@ -421,8 +424,7 @@ func _new_character_names_csv() -> void:
 	
 	_char_csv_warning.visible = false
 	char_names_csv_field.set_value(path)
-	SproutyDialogsSettingsManager.set_setting("character_names_csv",
-			ResourceSaver.get_resource_id_for_path(path, true))
+	SproutyDialogsSettingsManager.set_reference_setting("character_names_csv", path)
 
 #endregion
 

@@ -91,13 +91,13 @@ func _enter_tree() -> void:
 		"DialogBoxCanvas", SproutyDialogsSettingsManager.get_setting("dialog_box_canvas_layer"))
 	
 	# Load the default dialog box
-	var default_box_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
-	if not SproutyDialogsFileUtils.check_valid_uid_path(default_box_uid):
+	var default_box = SproutyDialogsSettingsManager.get_reference_setting("default_dialog_box")
+	var default_box_path = SproutyDialogsFileUtils.reference_path(default_box)
+	if default_box_path.is_empty():
 		printerr("[Sprouty Dialogs] No default dialog box scene found." \
 				+ " Check that the default dialog box is set in Settings > General" \
 				+ " plugin tab, and that the scene resource exists.")
 		return
-	var default_box_path = ResourceUID.get_id_path(default_box_uid)
 	_dialog_boxes[default_box_path] = load(default_box_path)
 
 
@@ -123,10 +123,9 @@ func release_resources(dialog_data: SproutyDialogsDialogueData, start_id: String
 	for char in dialog_data.characters[start_id]:
 		# Remove the dialog boxes loaded if they are not used anymore
 		if _characters_data.has(char):
-			var dialog_box_uid = _characters_data[char].dialog_box_uid
-			var dialog_box_path = ""
-			if SproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
-				dialog_box_path = ResourceUID.get_id_path(dialog_box_uid)
+			var dialog_box_path = SproutyDialogsFileUtils.get_uid_path(
+					_characters_data[char].dialog_box_uid,
+					_characters_data[char].dialog_box_path)
 			if _dialog_boxes_count.has(dialog_box_path):
 				_dialog_boxes_count[dialog_box_path] -= 1
 				# If the dialog box is not used anymore
@@ -197,23 +196,26 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 			_characters_count[char] += 1
 		
 		# Load the dialog box for the character if not already loaded
-		var dialog_box_uid = _characters_data[char].dialog_box_uid
-		if not SproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
-			if dialog_box_uid != -1:
+		var dialog_box_path = SproutyDialogsFileUtils.get_uid_path(
+				_characters_data[char].dialog_box_uid,
+				_characters_data[char].dialog_box_path)
+		if dialog_box_path.is_empty():
+			if _characters_data[char].dialog_box_uid != -1 \
+					or not _characters_data[char].dialog_box_path.is_empty():
 				printerr("[Sprouty Dialogs] No dialog box found for '" + char \
 						+ "' character in dialog: " + dialog_data.resource_path + \
 						". Check that the file '" + _characters_data[char].dialog_box_path \
 						+ "' exists. Using default dialog box instead.")
 			# Use the default dialog box if no dialog box is set for the character
-			dialog_box_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
-			if not SproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
+			dialog_box_path = SproutyDialogsFileUtils.reference_path(
+					SproutyDialogsSettingsManager.get_reference_setting("default_dialog_box"))
+			if dialog_box_path.is_empty():
 				printerr("[Sprouty Dialogs] No default dialog box scene found." \
 						+ " Check that the default dialog box is set in Settings > General" \
 						+ " plugin tab, and that the scene resource exists.")
 				return
 		
 		# Load the dialog box if not already loaded
-		var dialog_box_path = ResourceUID.get_id_path(dialog_box_uid)
 		if not _dialog_boxes.has(dialog_box_path) or not _dialog_boxes_count.has(dialog_box_path):
 			_dialog_boxes[dialog_box_path] = load(dialog_box_path)
 			_dialog_boxes_count[dialog_box_path] = 1
@@ -242,15 +244,16 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 						+ " in the character resource.")
 				_portraits[character_name][portrait_name] = null
 				continue
-			# If the portrait UID is set, load the portrait scene
-			if not SproutyDialogsFileUtils.check_valid_uid_path(portrait_data.portrait_scene_uid):
+			var portrait_scene_path = SproutyDialogsFileUtils.get_uid_path(
+					portrait_data.portrait_scene_uid, portrait_data.portrait_scene_path)
+			if portrait_scene_path.is_empty():
 				printerr("[Sprouty Dialogs] No portrait scene found for '" + portrait_name \
 						+ "' in character '" + character_name + "'. Check that the file '" \
 						+ portrait_data.portrait_scene_path + "' exists.")
 				_portraits[character_name][portrait_name] = null
 				continue
 			else: # Load the portrait scene
-				var portrait_scene = load(ResourceUID.get_id_path(portrait_data.portrait_scene_uid))
+				var portrait_scene = load(portrait_scene_path)
 				_portraits[character_name][portrait_name] = portrait_scene
 		
 		if not _portraits_count[character_name].has(portrait_name):
@@ -287,7 +290,7 @@ func instantiate_dialog_box(
 	var using_default_override = false
 	if not dialog_box:
 		# If there is no override for the character, instantiate it from the character data
-		var dialog_box_uid = ""
+		var dialog_box_path := ""
 		if not character_name.is_empty():
 			if not _characters_data.has(character_name):
 				printerr("[Sprouty Dialogs] Cannot instantiate dialog box. No character data "
@@ -295,20 +298,21 @@ func instantiate_dialog_box(
 						+ "'. Check that the character file exists and is referenced in the "
 						+ "dialogue nodes of the current dialogue.")
 				return null
-			dialog_box_uid = _characters_data[character_name].dialog_box_uid
+			dialog_box_path = SproutyDialogsFileUtils.get_uid_path(
+					_characters_data[character_name].dialog_box_uid,
+					_characters_data[character_name].dialog_box_path)
 		
 		# If no character or the character has no dialog box, use the default override or dialog box from settings
-		if character_name.is_empty() or not SproutyDialogsFileUtils.check_valid_uid_path(dialog_box_uid):
+		if character_name.is_empty() or dialog_box_path.is_empty():
 			if dialog_box_override:
 				# If there is a dialog box default override, use it
 				dialog_box = dialog_box_override
 				using_default_override = true
 			else: # If no override, use the default dialog box from settings
-				dialog_box_uid = SproutyDialogsSettingsManager.get_setting("default_dialog_box")
+				dialog_box_path = SproutyDialogsFileUtils.reference_path(
+						SproutyDialogsSettingsManager.get_reference_setting("default_dialog_box"))
 
 		if not dialog_box: # If no dialog box yet, instantiate it from the loaded dialog boxes
-			var dialog_box_path = ResourceUID.get_id_path(dialog_box_uid)
-			
 			if not _dialog_boxes.has(dialog_box_path):
 				printerr("[Sprouty Dialogs] Cannot instantiate dialog box. No dialog box" \
 						+ " scene is loaded for the character " + character_name \

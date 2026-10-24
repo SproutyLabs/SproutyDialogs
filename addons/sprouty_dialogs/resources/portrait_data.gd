@@ -15,9 +15,13 @@ extends Resource
 ## This is the UID of the scene that will be used as the character's portrait.
 ## The scene should contain a root node that extends [class DialogPortrait]
 ## to can integrate with the dialog system.
-@export var portrait_scene_uid: int = -1
+@export_storage var portrait_scene_uid: int = -1
 ## Path to the portrait scene used for this portrait.
-## This is for reference only, use [param portrait_scene_uid] to set the portrait scene
+## Used as a fallback to load the portrait scene when the
+## [param portrait_scene_uid] is no longer valid.
+## [br][br]
+## [b]This is for reference only[/b], the portrait scene is setted in [param portrait_scene_uid].
+## You need to set the portrait scene on the [b]character editor[/b] to change it.
 @export var portrait_scene_path: String = ""
 ## Portrait exported overrides properties.
 ## This is a dictionary where each key is the property name to override
