@@ -185,25 +185,6 @@ static func set_setting(setting_name: String, value: Variant) -> void:
 		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found. Cannot set value.")
 
 
-## Returns a setting that stores a resource reference from the plugin settings.
-## Resource reference settings are stored as a dictionary with the resource
-## UID and its file path, so the resource can still be loaded by its path when
-## the UID is no longer valid. Old settings storing only the resource UID as an
-## int are normalized to the current dictionary format.
-static func get_reference_setting(setting_name: String) -> Dictionary:
-	if not _settings_paths.has(setting_name):
-		printerr("[Sprouty Dialogs] Setting '" + setting_name + "' not found. "
-			+ "Please restart the editor to register a new setting!")
-		return SproutyDialogsFileUtils.make_reference()
-	return SproutyDialogsFileUtils.normalize_reference(get_setting(setting_name))
-
-
-## Sets a setting that stores a resource reference from the resource file path,
-## storing both the UID and the path to load it as a fallback.
-static func set_reference_setting(setting_name: String, path: String) -> void:
-	set_setting(setting_name, SproutyDialogsFileUtils.build_reference(path))
-
-
 ## Checks if a setting exists in the plugin settings.
 static func has_setting(setting_name: String) -> bool:
 	if not _settings_paths.has(setting_name):

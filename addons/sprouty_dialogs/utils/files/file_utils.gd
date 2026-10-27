@@ -7,8 +7,7 @@ extends RefCounted
 # -----------------------------------------------------------------------------
 ## This module is responsible for some file operations and references.
 ## It provides methods to manage recent file paths, check file extensions,
-## validate resource UIDs, load resources by UID with a file path fallback,
-## and other useful methods.
+## validate resource UIDs, and other useful methods.
 # -----------------------------------------------------------------------------
 
 ## Last used paths for file dialogs
@@ -48,87 +47,6 @@ static func check_valid_extension(path: String, extensions: Array) -> bool:
 static func check_valid_uid_path(uid: int) -> bool:
 	return uid != -1 and ResourceUID.has_id(uid) \
 			and ResourceLoader.exists(ResourceUID.get_id_path(uid))
-
-
-## Returns a resource reference dictionary with the given resource UID and file
-## path. This is the format used to store the resource references in the plugin
-## data (e.g. the character references of the dialogue data), so the resource
-## can still be loaded by its path when the UID is no longer valid.
-static func make_reference(uid: int = -1, path: String = "") -> Dictionary:
-	return {"uid": uid, "path": path}
-
-
-## Returns a resource reference dictionary for the resource at the given path,
-## storing both its UID and the path itself to load the resource as a fallback.
-static func build_reference(path: String) -> Dictionary:
-	return {"uid": ResourceSaver.get_resource_id_for_path(path, true), "path": path}
-
-
-## Normalizes a stored resource reference to a dictionary with "uid" and
-## "path" keys. Accepts legacy references storing only the resource UID as an
-## int, returning a reference with the UID and an empty path. Any other value
-## is normalized to an empty reference.
-static func normalize_reference(reference: Variant) -> Dictionary:
-	if reference is Dictionary:
-		return {
-			"uid": reference.get("uid", -1),
-			"path": str(reference.get("path", "")),
-		}
-	if reference is int:
-		return make_reference(reference)
-	return make_reference()
-
-
-## Check if a resource reference ("uid"/"path" dictionary) is empty, meaning
-## that it stores no usable UID nor file path.
-static func reference_is_empty(reference: Variant) -> bool:
-	if not reference is Dictionary:
-		return true
-	var reference_normalized = normalize_reference(reference)
-	return reference_normalized["uid"] == -1 and reference_normalized["path"].is_empty()
-
-
-## Returns the file path of a resource UID, using the given path as fallback
-## when the UID is no longer valid (e.g. the resource was renamed or moved
-## outside of the editor). Returns an empty string when none of them is valid.
-static func get_uid_path(uid: int, path_fallback: String = "") -> String:
-	if check_valid_uid_path(uid):
-		return ResourceUID.get_id_path(uid)
-	if not path_fallback.is_empty() and FileAccess.file_exists(path_fallback):
-		return path_fallback
-	return ""
-
-
-## Returns the resolved file path of a resource reference ("uid"/"path"
-## dictionary). The stored UID is resolved first, using the stored path as
-## fallback when the UID is no longer valid. Returns an empty string when the
-## path cannot be resolved.
-static func reference_path(reference: Variant) -> String:
-	if not reference is Dictionary:
-		return ""
-	return get_uid_path(reference.get("uid", -1), str(reference.get("path", "")))
-
-
-## Load a resource by its UID, using the given path as fallback.
-## The resource is loaded from its UID path first; when the UID is no longer
-## valid (e.g. the resource was renamed or moved outside of the editor), the
-## resource is loaded from the fallback path instead, if the file exists there.
-## Returns null when the resource cannot be loaded.
-static func load_resource(uid: int, path_fallback: String = "") -> Resource:
-	var path: String = get_uid_path(uid, path_fallback)
-	if path.is_empty():
-		return null
-	return load(path)
-
-
-## Load a resource from a resource reference ("uid"/"path" dictionary).
-## The resource is loaded from its stored UID first, using the stored path
-## as fallback when the UID is no longer valid.
-## Returns null when the resource cannot be loaded.
-static func load_reference(reference: Variant) -> Resource:
-	if not reference is Dictionary:
-		return null
-	return load_resource(reference.get("uid", -1), str(reference.get("path", "")))
 
 
 ## Ensure a name is unique within a list of existing names
@@ -175,12 +93,12 @@ static func open_scene_in_editor(scene_path: String, scene_tree: SceneTree) -> v
 ## Needs the path where save the scene file and the type of the scene that can
 ## be "dialog_box" or "portrait_scene".
 static func create_new_scene_file(scene_path: String, scene_type: String) -> void:
-	var default_reference = SproutyDialogsSettingsManager.get_reference_setting(
-			"default_" + scene_type)
-	var default_path = reference_path(default_reference)
+	var default_path = SproutyDialogsReferenceUtils.get_reference_path(
+			SproutyDialogsReferenceUtils.normalize_reference_dict(
+				SproutyDialogsSettingsManager.get_setting("default_" + scene_type)))
 	
 	# If no default portrait scene is set or the resource does not exist, use the built-in default
-	if default_path.is_empty():
+	if not ResourceLoader.exists(default_path):
 		printerr("[Sprouty Dialogs] No default " + scene_type + " found." \
 				+ " Check that the default portrait scene is set in Settings > General" \
 				+ " plugin tab, and that the scene resource exists. Using built-in default instead.")
@@ -190,8 +108,8 @@ static func create_new_scene_file(scene_path: String, scene_type: String) -> voi
 			"portrait_scene":
 				default_path = SproutyDialogsSettingsManager.DEFAULT_PORTRAIT_PATH
 		
-		SproutyDialogsSettingsManager.set_reference_setting(
-				"default_" + scene_type, default_path)
+		SproutyDialogsSettingsManager.set_setting("default_" + scene_type,
+				SproutyDialogsReferenceUtils.create_reference_from_path(default_path))
 	
 	var new_scene = load(default_path).instantiate()
 	new_scene.name = scene_path.get_file().split(".")[0].to_pascal_case()
@@ -259,12 +177,8 @@ static func get_resources_of_type(type: String = "dialogue", path: String = "res
 ## Returns the loaded character resource, or null when it is not found.
 static func load_character_reference(character_key: String,
 		reference: Variant) -> SproutyDialogsCharacterData:
-	reference = normalize_reference(reference)
-	
-	# Load the character by its stored UID, using the stored path as fallback
-	# when the UID no longer resolves (e.g. the character file was renamed or
-	# moved outside of the editor)
-	var char_resource = load_reference(reference)
+	reference = SproutyDialogsReferenceUtils.normalize_reference_dict(reference)
+	var char_resource = SproutyDialogsReferenceUtils.load_resource_from_reference(reference)
 	
 	if char_resource == null:
 		# The stored path is not valid either, so search the project for a

@@ -441,7 +441,7 @@ func get_graph_data() -> Dictionary:
 				if character != "" and not dict.characters[start_id].has(character):
 					var char_path: String = child.get_character_path()
 					dict.characters[start_id][character] = \
-							SproutyDialogsFileUtils.build_reference(char_path)
+							SproutyDialogsReferenceUtils.create_reference_from_path(char_path)
 			
 			# Get option dialogs from options nodes
 			if child.node_type == "options_node":
@@ -507,7 +507,7 @@ func _load_dialogue_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 	if not dialogs.has(node_data["dialog_key"]):
 		# Print error if no dialog is found for the dialogue node
 		push_warning("[Sprouty Dialogs] No dialogue found for Dialogue Node #" + str(node_data["node_index"]) \
-			+ " in the CSV file:\n" + SproutyDialogsFileUtils.reference_path(data.csv_file) \
+			+ " in the CSV file:\n" + SproutyDialogsReferenceUtils.get_reference_path(data.csv_file) \
 			+ ". Check that the key '" + node_data["dialog_key"] \
 			+ "' exists in the CSV translation file and that it is the correct CSV file." \
 			+ (" Loading '" + node_data["dialog_key"] + "' dialogue from '" \
@@ -546,7 +546,7 @@ func _load_options_node_data(node: SproutyDialogsBaseNode, dialogue_id: String,
 			push_warning("[Sprouty Dialogs] No dialogue found for Option #" \
 				+ str(int(option_key.split("_")[ - 1]) + 1) + " of Option Node #" \
 				+ str(node_data["node_index"]) + " in the CSV file:\n" \
-				+ SproutyDialogsFileUtils.reference_path(data.csv_file) \
+				+ SproutyDialogsReferenceUtils.get_reference_path(data.csv_file) \
 				+ ". Check that the key '" + option_key \
 				+ "' exists in the CSV translation file and that it is the correct CSV file." \
 				+ (" Loading '" + option_key + "' dialogue from '" \

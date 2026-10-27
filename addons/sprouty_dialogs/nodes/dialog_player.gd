@@ -268,8 +268,9 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if not _dialog_data: # Check if the node is empty or invalid
 		warnings.push_back("A dialog data must be provided to play a dialogue. "
 			+ "Please assign a '.tres' dialogue data file in the inspector.")
-	elif _dialog_data_uid != -1 \
-			and SproutyDialogsFileUtils.get_uid_path(_dialog_data_uid, _dialog_data_path).is_empty():
+	elif not ResourceLoader.exists(
+			SproutyDialogsReferenceUtils.get_reference_path_from_uid(
+				_dialog_data_uid, _dialog_data_path)):
 		warnings.push_back("The dialog data assigned is invalid, please check that the file exist.")
 	elif _start_id == "(Select a dialog)":
 		warnings.push_back("A start ID must be provided to play a dialogue. "
@@ -488,8 +489,9 @@ func _set(property: StringName, value: Variant) -> bool:
 func _enter_tree() -> void:
 	if not Engine.is_editor_hint(): # Only run in game
 		if SproutyDialogsSettingsManager.get_setting("use_custom_event_nodes"):
-			var interpreter_path = SproutyDialogsFileUtils.reference_path(
-					SproutyDialogsSettingsManager.get_reference_setting("custom_event_interpreter"))
+			var interpreter_path = SproutyDialogsReferenceUtils.get_reference_path(
+					SproutyDialogsReferenceUtils.normalize_reference_dict(
+						SproutyDialogsSettingsManager.get_setting("custom_event_interpreter")))
 			# Use a custom event interpreter
 			if not interpreter_path.is_empty():
 				_dialog_interpreter = load(interpreter_path).new()
@@ -533,11 +535,11 @@ func _exit_tree() -> void:
 
 
 func _ready() -> void:
-	var dialog_data_path = SproutyDialogsFileUtils.get_uid_path(
+	var dialog_data_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
 			_dialog_data_uid, _dialog_data_path)
 	if Engine.is_editor_hint():
 		# In editor, check if the dialogue data resource exists
-		if _dialog_data_uid != -1 and dialog_data_path.is_empty():
+		if not ResourceLoader.exists(dialog_data_path):
 			printerr("[Sprouty Dialogs] Dialog Player '" + name
 				+ "' cannot find the dialogue data resource '" \
 				+ _dialog_file_name + ".tres'. Check if it was deleted.")
@@ -548,7 +550,7 @@ func _ready() -> void:
 			_start_id = "(Select a dialog)"
 			_starts_ids = []
 	else: # In game, load the dialogue data resources
-		if not _dialog_data and not dialog_data_path.is_empty():
+		if not _dialog_data and ResourceLoader.exists(dialog_data_path):
 			_dialog_data = load(dialog_data_path)
 			if _dialog_data:
 				_starts_ids = _dialog_data.get_start_ids()

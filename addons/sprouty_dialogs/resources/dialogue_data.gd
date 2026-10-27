@@ -71,11 +71,11 @@ extends Resource
 ##   "uid": UID of the CSV file resource,
 ##   "path": "res://path_to_the/csv_file.csv",
 ## }[/codeblock]
-@export_storage var csv_file: Dictionary = {"uid": -1, "path": ""}:
+@export_storage var csv_file: Dictionary = {"uid": - 1, "path": ""}:
 	set(value):
 		# Normalize the assigned reference to ensure it keeps the "uid"/"path"
 		# keys even when legacy references (UID only) are assigned
-		csv_file = SproutyDialogsFileUtils.normalize_reference(value)
+		csv_file = SproutyDialogsReferenceUtils.normalize_reference_dict(value)
 
 ## Legacy property storing only the UID of the CSV file resource. Kept to
 ## migrate dialogue files created before the CSV file reference was stored as
@@ -84,7 +84,7 @@ extends Resource
 @export_storage var csv_file_uid: int = -1:
 	set(value):
 		if value != -1 and csv_file.get("uid", -1) == -1:
-			csv_file = SproutyDialogsFileUtils.make_reference(value)
+			csv_file = SproutyDialogsReferenceUtils.create_reference_from_uid(value)
 
 
 ## Returns a list of the start IDs from the graph data.
@@ -193,9 +193,10 @@ func sync_character_references() -> bool:
 				if file_name == key_name:
 					# Only the reference needs to be updated, the key name is
 					# already the current file name
-					reference["uid"] = ResourceSaver.get_resource_id_for_path(
-							char_path, true)
-					updated = true
+					var matched_uid: int = ResourceSaver.get_resource_id_for_path(char_path, true)
+					if matched_uid != -1:
+						reference["uid"] = matched_uid
+						updated = true
 					continue
 				var new_uid: int = ResourceSaver.get_resource_id_for_path(char_path, true)
 				if new_uid != -1:

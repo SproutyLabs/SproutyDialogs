@@ -273,10 +273,10 @@ func load_character(data: SproutyDialogsCharacterData, name_data: Dictionary, ed
 	_update_translations_state()
 
 	# Dialog box scene file
-	var dialog_box_path = SproutyDialogsFileUtils.get_uid_path(
+	var dialog_box_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
 			data.dialog_box_uid, data.dialog_box_path)
-	if dialog_box_path.is_empty():
-		if data.dialog_box_uid != -1 or not data.dialog_box_path.is_empty():
+	if not ResourceLoader.exists(dialog_box_path):
+		if not data.dialog_box_path.is_empty():
 			printerr("[Sprouty Dialogs] Dialog box not found for character '" + _key_name
 					+ "'. Check that the file '" + data.dialog_box_path + "' exists.")
 		_dialog_box_scene_field.set_scene_path("")

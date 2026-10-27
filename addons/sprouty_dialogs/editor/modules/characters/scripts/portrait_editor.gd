@@ -86,10 +86,10 @@ func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 	set_portrait_name(name)
 
 	# Set the portrait scene
-	var portrait_scene_path = SproutyDialogsFileUtils.get_uid_path(
+	var portrait_scene_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
 			data.portrait_scene_uid, data.portrait_scene_path)
-	if portrait_scene_path.is_empty():
-		if data.portrait_scene_uid != -1 or not data.portrait_scene_path.is_empty():
+	if not ResourceLoader.exists(portrait_scene_path):
+		if not data.portrait_scene_path.is_empty():
 			printerr("[Sprouty Dialogs] Portrait scene not found for portrait '"
 					+ name + "'. Check that the file '" + data.portrait_scene_path + "' exists.")
 		_portrait_scene_field.set_scene_path("")

@@ -233,9 +233,9 @@ func _process_jump_to(node_data: Dictionary) -> void:
 
 	# Handle when jump to another dialogue file
 	if node_data.get("jump_to_dialogue", false):
-		var dialogue_path = SproutyDialogsFileUtils.get_uid_path(
+		var dialogue_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
 				node_data.get("to_dialogue_uid", -1), str(node_data.get("to_dialogue_path", "")))
-		if not dialogue_path.is_empty():
+		if ResourceLoader.exists(dialogue_path):
 			dialog_data = load(dialogue_path)
 		else:
 			push_warning("[Sprouty Dialogs] Jump To Node #" + str(node_data.node_index)

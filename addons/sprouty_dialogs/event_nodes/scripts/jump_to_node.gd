@@ -88,11 +88,9 @@ func set_data(dict: Dictionary) -> void:
 	_target_input.set_value(_target_id)
 
 	if dict.has("to_dialogue_uid"):
-		# Resolve the dialogue path by the stored UID, using the stored path
-		# as fallback when the UID is no longer valid
-		var dialogue_path = SproutyDialogsFileUtils.get_uid_path(
+		var dialogue_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
 				dict.get("to_dialogue_uid", -1), str(dict.get("to_dialogue_path", "")))
-		if not dialogue_path.is_empty():
+		if ResourceLoader.exists(dialogue_path):
 			_load_dialogue(load(dialogue_path))
 		elif not str(dict.get("to_dialogue_path", "")).is_empty():
 			printerr("[Sprouty Dialogs] The dialogue file '" + str(dict["to_dialogue_path"])

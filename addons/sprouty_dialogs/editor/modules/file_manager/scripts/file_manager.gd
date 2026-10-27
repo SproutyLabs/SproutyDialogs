@@ -198,7 +198,7 @@ func new_dialog_file(path: String) -> void:
 		
 		_csv_file_field.set_value(csv_path)
 		_csv_file_field.get_parent().show()
-		resource.csv_file = SproutyDialogsFileUtils.build_reference(csv_path)
+		resource.csv_file = SproutyDialogsReferenceUtils.create_reference_from_path(csv_path)
 	else:
 		csv_path = ""
 	
@@ -225,7 +225,7 @@ func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSpr
 	# Load dialogs from CSV file if translation is enabled
 	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
 		and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
-		var csv_path = SproutyDialogsFileUtils.reference_path(resource.csv_file)
+		var csv_path = SproutyDialogsReferenceUtils.get_reference_path(resource.csv_file)
 		if not csv_path.is_empty():
 			dialogs = SproutyDialogsCSVFileManager.load_dialogs_from_csv(csv_path)
 	graph.load_graph_data(resource, dialogs)
@@ -292,7 +292,7 @@ func load_file(path: String, check_resources: bool = true, view_state: Dictionar
 			var graph = _new_graph_from_resource(resource)
 			if not view_state.is_empty():
 				graph.load_editor_state(view_state)
-			var csv_path = SproutyDialogsFileUtils.reference_path(resource.csv_file)
+			var csv_path = SproutyDialogsReferenceUtils.get_reference_path(resource.csv_file)
 			_file_list.new_file_item(path, resource, graph, csv_path)
 			request_to_switch_tab.emit(0)
 			_save_file_button.disabled = false
@@ -336,7 +336,7 @@ func reload_file(index: int) -> void:
 	if resource is SproutyDialogsDialogueData:
 		_sync_dialogue_file(resource)
 		cache_node = _new_graph_from_resource(resource)
-		csv_path = SproutyDialogsFileUtils.reference_path(resource.csv_file)
+		csv_path = SproutyDialogsReferenceUtils.get_reference_path(resource.csv_file)
 	elif resource is SproutyDialogsCharacterData:
 		_sync_character_file(resource)
 		cache_node = _new_character_from_resource(resource)
@@ -383,14 +383,14 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		# Set the CSV file path if exists
 		if SproutyDialogsFileUtils.check_valid_extension(_csv_file_field.get_value(), ["*.csv"]) \
 				and FileAccess.file_exists(_csv_file_field.get_value()):
-			data.csv_file = SproutyDialogsFileUtils.build_reference(_csv_file_field.get_value())
+			data.csv_file = SproutyDialogsReferenceUtils.create_reference_from_path(_csv_file_field.get_value())
 		
 		file_metadata["data"] = data
 
 		# Save the CSV file with the dialogs
 		if SproutyDialogsSettingsManager.get_setting("enable_translations") \
 			and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
-			var csv_path = SproutyDialogsFileUtils.reference_path(data.csv_file)
+			var csv_path = SproutyDialogsReferenceUtils.get_reference_path(data.csv_file)
 			if not csv_path.is_empty():
 				SproutyDialogsCSVFileManager.save_dialogs_on_csv(
 					graph_editor_data["dialogs"], csv_path)
@@ -939,7 +939,7 @@ func on_translation_enabled_changed(_enabled: bool = false) -> void:
 		if not data.data is SproutyDialogsDialogueData:
 			return
 
-		if SproutyDialogsFileUtils.reference_is_empty(data.data.csv_file):
+		if SproutyDialogsReferenceUtils.is_reference_dict_empty(data.data.csv_file):
 			var csv_path = csv_folder + ("/" if csv_folder != "res://" else "") \
 					+ data.file_name.get_basename() + ".csv"
 		
@@ -953,7 +953,7 @@ func on_translation_enabled_changed(_enabled: bool = false) -> void:
 			
 			_csv_file_field.set_value(csv_path)
 			_csv_file_field.get_parent().show()
-			data.data.csv_file = SproutyDialogsFileUtils.build_reference(csv_path)
+			data.data.csv_file = SproutyDialogsReferenceUtils.create_reference_from_path(csv_path)
 
 
 ## Handle the confirm closing editor dialog actions
@@ -1005,7 +1005,7 @@ func _load_opened_files() -> void:
 		var view_state = entry["view_state"] if entry.has("view_state") else {}
 
 		# Resolve the file path by its UID, using the stored path as fallback
-		var resolved_path = SproutyDialogsFileUtils.get_uid_path(uid, path)
+		var resolved_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(uid, path)
 		if not resolved_path.is_empty():
 			load_file(resolved_path, false, view_state)
 		else:

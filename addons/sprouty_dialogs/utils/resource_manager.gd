@@ -91,8 +91,9 @@ func _enter_tree() -> void:
 		"DialogBoxCanvas", SproutyDialogsSettingsManager.get_setting("dialog_box_canvas_layer"))
 	
 	# Load the default dialog box
-	var default_box = SproutyDialogsSettingsManager.get_reference_setting("default_dialog_box")
-	var default_box_path = SproutyDialogsFileUtils.reference_path(default_box)
+	var default_box = SproutyDialogsReferenceUtils.normalize_reference_dict(
+			SproutyDialogsSettingsManager.get_setting("default_dialog_box"))
+	var default_box_path = SproutyDialogsReferenceUtils.get_reference_path(default_box)
 	if default_box_path.is_empty():
 		printerr("[Sprouty Dialogs] No default dialog box scene found." \
 				+ " Check that the default dialog box is set in Settings > General" \
@@ -123,7 +124,7 @@ func release_resources(dialog_data: SproutyDialogsDialogueData, start_id: String
 	for char in dialog_data.characters[start_id]:
 		# Remove the dialog boxes loaded if they are not used anymore
 		if _characters_data.has(char):
-			var dialog_box_path = SproutyDialogsFileUtils.get_uid_path(
+			var dialog_box_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
 					_characters_data[char].dialog_box_uid,
 					_characters_data[char].dialog_box_path)
 			if _dialog_boxes_count.has(dialog_box_path):
@@ -196,7 +197,7 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 			_characters_count[char] += 1
 		
 		# Load the dialog box for the character if not already loaded
-		var dialog_box_path = SproutyDialogsFileUtils.get_uid_path(
+		var dialog_box_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
 				_characters_data[char].dialog_box_uid,
 				_characters_data[char].dialog_box_path)
 		if dialog_box_path.is_empty():
@@ -207,8 +208,9 @@ func load_resources(dialog_data: SproutyDialogsDialogueData, start_id: String) -
 						". Check that the file '" + _characters_data[char].dialog_box_path \
 						+ "' exists. Using default dialog box instead.")
 			# Use the default dialog box if no dialog box is set for the character
-			dialog_box_path = SproutyDialogsFileUtils.reference_path(
-					SproutyDialogsSettingsManager.get_reference_setting("default_dialog_box"))
+			dialog_box_path = SproutyDialogsReferenceUtils.get_reference_path(
+					SproutyDialogsReferenceUtils.normalize_reference_dict(
+						SproutyDialogsSettingsManager.get_setting("default_dialog_box")))
 			if dialog_box_path.is_empty():
 				printerr("[Sprouty Dialogs] No default dialog box scene found." \
 						+ " Check that the default dialog box is set in Settings > General" \
@@ -244,7 +246,7 @@ func _load_portraits(character_name: String, portrait_names: Array) -> void:
 						+ " in the character resource.")
 				_portraits[character_name][portrait_name] = null
 				continue
-			var portrait_scene_path = SproutyDialogsFileUtils.get_uid_path(
+			var portrait_scene_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
 					portrait_data.portrait_scene_uid, portrait_data.portrait_scene_path)
 			if portrait_scene_path.is_empty():
 				printerr("[Sprouty Dialogs] No portrait scene found for '" + portrait_name \
@@ -298,7 +300,7 @@ func instantiate_dialog_box(
 						+ "'. Check that the character file exists and is referenced in the "
 						+ "dialogue nodes of the current dialogue.")
 				return null
-			dialog_box_path = SproutyDialogsFileUtils.get_uid_path(
+			dialog_box_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
 					_characters_data[character_name].dialog_box_uid,
 					_characters_data[character_name].dialog_box_path)
 		
@@ -309,8 +311,9 @@ func instantiate_dialog_box(
 				dialog_box = dialog_box_override
 				using_default_override = true
 			else: # If no override, use the default dialog box from settings
-				dialog_box_path = SproutyDialogsFileUtils.reference_path(
-						SproutyDialogsSettingsManager.get_reference_setting("default_dialog_box"))
+				dialog_box_path = SproutyDialogsReferenceUtils.get_reference_path(
+					SproutyDialogsReferenceUtils.normalize_reference_dict(
+						SproutyDialogsSettingsManager.get_setting("default_dialog_box")))
 
 		if not dialog_box: # If no dialog box yet, instantiate it from the loaded dialog boxes
 			if not _dialog_boxes.has(dialog_box_path):

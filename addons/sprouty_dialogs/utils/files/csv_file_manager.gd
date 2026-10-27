@@ -204,8 +204,9 @@ static func load_dialogs_from_csv(path: String) -> Dictionary:
 ## The translation key is the value of the character csv_name_key property,
 ## with the format "KEYNAME_CHAR", that should always match the character file.
 static func save_character_names_on_csv(csv_name_key: String, name_data: Dictionary) -> void:
-	var path: String = SproutyDialogsFileUtils.reference_path(
-			SproutyDialogsSettingsManager.get_reference_setting("character_names_csv"))
+	var path: String = SproutyDialogsReferenceUtils.get_reference_path(
+			SproutyDialogsReferenceUtils.normalize_reference_dict(
+				SproutyDialogsSettingsManager.get_setting("character_names_csv")))
 	if path.is_empty():
 		printerr("[Sprouty Dialogs] Cannot save character name translations, no CSV file set."
 				+ " Please set 'Character names CSV' in Settings > Characters.")
@@ -243,8 +244,9 @@ static func save_character_names_on_csv(csv_name_key: String, name_data: Diction
 ##    ...
 ## }[/codeblock]
 static func load_character_names_from_csv(csv_name_key: String) -> Dictionary:
-	var path: String = SproutyDialogsFileUtils.reference_path(
-			SproutyDialogsSettingsManager.get_reference_setting("character_names_csv"))
+	var path: String = SproutyDialogsReferenceUtils.get_reference_path(
+			SproutyDialogsReferenceUtils.normalize_reference_dict(
+				SproutyDialogsSettingsManager.get_setting("character_names_csv")))
 	if path.is_empty():
 		printerr("[Sprouty Dialogs] Cannot load character names translations, no CSV file set."
 				+ " Please set 'Character names CSV' in Settings > Characters.")
@@ -284,8 +286,9 @@ static func rename_character_key(old_name_key: String, new_name_key: String) -> 
 			or old_name_key == new_name_key:
 		return
 	
-	var path: String = SproutyDialogsFileUtils.reference_path(
-			SproutyDialogsSettingsManager.get_reference_setting("character_names_csv"))
+	var path: String = SproutyDialogsReferenceUtils.get_reference_path(
+			SproutyDialogsReferenceUtils.normalize_reference_dict(
+				SproutyDialogsSettingsManager.get_setting("character_names_csv")))
 	if path.is_empty():
 		printerr("[Sprouty Dialogs] Cannot rename character names translations key,"
 				+ " no CSV file set. Please set 'Character names CSV' in Settings > Characters.")
