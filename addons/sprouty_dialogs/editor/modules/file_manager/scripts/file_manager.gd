@@ -198,7 +198,7 @@ func new_dialog_file(path: String) -> void:
 		
 		_csv_file_field.set_value(csv_path)
 		_csv_file_field.get_parent().show()
-		resource.csv_file_uid = ResourceSaver.get_resource_id_for_path(csv_path, true)
+		resource.csv_file = SproutyDialogsReferenceUtils.create_reference_from_path(csv_path)
 	else:
 		csv_path = ""
 	
@@ -225,9 +225,9 @@ func _new_graph_from_resource(resource: SproutyDialogsDialogueData) -> EditorSpr
 	# Load dialogs from CSV file if translation is enabled
 	if SproutyDialogsSettingsManager.get_setting("enable_translations") \
 		and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
-		if SproutyDialogsFileUtils.check_valid_uid_path(resource.csv_file_uid):
-			dialogs = SproutyDialogsCSVFileManager.load_dialogs_from_csv(
-					ResourceUID.get_id_path(resource.csv_file_uid))
+		var csv_path = SproutyDialogsReferenceUtils.get_reference_path(resource.csv_file)
+		if not csv_path.is_empty():
+			dialogs = SproutyDialogsCSVFileManager.load_dialogs_from_csv(csv_path)
 	graph.load_graph_data(resource, dialogs)
 	graph.name = "Graph"
 	remove_child(graph)
@@ -292,10 +292,7 @@ func load_file(path: String, check_resources: bool = true, view_state: Dictionar
 			var graph = _new_graph_from_resource(resource)
 			if not view_state.is_empty():
 				graph.load_editor_state(view_state)
-			var csv_path_uid = resource.csv_file_uid
-			var csv_path = ""
-			if SproutyDialogsFileUtils.check_valid_uid_path(csv_path_uid):
-				csv_path = ResourceUID.get_id_path(csv_path_uid)
+			var csv_path = SproutyDialogsReferenceUtils.get_reference_path(resource.csv_file)
 			_file_list.new_file_item(path, resource, graph, csv_path)
 			request_to_switch_tab.emit(0)
 			_save_file_button.disabled = false
@@ -339,8 +336,7 @@ func reload_file(index: int) -> void:
 	if resource is SproutyDialogsDialogueData:
 		_sync_dialogue_file(resource)
 		cache_node = _new_graph_from_resource(resource)
-		if SproutyDialogsFileUtils.check_valid_uid_path(resource.csv_file_uid):
-			csv_path = ResourceUID.get_id_path(resource.csv_file_uid)
+		csv_path = SproutyDialogsReferenceUtils.get_reference_path(resource.csv_file)
 	elif resource is SproutyDialogsCharacterData:
 		_sync_character_file(resource)
 		cache_node = _new_character_from_resource(resource)
@@ -387,18 +383,17 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		# Set the CSV file path if exists
 		if SproutyDialogsFileUtils.check_valid_extension(_csv_file_field.get_value(), ["*.csv"]) \
 				and FileAccess.file_exists(_csv_file_field.get_value()):
-			data.csv_file_uid = ResourceSaver.get_resource_id_for_path(_csv_file_field.get_value(), true)
+			data.csv_file = SproutyDialogsReferenceUtils.create_reference_from_path(_csv_file_field.get_value())
 		
 		file_metadata["data"] = data
 
 		# Save the CSV file with the dialogs
 		if SproutyDialogsSettingsManager.get_setting("enable_translations") \
 			and SproutyDialogsSettingsManager.get_setting("use_csv_files"):
-			if SproutyDialogsFileUtils.check_valid_uid_path(data.csv_file_uid):
+			var csv_path = SproutyDialogsReferenceUtils.get_reference_path(data.csv_file)
+			if not csv_path.is_empty():
 				SproutyDialogsCSVFileManager.save_dialogs_on_csv(
-					graph_editor_data["dialogs"],
-					ResourceUID.get_id_path(data.csv_file_uid)
-				)
+					graph_editor_data["dialogs"], csv_path)
 				SproutyDialogsTranslationManager.collect_translations()
 
 	elif data is SproutyDialogsCharacterData:
@@ -944,7 +939,7 @@ func on_translation_enabled_changed(_enabled: bool = false) -> void:
 		if not data.data is SproutyDialogsDialogueData:
 			return
 
-		if data.data.csv_file_uid == -1:
+		if SproutyDialogsReferenceUtils.is_reference_dict_empty(data.data.csv_file):
 			var csv_path = csv_folder + ("/" if csv_folder != "res://" else "") \
 					+ data.file_name.get_basename() + ".csv"
 		
@@ -958,7 +953,7 @@ func on_translation_enabled_changed(_enabled: bool = false) -> void:
 			
 			_csv_file_field.set_value(csv_path)
 			_csv_file_field.get_parent().show()
-			data.data.csv_file_uid = ResourceSaver.get_resource_id_for_path(csv_path, true)
+			data.data.csv_file = SproutyDialogsReferenceUtils.create_reference_from_path(csv_path)
 
 
 ## Handle the confirm closing editor dialog actions
@@ -1009,13 +1004,10 @@ func _load_opened_files() -> void:
 		var path = entry["path"] if entry.has("path") else ""
 		var view_state = entry["view_state"] if entry.has("view_state") else {}
 
-		# Try to use UID first
-		if SproutyDialogsFileUtils.check_valid_uid_path(uid):
-			var uid_path = ResourceUID.get_id_path(uid)
-			load_file(uid_path, false, view_state)
-		# If UID is not valid, try to use the path
-		elif path != "" and FileAccess.file_exists(path):
-			load_file(path, false, view_state)
+		# Resolve the file path by its UID, using the stored path as fallback
+		var resolved_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(uid, path)
+		if not resolved_path.is_empty():
+			load_file(resolved_path, false, view_state)
 		else:
 			push_warning("[Sprouty Dialogs] File with path '" + path + "' not found. Skipping.")
 

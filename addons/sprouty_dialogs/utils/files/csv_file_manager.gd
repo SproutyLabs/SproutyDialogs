@@ -109,7 +109,7 @@ static func new_csv_template_file(name: String) -> String:
 	var csv_files_path: String = SproutyDialogsSettingsManager.get_setting("csv_translations_folder")
 	if not DirAccess.dir_exists_absolute(csv_files_path):
 		printerr("[Sprouty Dialogs] Cannot create file, need a directory path to CSV translation files."
-				+" Please set 'CSV files path' in Settings > Translation.")
+				+ " Please set 'CSV files path' in Settings > Translation.")
 		return ""
 	var path = csv_files_path + "/" + name.split(".")[0] + ".csv"
 	var header = ["keys"]
@@ -204,14 +204,13 @@ static func load_dialogs_from_csv(path: String) -> Dictionary:
 ## The translation key is the value of the character csv_name_key property,
 ## with the format "KEYNAME_CHAR", that should always match the character file.
 static func save_character_names_on_csv(csv_name_key: String, name_data: Dictionary) -> void:
-	var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
-	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
+	var path: String = SproutyDialogsReferenceUtils.get_reference_path(
+			SproutyDialogsReferenceUtils.normalize_reference_dict(
+				SproutyDialogsSettingsManager.get_setting("character_names_csv")))
+	if path.is_empty():
 		printerr("[Sprouty Dialogs] Cannot save character name translations, no CSV file set."
-				+" Please set 'Character names CSV' in Settings > Characters.")
+				+ " Please set 'Character names CSV' in Settings > Characters.")
 		return
-	
-	# Load the CSV file
-	var path: String = ResourceUID.get_id_path(char_names_csv)
 	var csv_file := load_file(path)
 	var header = csv_file[0]
 
@@ -245,14 +244,13 @@ static func save_character_names_on_csv(csv_name_key: String, name_data: Diction
 ##    ...
 ## }[/codeblock]
 static func load_character_names_from_csv(csv_name_key: String) -> Dictionary:
-	var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
-	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
+	var path: String = SproutyDialogsReferenceUtils.get_reference_path(
+			SproutyDialogsReferenceUtils.normalize_reference_dict(
+				SproutyDialogsSettingsManager.get_setting("character_names_csv")))
+	if path.is_empty():
 		printerr("[Sprouty Dialogs] Cannot load character names translations, no CSV file set."
-				+" Please set 'Character names CSV' in Settings > Characters.")
+				+ " Please set 'Character names CSV' in Settings > Characters.")
 		return {}
-	
-	# Load the CSV file
-	var path: String = ResourceUID.get_id_path(char_names_csv)
 	var data := load_file(path)
 	if data.is_empty():
 		printerr("[Sprouty Dialogs] Cannot load character names from CSV file.")
@@ -288,13 +286,13 @@ static func rename_character_key(old_name_key: String, new_name_key: String) -> 
 			or old_name_key == new_name_key:
 		return
 	
-	var char_names_csv = SproutyDialogsSettingsManager.get_setting("character_names_csv")
-	if not SproutyDialogsFileUtils.check_valid_uid_path(char_names_csv):
+	var path: String = SproutyDialogsReferenceUtils.get_reference_path(
+			SproutyDialogsReferenceUtils.normalize_reference_dict(
+				SproutyDialogsSettingsManager.get_setting("character_names_csv")))
+	if path.is_empty():
 		printerr("[Sprouty Dialogs] Cannot rename character names translations key,"
-				+" no CSV file set. Please set 'Character names CSV' in Settings > Characters.")
+				+ " no CSV file set. Please set 'Character names CSV' in Settings > Characters.")
 		return
-	
-	var path: String = ResourceUID.get_id_path(char_names_csv)
 	var csv_data := load_file(path)
 	if csv_data.is_empty():
 		return

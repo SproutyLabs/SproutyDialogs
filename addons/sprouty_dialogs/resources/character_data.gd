@@ -39,6 +39,8 @@ extends Resource
 ## which will be used to display the character's dialogue.
 @export_storage var dialog_box_uid: int = -1
 ## Path to the dialog box scene to display the character's dialogue.
+## Used as a fallback to load the dialog box when the [member dialog_box_uid]
+## is no longer valid.
 ##[br][br]
 ## [b]This is for reference only[/b], the dialog box is setted in [member dialog_box_uid].
 ## You need to set the dialog box scene on the [b]character editor[/b] to change it.

@@ -26,14 +26,20 @@ static var _settings_paths: Dictionary = {
 		"path": "sprouty_dialogs/general/input/save_sprouty_only",
 		"default": true
 	},
-	# Default scenes
+	# Default scenes (stored as "uid"/"path" resource references)
 	"default_dialog_box": {
 		"path": "sprouty_dialogs/general/defaults/default_dialog_box",
-		"default": ResourceSaver.get_resource_id_for_path(DEFAULT_DIALOG_BOX_PATH, true)
+		"default": {
+			"uid": ResourceSaver.get_resource_id_for_path(DEFAULT_DIALOG_BOX_PATH, true),
+			"path": DEFAULT_DIALOG_BOX_PATH,
+		}
 	},
 	"default_portrait_scene": {
 		"path": "sprouty_dialogs/general/defaults/default_portrait_scene",
-		"default": ResourceSaver.get_resource_id_for_path(DEFAULT_PORTRAIT_PATH, true)
+		"default": {
+			"uid": ResourceSaver.get_resource_id_for_path(DEFAULT_PORTRAIT_PATH, true),
+			"path": DEFAULT_PORTRAIT_PATH,
+		}
 	},
 	# Canvas layers
 	"dialog_box_canvas_layer": {
@@ -55,7 +61,7 @@ static var _settings_paths: Dictionary = {
 	},
 	"custom_event_interpreter": {
 		"path": "sprouty_dialogs/general/custom/custom_event_interpreter",
-		"default": - 1
+		"default": {"uid": -1, "path": ""}
 	},
 	# --- Text settings --------------------------------------------------------
 	"default_typing_speed": {
@@ -130,7 +136,7 @@ static var _settings_paths: Dictionary = {
 	},
 	"character_names_csv": {
 		"path": "sprouty_dialogs/translation/characters/character_names_csv",
-		"default": - 1
+		"default": {"uid": -1, "path": ""}
 	},
 	# Translation/Localization settings
 	"default_locale": {

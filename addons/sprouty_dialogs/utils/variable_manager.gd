@@ -7,7 +7,7 @@ extends Node
 # -----------------------------------------------------------------------------
 ## This class manages the variables in the Sprouty Dialogs plugin.
 ## It provides methods to get, set, check, parse variables in strings
-## and get assigment and comparision operations results.
+## and get assigment and comparison operations results.
 # -----------------------------------------------------------------------------
 
 ## Dictionary to store variable names, types and values

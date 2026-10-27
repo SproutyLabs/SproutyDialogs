@@ -86,13 +86,15 @@ func load_portrait_data(name: String, data: SproutyDialogsPortraitData) -> void:
 	set_portrait_name(name)
 
 	# Set the portrait scene
-	if not SproutyDialogsFileUtils.check_valid_uid_path(data.portrait_scene_uid):
-		if data.portrait_scene_uid != -1:
+	var portrait_scene_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
+			data.portrait_scene_uid, data.portrait_scene_path)
+	if not ResourceLoader.exists(portrait_scene_path):
+		if not data.portrait_scene_path.is_empty():
 			printerr("[Sprouty Dialogs] Portrait scene not found for portrait '"
 					+ name + "'. Check that the file '" + data.portrait_scene_path + "' exists.")
 		_portrait_scene_field.set_scene_path("")
 	else:
-		_portrait_scene_path = ResourceUID.get_id_path(data.portrait_scene_uid)
+		_portrait_scene_path = portrait_scene_path
 		_portrait_scene_field.set_scene_path(_portrait_scene_path)
 	
 	_portrait_export_properties.set_export_overrides(data.export_overrides)
@@ -169,14 +171,14 @@ func _on_portrait_scene_path_changed(path: String) -> void:
 	undo_redo.create_action("Change Portrait Scene")
 	undo_redo.add_do_method(_portrait_scene_field, "set_scene_path", path)
 	undo_redo.add_undo_method(_portrait_scene_field, "set_scene_path", temp)
-	undo_redo.add_do_property(self , "_portrait_scene_path", path)
-	undo_redo.add_undo_property(self , "_portrait_scene_path", temp)
+	undo_redo.add_do_property(self, "_portrait_scene_path", path)
+	undo_redo.add_undo_property(self, "_portrait_scene_path", temp)
 	
-	undo_redo.add_do_method(self , "_switch_scene_preview", _portrait_scene_path)
-	undo_redo.add_undo_method(self , "_switch_scene_preview", temp)
+	undo_redo.add_do_method(self, "_switch_scene_preview", _portrait_scene_path)
+	undo_redo.add_undo_method(self, "_switch_scene_preview", temp)
 
-	undo_redo.add_do_method(self , "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self , "emit_signal", "modified", false)
+	undo_redo.add_do_method(self, "emit_signal", "modified", true)
+	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
 	undo_redo.commit_action(false)
 	# ---------------------------------------------------------------------
 

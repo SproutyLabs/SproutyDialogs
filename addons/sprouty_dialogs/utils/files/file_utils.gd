@@ -93,11 +93,12 @@ static func open_scene_in_editor(scene_path: String, scene_tree: SceneTree) -> v
 ## Needs the path where save the scene file and the type of the scene that can
 ## be "dialog_box" or "portrait_scene".
 static func create_new_scene_file(scene_path: String, scene_type: String) -> void:
-	var default_uid = SproutyDialogsSettingsManager.get_setting("default_" + scene_type)
-	var default_path = ""
+	var default_path = SproutyDialogsReferenceUtils.get_reference_path(
+			SproutyDialogsReferenceUtils.normalize_reference_dict(
+				SproutyDialogsSettingsManager.get_setting("default_" + scene_type)))
 	
 	# If no default portrait scene is set or the resource does not exist, use the built-in default
-	if not SproutyDialogsFileUtils.check_valid_uid_path(default_uid):
+	if not ResourceLoader.exists(default_path):
 		printerr("[Sprouty Dialogs] No default " + scene_type + " found." \
 				+ " Check that the default portrait scene is set in Settings > General" \
 				+ " plugin tab, and that the scene resource exists. Using built-in default instead.")
@@ -108,9 +109,7 @@ static func create_new_scene_file(scene_path: String, scene_type: String) -> voi
 				default_path = SproutyDialogsSettingsManager.DEFAULT_PORTRAIT_PATH
 		
 		SproutyDialogsSettingsManager.set_setting("default_" + scene_type,
-				ResourceSaver.get_resource_id_for_path(default_path, true))
-	else: # Use the user-defined default portrait scene
-		default_path = ResourceUID.get_id_path(default_uid)
+				SproutyDialogsReferenceUtils.create_reference_from_path(default_path))
 	
 	var new_scene = load(default_path).instantiate()
 	new_scene.name = scene_path.get_file().split(".")[0].to_pascal_case()
@@ -171,24 +170,15 @@ static func get_resources_of_type(type: String = "dialogue", path: String = "res
 
 
 ## Loads a character resource from a character reference of the dialogue data.
+## Legacy references storing only the character UID are also accepted.
 ## The reference is tried, in this order: by its stored UID, by its stored
 ## file path, and by searching the project for a character whose current file
 ## name / key name matches [param character_key].
 ## Returns the loaded character resource, or null when it is not found.
 static func load_character_reference(character_key: String,
 		reference: Variant) -> SproutyDialogsCharacterData:
-	var char_uid: int = reference.uid
-	var char_path: String = reference.path
-	var char_resource = null
-	
-	if check_valid_uid_path(char_uid):
-		char_resource = load(ResourceUID.get_id_path(char_uid))
-	
-	if char_resource == null and not char_path.is_empty() \
-			and FileAccess.file_exists(char_path):
-		# The UID no longer resolves (e.g. the character file was renamed or
-		# moved outside of the editor), so load the character by path
-		char_resource = load(char_path)
+	reference = SproutyDialogsReferenceUtils.normalize_reference_dict(reference)
+	var char_resource = SproutyDialogsReferenceUtils.load_resource_from_reference(reference)
 	
 	if char_resource == null:
 		# The stored path is not valid either, so search the project for a

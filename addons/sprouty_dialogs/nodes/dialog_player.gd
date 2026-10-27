@@ -32,6 +32,9 @@ signal dialog_player_stop()
 
 ## UID of the dialogue data resource to play.
 @export_storage var _dialog_data_uid: int = -1
+## Path to the dialogue data resource to play, stored as a fallback to load
+## it when the UID is no longer valid.
+@export_storage var _dialog_data_path: String = ""
 ## Name of the dialogue data file being played.
 @export_storage var _dialog_file_name: String = ""
 
@@ -44,10 +47,12 @@ var _dialog_data: SproutyDialogsDialogueData:
 		if value:
 			value.sync_character_references()
 			_dialog_data_uid = ResourceLoader.get_resource_uid(value.resource_path)
+			_dialog_data_path = value.resource_path
 			_dialog_file_name = value.resource_path.get_file().get_basename()
 			_starts_ids = value.get_start_ids()
 		else:
 			_dialog_data_uid = -1
+			_dialog_data_path = ""
 			_dialog_file_name = ""
 			_starts_ids = []
 		if Engine.is_editor_hint():
@@ -263,7 +268,9 @@ func _get_configuration_warnings() -> PackedStringArray:
 	if not _dialog_data: # Check if the node is empty or invalid
 		warnings.push_back("A dialog data must be provided to play a dialogue. "
 			+ "Please assign a '.tres' dialogue data file in the inspector.")
-	elif not SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
+	elif not ResourceLoader.exists(
+			SproutyDialogsReferenceUtils.get_reference_path_from_uid(
+				_dialog_data_uid, _dialog_data_path)):
 		warnings.push_back("The dialog data assigned is invalid, please check that the file exist.")
 	elif _start_id == "(Select a dialog)":
 		warnings.push_back("A start ID must be provided to play a dialogue. "
@@ -482,10 +489,12 @@ func _set(property: StringName, value: Variant) -> bool:
 func _enter_tree() -> void:
 	if not Engine.is_editor_hint(): # Only run in game
 		if SproutyDialogsSettingsManager.get_setting("use_custom_event_nodes"):
-			var interpreter_uid = SproutyDialogsSettingsManager.get_setting("custom_event_interpreter")
+			var interpreter_path = SproutyDialogsReferenceUtils.get_reference_path(
+					SproutyDialogsReferenceUtils.normalize_reference_dict(
+						SproutyDialogsSettingsManager.get_setting("custom_event_interpreter")))
 			# Use a custom event interpreter
-			if SproutyDialogsFileUtils.check_valid_uid_path(interpreter_uid):
-				_dialog_interpreter = load(ResourceUID.get_id_path(interpreter_uid)).new()
+			if not interpreter_path.is_empty():
+				_dialog_interpreter = load(interpreter_path).new()
 		
 		if not _dialog_interpreter: # Create a event intepreter instance
 			_dialog_interpreter = SproutyDialogsEventInterpreter.new()
@@ -526,21 +535,25 @@ func _exit_tree() -> void:
 
 
 func _ready() -> void:
+	var dialog_data_path = SproutyDialogsReferenceUtils.get_reference_path_from_uid(
+			_dialog_data_uid, _dialog_data_path)
 	if Engine.is_editor_hint():
 		# In editor, check if the dialogue data resource exists
-		if _dialog_data_uid != -1 and not SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
+		if not ResourceLoader.exists(dialog_data_path):
 			printerr("[Sprouty Dialogs] Dialog Player '" + name
 				+ "' cannot find the dialogue data resource '" \
 				+ _dialog_file_name + ".tres'. Check if it was deleted.")
 			_dialog_data = null
 			_dialog_data_uid = -1
+			_dialog_data_path = ""
 			_dialog_file_name = ""
 			_start_id = "(Select a dialog)"
 			_starts_ids = []
 	else: # In game, load the dialogue data resources
-		if not _dialog_data and SproutyDialogsFileUtils.check_valid_uid_path(_dialog_data_uid):
-			_dialog_data = load(ResourceUID.get_id_path(_dialog_data_uid))
-			_starts_ids = _dialog_data.get_start_ids()
+		if not _dialog_data and ResourceLoader.exists(dialog_data_path):
+			_dialog_data = load(dialog_data_path)
+			if _dialog_data:
+				_starts_ids = _dialog_data.get_start_ids()
 		if _starts_ids.has(_start_id):
 			if not _resource_manager.is_node_ready():
 				await _resource_manager.ready

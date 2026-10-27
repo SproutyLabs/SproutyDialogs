@@ -62,9 +62,29 @@ extends Resource
 ## }[/codeblock]
 @export var characters: Dictionary = {}
 
-## Reference to CSV file with the translations for the dialogues.
-## This is the UID of the CSV file resource.
-@export_storage var csv_file_uid: int = -1
+## Reference to the CSV file with the translations for the dialogues.
+## The reference is stored as a dictionary with the UID and the file path of
+## the CSV file resource, so the file can still be loaded by its path when
+## the UID is no longer valid. This dictionary is structured as follows:
+## [codeblock]
+## {
+##   "uid": UID of the CSV file resource,
+##   "path": "res://path_to_the/csv_file.csv",
+## }[/codeblock]
+@export_storage var csv_file: Dictionary = {"uid": - 1, "path": ""}:
+	set(value):
+		# Normalize the assigned reference to ensure it keeps the "uid"/"path"
+		# keys even when legacy references (UID only) are assigned
+		csv_file = SproutyDialogsReferenceUtils.normalize_reference_dict(value)
+
+## Legacy property storing only the UID of the CSV file resource. Kept to
+## migrate dialogue files created before the CSV file reference was stored as
+## a "uid"/"path" dictionary: when an old file is loaded, the stored UID is
+## moved to the [member csv_file] reference dictionary.
+@export_storage var csv_file_uid: int = -1:
+	set(value):
+		if value != -1 and csv_file.get("uid", -1) == -1:
+			csv_file = SproutyDialogsReferenceUtils.create_reference_from_uid(value)
 
 
 ## Returns a list of the start IDs from the graph data.
@@ -173,9 +193,10 @@ func sync_character_references() -> bool:
 				if file_name == key_name:
 					# Only the reference needs to be updated, the key name is
 					# already the current file name
-					reference["uid"] = ResourceSaver.get_resource_id_for_path(
-							char_path, true)
-					updated = true
+					var matched_uid: int = ResourceSaver.get_resource_id_for_path(char_path, true)
+					if matched_uid != -1:
+						reference["uid"] = matched_uid
+						updated = true
 					continue
 				var new_uid: int = ResourceSaver.get_resource_id_for_path(char_path, true)
 				if new_uid != -1:
