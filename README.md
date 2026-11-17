@@ -76,6 +76,7 @@ Also, you have a [class reference](https://SproutyLabs.github.io/SproutyDialogsD
 These are some features that are planned to implement in the future:
 
 - [x] Text effect tags (e.g. to change the typing speed in between dialogues)
+- [x] A new class to handle the dialogue headlessly (DialogController)
 - [x] Add more event nodes:
   - [x] Call method node
   - [x] Jump to node
@@ -85,9 +86,8 @@ These are some features that are planned to implement in the future:
   - [ ] Switch case node
 - [ ] Grouping nodes support
 - [ ] Typing sounds support
-- [ ] A new class to handle the dialogue headlessly
 
-*And more to come!*
+_And more to come!_
 
 ## Contribute
 
@@ -98,7 +98,7 @@ You can report any bugs or issues and request features in the [Github issues pag
 - If you find any bugs or issues, report them as an issue [here](https://github.com/SproutyLabs/SproutyDialogs/issues/new?template=bug_report.md).
 - You can request any feature idea by opening a new issue [here](https://github.com/SproutyLabs/SproutyDialogs/issues/new?template=feature_request.md).
 
-*Please check that the same or a similar issue doesn't already exist before creating your own.*
+_Please check that the same or a similar issue doesn't already exist before creating your own._
 
 Also, you can ask anything in [Github discussions](https://github.com/SproutyLabs/SproutyDialogs/discussions)!
 
@@ -107,7 +107,7 @@ Also, you can ask anything in [Github discussions](https://github.com/SproutyLab
 
 ## Credits
 
-Made by [Kazy](https://github.com/Kazymila) 🌱 
+Made by [Kazy](https://github.com/Kazymila) 🌱
 
 With help of these [cool contributors](https://github.com/SproutyLabs/SproutyDialogs/graphs/contributors) 😎
 

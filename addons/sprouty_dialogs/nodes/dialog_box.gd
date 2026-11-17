@@ -40,6 +40,11 @@ signal option_selected(option_index: int)
 ## If true, the dialog box will block input propagation to other nodes in the scene tree.[br][br]
 ## This is useful to prevent the player from interacting with other nodes while the dialog is active.[br]
 @export var block_input_propagation: bool = true
+## If [code]true[/code], the dialog box will handle the input to continue the dialog
+## and allow the player to select the options.[br][br]
+## Disable it when you want to use the dialog box only for presentation and
+## handle the input manually (e.g. with a [DialogController]).
+@export var handle_input: bool = true
 
 @export_category("Dialog Box Components")
 ## [RichTextLabel] where dialogue will be displayed.[br][br]
@@ -189,6 +194,8 @@ func _ready() -> void:
 func _input(event: InputEvent) -> void:
 	if Engine.is_editor_hint():
 		return
+	if not handle_input:
+		return
 	if not _is_running:
 		return
 	if _is_displaying_options:
@@ -278,6 +285,20 @@ func stop_dialog(close_dialog: bool = false) -> void:
 func set_auto_advance(enabled: bool, delay: float = _auto_advance_delay) -> void:
 	_auto_advance_enabled = enabled
 	_auto_advance_delay = delay
+
+
+## Manually advance the current dialogue when [member handle_input] is disabled.
+## If the text is still being typed, completes it. If it is fully displayed,
+## shows the next dialogue segment or emits [signal continue_dialog] when there
+## are no segments left.
+func advance_dialog() -> void:
+	if Engine.is_editor_hint() or not _is_running or _is_displaying_options:
+		return
+	if not _display_completed:
+		if text_reveal_skippable and _can_skip:
+			_skip_dialog_typing()
+		return
+	_continue_dialogue()
 
 
 ## Skip the dialog typing and show the full text
@@ -383,12 +404,19 @@ func display_options(options: Array, disabled_flags: Array = []) -> void:
 		if not is_disabled:
 			option_node.option_index = selectable_index
 			selectable_index += 1
-			option_node.option_selected.connect(option_selected.emit)
+			option_node.option_selected.connect(_on_option_node_selected)
 
 		options_container.add_child(option_node)
 		option_node.show()
 	_on_options_displayed()
 	show()
+
+
+## Handle an option selection from the option nodes.
+func _on_option_node_selected(option_index: int) -> void:
+	if not handle_input:
+		return
+	option_selected.emit(option_index)
 
 
 ## Hide the dialog options
@@ -576,14 +604,16 @@ func _on_display_completed() -> void:
 	dialog_typing_ends.emit()
 
 	# If autoplay is enabled, automatically progress after the configured delay
-	if _auto_advance_enabled and not _is_displaying_options and _is_running:
+	if handle_input and _auto_advance_enabled \
+			and not _is_displaying_options and _is_running:
 		_auto_advance_timer.wait_time = _auto_advance_delay
 		_auto_advance_timer.start()
 
 
 ## Continue the auto advance after delay timeout
 func _on_auto_advance_timer_timeout() -> void:
-	if not _auto_advance_enabled or not _is_running or _is_displaying_options:
+	if not handle_input or not _auto_advance_enabled \
+			or not _is_running or _is_displaying_options:
 		return
 	_continue_dialogue()
 

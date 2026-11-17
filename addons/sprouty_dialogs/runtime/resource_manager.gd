@@ -407,7 +407,9 @@ func _set_portrait_properties(character_name: String,
 	
 	# Set transform settings
 	var main_transform = _characters_data[character_name].main_transform_settings
-	var transform_settings = portrait_data.transform_settings
+	# Duplicate the settings to avoid mutating the shared portrait resource
+	# when the main transform is applied on every instantiation.
+	var transform_settings: Dictionary = portrait_data.transform_settings.duplicate(true)
 
 	# Add the parent transform
 	if not transform_settings.ignore_main_transform:
