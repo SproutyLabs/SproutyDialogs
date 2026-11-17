@@ -97,7 +97,9 @@ func set_data(dict: Dictionary) -> void:
 				+ "' cannot be found by Jump To Node #" + str(node_index)
 				+ ". Please check if the dialogue file exist or select another one.")
 	
-	_jump_to_dialogue_toggle.button_pressed = dict.get("jump_to_dialogue", false)
+	_jump_to_dialogue_toggle.set_pressed_no_signal(dict.get("jump_to_dialogue", false))
+	_dialogue_container.visible = dict.get("jump_to_dialogue", false)
+	_refresh_target_options()
 
 #endregion
 
@@ -240,14 +242,14 @@ func _load_dialogue(dialogue: Resource) -> void:
 		_clear_dialogue_field()
 		return
 	
-	# Show the character's display name and set the portrait dropdown
+	# Show the dialogue name and set it before refreshing its start IDs.
+	_dialogue_data = dialogue
 	_dialogue_button.disabled = false
 	_dialogue_button.text = path.get_file().get_basename().capitalize()
 	if _dialogue_button.pressed.is_connected(open_file_request.emit.bind(path)):
 		_dialogue_button.pressed.disconnect(open_file_request.emit.bind(path))
 	_dialogue_button.pressed.connect(open_file_request.emit.bind(path))
 	_refresh_target_options()
-	_dialogue_data = dialogue
 
 
 ## Set the dialogue resource picker
@@ -264,26 +266,26 @@ func _set_dialogue_picker() -> void:
 ## Handle when the jump to dialogue button is toggled
 func _on_jump_to_dialogue_toggled(toggled_on: bool) -> void:
 	_dialogue_container.visible = toggled_on
-	_on_target_input_focus_exited()
 	_refresh_target_options()
 	_on_resized()
 	modified.emit(true)
 	
 	# --- UndoRedo ----------------------------------------------------------
-	undo_redo.create_action("Toggle Jump To Dialogue")
-	undo_redo.add_do_method(_jump_to_dialogue_toggle, "set_pressed_no_signal", toggled_on)
-	undo_redo.add_undo_method(_jump_to_dialogue_toggle, "set_pressed_no_signal", not toggled_on)
-	
-	undo_redo.add_do_property(_dialogue_container, "visible", toggled_on)
-	undo_redo.add_undo_property(_dialogue_container, "visible", not toggled_on)
-	undo_redo.add_do_method(self, "_refresh_target_options")
-	undo_redo.add_undo_method(self, "_refresh_target_options")
-	undo_redo.add_do_method(self, "_on_resized")
-	undo_redo.add_undo_method(self, "_on_resized")
+	if undo_redo:
+		undo_redo.create_action("Toggle Jump To Dialogue")
+		undo_redo.add_do_method(_jump_to_dialogue_toggle, "set_pressed_no_signal", toggled_on)
+		undo_redo.add_undo_method(_jump_to_dialogue_toggle, "set_pressed_no_signal", not toggled_on)
+		
+		undo_redo.add_do_property(_dialogue_container, "visible", toggled_on)
+		undo_redo.add_undo_property(_dialogue_container, "visible", not toggled_on)
+		undo_redo.add_do_method(self, "_refresh_target_options")
+		undo_redo.add_undo_method(self, "_refresh_target_options")
+		undo_redo.add_do_method(self, "_on_resized")
+		undo_redo.add_undo_method(self, "_on_resized")
 
-	undo_redo.add_do_method(self, "emit_signal", "modified", true)
-	undo_redo.add_undo_method(self, "emit_signal", "modified", false)
-	undo_redo.commit_action(false)
+		undo_redo.add_do_method(self, "emit_signal", "modified", true)
+		undo_redo.add_undo_method(self, "emit_signal", "modified", false)
+		undo_redo.commit_action(false)
 	# -----------------------------------------------------------------------
 
 
