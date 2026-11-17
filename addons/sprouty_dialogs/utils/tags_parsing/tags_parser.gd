@@ -44,7 +44,7 @@ func _scan_tags_folder() -> void:
 
 func _register_tag_processor(path: String) -> void:
 	var script: GDScript = load(path) as GDScript
-	if not script:
+	if not script or script.is_abstract():
 		return
 	var tag_processor: SproutyDialogsTagProcessor = script.new()
 	if not tag_processor or not tag_processor.has_method("get_tag_name"):
