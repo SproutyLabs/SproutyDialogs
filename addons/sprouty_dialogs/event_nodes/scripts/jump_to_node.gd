@@ -185,16 +185,20 @@ func _on_target_input_focus_exited() -> void:
 	if _id_modified:
 		_id_modified = false
 		modified.emit(true)
+	
+	var parent = get_parent()
+	if parent == null:
+		return
 
-	if _target_input.text.is_empty() or not _is_valid_target_id(_target_input.text):
+	var current_text = _target_input.get_value()
+	if current_text.is_empty() or not _is_valid_target_id(current_text):
 		_target_input.add_theme_stylebox_override("normal", _input_error_style)
-		var parent = get_parent()
-		if parent != null and "alerts" in parent and parent.alerts != null:
+		if "alerts" in parent and parent.alerts != null:
 			if _target_error_alert == null:
 				var message = "Jump To Node #" + str(node_index) + " needs a valid Start ID"
-				if not _target_input.text.is_empty():
+				if not current_text.is_empty():
 					message = "Jump To Node #" + str(node_index) + " cannot find the Start ID '" \
-						+ _target_input.text + "'"
+						+ current_text + "'"
 				_target_error_alert = parent.alerts.show_alert(message, 0)
 			else:
 				parent.alerts.focus_alert(_target_error_alert)
