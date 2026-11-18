@@ -1,3 +1,4 @@
+@icon("res://addons/sprouty_dialogs/editor/icons/nodes/dialog_controller.svg")
 class_name DialogController
 extends Node
 
