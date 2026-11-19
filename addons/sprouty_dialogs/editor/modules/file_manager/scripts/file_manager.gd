@@ -364,7 +364,7 @@ func reload_file(index: int) -> void:
 
 
 ## Save data to resource file
-func save_file(index: int = _file_list.get_current_index(), path: String = "") -> void:
+func save_file(index: int = _file_list.get_current_index(), path: String = "") -> bool:
 	var file_metadata = _file_list.get_item_metadata(index)
 	var save_path = file_metadata["file_path"] if path.is_empty() else path
 	var data = file_metadata.data
@@ -373,7 +373,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 		# If there is some error not solved on graph, cannot save
 		if file_metadata.cache_node.alerts.is_error_alert_active():
 			printerr("[Sprouty Dialogs] Cannot save, please fix the errors.")
-			return
+			return false
 		var graph_editor_data = file_metadata["cache_node"].get_graph_data()
 		data.graph_data = graph_editor_data["nodes_data"]
 		data.dialogs = graph_editor_data["dialogs"]
@@ -422,7 +422,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 	var result = ResourceSaver.save(file_metadata["data"], save_path)
 	if result != OK:
 		print("[Sprouty Dialogs] File '" + file_metadata.file_name + "' could not be saved.")
-		return
+		return false
 	
 	# Update the character resources in the inspector
 	var inspector = Engine.get_singleton("EditorInterface").get_inspector()
@@ -435,6 +435,7 @@ func save_file(index: int = _file_list.get_current_index(), path: String = "") -
 	_file_list.set_file_as_modified(index, false)
 
 	print("[Sprouty Dialogs] File '" + file_metadata.file_name + "' saved.")
+	return true
 
 #endregion
 

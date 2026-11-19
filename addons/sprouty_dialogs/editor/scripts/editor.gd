@@ -150,7 +150,9 @@ func _setup_update_manager() -> void:
 ## Save temporary playback state to the editor state cache and play a dialog
 ## from the current graph starting from the given ID.
 func play_dialog_scene(start_id: String, dialog_path: String = "") -> void:
-	file_manager.save_file()
+	var save_result = file_manager.save_file()
+	if not save_result: # If it could not be saved, the scene will not play.
+		return
 	if dialog_path.is_empty(): # Use the current open dialog
 		dialog_path = file_manager.get_current_file_path()
 		if dialog_path.is_empty():
