@@ -6,7 +6,8 @@ extends Node
 # -----------------------------------------------------------------------------
 ## This class is used as the autoload that manages the Sprouty Dialogs plugin.
 ##
-## Keep track of the running dialog players and dialog states by signals.
+## Keep track of the running dialog players, dialog controllers and dialog
+## states by signals.
 ##
 ## Also, allows to start a dialog with the [method start_dialog] method directly
 ## from code, without needing to create a dialog player instance in the scene.
@@ -26,9 +27,59 @@ signal option_selected(option_index: int, option_dialog: Dictionary)
 ## Emitted when a signal event is emitted.
 signal signal_event(signal_id: String, args: Array)
 
+#region === DialogController Signals ===========================================
+
+## Emitted when a [DialogController] starts running.
+signal controller_started(controller: DialogController)
+## Emitted when a [DialogController] processes a dialogue node.
+signal controller_dialogue_requested(
+	controller: DialogController,
+	character_name: String,
+	translated_name: String,
+	portrait: String,
+	dialogue_data: Dictionary
+)
+## Emitted when a [DialogController] processes an options node.
+signal controller_options_requested(
+	controller: DialogController,
+	options: Array,
+	disabled_options: Array
+)
+## Emitted when a [DialogController] starts processing a wait node.
+signal controller_wait_started(
+	controller: DialogController,
+	wait_time: float,
+	close_dialog: bool
+)
+## Emitted when a [DialogController] finishes waiting.
+signal controller_wait_ended(controller: DialogController)
+## Emitted when a [DialogController] is paused.
+signal controller_paused(controller: DialogController)
+## Emitted when a [DialogController] is resumed.
+signal controller_resumed(controller: DialogController)
+## Emitted when a [DialogController] ends or is stopped.
+signal controller_ended(controller: DialogController)
+## Emitted when an option is selected on a [DialogController].
+signal controller_option_selected(
+	controller: DialogController,
+	option_index: int,
+	option_dialog: Dictionary
+)
+## Emitted when a [DialogController] emits a signal event.
+signal controller_signal_event(
+	controller: DialogController,
+	signal_id: String,
+	args: Array
+)
+
+#endregion
+
 ## The list of [DialogPlayer]s currently running.
 ## This is used to keep track of multiple [DialogPlayer]s running at the same time.
 var dialog_players_running: Array[DialogPlayer] = []
+## The list of [DialogController]s currently running.
+## This is used to keep track of multiple [DialogController]s running at the same time.
+var dialog_controllers_running: Array[DialogController] = []
 
 ## Resource manager singleton instance
 var Resources := SproutyDialogsResourceManager.new()

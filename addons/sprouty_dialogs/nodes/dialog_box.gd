@@ -281,7 +281,10 @@ func stop_dialog(close_dialog: bool = false) -> void:
 		hide()
 
 
-## Set auto-advance option
+## Set auto-advance option.[br][br]
+## Auto-advance also works when [member handle_input] is disabled, allowing a
+## [DialogController] to advance the dialogue from the
+## [signal continue_dialog] signal emitted by the dialog box.
 func set_auto_advance(enabled: bool, delay: float = _auto_advance_delay) -> void:
 	_auto_advance_enabled = enabled
 	_auto_advance_delay = delay
@@ -603,17 +606,15 @@ func _on_display_completed() -> void:
 	_display_completed = true
 	dialog_typing_ends.emit()
 
-	# If autoplay is enabled, automatically progress after the configured delay
-	if handle_input and _auto_advance_enabled \
-			and not _is_displaying_options and _is_running:
+	# If auto-advance is enabled, automatically progress after the configured delay
+	if _auto_advance_enabled and not _is_displaying_options and _is_running:
 		_auto_advance_timer.wait_time = _auto_advance_delay
 		_auto_advance_timer.start()
 
 
 ## Continue the auto advance after delay timeout
 func _on_auto_advance_timer_timeout() -> void:
-	if not handle_input or not _auto_advance_enabled \
-			or not _is_running or _is_displaying_options:
+	if not _auto_advance_enabled or not _is_running or _is_displaying_options:
 		return
 	_continue_dialogue()
 

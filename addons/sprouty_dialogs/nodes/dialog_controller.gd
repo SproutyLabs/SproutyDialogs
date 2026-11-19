@@ -27,6 +27,11 @@ signal dialogue_requested(
 )
 ## Emitted when an options node is processed and the options should be displayed.
 signal options_requested(options: Array, disabled_options: Array)
+## Emitted when a wait node starts processing.
+## [param close_dialog] is [code]true[/code] when the dialog box should be closed.
+signal wait_started(wait_time: float, close_dialog: bool)
+## Emitted when a wait node finishes waiting.
+signal wait_ended()
 ## Emitted when the dialog is paused.
 signal dialog_paused()
 ## Emitted when the dialog is resumed.
@@ -48,10 +53,17 @@ var print_debug: bool = false:
 
 ## Runner instance that executes the dialogue trees.
 var _runner: SproutyDialogsRunner
+## Sprouty Dialogs autoload instance used to register this controller.
+var _autoload_manager: Node
 
 
 func _enter_tree() -> void:
 	_ensure_runner()
+	_register_in_autoload()
+
+
+func _exit_tree() -> void:
+	_unregister_from_autoload()
 
 
 ## Set the dialogue data and start ID to play a dialog tree.
@@ -144,6 +156,8 @@ func _ensure_runner() -> SproutyDialogsRunner:
 	_runner.dialog_started.connect(dialog_started.emit)
 	_runner.dialogue_requested.connect(dialogue_requested.emit)
 	_runner.options_requested.connect(options_requested.emit)
+	_runner.wait_started.connect(wait_started.emit)
+	_runner.wait_ended.connect(wait_ended.emit)
 	_runner.dialog_paused.connect(dialog_paused.emit)
 	_runner.dialog_resumed.connect(dialog_resumed.emit)
 	_runner.dialog_ended.connect(dialog_ended.emit)
@@ -151,3 +165,112 @@ func _ensure_runner() -> SproutyDialogsRunner:
 	_runner.signal_event.connect(signal_event.emit)
 	add_child(_runner)
 	return _runner
+
+#endregion
+
+#region === Autoload registration =============================================
+
+## Register this controller in the Sprouty Dialogs autoload and forward its
+## signals as controller-specific autoload signals.
+func _register_in_autoload() -> void:
+	if _autoload_manager:
+		return
+	_autoload_manager = get_node_or_null("/root/SproutyDialogs")
+	if not _autoload_manager:
+		return
+	dialog_started.connect(_on_autoload_dialog_started)
+	dialogue_requested.connect(_on_autoload_dialogue_requested)
+	options_requested.connect(_on_autoload_options_requested)
+	wait_started.connect(_on_autoload_wait_started)
+	wait_ended.connect(_on_autoload_wait_ended)
+	dialog_paused.connect(_on_autoload_dialog_paused)
+	dialog_resumed.connect(_on_autoload_dialog_resumed)
+	dialog_ended.connect(_on_autoload_dialog_ended)
+	option_selected.connect(_on_autoload_option_selected)
+	signal_event.connect(_on_autoload_signal_event)
+
+
+## Unregister this controller from the Sprouty Dialogs autoload.
+func _unregister_from_autoload() -> void:
+	if not is_instance_valid(_autoload_manager):
+		_autoload_manager = null
+		return
+	if dialog_started.is_connected(_on_autoload_dialog_started):
+		dialog_started.disconnect(_on_autoload_dialog_started)
+	if dialogue_requested.is_connected(_on_autoload_dialogue_requested):
+		dialogue_requested.disconnect(_on_autoload_dialogue_requested)
+	if options_requested.is_connected(_on_autoload_options_requested):
+		options_requested.disconnect(_on_autoload_options_requested)
+	if wait_started.is_connected(_on_autoload_wait_started):
+		wait_started.disconnect(_on_autoload_wait_started)
+	if wait_ended.is_connected(_on_autoload_wait_ended):
+		wait_ended.disconnect(_on_autoload_wait_ended)
+	if dialog_paused.is_connected(_on_autoload_dialog_paused):
+		dialog_paused.disconnect(_on_autoload_dialog_paused)
+	if dialog_resumed.is_connected(_on_autoload_dialog_resumed):
+		dialog_resumed.disconnect(_on_autoload_dialog_resumed)
+	if dialog_ended.is_connected(_on_autoload_dialog_ended):
+		dialog_ended.disconnect(_on_autoload_dialog_ended)
+	if option_selected.is_connected(_on_autoload_option_selected):
+		option_selected.disconnect(_on_autoload_option_selected)
+	if signal_event.is_connected(_on_autoload_signal_event):
+		signal_event.disconnect(_on_autoload_signal_event)
+	_autoload_manager.dialog_controllers_running.erase(self)
+	_autoload_manager = null
+
+
+## Register this controller in the running controllers list when it starts.
+func _on_autoload_dialog_started() -> void:
+	if not _autoload_manager.dialog_controllers_running.has(self):
+		_autoload_manager.dialog_controllers_running.append(self)
+	_autoload_manager.controller_started.emit(self)
+
+
+## Forward the dialogue request to the autoload.
+func _on_autoload_dialogue_requested(character_name: String, translated_name: String,
+		portrait: String, dialogue_data: Dictionary) -> void:
+	_autoload_manager.controller_dialogue_requested.emit(
+			self, character_name, translated_name, portrait, dialogue_data)
+
+
+## Forward the options request to the autoload.
+func _on_autoload_options_requested(options: Array, disabled_options: Array) -> void:
+	_autoload_manager.controller_options_requested.emit(self, options, disabled_options)
+
+
+## Forward the wait start event to the autoload.
+func _on_autoload_wait_started(wait_time: float, close_dialog: bool) -> void:
+	_autoload_manager.controller_wait_started.emit(self, wait_time, close_dialog)
+
+
+## Forward the wait end event to the autoload.
+func _on_autoload_wait_ended() -> void:
+	_autoload_manager.controller_wait_ended.emit(self)
+
+
+## Forward the pause event to the autoload.
+func _on_autoload_dialog_paused() -> void:
+	_autoload_manager.controller_paused.emit(self)
+
+
+## Forward the resume event to the autoload.
+func _on_autoload_dialog_resumed() -> void:
+	_autoload_manager.controller_resumed.emit(self)
+
+
+## Remove this controller from the running controllers list and forward the end event.
+func _on_autoload_dialog_ended() -> void:
+	_autoload_manager.dialog_controllers_running.erase(self)
+	_autoload_manager.controller_ended.emit(self)
+
+
+## Forward the option selection to the autoload.
+func _on_autoload_option_selected(option_index: int, option_dialog: Dictionary) -> void:
+	_autoload_manager.controller_option_selected.emit(self, option_index, option_dialog)
+
+
+## Forward the signal event to the autoload.
+func _on_autoload_signal_event(signal_id: String, args: Array) -> void:
+	_autoload_manager.controller_signal_event.emit(self, signal_id, args)
+
+#endregion

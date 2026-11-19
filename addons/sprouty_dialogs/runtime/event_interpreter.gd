@@ -209,16 +209,21 @@ func _process_signal(node_data: Dictionary) -> void:
 
 func _process_wait(node_data: Dictionary) -> void:
 	if print_debug: print("[Sprouty Dialogs] Processing wait node...")
+	var close_dialog: bool = node_data.get("close_dialog", false)
+	var wait_time: float = node_data.get("wait_time", 0.0)
+	get_parent().wait_started.emit(wait_time, close_dialog)
+
 	var dialog_box = get_parent().get_current_dialog_box()
 
 	if dialog_box != null:
-		if node_data.get("close_dialog", false): # Close the dialog box
+		if close_dialog: # Close the dialog box
 			dialog_box.stop_dialog(true)
 		else: # Stop the dialog, but keeps the dialog box visible
 			dialog_box.stop_dialog()
 			dialog_box.show()
 	
-	await get_tree().create_timer(node_data.wait_time).timeout
+	await get_tree().create_timer(wait_time).timeout
+	get_parent().wait_ended.emit()
 	continue_to_node.emit(node_data.to_node[0])
 
 

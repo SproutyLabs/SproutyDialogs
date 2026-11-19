@@ -37,6 +37,11 @@ signal dialog_ended()
 signal option_selected(option_index: int, option_dialog: Dictionary)
 ## Emitted when a signal event is emitted.
 signal signal_event(signal_id: String, args: Array)
+## Emitted when a wait node starts processing.
+## [param close_dialog] is [code]true[/code] when the dialog box should be closed.
+signal wait_started(wait_time: float, close_dialog: bool)
+## Emitted when a wait node finishes waiting.
+signal wait_ended()
 
 ## If [code]true[/code], will print debug messages to the console.
 var print_debug: bool = false:
@@ -47,7 +52,9 @@ var print_debug: bool = false:
 
 ## Optional callback used by wait nodes to retrieve the dialog box that should
 ## be stopped or hidden. A presentation layer can assign any [Callable] that
-## returns a [Node], keeping the runner independent from UI classes.
+## returns a [Node], keeping the runner independent from UI classes.[br][br]
+## Presentation layers that do not provide a getter can react to
+## [signal wait_started] and [signal wait_ended] instead.
 var dialog_box_getter: Callable = Callable()
 
 ## Dialogue data resource being processed.
