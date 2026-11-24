@@ -426,6 +426,36 @@ func _split_dialog_by_lines(dialog: String) -> Array:
 	return sentences
 
 
+## Split a dialog into words, keeping bbcode tags intact even if they contain
+## spaces (e.g. [code][img region=0,0,64,64 width=60]res://icon.png[/img][/code]).
+func _split_dialog_into_words(dialog: String) -> Array:
+	var words: Array = []
+	var word: String = ""
+	var in_tag: bool = false
+	var escaped: bool = false
+	for i in dialog.length():
+		var character: String = dialog[i]
+		if escaped:
+			escaped = false
+			word += character
+			continue
+		if character == "\\":
+			escaped = true
+			word += character
+			continue
+		if character == "[" and not in_tag and dialog.find("]", i) != -1:
+			in_tag = true
+		elif character == "]" and in_tag:
+			in_tag = false
+		if character == " " and not in_tag:
+			words.append(word)
+			word = ""
+		else:
+			word += character
+	words.append(word)
+	return words
+
+
 ## Split dialog by characters max limit if the setting is enabled.
 ## If the dialog is longer than the max characters limit, it will be split into
 ## multiple sentences, preserving the continuity of the bbcode tags.
@@ -434,7 +464,7 @@ func _split_dialog_by_characters(dialog: String) -> Array:
 			or max_characters >= dialog.length():
 		return [dialog]
 	
-	var words: Array = dialog.split(" ")
+	var words: Array = _split_dialog_into_words(dialog)
 	var sentences: Array[String] = []
 	var clean_sentence: String = ""
 	var sentence: String = ""
@@ -496,10 +526,10 @@ func _get_opened_tags_from_sentence(sentence: String, opened_tags: Array, regex:
 	for tag in tags:
 		if tag.begins_with("[/"): # Look for closing tags
 			var tag_begin = tag.replace("[/", "[").replace("]", "")
-			var open_tag_index = opened_tags.find(
+			var open_tag_index = opened_tags.find_custom(
 				func(open_tag): return open_tag.begins_with(tag_begin)
 			)
-			if open_tag_index: # Remove from opened tags if a closing tag was found
+			if open_tag_index >= 0: # Remove from opened tags if a closing tag was found
 				opened_tags.erase(opened_tags[open_tag_index])
 		else:
 			opened_tags.append(tag) # If not, add to opened tags
