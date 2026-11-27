@@ -173,7 +173,7 @@ func _on_default_text_changed(new_text: String = "") -> void:
 		var temp = _default_text
 		_default_text = _default_text_box.get_text()
 		_default_text_modified = true
-	
+		
 		# --- UndoRedo ---------------------------------------------------------
 		undo_redo.create_action("Edit Option #" + str(option_index + 1) + " Text"
 			+ (" (" + _default_locale + ")") if _default_locale != "" else "", 1)
