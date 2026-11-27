@@ -12,8 +12,13 @@ extends VBoxContainer
 signal modified(modified: bool)
 ## Emitted when the probability value changes
 signal probability_changed(value: float)
+## Emitted when the lock toggle state changes
+signal lock_toggled(locked: bool)
 ## Triggered when the slot is removed
 signal slot_removed(index)
+
+## Error style for the probability value input
+var _input_error_style := preload("res://addons/sprouty_dialogs/editor/theme/input_text_error.tres")
 
 ## Probability label to display the slot position index
 @onready var _probability_label: Label = $Header/ProbabilityLabel
@@ -38,10 +43,12 @@ var undo_redo: EditorUndoRedoManager
 
 func _ready() -> void:
 	_probability_value.value_changed.connect(_on_probability_value_changed)
-	_lock_toggle.toggled.connect(_on_lock_toggle_toggled)
+	_probability_value.step = 0.01
 	_lock_toggle.icon = get_theme_icon("Lock", "EditorIcons")
 	_lock_toggle.toggle_mode = true
-	set_lock_toggle_enabled(false)
+	_lock_toggle.set_pressed_no_signal(false)
+	_update_lock_state(false)
+	_lock_toggle.toggled.connect(_on_lock_toggle_toggled)
 
 	_remove_button.pressed.connect(_on_remove_button_pressed)
 	_remove_button.icon = get_theme_icon("Remove", "EditorIcons")
@@ -56,17 +63,27 @@ func get_probability_value() -> float:
 ## Set the probability value for the slot (in the range of 0.0 to 1.0)
 func set_probability_value(value: float) -> void:
 	_prob_value = value * 100.0
-	_probability_value.set_value_no_signal(value)
+	_probability_value.set_value_no_signal(_prob_value)
 
 
 ## Get the lock toggle state (enabled or disabled)
-func get_lock_toggle_state() -> bool:
+func get_lock_state() -> bool:
 	return _lock_toggle.button_pressed
 
 
 ## Set the lock toggle enabled or disabled
-func set_lock_toggle_enabled(enabled: bool) -> void:
+func set_lock_state(enabled: bool) -> void:
 	_lock_toggle.button_pressed = enabled
+
+
+## Add or remove the error style from the probability value input
+func set_error_style(display: bool) -> void:
+	var line_edit := _probability_value.get_line_edit()
+	for stylebox_name in ["normal", "focus"]:
+		if display:
+			line_edit.add_theme_stylebox_override(stylebox_name, _input_error_style)
+		else:
+			line_edit.remove_theme_stylebox_override(stylebox_name)
 
 
 ## Handle when the probability value changes
@@ -76,7 +93,7 @@ func _on_probability_value_changed(value: float) -> void:
 		_prob_value = _probability_value.value
 		_value_modified = true
 		probability_changed.emit(_prob_value / 100.0)
-	
+
 		# --- UndoRedo ---------------------------------------------------------
 		undo_redo.create_action("Edit Probability #" + str(slot_index + 1), 1)
 		undo_redo.add_do_property(self, "_prob_value", _prob_value)
@@ -95,6 +112,12 @@ func _on_probability_value_changed(value: float) -> void:
 
 ## Handle when the lock toggle is toggled
 func _on_lock_toggle_toggled(enabled: bool) -> void:
+	_update_lock_state(enabled)
+	lock_toggled.emit(enabled)
+
+
+## Update the probability input editable state and the lock button icon
+func _update_lock_state(enabled: bool) -> void:
 	_probability_value.editable = enabled
 	var icon_name = "Lock" if enabled else "Unlock"
 	_lock_toggle.icon = get_theme_icon(icon_name, "EditorIcons")
